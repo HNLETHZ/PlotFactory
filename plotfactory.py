@@ -7,14 +7,14 @@ from glob import glob
 import time
 from array import array
 import sys
-
+import ntup_dir as nt
 
 ########################## 
 # Prepare chain of trees
 ##########################
 #This is the location where all ntuples are stored. Adapt the location to your path. 
-ntup_dir = '/afs/cern.ch/user/d/dezhu/workspace/public/ntuples/'    
-
+# ntup_dir = '/afs/cern.ch/user/d/dezhu/workspace/public/ntuples/'    
+ntup_dir = nt.getntupdir()
 # Returns a TChain object which either contains all samples (allsamples = True) or a selected sample (allsamples = False) with different displacements. 
 def makechain(allsamples):    
 
