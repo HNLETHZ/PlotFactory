@@ -3,7 +3,7 @@ import plotfactory as pf
 import numpy as np
 
 pf.setpfstyle()
-tt = pf.makechain(False)
+tt = pf.makechain(True)
 
 c = ROOT.TCanvas('c','c')
 
