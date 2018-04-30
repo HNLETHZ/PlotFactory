@@ -75,21 +75,21 @@ def showlumi(title):
     latex.DrawLatex(0.83,0.94,title)
     # 'xxx fb^{-1} (xxx TeV)'
 
-def showlogo():
+def showlogo(text):
     logo = ROOT.TLatex()
     logo.SetNDC()
     logo.SetTextAlign(11)
     logo.SetTextFont(61)
     logo.SetTextSize(0.045)
-    logo.DrawLatex(0.15,0.94,'CMS')
+    logo.DrawLatex(0.15,0.94,text)
 
-def showlogopreliminary():
+def showlogopreliminary(text):
     logo = ROOT.TLatex()
     logo.SetNDC()
     logo.SetTextAlign(11)
     logo.SetTextFont(61)
     logo.SetTextSize(0.045)
-    logo.DrawLatex(0.15,0.94,'CMS')
+    logo.DrawLatex(0.15,0.94,text)
     
     preliminary = ROOT.TLatex()
     preliminary.SetNDC()
@@ -165,11 +165,12 @@ def setpfstyle():
     pfstyle.SetTitleSize(tsize,"z")
 
     pfstyle.SetTitleOffset(1.1,"x")
-    pfstyle.SetTitleOffset(1.4,"y")
-    pfstyle.SetTitleOffset(1.1,"z")
+    pfstyle.SetTitleOffset(1.3,"y")
+    pfstyle.SetTitleOffset(1.35,"z")
 
     pfstyle.SetMarkerStyle(20)
-    pfstyle.SetMarkerSize(0.35)
+    pfstyle.SetMarkerSize(0.9)
+    pfstyle.SetLineWidth(2)
     # pfstyle.SetHistLineWidth(2.)
     pfstyle.SetLineStyleString(2,'[12 12]') # postscript dashes
     
