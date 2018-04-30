@@ -3,7 +3,7 @@ import plotfactory as pf
 import numpy as np
 
 pf.setpfstyle()
-tt = pf.makechain(True)
+tt = pf.makechain(False)
 
 c = ROOT.TCanvas('c','c')
 
@@ -16,6 +16,6 @@ tt.Draw('hnl_2d_disp:l0_pt >> h','abs(l0_eta)<2.4',)
 h.Draw('colz')
 
 pf.showlumi('xxx fb^{-1} (xxx TeV)')
-pf.showlogopreliminary()
+pf.showlogopreliminary('CMS')
 
 c.Update()
