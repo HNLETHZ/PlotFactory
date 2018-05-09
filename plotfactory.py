@@ -97,7 +97,36 @@ def showlogopreliminary(text):
     preliminary.SetTextFont(52)
     preliminary.SetTextSize(0.038)
     preliminary.DrawLatex(0.24,0.94,'Preliminary')
+
+def showlogosim(text):
+    logo = ROOT.TLatex()
+    logo.SetNDC()
+    logo.SetTextAlign(11)
+    logo.SetTextFont(61)
+    logo.SetTextSize(0.045)
+    logo.DrawLatex(0.15,0.94,text)
+
+    preliminary = ROOT.TLatex()
+    preliminary.SetNDC()
+    preliminary.SetTextAlign(11)
+    preliminary.SetTextFont(52)
+    preliminary.SetTextSize(0.038)
+    preliminary.DrawLatex(0.24,0.94,'Simulation')
     
+def showlogoprelimsim(text):
+    logo = ROOT.TLatex()
+    logo.SetNDC()
+    logo.SetTextAlign(11)
+    logo.SetTextFont(61)
+    logo.SetTextSize(0.045)
+    logo.DrawLatex(0.15,0.94,text)
+
+    preliminary = ROOT.TLatex()
+    preliminary.SetNDC()
+    preliminary.SetTextAlign(11)
+    preliminary.SetTextFont(52)
+    preliminary.SetTextSize(0.038)
+    preliminary.DrawLatex(0.24,0.94,'Simulation Preliminary')
 
 ######################################## 
 # Style settings (based on CMS TDRStyle)
