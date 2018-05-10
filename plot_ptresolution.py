@@ -14,10 +14,10 @@ pf.setpfstyle()
 # Make Chain from selection of samples
 #########################################
 # Get the option from the command line, using 'True' as a fallback.
-if sys.argv[1] == 'test':
+if len(sys.argv)>2 and sys.argv[1] == 'test':
     setting = False
     print('Using a selection of samples')
-if len(sys.argv):
+else:
     setting = True
     print('Using all samples')
 
@@ -38,7 +38,7 @@ binsx_width = 10.
 binsx = np.arange(0.,50.5,binsx_width) 
 binsx_sub = np.arange(-1.,2.,0.02) 
 binsx_sub_g = np.arange(-1.,2.,0.06) 
-binsx_sub_r3 = np.arange(-1.,2.,0.2) 
+binsx_sub_r3 = np.arange(-1.,3.,0.2) 
 binsx_sub_r3_fine = np.arange(-1.,2.,0.1) 
 
 
