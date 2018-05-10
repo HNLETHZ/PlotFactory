@@ -7,7 +7,7 @@ import numpy as np
 from array import array
 
 pf.setpfstyle()
-tt = pf.makechain(False)
+tt = pf.makechain(True)
 
 nentries = tt.GetEntries()
 print('number of events: %d'%(nentries))
@@ -22,9 +22,10 @@ output_dir = 'temp/'
 ##########################
 binsx_width = 10. 
 binsx = np.arange(0.,50.5,binsx_width) 
-binsx_sub = np.arange(-1.,2.,0.04) 
+binsx_sub = np.arange(-1.,2.,0.02) 
 binsx_sub_g = np.arange(-1.,2.,0.06) 
 binsx_sub_r3 = np.arange(-1.,2.,0.2) 
+binsx_sub_r3_fine = np.arange(-1.,2.,0.1) 
 
 
 ########################## 
@@ -33,6 +34,7 @@ binsx_sub_r3 = np.arange(-1.,2.,0.2)
 print('preparing canvas')
 
 c_ptres_sub  = ROOT.TCanvas('c_ptres_sub', 'c_ptres_sub')
+c_ptres_subr3  = ROOT.TCanvas('c_ptres_subr3', 'c_ptres_subr3')
 c_ptres_r1   = ROOT.TCanvas('c_ptres_r1', 'c_ptres_r1')
 c_ptres_rt   = ROOT.TCanvas('c_ptres_rt', 'c_ptres_rt')
 c_ptres_r2   = ROOT.TCanvas('c_ptres_r2', 'c_ptres_r2')
@@ -51,12 +53,12 @@ c_smuon_r3   = ROOT.TCanvas('c_smuon_r3', 'c_smuon_r3')
 ##########################
 h_pt_dsMuon = ROOT.TH1F('h_pt','',len(binsx)-1,binsx)
 h_ptres_dsMuon = ROOT.TH1F('h_ptres_dsMuon','',len(binsx)-1,binsx)
-h_ptres_sub = ROOT.TH1F('h_ptres_sub','',len(binsx_sub_g)-1,binsx_sub_g)
-h_ptres_sub_l1 = ROOT.TH1F('h_ptres_sub_l1','',len(binsx_sub_g)-1,binsx_sub_g)
-h_ptres_sub_l2 = ROOT.TH1F('h_ptres_sub_l2','',len(binsx_sub_g)-1,binsx_sub_g)
-h_ptres_subr3 = ROOT.TH1F('h_ptres_sub','',len(binsx_sub_g)-1,binsx_sub_g)
-h_ptres_subr3_l1 = ROOT.TH1F('h_ptres_sub_l1','',len(binsx_sub_g)-1,binsx_sub_g)
-h_ptres_subr3_l2 = ROOT.TH1F('h_ptres_sub_l2','',len(binsx_sub_g)-1,binsx_sub_g)
+h_ptres_sub = ROOT.TH1F('h_ptres_sub','',len(binsx_sub)-1,binsx_sub)
+h_ptres_sub_l1 = ROOT.TH1F('h_ptres_sub_l1','',len(binsx_sub)-1,binsx_sub)
+h_ptres_sub_l2 = ROOT.TH1F('h_ptres_sub_l2','',len(binsx_sub)-1,binsx_sub)
+h_ptres_subr3 = ROOT.TH1F('h_ptres_subr3','',len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
+h_ptres_subr3_l1 = ROOT.TH1F('h_ptres_subr3_l1','',len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
+h_ptres_subr3_l2 = ROOT.TH1F('h_ptres_subr3_l2','',len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
 
 h_dsmuon_r1 = ROOT.TH2F('h_dsmuon_r1','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
 h_dsmuon_rt = ROOT.TH2F('h_dsmuon_rt','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
@@ -67,7 +69,8 @@ h_smuon_rt = ROOT.TH2F('h_smuon_rt','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx
 h_smuon_r2 = ROOT.TH2F('h_smuon_r2','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
 h_smuon_r3 = ROOT.TH2F('h_smuon_r3','',len(binsx)-1,binsx,len(binsx_sub_r3)-1,binsx_sub_r3)
 
-h_sub = ROOT.TH2F('h_sub','',len(binsx)-1,binsx,len(binsx_sub_g)-1,binsx_sub_g)
+h_sub = ROOT.TH2F('h_sub','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
+h_subr3 = ROOT.TH2F('h_subr3','',len(binsx)-1,binsx,len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
 
 ########################## 
 # 5) Specify histogram formats
@@ -86,7 +89,7 @@ h_pt_dsMuon     .SetMarkerColor     (ROOT.kRed+2)
 h_ptres_dsMuon  .SetLineColor       (ROOT.kGreen+2)
 h_ptres_dsMuon  .SetMarkerColor     (ROOT.kGreen+2)
 
-for hh in[h_ptres_sub]:
+for hh in[h_ptres_sub, h_ptres_subr3]:
     hh.GetXaxis().SetTitle('#Delta (p_{T})/(p_{T})')
     hh.GetYaxis().SetTitle('Entries')
     hh.GetXaxis().SetTitleOffset(1.1)
@@ -112,6 +115,8 @@ for hh in [h_dsmuon_r1,h_dsmuon_rt,h_dsmuon_r2,h_dsmuon_r3,h_smuon_r1,h_smuon_rt
     
 h_ptres_sub  .SetLineColor       (ROOT.kBlue+2)
 h_ptres_sub  .SetMarkerColor     (ROOT.kBlue+2)
+h_ptres_subr3  .SetLineColor       (ROOT.kBlue+2)
+h_ptres_subr3 .SetMarkerColor     (ROOT.kBlue+2)
 
 ########################## 
 # 6) Building core histograms
@@ -178,6 +183,9 @@ for ibin in xrange(len(binsx)-1):
             h_ptres_sub.Reset()
             h_ptres_sub_l1.Reset()
             h_ptres_sub_l2.Reset()
+            h_ptres_subr3.Reset()
+            h_ptres_subr3_l1.Reset()
+            h_ptres_subr3_l2.Reset()
 
             # range r1: 0 cm - 4 cm (before Pixel)
             if ir == 'r1':
@@ -205,38 +213,73 @@ for ibin in xrange(len(binsx)-1):
             if ireco == 'smu':
                 reco = 'muon'
 
-            c_ptres_sub.cd()
-            # tt.Draw("(l0_matched_%s_pt-l0_pt)/l0_pt >> h_ptres_sub"%(reco),"l0_matched_%s_pt>0 & abs(l0_pdgId) == 13 & abs(l0_eta)<2.4 & %d<l0_pt & l0_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,ptlow,pthigh,rl,rh))
-            tt.Draw("(l1_matched_%s_pt-l1_pt)/l1_pt >> h_ptres_sub_l1"%(reco),"l1_matched_%s_pt>0 & abs(l1_pdgId) == 13 & abs(l1_eta)>%f & abs(l1_eta)>%f & l1_matched_%s_charge == l1_charge & %d<l1_pt & l1_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
-            h_ptres_sub.Add(h_ptres_sub_l1)
-            tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt >> h_ptres_sub_l2"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f & abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & %d<l2_pt & l2_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
-            h_ptres_sub.Add(h_ptres_sub_l2)
-            ROOT.gPad.Update()
-            # c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
-            # c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
+            if ir != 'r3':
+                c_ptres_sub.cd()
+                # tt.Draw("(l0_matched_%s_pt-l0_pt)/l0_pt >> h_ptres_sub"%(reco),"l0_matched_%s_pt>0 & abs(l0_pdgId) == 13 & abs(l0_eta)<2.4 & %d<l0_pt & l0_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,ptlow,pthigh,rl,rh))
+                tt.Draw("(l1_matched_%s_pt-l1_pt)/l1_pt >> h_ptres_sub_l1"%(reco),"l1_matched_%s_pt>0 & abs(l1_pdgId) == 13 & abs(l1_eta)>%f & abs(l1_eta)>%f & l1_matched_%s_charge == l1_charge & %d<l1_pt & l1_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
+                h_ptres_sub.Add(h_ptres_sub_l1)
+                tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt >> h_ptres_sub_l2"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f & abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & %d<l2_pt & l2_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
+                h_ptres_sub.Add(h_ptres_sub_l2)
+                ROOT.gPad.Update()
+                # c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
+                # c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
 
-            sub_entries = h_ptres_sub.GetEntries()
-            maxbin  = h_ptres_sub.GetMaximumBin()
-            maxres  = h_ptres_sub.GetBinCenter(maxbin)
-            maxcont = h_ptres_sub.GetBinContent(maxbin)
-            lowbin  = maxbin
-            highbin = maxbin
+                sub_entries = h_ptres_sub.GetEntries()
+                maxbin  = h_ptres_sub.GetMaximumBin()
+                maxres  = h_ptres_sub.GetBinCenter(maxbin)
+                maxcont = h_ptres_sub.GetBinContent(maxbin)
+                lowbin  = maxbin
+                highbin = maxbin
 
-            while True:
-                lowbin  -=1
-                lowcont = h_ptres_sub.GetBinContent(lowbin)
-                if lowcont <= (maxcont/2.0):
-                    break
-            lowres = h_ptres_sub.GetBinCenter(lowbin)
-            lowerr = maxres - lowres
+                while True:
+                    lowbin  -=1
+                    lowcont = h_ptres_sub.GetBinContent(lowbin)
+                    if lowcont <= (maxcont/2.0):
+                        break
+                lowres = h_ptres_sub.GetBinCenter(lowbin)
+                lowerr = maxres - lowres
 
-            while True:
-                highbin  += 1
-                highcont = h_ptres_sub.GetBinContent(highbin)
-                if highcont <= (maxcont/2.0):
-                    break
-            highres = h_ptres_sub.GetBinCenter(highbin)
-            higherr = highres - maxres
+                while True:
+                    highbin  += 1
+                    highcont = h_ptres_sub.GetBinContent(highbin)
+                    if highcont <= (maxcont/2.0):
+                        break
+                highres = h_ptres_sub.GetBinCenter(highbin)
+                higherr = highres - maxres
+
+            if ir == 'r3':
+                c_ptres_subr3.cd()
+                # tt.Draw("(l0_matched_%s_pt-l0_pt)/l0_pt >> h_ptres_subr3"%(reco),"l0_matched_%s_pt>0 & abs(l0_pdgId) == 13 & abs(l0_eta)<2.4 & %d<l0_pt & l0_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,ptlow,pthigh,rl,rh))
+                tt.Draw("(l1_matched_%s_pt-l1_pt)/l1_pt >> h_ptres_subr3_l1"%(reco),"l1_matched_%s_pt>0 & abs(l1_pdgId) == 13 & abs(l1_eta)>%f & abs(l1_eta)>%f & l1_matched_%s_charge == l1_charge & %d<l1_pt & l1_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
+                h_ptres_subr3.Add(h_ptres_subr3_l1)
+                tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt >> h_ptres_subr3_l2"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f & abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & %d<l2_pt & l2_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
+                h_ptres_subr3.Add(h_ptres_subr3_l2)
+                ROOT.gPad.Update()
+                # c_ptres_subr3.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
+                # c_ptres_subr3.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
+
+                sub_entries = h_ptres_subr3.GetEntries()
+                maxbin  = h_ptres_subr3.GetMaximumBin()
+                maxres  = h_ptres_subr3.GetBinCenter(maxbin)
+                maxcont = h_ptres_subr3.GetBinContent(maxbin)
+                lowbin  = maxbin
+                highbin = maxbin
+
+                while True:
+                    lowbin  -=1
+                    lowcont = h_ptres_subr3.GetBinContent(lowbin)
+                    if lowcont <= (maxcont/2.0):
+                        break
+                lowres = h_ptres_subr3.GetBinCenter(lowbin)
+                lowerr = maxres - lowres
+
+                while True:
+                    highbin  += 1
+                    highcont = h_ptres_subr3.GetBinContent(highbin)
+                    if highcont <= (maxcont/2.0):
+                        break
+                highres = h_ptres_subr3.GetBinCenter(highbin)
+                higherr = highres - maxres
 
             if ireco == 'dsmu'and ir == 'r1':
                 y_dsmu_r1[ibin]       = maxres
@@ -377,8 +420,8 @@ for ireco in ['dsmu','smu']:
         if ireco == 'dsmu' and ir == 'r3':
             c_dsmuon_r3.cd()
             tt.Draw("(l1_matched_%s_pt-l1_pt)/l1_pt : l1_pt >> h_dsmuon_r3"%(reco),"l1_matched_%s_pt>0 & abs(l1_pdgId) == 13 & abs(l1_eta)>%f &  abs(l1_eta)<%f & l1_matched_%s_charge == l1_charge & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,rl,rh))
-            tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt : l2_pt >> h_sub"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f &  abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,rl,rh))
-            h_dsmuon_r3.Add(h_sub)
+            tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt : l2_pt >> h_subr3"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f &  abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,rl,rh))
+            h_dsmuon_r3.Add(h_subr3)
             h_sub.Reset()
             h_dsmuon_r3.Draw('colz')
             ROOT.gPad.Update()
@@ -413,9 +456,9 @@ for ireco in ['dsmu','smu']:
         if ireco == 'smu' and ir == 'r3':
             c_smuon_r3.cd()
             tt.Draw("(l1_matched_%s_pt-l1_pt)/l1_pt : l1_pt >> h_smuon_r3"%(reco),"l1_matched_%s_pt>0 & abs(l1_pdgId) == 13 & abs(l1_eta)>%f &  abs(l1_eta)<%f & l1_matched_%s_charge == l1_charge & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,rl,rh))
-            tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt : l2_pt >> h_sub"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f &  abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,rl,rh))
-            h_smuon_r3.Add(h_sub)
-            h_sub.Reset()
+            tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt : l2_pt >> h_subr3"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f &  abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,rl,rh))
+            h_smuon_r3.Add(h_subr3)
+            h_subr3.Reset()
             h_smuon_r3.Draw('colz')
             ROOT.gPad.Update()
 
@@ -430,6 +473,7 @@ print('adding final plots to canvas')
 c_dsmuon_r1.cd()
 g_ptres_dsMuon_r1.Draw('ep same')
 h_dsmuon_r1.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_dsmuon_r1.SaveAs(output_dir + 'c_dsmuon_r1.root')
 c_dsmuon_r1.SaveAs(output_dir + 'c_dsmuon_r1.pdf')
@@ -437,6 +481,7 @@ c_dsmuon_r1.SaveAs(output_dir + 'c_dsmuon_r1.pdf')
 c_dsmuon_rt.cd()
 g_ptres_dsMuon_rt.Draw('ep same')
 h_dsmuon_rt.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_dsmuon_rt.SaveAs(output_dir + 'c_dsmuon_rt.root')
 c_dsmuon_rt.SaveAs(output_dir + 'c_dsmuon_rt.pdf')
@@ -444,6 +489,7 @@ c_dsmuon_rt.SaveAs(output_dir + 'c_dsmuon_rt.pdf')
 c_dsmuon_r2.cd()
 g_ptres_dsMuon_r2.Draw('ep same')
 h_dsmuon_r2.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_dsmuon_r2.SaveAs(output_dir + 'c_dsmuon_r2.root')
 c_dsmuon_r2.SaveAs(output_dir + 'c_dsmuon_r2.pdf')
@@ -451,6 +497,7 @@ c_dsmuon_r2.SaveAs(output_dir + 'c_dsmuon_r2.pdf')
 c_dsmuon_r3.cd()
 g_ptres_dsMuon_r3.Draw('ep same')
 h_dsmuon_r3.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_dsmuon_r3.SaveAs(output_dir + 'c_dsmuon_r3.root')
 c_dsmuon_r3.SaveAs(output_dir + 'c_dsmuon_r3.pdf')
@@ -458,6 +505,7 @@ c_dsmuon_r3.SaveAs(output_dir + 'c_dsmuon_r3.pdf')
 c_smuon_r1.cd()
 g_ptres_sMuon_r1.Draw('ep same')
 h_smuon_r1.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_smuon_r1.SaveAs(output_dir + 'c_smuon_r1.root')
 c_smuon_r1.SaveAs(output_dir + 'c_smuon_r1.pdf')
@@ -465,6 +513,7 @@ c_smuon_r1.SaveAs(output_dir + 'c_smuon_r1.pdf')
 c_smuon_rt.cd()
 g_ptres_sMuon_rt.Draw('ep same')
 h_smuon_rt.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_smuon_rt.SaveAs(output_dir + 'c_smuon_rt.root')
 c_smuon_rt.SaveAs(output_dir + 'c_smuon_rt.pdf')
@@ -472,6 +521,7 @@ c_smuon_rt.SaveAs(output_dir + 'c_smuon_rt.pdf')
 c_smuon_r2.cd()
 g_ptres_sMuon_r2.Draw('ep same')
 h_smuon_r2.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_smuon_r2.SaveAs(output_dir + 'c_smuon_r2.root')
 c_smuon_r2.SaveAs(output_dir + 'c_smuon_r2.pdf')
@@ -479,6 +529,7 @@ c_smuon_r2.SaveAs(output_dir + 'c_smuon_r2.pdf')
 c_smuon_r3.cd()
 g_ptres_sMuon_r3.Draw('ep same')
 h_smuon_r3.GetZaxis().SetTitle('Entries')
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 ROOT.gPad.Update()
 c_smuon_r3.SaveAs(output_dir + 'c_smuon_r3.root')
 c_smuon_r3.SaveAs(output_dir + 'c_smuon_r3.pdf')
@@ -607,15 +658,19 @@ for cc in [c_ptres_r1,c_ptres_rt,c_ptres_r2,c_ptres_r3]:
     ROOT.gPad.Update()
 
     if cc == c_ptres_r1:
+        pf.showlogopreliminary('CMS','Simulation Preliminary')
         cc.SaveAs(output_dir + 'c_ptres_r1.root')
         cc.SaveAs(output_dir + 'c_ptres_r1.pdf')
     if cc == c_ptres_rt:
+        pf.showlogopreliminary('CMS','Simulation Preliminary')
         cc.SaveAs(output_dir + 'c_ptres_rt.root')
         cc.SaveAs(output_dir + 'c_ptres_rt.pdf')
     if cc == c_ptres_r2:
+        pf.showlogopreliminary('CMS','Simulation Preliminary')
         cc.SaveAs(output_dir + 'c_ptres_r2.root')
         cc.SaveAs(output_dir + 'c_ptres_r2.pdf')
     if cc == c_ptres_r3:
+        pf.showlogopreliminary('CMS','Simulation Preliminary')
         cc.SaveAs(output_dir + 'c_ptres_r3.root')
         cc.SaveAs(output_dir + 'c_ptres_r3.pdf')
 
