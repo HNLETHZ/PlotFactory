@@ -5,15 +5,29 @@ import ROOT
 import plotfactory as pf
 import numpy as np
 from array import array
+import sys
+from pdb import set_trace
 
 pf.setpfstyle()
-tt = pf.makechain(True)
+
+######################################### 
+# Make Chain from selection of samples
+#########################################
+# Get the option from the command line, using 'True' as a fallback.
+if sys.argv[1] == 'test':
+    setting = False
+    print('Using a selection of samples')
+if len(sys.argv):
+    setting = True
+    print('Using all samples')
+
+tt = pf.makechain(setting)
 
 nentries = tt.GetEntries()
 print('number of events: %d'%(nentries))
 
-etalow  = 1.2
-etahigh = 2.4   
+etalow  = 0.0
+etahigh = 0.8   
 
 output_dir = 'temp/'
 
@@ -56,9 +70,9 @@ h_ptres_dsMuon = ROOT.TH1F('h_ptres_dsMuon','',len(binsx)-1,binsx)
 h_ptres_sub = ROOT.TH1F('h_ptres_sub','',len(binsx_sub)-1,binsx_sub)
 h_ptres_sub_l1 = ROOT.TH1F('h_ptres_sub_l1','',len(binsx_sub)-1,binsx_sub)
 h_ptres_sub_l2 = ROOT.TH1F('h_ptres_sub_l2','',len(binsx_sub)-1,binsx_sub)
-h_ptres_subr3 = ROOT.TH1F('h_ptres_subr3','',len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
-h_ptres_subr3_l1 = ROOT.TH1F('h_ptres_subr3_l1','',len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
-h_ptres_subr3_l2 = ROOT.TH1F('h_ptres_subr3_l2','',len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
+h_ptres_subr3 = ROOT.TH1F('h_ptres_subr3','',len(binsx_sub_r3)-1,binsx_sub_r3)
+h_ptres_subr3_l1 = ROOT.TH1F('h_ptres_subr3_l1','',len(binsx_sub_r3)-1,binsx_sub_r3)
+h_ptres_subr3_l2 = ROOT.TH1F('h_ptres_subr3_l2','',len(binsx_sub_r3)-1,binsx_sub_r3)
 
 h_dsmuon_r1 = ROOT.TH2F('h_dsmuon_r1','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
 h_dsmuon_rt = ROOT.TH2F('h_dsmuon_rt','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
@@ -70,7 +84,7 @@ h_smuon_r2 = ROOT.TH2F('h_smuon_r2','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx
 h_smuon_r3 = ROOT.TH2F('h_smuon_r3','',len(binsx)-1,binsx,len(binsx_sub_r3)-1,binsx_sub_r3)
 
 h_sub = ROOT.TH2F('h_sub','',len(binsx)-1,binsx,len(binsx_sub)-1,binsx_sub)
-h_subr3 = ROOT.TH2F('h_subr3','',len(binsx)-1,binsx,len(binsx_sub_r3_fine)-1,binsx_sub_r3_fine)
+h_subr3 = ROOT.TH2F('h_subr3','',len(binsx)-1,binsx,len(binsx_sub_r3)-1,binsx_sub_r3)
 
 ########################## 
 # 5) Specify histogram formats
@@ -221,8 +235,8 @@ for ibin in xrange(len(binsx)-1):
                 tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt >> h_ptres_sub_l2"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f & abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & %d<l2_pt & l2_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
                 h_ptres_sub.Add(h_ptres_sub_l2)
                 ROOT.gPad.Update()
-                # c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
-                # c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
+                c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
+                c_ptres_sub.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
 
                 sub_entries = h_ptres_sub.GetEntries()
                 maxbin  = h_ptres_sub.GetMaximumBin()
@@ -255,8 +269,8 @@ for ibin in xrange(len(binsx)-1):
                 tt.Draw("(l2_matched_%s_pt-l2_pt)/l2_pt >> h_ptres_subr3_l2"%(reco),"l2_matched_%s_pt>0 & abs(l2_pdgId) == 13 & abs(l2_eta)>%f & abs(l2_eta)<%f & l2_matched_%s_charge == l2_charge & %d<l2_pt & l2_pt<%d & hnl_2d_disp>%d & hnl_2d_disp<%d" % (reco,etalow,etahigh,reco,ptlow,pthigh,rl,rh))
                 h_ptres_subr3.Add(h_ptres_subr3_l2)
                 ROOT.gPad.Update()
-                # c_ptres_subr3.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
-                # c_ptres_subr3.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
+                c_ptres_subr3.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.root'%(ibin,ireco,ir))
+                c_ptres_subr3.SaveAs(output_dir + 'raw/c_ptres_bin%d_%s_%s.pdf'%(ibin,ireco,ir))
 
                 sub_entries = h_ptres_subr3.GetEntries()
                 maxbin  = h_ptres_subr3.GetMaximumBin()
