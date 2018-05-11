@@ -1,4 +1,3 @@
-
 ########################## 
 # Configuration
 ##########################
@@ -10,12 +9,13 @@ import sys
 from pdb import set_trace
 
 pf.setpfstyle()
+output_dir = 'temp/'
 
 ######################################### 
 # Make Chain from selection of samples
 #########################################
 # Get the option from the command line, using 'True' as a fallback.
-if len(sys.argv)>2 and sys.argv[1] == 'test':
+if len(sys.argv)>=2 and sys.argv[1] == 'test':
     setting = False
     print('Using a selection of samples')
 else:
@@ -26,6 +26,7 @@ tt = pf.makechain(setting)
 
 nentries = tt.GetEntries()
 print('number of events: %d'%(nentries))
+
 
 logspace = False
 
@@ -52,8 +53,8 @@ for hh in [h1_den, h1_num_muon, h1_num_dsmuon, h1_num_dgmuon, h2_den, h2_num_muo
     hh.GetYaxis().SetTitle('Efficiency')
     hh.GetXaxis().SetTitleOffset(1.3)
     hh.GetYaxis().SetRangeUser(0.,1.05)
-    # hh.SetMarkerStyle(8)
-    # hh.SetMarkerSize(0.4)
+    hh.SetMarkerStyle(8)
+    hh.SetMarkerSize(0.4)
     hh.SetMaximum(1.)
 
 h1_den       .SetLineColor(ROOT.kBlack) ; h1_den       .SetMarkerColor(ROOT.kBlack) 
@@ -69,7 +70,7 @@ h2_num_dsmuon .SetLineColor(ROOT.kRed  ) ; h2_num_dsmuon .SetMarkerColor(ROOT.kR
 h2_num_dgmuon .SetLineColor(ROOT.kGreen  ) ; h2_num_dgmuon .SetMarkerColor(ROOT.kGreen  ) 
 
 # sel1_den        = 'l1_pt>3 & abs(l1_eta)>0.8 & abs(l1_eta)<2.4 & abs(l1_pdgId)==13' #default value: pt>3 , eta < 2.4
-sel1_den        = 'l1_pt>3 & abs(l1_eta)<2.4 & abs(l1_pdgId)==13' #default value: pt>3 , eta < 2.4
+sel1_den        = 'l1_pt>10 & abs(l1_eta)<2.4 & abs(l1_pdgId)==13' #default value: pt>3 , eta < 2.4
 
 # sel1_num_muontrack = 'l1_matched_muon_pt > 0 & (l1_matched_muon_id_s | l1_matched_muon_id_l | l1_matched_muon_id_m | l1_matched_muon_id_t | l1_matched_muon_id_tnv | l1_matched_muon_id_hpt)'
 # sel1_num_muon = 'l1_matched_muon_pt > 0 & (l1_matched_muon_id_hpt )'
@@ -79,7 +80,7 @@ sel1_num_dsmuon  = 'l1_matched_dsmuon_pt > 0'
 sel1_num_dgmuon  = 'l1_matched_dgmuon_pt > 0'
 
 # sel2_den        = 'l2_pt>3 & abs(l2_eta)>0.8 & abs(l1_eta)<2.4 & abs(l2_pdgId)==13' 
-sel2_den        = 'l2_pt>3 & abs(l2_eta)<2.4 & abs(l2_pdgId)==13' 
+sel2_den        = 'l2_pt>10 & abs(l2_eta)<2.4 & abs(l2_pdgId)==13' 
 
 # sel2_num_muontrack        = 'l2_pt>3 & abs(l2_eta)<2.4 & (l2_matched_muon_id_s | l2_matched_muon_id_l | l2_matched_muon_id_m | l2_matched_muon_id_t | l2_matched_muon_id_tnv | l2_matched_muon_id_hpt)'
 # sel2_num_muon = 'l2_matched_muon_pt > 0 & (l2_matched_muon_id_hpt)'
@@ -88,10 +89,10 @@ sel2_num_muon = 'l2_matched_muon_pt > 0'
 sel2_num_dsmuon  = 'l2_matched_dsmuon_pt > 0'
 sel2_num_dgmuon  = 'l2_matched_dgmuon_pt > 0'
 
-c1 = ROOT.TCanvas('c1', '', 500, 500)
-# c1.SetLogx()
-c1.SetGridx()
-c1.SetGridy()
+c_eff = ROOT.TCanvas('c_eff', 'c_eff')
+# c_eff.SetLogx()
+c_eff.SetGridx()
+c_eff.SetGridy()
 
 tt.Draw('hnl_2d_disp >> h1_den'       , sel1_den                              )
 tt.Draw('hnl_2d_disp >> h1_num_muon', '&'.join([sel1_den, sel1_num_muon]) )
@@ -122,14 +123,14 @@ h1_num_tot.SetLineColor(ROOT.kBlack)
 h1_num_tot.SetMarkerColor(ROOT.kBlack)
 
 h1_num_dsmuon.Draw('hist pe')
-h1_num_dgmuon.Draw('hist pe same')
+# h1_num_dgmuon.Draw('hist pe same')
 h1_num_muon.Draw('hist pe same')
 
 # h1_num_muontrack.Draw('hist pe same')
 # h1_num_tot   .Draw('hist pe same')
 
 
-leg = ROOT.TLegend(.12,.12,.4,.3)
+leg = ROOT.TLegend(.4,.75,.8,.88)
 # leg.SetBorderSize(0)
 # leg.SetFillColor(0)
 # leg.SetFillStyle(0)
@@ -141,7 +142,10 @@ leg.AddEntry(h1_num_dsmuon , 'displacedStandAloneMuons','EP')
 leg.AddEntry(h1_num_dgmuon   , 'diplacedGlobalMuons'                 ,'EP')
 leg.Draw('apez same')
 
+pf.showlogopreliminary('CMS','Simulation Preliminary')
 
+c_eff.Update()
+c_eff.SaveAs(output_dir)
 
 
 
