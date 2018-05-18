@@ -7,7 +7,7 @@ import plotfactory as pf
 from glob import glob
 
 pf.setpfstyle()
-tt = pf.makechain(True)
+tt = pf.makechain(False)
 
 #file = ROOT.TFile('tree.root')
 #tt = file.Get('tree')

@@ -83,20 +83,20 @@ def showlogo(text):
     logo.SetTextSize(0.045)
     logo.DrawLatex(0.15,0.94,text)
 
-def showlogopreliminary(text):
+def showlogopreliminary(text1,text2):
     logo = ROOT.TLatex()
     logo.SetNDC()
     logo.SetTextAlign(11)
     logo.SetTextFont(61)
     logo.SetTextSize(0.045)
-    logo.DrawLatex(0.15,0.94,text)
+    logo.DrawLatex(0.15,0.94,text1)
     
     preliminary = ROOT.TLatex()
     preliminary.SetNDC()
     preliminary.SetTextAlign(11)
     preliminary.SetTextFont(52)
     preliminary.SetTextSize(0.038)
-    preliminary.DrawLatex(0.24,0.94,'Preliminary')
+    preliminary.DrawLatex(0.24,0.94,text2)
     
 
 ######################################## 
