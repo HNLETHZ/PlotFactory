@@ -144,8 +144,10 @@ leg.Draw('apez same')
 
 pf.showlogopreliminary('CMS','Simulation Preliminary')
 
+set_trace()
 c_eff.Update()
-c_eff.SaveAs(output_dir)
+c_eff.SaveAs(output_dir + 'c_eff.pdf')
+c_eff.SaveAs(output_dir + 'c_eff.root')
 
 
 
