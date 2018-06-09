@@ -56,6 +56,7 @@ print('Reconstruction purity (max Dxy method):\t\t\t%.1f%%'%(100*purity_Dxy_tot)
 ######################################### 
 # Reconstruction Efficiency
 #########################################
+print('Making the efficiency plot...')
 
 c_eff = ROOT.TCanvas('c_eff', 'c_eff')
 
@@ -111,7 +112,71 @@ pf.showlumi('%d entries'%(h_eff_Dxy_enum.GetEntries()))
 pf.showlogopreliminary('CMS','Simulation Preliminary')
 
 c_eff.Update()
-c_eff.SaveAs(output_dir + 'c_eff')
+c_eff.SaveAs(output_dir + 'c_eff.pdf')
+c_eff.SaveAs(output_dir + 'c_eff.root')
+
+
+######################################### 
+# Reconstruction Efficiency
+#########################################
+print('Making the purity plot...')
+
+c_purity = ROOT.TCanvas('c_purity', 'c_purity')
+
+h_purity_Chi2_sMu_enum = ROOT.TH1F('h_purity_Chi2_sMu_enum','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Chi2_sMu_enum','flag_matchedHNLChi2 == 1 & dMu1Chi2_reco == 1 & dMu2Chi2_reco == 1')
+h_purity_Chi2_sMu_denom = ROOT.TH1F('h_purity_Chi2_sMu_denom','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Chi2_sMu_denom','n_dimuon > 0 & dMu2Chi2_reco == 1 & dMu1Chi2_reco == 1')
+h_purity_Chi2_sMu_enum.Divide(h_purity_Chi2_sMu_denom)
+h_purity_Chi2_sMu_enum.SetTitle(';HNL 2D displacement ; HNL reconstruction purity')
+h_purity_Chi2_sMu_enum.GetYaxis().SetRangeUser(0.,1.05)
+h_purity_Chi2_sMu_enum.SetLineColor(ROOT.kBlack) ; h_purity_Chi2_sMu_enum.SetMarkerColor(ROOT.kBlack) 
+
+h_purity_Chi2_enum = ROOT.TH1F('h_purity_Chi2_enum','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Chi2_enum','flag_matchedHNLChi2 == 1')
+h_purity_Chi2_denom = ROOT.TH1F('h_purity_Chi2_denom','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Chi2_denom','n_dimuon > 0')
+h_purity_Chi2_enum.Divide(h_purity_Chi2_denom)
+h_purity_Chi2_enum.SetTitle(';HNL 2D displacement ; HNL reconstruction purity')
+h_purity_Chi2_enum.GetYaxis().SetRangeUser(0.,1.05)
+h_purity_Chi2_enum.SetLineColor(ROOT.kRed+2 ) ; h_purity_Chi2_enum.SetMarkerColor(ROOT.kRed+2 ) 
+
+h_purity_Dxy_sMu_enum = ROOT.TH1F('h_purity_Dxy_sMu_enum','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Dxy_sMu_enum','flag_matchedHNLDxy == 1 & dMu1Dxy_reco == 1 & dMu2Dxy_reco == 1')
+h_purity_Dxy_sMu_denom = ROOT.TH1F('h_purity_Dxy_sMu_denom','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Dxy_sMu_denom','n_dimuon > 0 & dMu1Dxy_reco == 1 & dMu2Dxy_reco == 1')
+h_purity_Dxy_sMu_enum.Divide(h_purity_Dxy_sMu_denom)
+h_purity_Dxy_sMu_enum.SetTitle(';HNL 2D displacement ; HNL reconstruction purity')
+h_purity_Dxy_sMu_enum.GetYaxis().SetRangeUser(0.,1.05)
+h_purity_Dxy_sMu_enum.SetLineColor(ROOT.kBlue+2) ; h_purity_Dxy_sMu_enum.SetMarkerColor(ROOT.kBlue+2) 
+
+h_purity_Dxy_enum = ROOT.TH1F('h_purity_Dxy_enum','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Dxy_enum','flag_matchedHNLDxy == 1')
+h_purity_Dxy_denom = ROOT.TH1F('h_purity_Dxy_denom','',50,0,600)
+tt.Draw('hnl_2d_disp >> h_purity_Dxy_denom','n_dimuon > 0')
+h_purity_Dxy_enum.Divide(h_purity_Dxy_denom)
+h_purity_Dxy_enum.SetTitle(';HNL 2D displacement ; HNL reconstruction purity')
+h_purity_Dxy_enum.GetYaxis().SetRangeUser(0.,1.05)
+h_purity_Dxy_enum.SetLineColor(ROOT.kGreen+2 ) ; h_purity_Dxy_enum.SetMarkerColor(ROOT.kGreen+2 ) 
+
+h_purity_Chi2_sMu_enum.Draw()
+h_purity_Chi2_enum.Draw('same')
+h_purity_Dxy_sMu_enum.Draw('same')
+h_purity_Dxy_enum.Draw('same')
+
+leg = ROOT.TLegend(.4,.75,.8,.88)
+leg.AddEntry(h_purity_Chi2_sMu_enum, 'Chi2, sMu'            ,'EP')
+leg.AddEntry(h_purity_Chi2_enum, 'Chi2, sMu && dSAMu'            ,'EP')
+leg.AddEntry(h_purity_Dxy_sMu_enum, 'Dxy, sMu'            ,'EP')
+leg.AddEntry(h_purity_Dxy_enum, 'Dxy, sMu && dSAMu'            ,'EP')
+leg.Draw('apez same')
+
+pf.showlumi('%d entries'%(h_purity_Dxy_enum.GetEntries()))
+pf.showlogopreliminary('CMS','Simulation Preliminary')
+
+c_purity.Update()
+c_purity.SaveAs(output_dir + 'c_purity.pdf')
+c_purity.SaveAs(output_dir + 'c_purity.root')
 
 
 ######################################### 
