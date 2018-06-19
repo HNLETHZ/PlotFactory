@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 pf.setpfstyle()
-#output_dir = '~/' 
+output_dir = 'temp/' 
 
 ######################################### 
 # Make Chain from selection of samples
