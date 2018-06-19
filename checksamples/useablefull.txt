@@ -1,0 +1,35 @@
+number of samples: 35981
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00282842712475_e_onshell_pre2017_NLO/heavyNeutrino_12.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00316227766017_e_onshell_pre2017_NLO/heavyNeutrino_4.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00316227766017_e_onshell_pre2017_NLO/heavyNeutrino_49.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_7.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_12.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_2.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_3.root
+number of samples: 35981
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00282842712475_e_onshell_pre2017_NLO/heavyNeutrino_12.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00316227766017_e_onshell_pre2017_NLO/heavyNeutrino_4.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00316227766017_e_onshell_pre2017_NLO/heavyNeutrino_49.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_7.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_12.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_2.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_3.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_4.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_5.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.004472135955_mu_onshell_pre2017_NLO/heavyNeutrino_50.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_e_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_e_onshell_pre2017_NLO/heavyNeutrino_11.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_e_onshell_pre2017_NLO/heavyNeutrino_26.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_e_onshell_pre2017_NLO/heavyNeutrino_49.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_e_onshell_pre2017_NLO/heavyNeutrino_52.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_e_onshell_pre2017_NLO/heavyNeutrino_7.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_mu_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_mu_onshell_pre2017_NLO/heavyNeutrino_11.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_mu_onshell_pre2017_NLO/heavyNeutrino_2.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00547722557505_mu_onshell_pre2017_NLO/heavyNeutrino_3.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00707106781187_e_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00707106781187_e_onshell_pre2017_NLO/heavyNeutrino_2.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00707106781187_e_onshell_pre2017_NLO/heavyNeutrino_26.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.00707106781187_e_onshell_pre2017_NLO/heavyNeutrino_49.root
