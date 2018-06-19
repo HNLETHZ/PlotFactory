@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_13.root'.
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_20.root'.
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.004472135955_e_onshell_pre2017_NLO/heavyNeutrino_227.root'.
+^[[ATraceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-7_V-0.002296_mu_onshell_pre2017_NLO/heavyNeutrino_151.root'.
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-7_V-0.002296_mu_onshell_pre2017_NLO/heavyNeutrino_125.root'.
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-7_V-0.002296_mu_onshell_pre2017_NLO/heavyNeutrino_240.root'.
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_0_30/bin/slc6_amd64_gcc530/edmDumpEventContent", line 226, in <module>
+    raise RuntimeError, "Could not open file '%s'." % filename
+RuntimeError: Could not open file 'root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-9_V-0.00244948974278_e_onshell_pre2017_NLO/heavyNeutrino_121.root'.
