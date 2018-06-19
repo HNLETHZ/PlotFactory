@@ -83,32 +83,27 @@ for hh in hstupd8lst:
 
 c_flavors.cd()
 h_flavors_l1.Draw('colztext')
-pf.showlogoprelimsim('CMS')
 
 c_eos.cd()
 h_eos_l1.Draw('colztext')
-pf.showlogoprelimsim('CMS')
 
 c_mos.cd()
 h_mos_l1.Draw('colztext')
-pf.showlogoprelimsim('CMS')
 
 c_m1.cd()
 h_m1_l1.Draw('colztext')
-pf.showlogoprelimsim('CMS')
 
 c_m2.cd()
 h_m2_l1.Draw('colztext')
-pf.showlogoprelimsim('CMS')
 
 c_m3.cd()
 h_m3_l1.Draw('colztext')
-pf.showlogoprelimsim('CMS')
 
 for cc in [c_flavors,c_eos,c_mos,c_m1,c_m2,c_m3]:
+   cc.cd()
+   pf.showlogoprelimsim('CMS')
    cc.Modified()
    cc.Update()
-   pf.showlogoprelimsim('CMS')
    cc.SaveAs(output_dir+cc.GetTitle()+'.root')
    cc.SaveAs(output_dir+cc.GetTitle()+'.pdf')
 
