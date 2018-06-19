@@ -79,28 +79,36 @@ for hh in hstupd8lst:
    hh.GetXaxis().SetTitleOffset(1.2)
    hh.GetYaxis().SetTitleOffset(1.4)
    hh.GetZaxis().SetTitleOffset(1.4)
+   hh.SetMarkerSize(3)
 
 c_flavors.cd()
-h_flavors_l1.Draw('colz')
+h_flavors_l1.Draw('colztext')
+pf.showlogoprelimsim('CMS')
 
 c_eos.cd()
-h_eos_l1.Draw('colz')
+h_eos_l1.Draw('colztext')
+pf.showlogoprelimsim('CMS')
 
 c_mos.cd()
-h_mos_l1.Draw('colz')
+h_mos_l1.Draw('colztext')
+pf.showlogoprelimsim('CMS')
 
 c_m1.cd()
-h_m1_l1.Draw('colz')
+h_m1_l1.Draw('colztext')
+pf.showlogoprelimsim('CMS')
 
 c_m2.cd()
-h_m2_l1.Draw('colz')
+h_m2_l1.Draw('colztext')
+pf.showlogoprelimsim('CMS')
 
 c_m3.cd()
-h_m3_l1.Draw('colz')
+h_m3_l1.Draw('colztext')
+pf.showlogoprelimsim('CMS')
 
 for cc in [c_flavors,c_eos,c_mos,c_m1,c_m2,c_m3]:
    cc.Modified()
    cc.Update()
+   pf.showlogoprelimsim('CMS')
    cc.SaveAs(output_dir+cc.GetTitle()+'.root')
    cc.SaveAs(output_dir+cc.GetTitle()+'.pdf')
 

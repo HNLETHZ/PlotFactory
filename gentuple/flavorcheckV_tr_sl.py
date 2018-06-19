@@ -224,7 +224,6 @@ n_entries_V2 = tt_V2.GetEntries()
 n_entries_V3 = tt_V3.GetEntries()
 
 print('number of total entries in chain: 1: %d, 2: %d, 3: %d'%(n_entries_V1,n_entries_V2,n_entries_V3))
-set_trace()
 pf.setpfstyle()
 
 c_V1 = rt.TCanvas('flavors_V1_tr_sl','flavors_V1_tr_sl')
@@ -260,17 +259,20 @@ for hh in hstupd8lst:
    hh.GetXaxis().SetTitleOffset(1.2)
    hh.GetYaxis().SetTitleOffset(1.4)
    hh.GetZaxis().SetTitleOffset(1.4)
+   hh.SetMarkerSize(3)
 
 c_V1.cd()
-h_V1_l1.Draw('colz')
+h_V1_l1.Draw('colztext')
 
 c_V2.cd()
-h_V2_l1.Draw('colz')
+h_V2_l1.Draw('colztext')
 
 c_V3.cd()
-h_V3_l1.Draw('colz')
+h_V3_l1.Draw('colztext')
 
 for cc in [c_V1,c_V2,c_V3]:
+   cc.cd()
+   pf.showlogoprelimsim('CMS')
    cc.Modified()
    cc.Update()
    cc.SaveAs(output_dir+cc.GetTitle()+'.root')

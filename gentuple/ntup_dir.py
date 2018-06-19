@@ -2,9 +2,9 @@
 def getntupdir():
     # ntup_dir = '/afs/cern.ch/user/d/dezhu/workspace/public/ntuples/201804_HNL/' # location on lxplus
     # ntup_dir = '/afs/cern.ch/user/d/dezhu/workspace/public/ntuples/201805_HNL/' # location on lxplus
-    # ntup_dir = '/eos/user/m/manzoni/HNL/gentuple_050318_v4/' # first version from riccardo
+    ntup_dir = '/eos/user/m/manzoni/HNL/gentuple_050318_v4/' # first version from riccardo
     # ntup_dir = '/Users/dehuazhu/Dropbox/PhD/5_Projects/analysis/180419_NTuples/201804_HN3L/' # location on local machine
-    ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180608_HNLreco/ntuple/' # global
+    # ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180608_HNLreco/ntuple/' # global
     # ntup_dir = '/eos/user/v/vstampf/ntuple/' # eos 
     # ntup_dir = '/afs/cern.ch/user/v/vstampf/CMSSW_8_0_30/src/CMGTools/HNL/cfg/cherry1/' # around 700k evts cherry1
     # ntup_dir = '/eos/user/v/vstampf/ntupleN/' #full statistics modulo nonexistent vector<reco::Track> dSAmu
