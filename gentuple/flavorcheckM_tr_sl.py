@@ -2,7 +2,9 @@ import ROOT as rt
 import numpy as np
 import plotfactory as pf
 import sys
+import ntup_dir as nt
 from pdb import set_trace
+from os.path import normpath, basename
 
 output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/gentuple/' 
 
@@ -10,7 +12,9 @@ output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/gentuple/'
 # Make Chain from selection of samples
 #########################################
 
-fout = rt.TFile(output_dir+'flavcheckM_tr_sl.root', 'recreate')
+ntdr = basename(normpath(nt.getntupdir()))
+
+fout = rt.TFile(output_dir+'flavcheckM_tr_sl_'+ntdr+'.root', 'recreate')
 
 # Get the option from the command line, using 'True' as a fallback.
 
@@ -22,6 +26,8 @@ else:
     print('Using all samples')
 
 tt = pf.makechain(setting)
+#fin=rt.TFile('/afs/cern.ch/work/v/vstampf/ntuples/gen/HN3L_M_2p5_V_0p00836660026534_e_onshell/HNLGenTreeProducer/tree.root')
+#tt=fin.Get('tree')
 nentries = tt.GetEntries()
 print('number of total entries in chain:\t\t\t%d'%(nentries))
 
@@ -49,18 +55,19 @@ h_m2_l2 = rt.TH2F('m2_l2','m2_l2',len(b_flavor)-1,b_flavor,len(b_flavor)-1,b_fla
 h_m3_l1 = rt.TH2F('m3_l1','m3_l1',len(b_flavor)-1,b_flavor,len(b_flavor)-1,b_flavor)
 h_m3_l2 = rt.TH2F('m3_l2','m3_l2',len(b_flavor)-1,b_flavor,len(b_flavor)-1,b_flavor)
 
-tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> flavors_l1', 'abs(l1_pdgId) == abs(n_pdgId) - 1') # l1 trailing
-tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> flavors_l2', 'abs(l2_pdgId) == abs(n_pdgId) - 1') # l2 trailing
-tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> eos_l1', 'abs(l0_pdgId) == 11 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> eos_l2', 'abs(l0_pdgId) == 11 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> mos_l1', 'abs(l0_pdgId) == 13 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> mos_l2', 'abs(l0_pdgId) == 13 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> flavors_l1', 'abs(l1_pdgId) == abs(n_pdgId) - 1') # l1 trailing
+#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> flavors_l2', 'abs(l2_pdgId) == abs(n_pdgId) - 1') # l2 trailing
+#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> eos_l1', 'abs(l0_pdgId) == 11 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> eos_l2', 'abs(l0_pdgId) == 11 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> mos_l1', 'abs(l0_pdgId) == 13 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> mos_l2', 'abs(l0_pdgId) == 13 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+set_trace()
 tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m1_l1', 'hnl_hn_m < 3 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m1_l2', 'hnl_hn_m < 3 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m2_l1', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m2_l2', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m3_l1', 'hnl_hn_m > 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m3_l2', 'hnl_hn_m > 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m1_l2', 'hnl_hn_m < 3 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m2_l1', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m2_l2', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m3_l1', 'hnl_hn_m > 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m3_l2', 'hnl_hn_m > 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
 
 fout.Write()
 
@@ -74,7 +81,7 @@ h_m3_l1.Add(h_m3_l2)
 hstupd8lst = [h_mos_l1,h_eos_l1,h_flavors_l1,h_m1_l1,h_m2_l1,h_m3_l1]
 
 for hh in hstupd8lst:
-   hh.SetTitle(';l_subleading_pdgId ; l_trailing_pdgId')
+   hh.SetTitle('; l_trailing_pdgId; l_subleading_pdgId')
    hh.GetZaxis().SetTitle('Events')
    hh.GetXaxis().SetTitleOffset(1.2)
    hh.GetYaxis().SetTitleOffset(1.4)
@@ -104,8 +111,8 @@ for cc in [c_flavors,c_eos,c_mos,c_m1,c_m2,c_m3]:
    pf.showlogoprelimsim('CMS')
    cc.Modified()
    cc.Update()
-   cc.SaveAs(output_dir+cc.GetTitle()+'.root')
-   cc.SaveAs(output_dir+cc.GetTitle()+'.pdf')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.root')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.pdf')
 
 
 

@@ -23,7 +23,7 @@ def makechain(allsamples):
     all_files = glob(ntup_dir + '*/HNLGenTreeProducer/tree.root')
 
     if allsamples == True:
-        for sample in all_files [:]: #for the first 10 files
+        for sample in all_files: #for the first 10 files
             chain.Add(sample)
 
     if allsamples == False:
@@ -50,6 +50,7 @@ def makechain(allsamples):
 
     nentries = chain.GetEntries()
     print('Created a TChain object with %d events.'%(nentries))
+    print('using '+ntup_dir)
     return chain
 
 ########################## 

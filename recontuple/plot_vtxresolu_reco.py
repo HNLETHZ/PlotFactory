@@ -4,7 +4,7 @@ import numpy as np
 import sys
 
 pf.setpfstyle()
-output_dir = '/afs/cern.ch/work/v/vstampf/plots/' 
+output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/recontuple/' 
 
 fout = rt.TFile('histosvtxresolu.root', 'recreate')
 
@@ -135,7 +135,6 @@ for cc in [c_vtx_diff_dxy,c_vtx_diff_chi,c_vtx_reldiff_dxy,c_vtx_reldiff_chi]:
 
 
 fout.Write()
-#fout.Close()
 
 
 
