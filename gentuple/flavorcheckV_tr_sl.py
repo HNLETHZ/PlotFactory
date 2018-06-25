@@ -210,8 +210,8 @@ V = np.array([])
 V = np.append(V,V00)
 V = np.append(V,V0)
 V = np.append(V,VR)
-
-
+print(V)
+set_trace()
 for sig in range(len(V)/3-1):
    tt_V1.Add(ntup_dir + '%s/HNLGenTreeProducer/tree.root'%V[sig])
 for sig in range(len(V)/3-1,2*len(V)/3-1,1):
