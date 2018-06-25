@@ -1,8 +1,10 @@
 import ROOT as rt
 import numpy as np
 import plotfactory as pf
+import ntup_dir as nt
 import sys
 from pdb import set_trace
+from os.path import basename, normpath
 
 output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/gentuple/' 
 
@@ -10,9 +12,9 @@ output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/gentuple/'
 # Make Chain from selection of samples
 #########################################
 
-fout = rt.TFile(output_dir+'signcheckM.root', 'recreate')
+ntdr = basename(normpath(nt.getntupdir()))
 
-# Get the option from the command line, using 'True' as a fallback.
+fout = rt.TFile(output_dir+'signcheckM_'+ntdr+'.root', 'recreate')
 
 if len(sys.argv)>1 and sys.argv[1] == 'test':
     setting = False
@@ -77,16 +79,15 @@ tt.Draw('l2_charge : l0_charge >> h_eos_l02', 'abs(l0_pdgId) == 11')
 tt.Draw('l1_charge : l0_charge >> h_mos_l01', 'abs(l0_pdgId) == 13')
 tt.Draw('l2_charge : l1_charge >> h_mos_l12', 'abs(l0_pdgId) == 13')
 tt.Draw('l2_charge : l0_charge >> h_mos_l02', 'abs(l0_pdgId) == 13')
-#tt.Draw('l1_charge : l0_charge >> h_m1_l01', 'hnl_hn_m < 3')
-#tt.Draw('l2_charge : l1_charge >> h_m1_l12', 'hnl_hn_m < 3')
-#tt.Draw('l2_charge : l0_charge >> h_m1_l02', 'hnl_hn_m < 3')
-#tt.Draw('l1_charge : l0_charge >> h_m2_l01', 'hnl_hn_m > 3 & hnl_hn_m < 7')
-#tt.Draw('l2_charge : l1_charge >> h_m2_l12', 'hnl_hn_m > 3 & hnl_hn_m < 7')
-#tt.Draw('l2_charge : l0_charge >> h_m2_l02', 'hnl_hn_m > 3 & hnl_hn_m < 7')
-#tt.Draw('l1_charge : l0_charge >> h_m3_l01', 'hnl_hn_m > 7')
-#tt.Draw('l2_charge : l1_charge >> h_m3_l12', 'hnl_hn_m > 7')
-#tt.Draw('l2_charge : l0_charge >> h_m3_l02', 'hnl_hn_m > 7')
-#set_trace()
+tt.Draw('l1_charge : l0_charge >> h_m1_l01', 'hnl_hn_m < 3')
+tt.Draw('l2_charge : l1_charge >> h_m1_l12', 'hnl_hn_m < 3')
+tt.Draw('l2_charge : l0_charge >> h_m1_l02', 'hnl_hn_m < 3')
+tt.Draw('l1_charge : l0_charge >> h_m2_l01', 'hnl_hn_m > 3 & hnl_hn_m < 7')
+tt.Draw('l2_charge : l1_charge >> h_m2_l12', 'hnl_hn_m > 3 & hnl_hn_m < 7')
+tt.Draw('l2_charge : l0_charge >> h_m2_l02', 'hnl_hn_m > 3 & hnl_hn_m < 7')
+tt.Draw('l1_charge : l0_charge >> h_m3_l01', 'hnl_hn_m > 7')
+tt.Draw('l2_charge : l1_charge >> h_m3_l12', 'hnl_hn_m > 7')
+tt.Draw('l2_charge : l0_charge >> h_m3_l02', 'hnl_hn_m > 7')
 
 hstupd8lst = [h_mos_l01,h_mos_l12,h_mos_l02,h_eos_l01,h_eos_l12,h_eos_l02,h_signs_l01,h_signs_l12,h_signs_l02,h_m1_l01,h_m1_l12,h_m1_l02,h_m2_l01,h_m2_l12,h_m2_l02,h_m3_l01,h_m3_l12,h_m3_l02]
 
@@ -151,8 +152,8 @@ for cc in [c_signs_l01,c_signs_l12,c_signs_l02,c_eos_l01,c_eos_l12,c_eos_l02,c_m
    pf.showlogoprelimsim('CMS')
    cc.Modified()
    cc.Update()
-   cc.SaveAs(output_dir+cc.GetTitle()+'.root')
-   cc.SaveAs(output_dir+cc.GetTitle()+'.pdf')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.root')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.pdf')
 
 fout.Write()
 

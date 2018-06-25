@@ -26,8 +26,6 @@ else:
     print('Using all samples')
 
 tt = pf.makechain(setting)
-#fin=rt.TFile('/afs/cern.ch/work/v/vstampf/ntuples/gen/HN3L_M_2p5_V_0p00836660026534_e_onshell/HNLGenTreeProducer/tree.root')
-#tt=fin.Get('tree')
 nentries = tt.GetEntries()
 print('number of total entries in chain:\t\t\t%d'%(nentries))
 
@@ -55,19 +53,18 @@ h_m2_l2 = rt.TH2F('m2_l2','m2_l2',len(b_flavor)-1,b_flavor,len(b_flavor)-1,b_fla
 h_m3_l1 = rt.TH2F('m3_l1','m3_l1',len(b_flavor)-1,b_flavor,len(b_flavor)-1,b_flavor)
 h_m3_l2 = rt.TH2F('m3_l2','m3_l2',len(b_flavor)-1,b_flavor,len(b_flavor)-1,b_flavor)
 
-#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> flavors_l1', 'abs(l1_pdgId) == abs(n_pdgId) - 1') # l1 trailing
-#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> flavors_l2', 'abs(l2_pdgId) == abs(n_pdgId) - 1') # l2 trailing
-#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> eos_l1', 'abs(l0_pdgId) == 11 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> eos_l2', 'abs(l0_pdgId) == 11 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> mos_l1', 'abs(l0_pdgId) == 13 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> mos_l2', 'abs(l0_pdgId) == 13 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-set_trace()
+tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> flavors_l1', 'abs(l1_pdgId) == abs(n_pdgId) - 1') # l1 trailing
+tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> flavors_l2', 'abs(l2_pdgId) == abs(n_pdgId) - 1') # l2 trailing
+tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> eos_l1', 'abs(l0_pdgId) == 11 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> eos_l2', 'abs(l0_pdgId) == 11 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> mos_l1', 'abs(l0_pdgId) == 13 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> mos_l2', 'abs(l0_pdgId) == 13 & abs(l2_pdgId) == abs(n_pdgId) - 1')
 tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m1_l1', 'hnl_hn_m < 3 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m1_l2', 'hnl_hn_m < 3 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m2_l1', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m2_l2', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m3_l1', 'hnl_hn_m > 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
-#tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m3_l2', 'hnl_hn_m > 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m1_l2', 'hnl_hn_m < 3 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m2_l1', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m2_l2', 'hnl_hn_m > 3 & hnl_hn_m < 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l2_pdgId) : abs(l1_pdgId) >> m3_l1', 'hnl_hn_m > 7 & abs(l1_pdgId) == abs(n_pdgId) - 1')
+tt.Draw('abs(l1_pdgId) : abs(l2_pdgId) >> m3_l2', 'hnl_hn_m > 7 & abs(l2_pdgId) == abs(n_pdgId) - 1')
 
 fout.Write()
 
