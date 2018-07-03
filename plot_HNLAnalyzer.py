@@ -12,14 +12,18 @@ output_dir = 'temp/'
 
 # Get the option from the command line, using 'True' as a fallback.
 
-if len(sys.argv)>1 and sys.argv[1] == 'test':
-    setting = False
-    print('Using a selection of samples')
-else:
-    setting = True
-    print('Using all samples')
+# if len(sys.argv)>1 and sys.argv[1] == 'test':
+    # setting = False
+    # print('Using a selection of samples')
+# else:
+    # setting = True
+    # print('Using all samples')
 
-tt = pf.makechain(setting)
+# tt = pf.makechain(setting)
+
+tt = rt.TChain('tree')
+
+tt.Add('/afs/cern.ch/user/d/dezhu/workspace/HNL/CMSSW_8_0_25/src/CMGTools/HNL/0_result/3_ntuples/HN3L_M_2p1_V_0p00316227766017_e_onshell_1/HNLTreeProducer/tree.root')
 
 nentries = tt.GetEntries()
 print('number of total entries in chain:\t\t\t%d'%(nentries))
@@ -80,6 +84,7 @@ h_pur_Dxy_sMu_enum = rt.TH1F('h_pur_Dxy_sMu_enum','',50,0,600)
 h_pur_Dxy_sMu_denom = rt.TH1F('h_pur_Dxy_sMu_denom','',50,0,600)
 h_pur_Dxy_enum = rt.TH1F('h_pur_Dxy_enum','',50,0,600)
 h_pur_Dxy_denom = rt.TH1F('h_pur_Dxy_denom','',50,0,600)
+
 
 ######################################### 
 # Reconstruction Efficiency 
@@ -209,12 +214,20 @@ c_pur.Update()
 # Vertex Reconstruction
 #########################################
 
+c_VtxRes = rt.TCanvas('c_VtxRes', 'c_VtxRes')
+h_VtxRes = rt.TH2F('h_VtxRes','',50,0.,100.,50,0.,100.)
+tt.Draw('dimuonChi2_dxy:sqrt(sv_reco_x*sv_reco_x + sv_reco_y*sv_reco_y) >> h_VtxRes','flag_matchedHNLChi2 == 1')
+tt.Draw('dimuonChi2_dxy:sqrt(sv_reco_x*sv_reco_x + sv_reco_y*sv_reco_y)','flag_matchedHNLChi2 == 1')
+h_VtxRes.SetTitle(';recoSV_dxy [cm] ; recoHNL_dxy [cm]')
+h_VtxRes.Draw()
 
 
-
-
-
-
+c_VtxResGen = rt.TCanvas('c_VtxResGen', 'c_VtxResGen')
+h_VtxResGen = rt.TH2F('h_VtxResGen','',50,0.,100.,50,0.,100.)
+tt.Draw('dimuonChi2_dxy:sqrt(sv_x*sv_x + sv_y*sv_y) >> h_VtxResGen','flag_matchedHNLChi2 == 1')
+tt.Draw('dimuonChi2_dxy:sqrt(sv_x*sv_x + sv_y*sv_y)','flag_matchedHNLChi2 == 1')
+h_VtxResGen.SetTitle(';GenSV_dxy [cm] ; recoHNL_dxy [cm]')
+h_VtxResGen.Draw()
 
 
 
