@@ -12,18 +12,18 @@ output_dir = 'temp/'
 
 # Get the option from the command line, using 'True' as a fallback.
 
-# if len(sys.argv)>1 and sys.argv[1] == 'test':
-    # setting = False
-    # print('Using a selection of samples')
-# else:
-    # setting = True
-    # print('Using all samples')
+if len(sys.argv)>1 and sys.argv[1] == 'test':
+    setting = False
+    print('Using a selection of samples')
+else:
+    setting = True
+    print('Using all samples')
 
-# tt = pf.makechain(setting)
+tt = pf.makechain(setting)
 
-tt = rt.TChain('tree')
-
-tt.Add('/afs/cern.ch/user/d/dezhu/workspace/HNL/CMSSW_8_0_25/src/CMGTools/HNL/0_result/3_ntuples/HN3L_M_2p1_V_0p00316227766017_e_onshell_1/HNLTreeProducer/tree.root')
+# option for single file
+# tt = rt.TChain('tree')
+# tt.Add('/afs/cern.ch/user/d/dezhu/workspace/HNL/CMSSW_8_0_25/src/CMGTools/HNL/0_result/3_ntuples/HN3L_M_2p1_V_0p00316227766017_e_onshell_26/HNLTreeProducer/tree.root')
 
 nentries = tt.GetEntries()
 print('number of total entries in chain:\t\t\t%d'%(nentries))
@@ -213,32 +213,80 @@ c_pur.Update()
 ######################################### 
 # Vertex Reconstruction
 #########################################
+print'making vertex reconstruction plots'
 
 c_VtxRes = rt.TCanvas('c_VtxRes', 'c_VtxRes')
 h_VtxRes = rt.TH2F('h_VtxRes','',50,0.,100.,50,0.,100.)
-tt.Draw('dimuonChi2_dxy:sqrt(sv_reco_x*sv_reco_x + sv_reco_y*sv_reco_y) >> h_VtxRes','flag_matchedHNLChi2 == 1')
-tt.Draw('dimuonChi2_dxy:sqrt(sv_reco_x*sv_reco_x + sv_reco_y*sv_reco_y)','flag_matchedHNLChi2 == 1')
+tt.Draw('dimuonChi2_dxy:sqrt(sv_reco_x*sv_reco_x + sv_reco_y*sv_reco_y) >> h_VtxRes')
 h_VtxRes.SetTitle(';recoSV_dxy [cm] ; recoHNL_dxy [cm]')
-h_VtxRes.Draw()
+h_VtxRes.Draw('colz')
 
 
 c_VtxResGen = rt.TCanvas('c_VtxResGen', 'c_VtxResGen')
 h_VtxResGen = rt.TH2F('h_VtxResGen','',50,0.,100.,50,0.,100.)
-tt.Draw('dimuonChi2_dxy:sqrt(sv_x*sv_x + sv_y*sv_y) >> h_VtxResGen','flag_matchedHNLChi2 == 1')
-tt.Draw('dimuonChi2_dxy:sqrt(sv_x*sv_x + sv_y*sv_y)','flag_matchedHNLChi2 == 1')
+tt.Draw('dimuonChi2_dxy:sqrt(sv_x*sv_x + sv_y*sv_y) >> h_VtxResGen','l1_charge!=l2_charge & abs(l1_eta)<2.4 & abs(l2_eta)<2.4 & l1_pt>5 & l2_pt>5')
 h_VtxResGen.SetTitle(';GenSV_dxy [cm] ; recoHNL_dxy [cm]')
-h_VtxResGen.Draw()
+h_VtxResGen.Draw('colz')
 
 
+######################################### 
+# Reconstruction Efficiency V2
+#########################################
+print'making more efficiency plots'
+c_eff2 = rt.TCanvas('c_eff2','c_eff2')
+h_eff2_0 = rt.TH1F('h_eff2_0','',50,0,200)
+h_eff2_1 = rt.TH1F('h_eff2_1','',50,0,200)
+h_eff2_2 = rt.TH1F('h_eff2_2','',50,0,200)
+h_eff2_3 = rt.TH1F('h_eff2_3','',50,0,200)
+
+# selection 0: all gen info should point towards that the HNL is reconstructable
+selection0 = 'abs(l1_pdgId)==13 & abs(l2_pdgId)==13 & abs(l1_eta)<2.4 & abs(l2_eta)<2.4 & l1_pt>10 & l2_pt>10'
+
+# selection 1: for l1 and l2 there should exist for each a reco muon
+selection1 = '(l1_matched_muon_pt>0 | l1_matched_dsmuon_pt>0) & (l2_matched_muon_pt>0 | l2_matched_dsmuon_pt>0) & ((l1_matched_muon_pt != l2_matched_muon_pt) | (l1_matched_dsmuon_pt != l2_matched_dsmuon_pt))'
+
+# selection 2: HNL Analyzer has selected the correct l1 and l2 
+selection2 = '(dMu1Chi2_pt == l1_matched_muon_pt | dMu1Chi2_pt == l1_matched_dsmuon_pt | dMu1Chi2_pt == l2_matched_muon_pt | dMu1Chi2_pt == l2_matched_dsmuon_pt) & (dMu2Chi2_pt == l1_matched_muon_pt | dMu2Chi2_pt == l1_matched_dsmuon_pt | dMu2Chi2_pt == l2_matched_muon_pt | dMu2Chi2_pt == l2_matched_dsmuon_pt)'
+
+# selection 3: The vertex fitter has reconstructed the correct vertex
+selection3 = 'abs((sv_reco_x-sv_x)/(sv_x))<0.3 & abs((sv_reco_y-sv_y)/(sv_y))<0.3 & abs((sv_reco_z-sv_z)/(sv_z))<0.3'
+
+# draw the efficiency plots
+tt.Draw('hnl_2d_disp >> h_eff2_0',selection0)
+tt.Draw('hnl_2d_disp >> h_eff2_1','&'.join([selection0,selection1]))
+tt.Draw('hnl_2d_disp >> h_eff2_2','&'.join([selection0,selection1,selection2]))
+tt.Draw('hnl_2d_disp >> h_eff2_3','&'.join([selection0,selection1,selection2,selection3]))
+
+# make efficiencies
+h_eff2_3.Divide(h_eff2_2)
+h_eff2_2.Divide(h_eff2_1)
+h_eff2_1.Divide(h_eff2_0)
 
 
+# plot settings
+h_eff2_0.SetTitle(';HNL 2D displacement [cm]; Efficiency')
+h_eff2_0.GetYaxis().SetRangeUser(0.,1.05)
+h_eff2_0.SetLineColor  (rt.kBlack)
+h_eff2_0.SetMarkerColor(rt.kBlack)
+h_eff2_1.SetLineColor  (rt.kRed)
+h_eff2_1.SetMarkerColor(rt.kRed)
+h_eff2_2.SetLineColor  (rt.kGreen)
+h_eff2_2.SetMarkerColor(rt.kGreen)
+h_eff2_3.SetLineColor  (rt.kBlue)
+h_eff2_3.SetMarkerColor(rt.kBlue)
 
+# draw plots
+# h_eff2_0.Draw()
+h_eff2_1.Draw()
+h_eff2_2.Draw('same')
+h_eff2_3.Draw('same')
 
+# build legend
+l_eff2 = rt.TLegend(.4,.75,.8,.88)
+l_eff2.AddEntry(h_eff2_0, 'selection 0: gen','EP')
+l_eff2.AddEntry(h_eff2_1, 'selection 1: there is reco','EP')
+l_eff2.AddEntry(h_eff2_2, 'selection 2: correct recos were selected','EP')
+l_eff2.AddEntry(h_eff2_3, 'selection 3: vertex','EP')
+l_eff2.Draw('apez same')
 
-
-
-
-
-
-
-
+c_eff2.Update()
