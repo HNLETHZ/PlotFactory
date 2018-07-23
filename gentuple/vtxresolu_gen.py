@@ -2,11 +2,16 @@ import ROOT as rt
 import plotfactory as pf
 import numpy as np
 import sys
+import ntup_dir as nt
+
+from os.path import normpath, basename
 
 pf.setpfstyle()
 output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/gentuple/' 
 
-fout = rt.TFile(output_dir+'histosvtxresolu.root', 'recreate')
+ntdr = basename(normpath(nt.getntupdir()))
+
+fout = rt.TFile(output_dir+'histosvtxresolu_'+ntdr+'.root', 'recreate')
 
 ######################################### 
 # Make Chain from selection of samples
@@ -80,12 +85,13 @@ print('Updating and saving pads')
 for cc in [c_vtx_diff,c_vtx_reldiff]:
    cc.cd()
 #   cc.SetLogz()
+   cc.SetLogx()
    pf.showlogoprelimsim('CMS')
 #   rt.gStyle.SetOptStat(0)
    cc.Modified()
    cc.Update()
-   cc.SaveAs(output_dir+cc.GetTitle()+'.root')
-   cc.SaveAs(output_dir+cc.GetTitle()+'.pdf')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.root')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.pdf')
 
 fout.Write()
 
