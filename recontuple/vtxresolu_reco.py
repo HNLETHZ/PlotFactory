@@ -2,11 +2,15 @@ import ROOT as rt
 import plotfactory as pf
 import numpy as np
 import sys
+import ntup_dir as nt
+from os.path import normpath, basename
 
 pf.setpfstyle()
 output_dir = '/afs/cern.ch/work/v/vstampf/plots/candidates/recontuple/' 
 
-fout = rt.TFile('histosvtxresolu.root', 'recreate')
+ntdr = basename(normpath(nt.getntupdir()))
+
+fout = rt.TFile(output_dir+'vtxresolu_'+ntdr+'.root', 'recreate')
 
 ######################################### 
 # Make Chain from selection of samples
@@ -73,7 +77,8 @@ print('Initializing histograms')
 
 diffdxybins = np.arange(-40.,300,25)
 reldiffdxybins = np.arange(-3.,1.5,0.25)
-dxybins = np.arange(0.,600,50)
+#dxybins = np.arange(0.,600,50)
+dxybins = np.logspace(-1,2.78,15)
 
 dxy_diff_chifit = rt.TH2F("dxy_diff_chifit","dxy_diff_chifit",len(dxybins)-1,dxybins,len(diffdxybins)-1,diffdxybins)
 dxy_diff_dxyfit = rt.TH2F("dxy_diff_dxyfit","dxy_diff_dxyfit",len(dxybins)-1,dxybins,len(diffdxybins)-1,diffdxybins)
@@ -130,8 +135,8 @@ for cc in [c_vtx_diff_dxy,c_vtx_diff_chi,c_vtx_reldiff_dxy,c_vtx_reldiff_chi]:
 #   rt.gStyle.SetOptStat(0)
    cc.Modified()
    cc.Update()
-#   cc.SaveAs(output_dir+cc.GetTitle()+'.root')
-#   cc.SaveAs(output_dir+cc.GetTitle()+'.pdf')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.root')
+   cc.SaveAs(output_dir+cc.GetTitle()+'_'+ntdr+'.pdf')
 
 
 fout.Write()
