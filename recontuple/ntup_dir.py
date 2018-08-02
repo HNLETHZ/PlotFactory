@@ -12,5 +12,6 @@ def getntupdir():
     # ntup_dir = '/afs/cern.ch/work/v/vstampf/ntuples/gen/' # latest (6/18) ntuples
     # ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180706_HNLreco/ntuples/'
     # ntup_dir = '/afs/cern.ch/work/v/vstampf/public/debugHNLANA/' 
-    ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180801_GMuOnly_V2/'
+    # ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180801_GMuOnly_V2/'
+    ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180801_GMuOnly_V3/ntuples/'
     return ntup_dir
