@@ -106,6 +106,14 @@ def showlogo(text):
     logo.SetTextSize(0.045)
     logo.DrawLatex(0.15,0.94,text)
 
+def showTitle(text):
+    logo = ROOT.TLatex()
+    logo.SetNDC()
+    logo.SetTextAlign(11)
+    logo.SetTextFont(40)
+    logo.SetTextSize(0.040)
+    logo.DrawLatex(0.60,0.94,text)
+
 def showlogopreliminary(text1,text2):
     logo = ROOT.TLatex()
     logo.SetNDC()
