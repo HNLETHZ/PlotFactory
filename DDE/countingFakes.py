@@ -180,6 +180,7 @@ no_fakes_dr = two_prompt_dr
 #sameJet     = '( l1_jet_pt == l2_jet_pt)'
 sameJet     = '( abs(l1_jet_pt - l2_jet_pt) < 1 )'
 twoFakes_sameJet           = '(' + two_fakes           + ' & ' + sameJet + ')' 
+twoFakes_sameJet_dr        = '(' + two_fakes_dr        + ' & ' + sameJet + ')' 
 twoFakes_sameJet_new       = '(' + two_fakes_new       + ' & ' + sameJet + ')' 
 twoFakes_sameVtxJet        = '(' + twoFakes_sameVtx    + ' & ' + sameJet + ')' 
 twoFakes_sameVtxJet_l0p    = '(' + twoFakes_sameVtx    + ' & ' + sameJet + ' & ' + l0_prompt      + ')'
@@ -203,9 +204,10 @@ def LepIDIsoFail_leq1(lep, ID, iso_cut):
     cut_var = ' & l%i_id_%s & l%i_reliso_rho_04 > %f & l%i_reliso_rho_04 < 1'%(lep, ID, lep, iso_cut, lep)  ## FROM v2 ON
     return cut_var
 
-#twoLepObjIsoleq1  = ' & ( max(l1_reliso05_03 * l1_pt, l2_reliso05_03 * l2_pt) / (l1_pt + l2_pt) ) < 1'
-#twoLepObjIsoleq1  = ' & ( max(l1_reliso05 * l1_pt, l2_reliso05 * l2_pt) / (l1_pt + l2_pt) ) < 1'
-twoLepObjIsoleq1  = ' & ( max(l1_reliso_rho_04 * l1_pt, l2_reliso_rho_04 * l2_pt) / (l1_pt + l2_pt) ) < 1'   ## FROM v2 ON
+#twoLepObjIsoleq1  = ' & ( max(l1_reliso05_03 * l1_pt, l2_reliso05_03 * l2_pt) / (hnl_hn_vis_pt) ) < 1'
+#twoLepObjIsoleq1  = ' & ( max(l1_reliso05 * l1_pt, l2_reliso05 * l2_pt) / (hnl_hn_vis_pt) ) < 1'
+twoLepObjIsoleq1  = ' & ( max(l1_reliso_rho_04 * l1_pt, l2_reliso_rho_04 * l2_pt) / (hnl_hn_vis_pt) ) < 1'   ## FROM v2 ON
+twoLepObjIsoleq1  = ' & hnl_iso04_rel_rhoArea < 1' 
 
 def ptConeLep(lep, iso_cut):
 #    fill_var = '(l%i_pt) * (1 + l%i_reliso05_03 - %f)'%(lep, lep, iso_cut)
@@ -214,16 +216,16 @@ def ptConeLep(lep, iso_cut):
     return fill_var
 
 def ptCone2F(iso_cut):
-    fill_var = '(l1_pt + l2_pt) * (1 - %f) + max(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03)'%iso_cut
+    fill_var = '(hnl_hn_vis_pt) * (1 - %f) + max(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03)'%iso_cut
     return fill_var
 
 def ptCone2F_dimu(iso_cut):
-#    fill_var = '(l1_pt + l2_pt) * (1 - %f) + max(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03) + (hnl_dr_12 / 0.5) * min(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03)'%iso_cut
-#    fill_var = '(l1_pt + l2_pt) * (1 - %f) + max(l1_pt * l1_reliso05, l2_pt * l2_reliso05) + (hnl_dr_12 / 0.5) * min(l1_pt * l1_reliso05, l2_pt * l2_reliso05)'%iso_cut
-#    fill_var = '(l1_pt + l2_pt) * (1 - %f + hnl_iso03_rel_deltaBeta)'%iso_cut
-#    fill_var = '(l1_pt + l2_pt) * (1 - %f + hnl_iso03_rel_rhoArea)'%iso_cut
-#    fill_var = '(l1_pt + l2_pt) * (1 - %f + hnl_iso04_rel_deltaBeta)'%iso_cut
-    fill_var = '(l1_pt + l2_pt) * (1 - %f + hnl_iso04_rel_rhoArea)'%iso_cut
+#    fill_var = '(hnl_hn_vis_pt) * (1 - %f) + max(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03) + (hnl_dr_12 / 0.5) * min(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03)'%iso_cut
+#    fill_var = '(hnl_hn_vis_pt) * (1 - %f) + max(l1_pt * l1_reliso05, l2_pt * l2_reliso05) + (hnl_dr_12 / 0.5) * min(l1_pt * l1_reliso05, l2_pt * l2_reliso05)'%iso_cut
+#    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso03_rel_deltaBeta)'%iso_cut
+#    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso03_rel_rhoArea)'%iso_cut
+#    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso04_rel_deltaBeta)'%iso_cut
+    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso04_rel_rhoArea)'%iso_cut
     return fill_var
 
 eta_0to1p2   = '( abs(l1_eta) < 1.2 & abs(l2_eta) < 1.2 )'
@@ -251,6 +253,7 @@ b_z         = np.arange(-1.5,1.5,0.06)
 b_abs_z     = np.arange(0.,2,0.05)
 b_z_fine    = np.arange(-0.02,0.02,0.0001)
 b_st        = np.arange(-20,20,1)
+b_sf        = np.arange(-20,20,1)
 b_y = np.arange(0.,1.,0.1)
 framer = rt.TH2F('','',len(b_pt)-1,b_pt,len(b_y)-1,b_y)
 framer.GetYaxis().SetRangeUser(0.,0.7)
@@ -365,7 +368,7 @@ def measureTTLratio(isData=False):
         fin = rt.TFile(indir + sample_dir + suffix)
         t = fin.Get('tree')
 
-        t.Draw('abs(hnl_hn_vis_eta) : l1_pt + l2_pt >> pt_cone_eta_n', 
+        t.Draw('abs(hnl_hn_vis_eta) : hnl_hn_vis_pt >> pt_cone_eta_n', 
                twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) + ' & ' + eta_cut)
 
         t.Draw('abs(hnl_hn_vis_eta) : ' + ptCone2F_dimu(iso_cut) + ' >> pt_cone_eta_d',
@@ -379,7 +382,7 @@ def measureTTLratio(isData=False):
         t.Add(indir + data_m_D + suffix)
         t.Add(indir + data_m_F + suffix)
 
-        t.Draw('abs(hnl_hn_vis_eta) : l1_pt + l2_pt >> pt_cone_eta_n',
+        t.Draw('abs(hnl_hn_vis_eta) : hnl_hn_vis_pt >> pt_cone_eta_n',
                'abs(l1_jet_pt - l2_jet_pt) < 1 & nbj > 0 & hnl_2d_disp > 0.5 ' + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) )
 
         t.Draw('abs(hnl_hn_vis_eta) : ' + ptCone2F_dimu(iso_cut) + ' >> pt_cone_eta_d',
@@ -399,12 +402,19 @@ def measureTTLratio(isData=False):
 ####################################################################################################
 
 ####################################################################################################
-def checkTTLratio():
+def checkTTLratio(DISP=True):
     samples = ['DY', 'TT', 'WJ']
     h_pt_1f = []; h_pt_2f = []; i = 0
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
     ch = 'mu'
+
+    disp = ' & abs(l1_dz) < 2 & abs(l2_dz) < 2'
+    dsp = ''
+    if DISP == True:
+        dsp = '_disp'
+        disp += ' & hnl_2d_disp > 0.5'
+
     for sample in samples: 
         if sample == 'DY':
             t = rt.TChain('tree')
@@ -420,6 +430,8 @@ def checkTTLratio():
             t.Add(indir + W_dir_m + suffix)
             t.Add(indir + W_ext_dir_m + suffix)
             print sample, t.GetEntries()
+        if DISP == True:
+            sample += dsp 
 
         h_pt_l1_d  = rt.TH1F('pt_cone_l1_d', 'pt_cone_l1_d',len(b_pt)-1,b_pt)
         h_pt_l2_d  = rt.TH1F('pt_cone_l2_d', 'pt_cone_l2_d',len(b_pt)-1,b_pt)
@@ -428,6 +440,7 @@ def checkTTLratio():
         h_pt_l1_n  = rt.TH1F('pt_cone_l1_n', 'pt_cone_l1_n',len(b_pt)-1,b_pt)
         h_pt_l2_n  = rt.TH1F('pt_cone_l2_n', 'pt_cone_l2_n',len(b_pt)-1,b_pt)
         h_pt_2f_n  = rt.TH1F('pt_cone_2f_n', 'pt_cone_2f_n',len(b_pt)-1,b_pt)
+
 
         print 'drawing %s iso%s ...'%(sample, iso_str)
 
@@ -442,11 +455,11 @@ def checkTTLratio():
 #        t.Draw(ptConeLep(2, iso_cut) + '>> pt_cone_l2_d' , l2f_l1p_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail_leq1(2, 't', iso_cut) + ' & hnl_2d_disp > 0.5')
 #        print '%s iso%s ... l2 done'%(sample, iso_str)
 
-        t.Draw('l1_pt + l2_pt >> pt_cone_2f_n', 
-               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) )
+        t.Draw('hnl_hn_vis_pt >> pt_cone_2f_n', 
+               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + disp )
 
         t.Draw(ptCone2F_dimu(iso_cut) + '>> pt_cone_2f_d' ,
-               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 't', iso_cut) + LepIDIsoFail(2, 't', iso_cut) + twoLepObjIsoleq1 )
+               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1 + disp )
         print '%s iso%s ... two fakes done'%(sample, iso_str)
 
         h_pt_l1_d.Add(h_pt_l1_n)
@@ -494,7 +507,9 @@ def checkTTLratio():
     if len(samples) > 1:
 
         c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
-        h_pt_1f[0].Draw() 
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio')
+        framer.GetXaxis().SetTitle('p_{T}^{Cone} [GeV]')
         for i in range(len(samples)):
             h_pt_1f[i].Draw('same')
         c_pt_1f.BuildLegend(0.18, 0.78, 0.41, 0.9)
@@ -503,16 +518,51 @@ def checkTTLratio():
 #        save(c_pt_1f, iso_cut, 'cmbnd', ch)
 
         c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
-        h_pt_2f[0].Draw() 
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio')
+        framer.GetXaxis().SetTitle('p_{T}^{Cone} [GeV]')
         leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
         for i in range(len(samples)):
             h_pt_2f[i].Draw('same')
             leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
         leg.Draw()
         pf.showlogoprelimsim('CMS')
-        save(c_pt_2f, iso_cut, 'cmbnd', ch)
+        save(c_pt_2f, iso_cut, 'cmbnd'+dsp, ch)
 
     print sample + '_%s_iso%s\t done'%(ch, iso_str)
+####################################################################################################
+
+####################################################################################################
+def checkDRandM12(DISP=True):
+    iso_cut = 0.15
+    disp = ''
+    dsp = ''
+    if DISP == True:
+       disp = ' & hnl_2d_disp > 0.5'
+       dsp = '_disp'
+    tupels = [ [DY50_ext_dir_m, ['', '1']], [TT_dir_m, ['', '1']], [W_ext_dir_m, ['', '1']] ]
+    for tupel in tupels:
+        h,c = plot(tupel, var = 'hnl_dr_12', name = '2fsJnw_dR'+dsp, binsX = b_dR, xtitle = '#DeltaR(#mu_{1}, #mu_{2})', 
+                   cut = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1 + disp )
+
+        h,c = plot(tupel, var = 'hnl_m_12', name = '2fsJnw_m2l'+dsp, binsX = b_m, xtitle = 'm(#mu_{1}, #mu_{2})', 
+               cut = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1 + disp )
+####################################################################################################
+
+####################################################################################################
+def checkTypeFlavour(DISP=True):
+    iso_cut = 0.15
+    disp = ''
+    dsp = ''
+    if DISP == True:
+       disp = ' & hnl_2d_disp > 0.5'
+       dsp = '_disp'
+    tupels = [ [DY50_ext_dir_m, ['', '1']], [TT_dir_m, ['', '1']]]#, [W_ext_dir_m, ['', '1']] ]
+    for tupel in tupels:
+        h,c = plot(tupel, var = 'l1_simFlavour : l1_simType', name = '2fsJnw_sT_sF'+dsp, binsX = b_st, binsY = b_sf, xtitle = 'simType(#mu_{1})', ytitle = 'simFlavour(#mu_{2})', mode = 2, 
+                   cut = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1 + disp )
+####################################################################################################
+
 ####################################################################################################
 def TTbarStudy():
     tupels = [[TT_dir_m, ['1', '1']], [TT_dir_m, ['disp0p5', 'hnl_2d_disp > 0.5']], [DY50_dir_m, ['1','1']], [W_dir_m, ['1','1']],]
@@ -538,57 +588,57 @@ def TTbarStudy():
         Delta_R_l12 = 'sqrt( (l2_simPhi - l1_simPhi)^2 + (l2_simEta - l1_simEta)^2 )'
 
         h, c = plot(tupel = tupel, var = 'l2_simProdRho - l1_simProdRho', name = 'dRho',
-                    binsX = b_rho_crs, XAxisTitle = '#Delta#rho(#mu_{1}, #mu_{2}) [cm]', cut = two_fakes, log=True)
+                    binsX = b_rho_crs, xtitle = '#Delta#rho(#mu_{1}, #mu_{2}) [cm]', cut = two_fakes, log=True)
 
         h, c = plot(tupel = tupel, var = 'l2_simProdZ - l1_simProdZ', name = 'dZ',
-                    binsX = b_z, XAxisTitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', cut = two_fakes, log=True)
+                    binsX = b_z, xtitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', cut = two_fakes, log=True)
 
         h, c = plot(tupel = tupel, var = Delta_R_l12 + ' : l2_simProdZ - l1_simProdZ', name = 'dZ_dR',
-                    binsX = b_z, binsY =  b_dR, mode = 2, XAxisTitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', YAxisTitle = '#DeltaR(#mu_{1}, #mu_{2})', 
+                    binsX = b_z, binsY =  b_dR, mode = 2, xtitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', ytitle = '#DeltaR(#mu_{1}, #mu_{2})', 
                     cut = two_fakes, log=True)
 
         h, c = plot(tupel = tupel, var = 'l2_simType : l1_simType', name = 'simType_diffVtx',
-                    binsX = b_st, binsY =  b_st, mode = 2, XAxisTitle = '#simType(#mu_{1})', YAxisTitle = 'simType(#mu_{2})', 
+                    binsX = b_st, binsY =  b_st, mode = 2, xtitle = '#simType(#mu_{1})', ytitle = 'simType(#mu_{2})', 
                     cut = two_fakes + '  &  !' + twoFakes_sameVtx, log=True)
 
         h, c = plot(tupel = tupel, var = 'l2_simType : l1_simType', name = 'simType_sameVtx',
-                    binsX = b_st, binsY =  b_st, mode = 2, XAxisTitle = '#simType(#mu_{1})', YAxisTitle = 'simType(#mu_{2})', 
+                    binsX = b_st, binsY =  b_st, mode = 2, xtitle = '#simType(#mu_{1})', ytitle = 'simType(#mu_{2})', 
                     cut = two_fakes + '  &  ' + twoFakes_sameVtx, log=True)
 
         h, c = plot(tupel = tupel, var = Delta_R_l12 + ' : l2_simProdZ - l1_simProdZ', name = 'dZ_dR_sameVtxJet',
-                    binsX = b_z, binsY =  b_dR, mode = 2, XAxisTitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', YAxisTitle = '#DeltaR(#mu_{1}, #mu_{2})', 
+                    binsX = b_z, binsY =  b_dR, mode = 2, xtitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', ytitle = '#DeltaR(#mu_{1}, #mu_{2})', 
                     cut = twoFakes_sameVtxJet, log=True)
 
         h, c = plot(tupel = tupel, var = Delta_R_l12 + ' : l2_simProdZ - l1_simProdZ', name = 'dZ_dR_sameVtxdiffJet',
-                    binsX = b_z, binsY =  b_dR, mode = 2, XAxisTitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', YAxisTitle = '#DeltaR(#mu_{1}, #mu_{2})', 
+                    binsX = b_z, binsY =  b_dR, mode = 2, xtitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', ytitle = '#DeltaR(#mu_{1}, #mu_{2})', 
                     cut = twoFakes_sameVtx + ' & !' + sameJet, log=True)
 
 
-        h, c = plot(tupel = tupel, var = Delta_R_l12, name = 'dR_sameVtxJet', binsX = b_dR, XAxisTitle = '#DeltaR(#mu_{1}, #mu_{2})', cut = twoFakes_sameVtxJet + ' & hnl_2d_disp > 0.5', log=True)
+        h, c = plot(tupel = tupel, var = Delta_R_l12, name = 'dR_sameVtxJet', binsX = b_dR, xtitle = '#DeltaR(#mu_{1}, #mu_{2})', cut = twoFakes_sameVtxJet + ' & hnl_2d_disp > 0.5', log=True)
 
-        h, c = plot(tupel = tupel, var = Delta_R_l12, name = 'dR_sameVtxdiffJet', binsX = b_dR, XAxisTitle = '#DeltaR(#mu_{1}, #mu_{2})', cut = twoFakes_sameVtx + '& !' + sameJet + ' & hnl_2d_disp > 0.5', log=True)
+        h, c = plot(tupel = tupel, var = Delta_R_l12, name = 'dR_sameVtxdiffJet', binsX = b_dR, xtitle = '#DeltaR(#mu_{1}, #mu_{2})', cut = twoFakes_sameVtx + '& !' + sameJet + ' & hnl_2d_disp > 0.5', log=True)
 
         h, c = plot(tupel = tupel, var = Delta_R_l12 + ' : l2_simProdZ - l1_simProdZ', name = 'dZ_dR_diffVtx',
-                    binsX = b_z, binsY =  b_dR, mode = 2, XAxisTitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', YAxisTitle = '#DeltaR(#mu_{1}, #mu_{2})', 
+                    binsX = b_z, binsY =  b_dR, mode = 2, xtitle = '#DeltaZ(#mu_{1}, #mu_{2}) [cm]', ytitle = '#DeltaR(#mu_{1}, #mu_{2})', 
                     cut = two_fakes + ' & !' + sameVtx + ' & hnl_2d_disp > 0.5', log=True)
 
 
         h, c = plot(tupel = tupel, var = 'abs(l2_simProdZ - l1_simProdZ)', name = 'dZ_sameJet', binsX = b_abs_z,
-                    XAxisTitle = '|#DeltaZ(#mu_{1}, #mu_{2})| [cm]', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
+                    xtitle = '|#DeltaZ(#mu_{1}, #mu_{2})| [cm]', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
 
         h, c = plot(tupel = tupel, var = 'abs(l2_simProdRho - l1_simProdRho)', name = 'dRho_sameJet', binsX = b_rho_crs, 
-                    XAxisTitle = '|#Delta#rho(#mu_{1}, #mu_{2})| [cm]', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
+                    xtitle = '|#Delta#rho(#mu_{1}, #mu_{2})| [cm]', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
 
         h, c = plot(tupel = tupel, var = 'abs(l2_simProdRho - l1_simProdRho) : abs(l2_simProdZ - l1_simProdZ)', name = 'dZ_dRho_sameJet',
-                    binsX = b_abs_z, binsY =  b_rho_crs, mode = 2, XAxisTitle = '|#DeltaZ(#mu_{1}, #mu_{2})| [cm]', YAxisTitle = '|#Delta#rho(#mu_{1}, #mu_{2})| [cm]', 
+                    binsX = b_abs_z, binsY =  b_rho_crs, mode = 2, xtitle = '|#DeltaZ(#mu_{1}, #mu_{2})| [cm]', ytitle = '|#Delta#rho(#mu_{1}, #mu_{2})| [cm]', 
                     cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
 
 
         h, c = plot(tupel = tupel, var = 'l2_simProdRho : l1_simProdRho', name = 'Rho_Rho_sameJet', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5',
-                    binsX = b_rho_crs, binsY =  b_rho_crs, mode = 2, XAxisTitle = '#rho(#mu_{1}) [cm]', YAxisTitle = '#rho(#mu_{2}) [cm]', log=True) 
+                    binsX = b_rho_crs, binsY =  b_rho_crs, mode = 2, xtitle = '#rho(#mu_{1}) [cm]', ytitle = '#rho(#mu_{2}) [cm]', log=True) 
 
         h, c = plot(tupel = tupel, var = 'l2_simProdZ : l1_simProdZ', name = 'Z_Z_sameJet', binsX = b_z, binsY = b_z, mode = 2,
-                    XAxisTitle = 'Z(#mu_{1}) [cm]', YAxisTitle = 'Z(#mu_{2}) [cm]', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
+                    xtitle = 'Z(#mu_{1}) [cm]', ytitle = 'Z(#mu_{2}) [cm]', cut = twoFakes_sameJet + ' & hnl_2d_disp > 0.5', log=True)
    
 ####################################################################################################
 def checkpTCone(eta_bin):
@@ -615,32 +665,32 @@ def checkpTCone(eta_bin):
                     name = 'ptJet_ptCone_sameJet_NoIso', 
                     var = ptCone2F_dimu(0.15) + ': l1_jet_pt', #ptCone2F(iso_cut) + ': l1_jet_pt',
                     binsX = b_pt, binsY =  b_pt, mode = 2, iso = 0.15, 
-                    XAxisTitle = '#mu_{1} Jet p_{T} [GeV]', 
-                    YAxisTitle = 'p_{T}^{Cone} [GeV]', 
+                    xtitle = '#mu_{1} Jet p_{T} [GeV]', 
+                    ytitle = 'p_{T}^{Cone} [GeV]', 
                     cut = twoFakes_sameJet + LepIDIsoFail(1, 't', iso_cut) + LepIDIsoFail(2, 't', iso_cut) + twoLepObjIsoleq1)
 
         h, c = plot(tupel = tupel, 
                     name = 'ptJet_ptCone_sameJet_Iso', 
                     var = ptCone2F_dimu(0.15) + ': l1_jet_pt', #ptCone2F(iso_cut) + ': l1_jet_pt',
                     binsX = b_pt, binsY =  b_pt, mode = 2, iso = 0.15, 
-                    XAxisTitle = '#mu_{1} Jet p_{T} [GeV]', 
-                    YAxisTitle = 'p_{T}^{Cone} [GeV]', 
+                    xtitle = '#mu_{1} Jet p_{T} [GeV]', 
+                    ytitle = 'p_{T}^{Cone} [GeV]', 
                     cut = twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut))
 
         h, c = plot(tupel = tupel, 
                     name = 'dR_pt_NoIso', 
-                    var = 'hnl_dr_12 : l1_pt + l2_pt', 
+                    var = 'hnl_dr_12 : hnl_hn_vis_pt', 
                     binsX = b_pt, binsY =  b_dR, mode = 2, iso = 0.15, 
-                    XAxisTitle = 'DiMuon p_{T} [GeV]', 
-                    YAxisTitle = '#DeltaR (#mu_{1}, #mu_{2})', 
+                    xtitle = 'DiMuon p_{T} [GeV]', 
+                    ytitle = '#DeltaR (#mu_{1}, #mu_{2})', 
                     cut = '1' + LepIDIsoFail(1, 't', iso_cut) + LepIDIsoFail(2, 't', iso_cut) + twoLepObjIsoleq1 + ' & hnl_2d_disp > 0.5') # + ' & ' + twoFakes_sameJet)
 
         h, c = plot(tupel = tupel, 
                     name = 'dR_pt_Iso', 
-                    var = 'hnl_dr_12 : l1_pt + l2_pt', 
+                    var = 'hnl_dr_12 : hnl_hn_vis_pt', 
                     binsX = b_pt, binsY =  b_dR, mode = 2, iso = 0.15,
-                    XAxisTitle = 'DiMuon p_{T} [GeV]', 
-                    YAxisTitle = '#DeltaR (#mu_{1}, #mu_{2})', 
+                    xtitle = 'DiMuon p_{T} [GeV]', 
+                    ytitle = '#DeltaR (#mu_{1}, #mu_{2})', 
                     cut = '1' + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) + ' & hnl_2d_disp > 0.5') # + ' & ' + twoFakes_sameJet)
     
 def applyTTL(isData=False):
@@ -693,8 +743,8 @@ def applyTTL(isData=False):
 
     print 'drawing observed ...'
 #    print 'cut: ', twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut)
-##   t.Draw( 'l1_pt + l2_pt >> obs_pt', twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut))
-    t.Draw( 'l1_pt + l2_pt >> obs_pt', 
+##   t.Draw( 'hnl_hn_vis_pt >> obs_pt', twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut))
+    t.Draw( 'hnl_hn_vis_pt >> obs_pt', 
     'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 ' + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) ) # DATA !
     print 'pt done'
 ##   t.Draw( 'hnl_2d_disp >> obs_2disp', twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut))
@@ -815,24 +865,23 @@ def ptEtaBin(ipt, ieta):
 #countFakes([TT_dir_m          , ['disp0p5', 'hnl_2d_disp > 0.5']])
 #countFakes([TT_dir_m          , ['disp0p5_pt15', 'hnl_2d_disp > 0.5 & l1_pt > 15 & l2_pt > 15']])
 ####################################################################################################
-def th1(name, bins, XAxisTitle=''):
+def th1(name, bins, xtitle=''):
     h = rt.TH1F('h_%s'%name, name, len(bins)-1, bins)
 #    h.name = name
-    h.SetTitle('%s; %s; Counts'%(name, XAxisTitle))
+    h.SetTitle('%s; %s; Counts'%(name, xtitle))
     return h
 
-def th2(name, binsX, binsY, XAxisTitle='', YAxisTitle=''):
+def th2(name, binsX, binsY, xtitle='', ytitle=''):
     h = rt.TH2F('h_%s'%name, name, len(binsX)-1, binsX, len(binsY)-1, binsY)
-    h.SetTitle('%s; %s; %s'%(name, XAxisTitle, YAxisTitle))
+    h.SetTitle('%s; %s; %s'%(name, xtitle, ytitle))
     return h
 
 def fill(tree, hist, var, cut='', opt=''):
     tree, hist, var, cut, opt
-#    tree.Draw('{v} >> h_{h}'.format( v=var, h=hist.name ), cut, opt)
+#    tree.Draw('{v} >> h_{h}'.format( v=var, h=hist.GetName() ), cut, opt)
     tree.Draw('{v} >> {h}'.format( v=var, h=hist.GetName() ), cut, opt)
     print '\tvar: {v} \n\tcut: {c}'.format(v=var, c=cut)
     print 'entries: ', hist.GetEntries()
-    set_trace()
     return hist
 
 def save(knvs, iso, sample='', ch='', eta=''):
@@ -848,7 +897,7 @@ def save(knvs, iso, sample='', ch='', eta=''):
         knvs.SaveAs('{dr}{smpl}_{ch}_{ttl}_iso{iso}.root'.format(dr=outdir, smpl=sample, ttl=knvs.GetTitle(), ch=ch, iso=iso_str))
     
 def draw(hist, mode=1, log=False):
-    c = rt.TCanvas(hist.name, hist.name)
+    c = rt.TCanvas(hist.GetName(), hist.GetName())
     if mode == 2:
         hist.Draw('colz') 
         if log == True: c.SetLogz()
@@ -860,11 +909,11 @@ def draw(hist, mode=1, log=False):
         hist.Draw('same')
     pf.showlogoprelimsim('CMS')
     # pf.showTitle('iso_cut = 0.%s'%iso_str)
-    pf.showTitle(hist.name)
+    pf.showTitle(hist.GetName())
     c.Modified; c.Update()
     return c
 
-def plot(tupel, name, var, binsX, binsY=[], XAxisTitle='', YAxisTitle='', mode=1, cut='', log=False, opt='', iso=0.15, eta_bin=['full', '']):
+def plot(tupel, name, var, binsX, binsY=[], xtitle='', ytitle='', mode=1, cut='', log=False, opt='', iso=0.15, eta_bin=['full', '']):
     sample_dir, cutuple = tupel
     eta = eta_bin[0]
     eta_cut = eta_bin[1]
@@ -877,19 +926,18 @@ def plot(tupel, name, var, binsX, binsY=[], XAxisTitle='', YAxisTitle='', mode=1
     ch     = basename(split(normpath(sample_dir))[0]) 
     sample = basename(normpath(sample_dir))
     if mode == 1: 
-        hist = th1(name, binsX, XAxisTitle)
+        hist = th1(name, binsX, xtitle)
     if mode == 2: 
-        hist = th2(name, binsX, binsY, XAxisTitle, YAxisTitle)
+        hist = th2(name, binsX, binsY, xtitle, ytitle)
     if mode == 'eff':
-        numer = th1('%s_n'%name, binsX, XAxisTitle)
-        denom = th1('%s_d'%name, binsX, XAxisTitle)
+        numer = th1('%s_n'%name, binsX, xtitle)
+        denom = th1('%s_d'%name, binsX, xtitle)
         # TODO finish this mode
 
     print '\nsample name: {s}_{ch}, entries: {n}'.format(s=sample, ch=ch, n=t.GetEntries())
-    print '\tfilling hist: {h}'.format(h=hist.name)
+    print '\tfilling hist: {h}'.format(h=hist.GetName())
     filled_hist = fill(t, hist, var, cut, opt)
-    print '\thist: {h} entries: {n}\n'.format(h=hist.name, n=filled_hist.GetEntries())
-#    set_trace()
+    print '\thist: {h} entries: {n}\n'.format(h=hist.GetName(), n=filled_hist.GetEntries())
     c = draw(filled_hist, mode, log)
     save(c, iso, sample, ch, eta)
     return filled_hist, c
@@ -931,7 +979,6 @@ def makeCheckPlots(tree, var, bins, isData=False):
 #    for ih in h_result:
 #        h.Add(ih)
 #    hist = fillWeighedHist(tupels[3])
-    set_trace()
 
 #def makeTupel(tree, var, bins, ieta, ipt, isData):
 def makeTupel(tree, hist, ieta, ipt, isData):
