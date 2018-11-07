@@ -10,6 +10,6 @@ def getntupdir():
     #ntup_dir = '/eos/user/v/vstampf/ntuplesfull/' # more evts, but not full and no idea what's inside
     # ntup_dir = '/afs/cern.ch/work/v/vstampf/ntuples/useable_full/' # latest (6/14) ntuples
     # ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180705_HNLreco_V2/ntuples/'
-    ntup_dir = '/eos/user/d/dezhu/HNL/ntuple/20180719_HNLreco/ntuples/'
+    ntup_dir = '/afs/cern.ch/work/d/dezhu/HNL/CMSSW_9_4_6_patch1/src/CMGTools/HNL/0_result/2_ntuples'
 
     return ntup_dir
