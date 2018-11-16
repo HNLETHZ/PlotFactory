@@ -108,7 +108,7 @@ mltlst = [ ##  sample          , cuts
 ####################################################################################################
 ## FAKES / PROMPT ##
 ####################################################################################################
-in_acc = 'abs(l0_eta) < 2.4  &  abs(l2_eta) < 2.4  &  abs(l2_eta) < 2.4'
+in_acc = 'abs(l0_eta) < 2.4  &  abs(l1_eta) < 2.4  &  abs(l2_eta) < 2.4'
 
 l0_prompt_m_dr = '( (l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13 )'
 l0_prompt_e_dr = '( (l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11 )'
@@ -173,15 +173,18 @@ sameVtx    = '( l2_simProdZ == l1_simProdZ & l1_simProdZ != 0 )'
 two_prompt            = '(' + l1_prompt     + ' & ' + l2_prompt      +  ')'
 two_prompt_new        = '(' + l1_prompt_new + ' & ' + l2_prompt_new  +  ')'
 two_prompt_dr         = '(' + l1_prompt_dr  + ' & ' + l2_prompt_dr   +  ')'
+
 one_fake_xor          = '(' + l1f_l2p       + ' | ' + l2f_l1p        +  ')' 
 one_fake_xor_new      = '(' + l1f_l2p_new   + ' | ' + l2f_l1p_new    +  ')' 
 one_fake_xor_dr       = '(' + l1f_l2p_dr    + ' | ' + l2f_l1p_dr     +  ')' 
+
 two_fakes             = '(' + l1_fake       + ' & ' + l2_fake        +  ')'  
 two_fakes_new         = '(' + l1_fake_new   + ' & ' + l2_fake_new    +  ')'  
-two_fakes_dr          = '(' + l1_fake_dr    + ' & ' + l2_fake_dr     +  ')'  
-twoHeavyFakes         = '(' + l1_heavyfake  + ' & ' + l2_heavyfake   +  ')'  
 twoFakes_sameVtx      = '(' + two_fakes     + ' & l2_simProdZ == l1_simProdZ & l1_simProdZ != 0)'  
+two_fakes_dr          = '(' + l1_fake_dr    + ' & ' + l2_fake_dr     +  ')'  
 twoFakes_sameVtx_dr   = '(' + two_fakes_dr  + ' & ' + sameVtx_dr     +  ')'
+
+twoHeavyFakes         = '(' + l1_heavyfake  + ' & ' + l2_heavyfake   +  ')'  
 twoHeavyFakes_sameVtx = '(' + twoHeavyFakes + ' & l2_simProdZ == l1_simProdZ & l1_simProdZ != 0)'  
 
 no_ghosts    = '( l1_simType < 1001 & l2_simType < 1001 )'
@@ -192,6 +195,7 @@ no_fakes_dr  = two_prompt_dr
 #sameJet     = '( l1_jet_pt == l2_jet_pt)'
 #sameJet     = '( abs(l1_jet_pt - l2_jet_pt) < 1 )'
 sameJet     = '( abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 )' # 0.8 is twice the jet size
+
 twoFakes_sameJet           = '(' + two_fakes           + ' & ' + sameJet + ')' 
 twoFakes_sameJet_dr        = '(' + two_fakes_dr        + ' & ' + sameJet + ')' 
 twoFakes_sameJet_new       = '(' + two_fakes_new       + ' & ' + sameJet + ')' 
@@ -231,6 +235,21 @@ LOOSE         = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 &
 LOOSENOTTIGHT = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & (l1_reliso_rho_04 > 0.15 | l2_reliso_rho_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
 TIGHT         = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & l1_reliso_rho_04 < 0.15 & l2_reliso_rho_04 < 0.15 )' 
 
+Z_veto_01       = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  (l1_q + l2_q != 0)'
+Z_veto_02       = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'
+Z_veto_12       = '(l0_q + l1_q != 0)  &  (l0_q + l2_q != 0)  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )' 
+
+Z_veto_01_02    = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'  
+Z_veto_01_12    = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )'  
+Z_veto_02_12    = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )'  
+
+Z_veto_01_02_12 = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )'
+
+single_Z_veto = '(  ' + Z_veto_01 + '   |   ' + Z_veto_02 + '   |   ' + Z_veto_12 + '  )'
+double_Z_veto = '(  ' + Z_veto_01_02 + '   |   ' + Z_veto_01_12 + '   |   ' + Z_veto_02_12 + '  )'
+
+Z_veto = '(   ' + single_Z_veto + '    |    ' + double_Z_veto + '    |    ' + Z_veto_01_02_12 + '   )' 
+
 #twoLepObjIsoleq1  = ' & ( max(l1_reliso05_03 * l1_pt, l2_reliso05_03 * l2_pt) / (hnl_hn_vis_pt) ) < 1'
 #twoLepObjIsoleq1  = ' & ( max(l1_reliso05 * l1_pt, l2_reliso05 * l2_pt) / (hnl_hn_vis_pt) ) < 1'
 twoLepObjIsoleq1  = ' & ( max(l1_reliso_rho_04 * l1_pt, l2_reliso_rho_04 * l2_pt) / (hnl_hn_vis_pt) ) < 1'   ## FROM v2 ON
@@ -267,16 +286,19 @@ eta_bins = [['0_to_1p2'  , eta_0to1p2],
 
 isolst = [0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20]
 
-b_pt_old    = np.arange(5.,100,5)
+b_pt_std    = np.arange(5.,105,5)
 b_pt        = np.array([ 0., 5., 10., 15., 20., 25., 35., 50., 70.])
 b_2d        = np.arange(0., 10, 0.2)
-b_m         = np.arange(0., 5, 0.25)
-b_M         = np.arange(0.,200,2)
+b_2d_sig    = np.arange(0., 50, 0.25)
+b_2d_sig    = np.arange(0., 100, 0.5)
+b_m         = np.arange(0., 5.25, 0.25)
+b_M         = np.arange(0.,202,2)
 b_eta       = np.array([0., 1.2, 2.1, 2.4]) 
 b_rho       = np.arange(-100.,100,4)
 b_rho_crs   = np.arange(0.,10,0.25)
 b_rho       = np.arange(0.,15,0.25)
-b_dR        = np.arange(0.,6,0.05)
+b_dR        = np.arange(0.,6.05,0.05)
+b_dR        = np.arange(0.,0.85,0.05)
 b_dR_coarse = np.arange(0.,6,0.2)
 b_dR_Coarse = np.arange(0.,6,0.4)
 b_z         = np.arange(-1.5,1.5,0.06)
@@ -284,7 +306,9 @@ b_abs_z     = np.arange(0.,2,0.05)
 b_z_fine    = np.arange(-0.02,0.02,0.0001)
 b_st        = np.arange(-20,20,1)
 b_sf        = np.arange(-20,20,1)
-b_y = np.arange(0.,1.,0.1)
+b_y         = np.arange(0.,1.,0.1)
+b_chi2      = np.arange(0.,1.05,0.05)
+
 framer = rt.TH2F('','',len(b_pt)-1,b_pt,len(b_y)-1,b_y)
 framer.GetYaxis().SetRangeUser(0.,0.5)
 
@@ -405,7 +429,7 @@ def countFakes(DZ=True,DISP=True):
 ####################################################################################################
 
 ####################################################################################################
-def measureTTLratio(isData=False,DISP=True):
+def measureTTLratio(isData=False,DISP=True,SPLIT=None):
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
     ch          = 'mu'
@@ -442,11 +466,19 @@ def measureTTLratio(isData=False,DISP=True):
     h_pt_eta_T = rt.TH2F('pt_eta_T','pt_eta_T',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
     h_pt_eta_L = rt.TH2F('pt_eta_L','pt_eta_L',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
 
+    if SPLIT == 'geq':
+        cut_T += ' & hnl_w_vis_m > 80'
+        cut_L += ' & hnl_w_vis_m > 80'
+
+    if SPLIT == 'leq':
+        cut_T += ' & hnl_w_vis_m < 80'
+        cut_L += ' & hnl_w_vis_m < 80'
+
     t.Draw('abs(hnl_hn_vis_eta) : ' + PTCONE + ' >> pt_eta_T', cut_T)
     t.Draw('abs(hnl_hn_vis_eta) : ' + PTCONE + ' >> pt_eta_L', cut_L)
     print 'tree entries T & L: ', t.GetEntries(cut_T), t.GetEntries(cut_L)
 
-    print '%s iso%s ... two fakes done\nnumerator: %i, denominator: %i'%(sample_name, iso_str, h_pt_eta_T.GetEntries(), h_pt_eta_L.GetEntries())
+    print '%s iso%s ... double fakes done\nnumerator: %i, denominator: %i'%(sample_name, iso_str, h_pt_eta_T.GetEntries(), h_pt_eta_L.GetEntries())
 
 
 #    h_pt_eta_d.Add(h_pt_eta_n) ## NOW BOTHLOOSE UPDATED, NO MORE ADDING NEEDED!
@@ -454,7 +486,7 @@ def measureTTLratio(isData=False,DISP=True):
     c_pt_eta = rt.TCanvas('ptCone_eta', 'ptCone_eta')
     h_pt_eta_T.Divide(h_pt_eta_L)
     h_pt_eta_T.Draw('colz')
-    h_pt_eta_T.SetTitle('; p_{T}^{Cone} [GeV]; DiMuon |#eta|; tight-to-loose ratio')
+    h_pt_eta_T.SetTitle('; p_{T}^{cone} [GeV]; DiMuon |#eta|; tight-to-loose ratio')
     pf.showlogoprelimsim('CMS')
     pf.showTitle('TTL Ratio')
     save(c_pt_eta, iso_cut, 'TTL_' + sample_name, ch, '')
@@ -464,7 +496,7 @@ def measureTTLratio(isData=False,DISP=True):
 
 ####################################################################################################
 def checkTTLratio(DISP=True):
-    samples = ['DY', 'TT', 'WJ']
+    samples = ['TT','DY','WJ',]#'TT',]
     h_pt_1f = []; h_pt_2f = []; i = 0
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
@@ -484,87 +516,94 @@ def checkTTLratio(DISP=True):
             t.Add(inDir + DY50_ext_dir_m + suffix)
             t.Add(inDir + DY50_dir_m + suffix)
             t.Add(inDir + DY50_ext_dir_m + suffix)
-            print sample, t.GetEntries()
+            print '\tsample: %s, events: %i'%(sample, t.GetEntries())
         if sample == 'TT':
             fin = rt.TFile(inDir + TT_dir_m + suffix)
             t = fin.Get('tree')
-            print sample, t.GetEntries()
+            print '\tsample: %s, events: %i'%(sample, t.GetEntries())
         if sample == 'WJ':
             t = rt.TChain('tree')
             t.Add(inDir + W_dir_m + suffix)
             t.Add(inDir + W_ext_dir_m + suffix)
-            print sample, t.GetEntries()
-        if DISP == True:
-            sample += dsp 
+            print '\tsample: %s, events: %i'%(sample, t.GetEntries())
+#        if DISP == True:
+#            sample += dsp 
 
-        h_pt_l1_d  = rt.TH1F('pt_cone_l1_d', 'pt_cone_l1_d',len(b_pt)-1,b_pt)
-        h_pt_l2_d  = rt.TH1F('pt_cone_l2_d', 'pt_cone_l2_d',len(b_pt)-1,b_pt)
+#        h_pt_l1_d  = rt.TH1F('pt_cone_l1_d', 'pt_cone_l1_d',len(b_pt)-1,b_pt)
+#        h_pt_l2_d  = rt.TH1F('pt_cone_l2_d', 'pt_cone_l2_d',len(b_pt)-1,b_pt)
         h_pt_2f_L  = rt.TH1F('pt_cone_2f_L', 'pt_cone_2f_L',len(b_pt)-1,b_pt)
+        h_pt_1f_L  = rt.TH1F('pt_cone_1f_L', 'pt_cone_1f_L',len(b_pt)-1,b_pt)
 
-        h_pt_l1_n  = rt.TH1F('pt_cone_l1_n', 'pt_cone_l1_n',len(b_pt)-1,b_pt)
-        h_pt_l2_n  = rt.TH1F('pt_cone_l2_n', 'pt_cone_l2_n',len(b_pt)-1,b_pt)
+#        h_pt_l1_n  = rt.TH1F('pt_cone_l1_n', 'pt_cone_l1_n',len(b_pt)-1,b_pt)
+#        h_pt_l2_n  = rt.TH1F('pt_cone_l2_n', 'pt_cone_l2_n',len(b_pt)-1,b_pt)
         h_pt_2f_T  = rt.TH1F('pt_cone_2f_T', 'pt_cone_2f_T',len(b_pt)-1,b_pt)
+        h_pt_1f_T  = rt.TH1F('pt_cone_1f_T', 'pt_cone_1f_T',len(b_pt)-1,b_pt)
 
+        cut_T = 'hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
+        cut_L = 'hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
 
-        print 'drawing %s iso%s ...'%(sample, iso_str)
+        print '\tsample: %s, drawing single fakes ...'%sample
 
-#        print '1f cuts', l1hf_l2p_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 't', iso_cut)
-#        print '2f cuts', twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut)
- 
-#        t.Draw(                  'l1_pt >> pt_cone_l1_n' , l1f_l2p_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 't', iso_cut) + ' & hnl_2d_disp > 0.5')
-#        t.Draw(ptConeLep(1, iso_cut) + '>> pt_cone_l1_d' , l1f_l2p_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail_leq1(1, 't', iso_cut) + ' & hnl_2d_disp > 0.5')
-#        print '%s iso%s ... l1 done'%(sample, iso_str)
-# 
-#        t.Draw(                  'l2_pt >> pt_cone_l2_n' , l2f_l1p_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) + ' & hnl_2d_disp > 0.5')
-#        t.Draw(ptConeLep(2, iso_cut) + '>> pt_cone_l2_d' , l2f_l1p_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail_leq1(2, 't', iso_cut) + ' & hnl_2d_disp > 0.5')
-#        print '%s iso%s ... l2 done'%(sample, iso_str)
+        t.Draw(PTCONE + ' >> pt_cone_1f_T', cut_T + ' & ' + one_fake_xor_new) 
+        print '\tentries tight:', h_pt_1f_T.GetEntries()
 
-#        t.Draw('hnl_hn_vis_pt >> pt_cone_2f_T', 
-        t.Draw(PTCONE + ' >> pt_cone_2f_T', 
-#               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + disp )
-               twoFakes_sameJet_new + TIGHT + disp)
-#               twoFakes_sameJet_l0p_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + disp )
-# IMO MORE JUSTIFIED NOT TO REQUIRE L0P SINCE IN DATA WE DON'T KNOW EITHER
-#        t.Draw(ptCone2F_dimu(iso_cut) + '>> pt_cone_2f_L' ,
-        t.Draw(PTCONE + '>> pt_cone_2f_L' ,
-#               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
-               twoFakes_sameJet_new + LOOSE + disp )    
-               #### FULL BULK
-#               twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + disp )
-#               twoFakes_sameJet_l0p_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
-        print '%s iso%s ... two fakes done'%(sample, iso_str)
+        t.Draw(PTCONE + '>> pt_cone_1f_L' , cut_L + ' & ' + one_fake_xor_new)
+        print '\tentries loose:', h_pt_1f_L.GetEntries()
 
-        h_pt_1f.append(rt.TEfficiency(h_pt_l1_n, h_pt_l1_d))
-        h_pt_1f[i].SetTitle('%s; p_{T}^{Cone} [GeV]; tight-to-loose ratio (one fake)'%sample)
-        h_pt_1f[i].SetMarkerColor(rt.kGreen+i*2)
+        h_pt_1f.append(rt.TEfficiency(h_pt_1f_T, h_pt_1f_L))
+        h_pt_1f[i].SetTitle('%s; p_{T}^{cone} [GeV]; tight-to-loose ratio (single fakes)'%sample)
+        h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
+        h_pt_1f[i].SetFillColor(rt.kWhite)
 
         c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
-        h_pt_1f[i].Draw()
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        h_pt_1f[i].Draw('same')
         pf.showlogoprelimsim('CMS')
-#        save(c_pt_1f, iso_cut, sample, ch, eta)
+        pf.showlumi(sample)
+        save(c_pt_1f, iso_cut, sample, ch)
 
+        print '\tsingle-fakes done \n\tdrawing double fakes ...'
+ 
+        t.Draw(PTCONE + ' >> pt_cone_2f_T', cut_T + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet_new)
+#               twoFakes_sameJet_new + TIGHT + disp)  # OLD
+        print '\tentries tight:', h_pt_2f_T.GetEntries()
+
+        t.Draw(PTCONE + '>> pt_cone_2f_L' , cut_L + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet_new)
+ #              twoFakes_sameJet_new + LOOSE + disp ) # OLD   
+        print '\tentries loose:', h_pt_2f_L.GetEntries()
+
+        print '\tdouble-fakes done'
+  
         h_pt_2f.append(rt.TEfficiency(h_pt_2f_T, h_pt_2f_L))
-        h_pt_2f[i].SetTitle('%s; p_{T}^{Cone} [GeV]; tight-to-loose ratio (two fakes same jet)'%sample)
+        h_pt_2f[i].SetTitle('%s; p_{T}^{cone} [GeV]; tight-to-loose ratio (double fakes, same jet)'%sample)
         h_pt_2f[i].SetMarkerColor(rt.kGreen+i*2)
+        h_pt_2f[i].SetFillColor(rt.kWhite)
 
         c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
-        h_pt_2f[i].Draw()
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        h_pt_2f[i].Draw('same')
         pf.showlogoprelimsim('CMS')
+        pf.showlumi(sample)
         save(c_pt_2f, iso_cut, sample, ch)
 
         c_pt_cmprd = rt.TCanvas('ptCone_cmprd', 'ptCone_cmprd')
         framer.Draw()
         framer.GetYaxis().SetTitle('tight-to-loose ratio')
-        framer.GetXaxis().SetTitle('p_{T}^{Cone} [GeV]')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
         h_pt_1f[i].Draw('same')
-        h_pt_1f[i].SetMarkerColor(rt.kBlue)
+        h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
         h_pt_2f[i].Draw('same')
-        leg = rt.TLegend(0.47, 0.78, 0.7, 0.9)
-        leg.AddEntry(h_pt_2f[i], 'two fakes')
-        leg.AddEntry(h_pt_1f[i], 'one fake ')
+        leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+        leg.AddEntry(h_pt_2f[i], 'double fakes')
+        leg.AddEntry(h_pt_1f[i], 'single fakes ')
         leg.Draw()
+        pf.showlumi(sample)
         pf.showlogoprelimsim('CMS')
-#        save(c_pt_cmprd, iso_cut, sample, ch, eta)
+        save(c_pt_cmprd, iso_cut, sample, ch)
 
         i += 1
 
@@ -572,26 +611,28 @@ def checkTTLratio(DISP=True):
 
         c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
         framer.Draw()
-        framer.GetYaxis().SetTitle('tight-to-loose ratio')
-        framer.GetXaxis().SetTitle('p_{T}^{Cone} [GeV]')
+        framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
         for i in range(len(samples)):
             h_pt_1f[i].Draw('same')
-        c_pt_1f.BuildLegend(0.18, 0.78, 0.41, 0.9)
+            leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
+        leg.Draw()
     #    c_pt_1f.SetLogz()
         pf.showlogoprelimsim('CMS')
-#        save(c_pt_1f, iso_cut, 'cmbnd', ch)
+        save(c_pt_1f, iso_cut, 'cmbnd', ch)
 
         c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
         framer.Draw()
-        framer.GetYaxis().SetTitle('tight-to-loose ratio')
-        framer.GetXaxis().SetTitle('p_{T}^{Cone} [GeV]')
+        framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
         leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
         for i in range(len(samples)-1): # forget WJ for now
             h_pt_2f[i].Draw('same')
             leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
         leg.Draw()
         pf.showlogoprelimsim('CMS')
-        save(c_pt_2f, iso_cut, 'cmbnd'+dsp, ch)
+        save(c_pt_2f, iso_cut, 'cmbnd', ch)
 
     print sample + '_%s_iso%s\t done'%(ch, iso_str)
 ####################################################################################################
@@ -706,8 +747,49 @@ def TTbarStudy():
 ####################################################################################################
    
 ####################################################################################################
-def checkpTCone(eta_bin):
-    eta, eta_cut = eta_bin
+def checkpTdR():   
+    t = rt.TChain('tree')
+
+    t.Add(inDir + DYBB_dir_m + suffix)
+    t.Add(inDir + DY50_dir_m + suffix)
+    t.Add(inDir + DY50_ext_dir_m + suffix)
+    t.Add(inDir + DY50_dir_m + suffix)
+    t.Add(inDir + DY50_ext_dir_m + suffix)
+ 
+#    t.Add(inDir + W_dir_m + suffix)
+#    t.Add(inDir + W_ext_dir_m + suffix)
+
+#    t.Add(inDir + TT_dir_m + suffix)
+
+    cut_T   = 'hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT 
+    cut_L   = 'hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
+
+    print t.GetEntries()
+   
+    h_pT_dR_iso    = rt.TH2F('pT_dR_iso','pT_dR_iso',len(b_pt_std)-1,b_pt_std,len(b_dR)-1,b_dR)
+    h_pT_dR_noniso = rt.TH2F('pT_dR_noniso','pT_dR_noniso',len(b_pt_std)-1,b_pt_std,len(b_dR)-1,b_dR)
+
+    t.Draw('hnl_dr_12:hnl_hn_vis_pt >> pT_dR_iso', cut_T)
+
+    c_pT_dR_iso = rt.TCanvas('pt_dr_iso', 'pt_dr_iso')
+    h_pT_dR_iso.SetTitle('; DiMuon p_{T} [GeV]; #DeltaR(#mu_{1}, #mu_{2}); Counts')
+    h_pT_dR_iso.Draw('colz')
+    pf.showlogoprelimsim('CMS')
+    pf.showlumi('Tight')
+    save(c_pT_dR_iso, 0.15, 'DDE_DY', 'mu', '')
+
+    t.Draw('hnl_dr_12:hnl_hn_vis_pt >> pT_dR_noniso', cut_L)
+
+    c_pT_dR_noniso = rt.TCanvas('pt_dr_noniso', 'pt_dr_noniso')
+    h_pT_dR_noniso.SetTitle('; DiMuon p_{T} [GeV]; #DeltaR(#mu_{1}, #mu_{2}); Counts')
+    h_pT_dR_noniso.Draw('colz')
+    pf.showlogoprelimsim('CMS')
+    pf.showlumi('Loose')
+    save(c_pT_dR_noniso, 0.15, 'DDE_DY', 'mu', '')
+####################################################################################################
+   
+####################################################################################################
+def checkpTCone():
     tupels = [[TT_dir_m, ['1', '1']], [TT_dir_m, ['disp0p5', 'hnl_2d_disp > 0.5']], [DY50_dir_m, ['1','1']], [W_dir_m, ['1','1']],]
     tupels = [tupels[0]]
     h_ptcone_jetpt_sj_Iso = []; c_ptcone_jetpt_sj_Nso = []; i = 0
@@ -723,24 +805,8 @@ def checkpTCone(eta_bin):
         fin = rt.TFile(inDir + sample_dir + suffix)
         t = fin.Get('tree')
 
-        b_pt  = np.arange(5.,100,5)
-        b_dR  = np.arange(0.,0.5,0.025)
-
-        h, c = plot(tupel = tupel, 
-                    name = 'ptJet_ptCone_sameJet_NoIso', 
-                    var = ptCone2F_dimu(0.15) + ': l1_jet_pt', #ptCone2F(iso_cut) + ': l1_jet_pt',
-                    binsX = b_pt, binsY =  b_pt, mode = 2, iso = 0.15, 
-                    xtitle = '#mu_{1} Jet p_{T} [GeV]', 
-                    ytitle = 'p_{T}^{Cone} [GeV]', 
-                    cut = twoFakes_sameJet + LepIDIsoFail(1, 't', iso_cut) + LepIDIsoFail(2, 't', iso_cut) + twoLepObjIsoleq1)
-
-        h, c = plot(tupel = tupel, 
-                    name = 'ptJet_ptCone_sameJet_Iso', 
-                    var = ptCone2F_dimu(0.15) + ': l1_jet_pt', #ptCone2F(iso_cut) + ': l1_jet_pt',
-                    binsX = b_pt, binsY =  b_pt, mode = 2, iso = 0.15, 
-                    xtitle = '#mu_{1} Jet p_{T} [GeV]', 
-                    ytitle = 'p_{T}^{Cone} [GeV]', 
-                    cut = twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut))
+        b_pt  = np.arange(5.,105,5)
+        b_dR  = np.arange(0.,0.825,0.025)
 
         h, c = plot(tupel = tupel, 
                     name = 'dR_pt_NoIso', 
@@ -748,7 +814,7 @@ def checkpTCone(eta_bin):
                     binsX = b_pt, binsY =  b_dR, mode = 2, iso = 0.15, 
                     xtitle = 'DiMuon p_{T} [GeV]', 
                     ytitle = '#DeltaR (#mu_{1}, #mu_{2})', 
-                    cut = '1' + LepIDIsoFail(1, 't', iso_cut) + LepIDIsoFail(2, 't', iso_cut) + twoLepObjIsoleq1 + ' & hnl_2d_disp > 0.5') # + ' & ' + twoFakes_sameJet)
+                    cut = '1' + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1 + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 0.2 & abs(l2_dz) < 0.2') # + ' & ' + twoFakes_sameJet)
 
         h, c = plot(tupel = tupel, 
                     name = 'dR_pt_Iso', 
@@ -756,7 +822,24 @@ def checkpTCone(eta_bin):
                     binsX = b_pt, binsY =  b_dR, mode = 2, iso = 0.15,
                     xtitle = 'DiMuon p_{T} [GeV]', 
                     ytitle = '#DeltaR (#mu_{1}, #mu_{2})', 
-                    cut = '1' + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut) + ' & hnl_2d_disp > 0.5') # + ' & ' + twoFakes_sameJet)
+                    cut = '1' + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 0.2 & abs(l2_dz) < 0.2') # + ' & ' + twoFakes_sameJet)
+
+def notdo(): #former part of checkpTCone
+        h, c = plot(tupel = tupel, 
+                    name = 'ptJet_ptCone_sameJet_NoIso', 
+                    var = ptCone2F_dimu(0.15) + ': l1_jet_pt', #ptCone2F(iso_cut) + ': l1_jet_pt',
+                    binsX = b_pt, binsY =  b_pt, mode = 2, iso = 0.15, 
+                    xtitle = '#mu_{1} Jet p_{T} [GeV]', 
+                    ytitle = 'p_{T}^{cone} [GeV]', 
+                    cut = twoFakes_sameJet + LepIDIsoFail(1, 't', iso_cut) + LepIDIsoFail(2, 't', iso_cut) + twoLepObjIsoleq1)
+
+        h, c = plot(tupel = tupel, 
+                    name = 'ptJet_ptCone_sameJet_Iso', 
+                    var = ptCone2F_dimu(0.15) + ': l1_jet_pt', #ptCone2F(iso_cut) + ': l1_jet_pt',
+                    binsX = b_pt, binsY =  b_pt, mode = 2, iso = 0.15, 
+                    xtitle = '#mu_{1} Jet p_{T} [GeV]', 
+                    ytitle = 'p_{T}^{cone} [GeV]', 
+                    cut = twoFakes_sameJet + LepIDIsoPass(1, 't', iso_cut) + LepIDIsoPass(2, 't', iso_cut))
 ####################################################################################################
    
 ####################################################################################################
@@ -849,8 +932,8 @@ def applyTTL_old(isData=False):
 
     c_pt = rt.TCanvas('pt', 'pt')
     weighed_pt.SetMarkerColor(rt.kGreen+2)
-    weighed_pt.SetTitle('; p_{T}^{Cone} [GeV]; Counts')
-    observed_pt.SetTitle('; p_{T}^{Cone} [GeV]; Counts')
+    weighed_pt.SetTitle('; p_{T}^{cone} [GeV]; Counts')
+    observed_pt.SetTitle('; p_{T}^{cone} [GeV]; Counts')
     observed_pt.SetMarkerColor(rt.kMagenta+2)
     weighed_pt.Draw()
     observed_pt.Draw('same')
@@ -905,11 +988,12 @@ def applyTTL_old(isData=False):
 ####################################################################################################
    
 ####################################################################################################
-def applyTTL(isData=False, VLD=True):
+def applyTTL(isData=False, VLD=True, SPLIT=None):
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
     ch = 'mu'
     sample = 'data'
+    
     if isData == False:
 #        fin = rt.TFile(treeDir + 'tree_fr_liteTTbar.root') #TODO CHANGE TO FULL
 #        fin = rt.TFile(tempDir + 'tree_fr_DR_TTbar.root') 
@@ -925,6 +1009,7 @@ def applyTTL(isData=False, VLD=True):
 #        cut_L  += LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1
 #        cut_L  += LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1
         cut_LNT = twoFakes_sameJet_new + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
+        show = pf.showlogoprelimsim('CMS')
 
     if isData == True:
         fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root') #TODO CHANGE TO FULL
@@ -942,6 +1027,7 @@ def applyTTL(isData=False, VLD=True):
         cut_T_VLD   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT 
         cut_L_VLD   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE 
         cut_LNT_VLD = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
+        show = pf.showlogopreliminary()
  
     ### VALIDATE
     if VLD == True:
@@ -953,41 +1039,133 @@ def applyTTL(isData=False, VLD=True):
         cut_T   = cut_T_APL
         cut_LNT = cut_LNT_APL
 
+    if SPLIT == 'leq':
+        cut_T   += ' & ' + PTCONE + ' < 25'
+        cut_LNT += ' & ' + PTCONE + ' < 25'
+
+    if SPLIT == 'geq':
+        cut_T   += ' & ' + PTCONE + ' > 25'
+        cut_LNT += ' & ' + PTCONE + ' > 25'
+
+    ## apply Z veto on all OS combinations:
+    #cut_T   += ' & ' + Z_veto
+    #cut_LNT += ' & ' + Z_veto
+
+    ## apply cut on vtx fitting quality
+    cut_T   += ' & sv_prob > 0.01'
+    cut_LNT += ' & sv_prob > 0.01'
+
     print '\n\tcut T:', cut_T, '\n\tcut LNT:', cut_LNT
 
-    weighed_pt        = rt.TH1F('weighed_pt',     'weighed_pt',     len(b_pt)-1, b_pt)
-    weighed_2disp     = rt.TH1F('weighed_2disp',  'weighed_2disp',  len(b_2d)-1, b_2d)
-    weighed_m_dimu    = rt.TH1F('weighed_m_dimu', 'weighed_m_dimu', len(b_m)-1, b_m)
-    weighed_M_dimu    = rt.TH1F('weighed_M_dimu', 'weighed_M_dimu', len(b_M)-1, b_M)
-    weighed_m_triL    = rt.TH1F('weighed_m_triL', 'weighed_m_triL', len(b_M)-1, b_M)
-    observed_pt       = rt.TH1F('obs_pt',         'obs_pt',         len(b_pt)-1, b_pt)
-    observed_2disp    = rt.TH1F('obs_2disp',      'obs_2disp',      len(b_2d)-1, b_2d)
-    observed_m_dimu   = rt.TH1F('obs_m_dimu',     'obs_m_dimu',     len(b_m)-1, b_m)
-    observed_M_dimu   = rt.TH1F('obs_M_dimu',     'obs_M_dimu',     len(b_M)-1, b_M)
-    observed_m_triL   = rt.TH1F('obs_m_triL',     'obs_m_triL',     len(b_M)-1, b_M)
+    weighed_pt         = rt.TH1F('weighed_pt',         'weighed_pt',        len(b_pt)-1, b_pt)
+    weighed_dr_12      = rt.TH1F('weighed_dr_12',      'weighed_dr_12',     len(b_dR)-1, b_dR)
+    weighed_2disp      = rt.TH1F('weighed_2disp',      'weighed_2disp',     len(b_2d)-1, b_2d)
+    weighed_2disp_sig  = rt.TH1F('weighed_2disp_sig',  'weighed_2disp_sig', len(b_2d_sig)-1, b_2d_sig)
+    weighed_m_dimu     = rt.TH1F('weighed_m_dimu',     'weighed_m_dimu',    len(b_m)-1, b_m)
+    weighed_M_dimu     = rt.TH1F('weighed_M_dimu',     'weighed_M_dimu',    len(b_M)-1, b_M)
+    weighed_M_01       = rt.TH1F('weighed_M_01',       'weighed_M_01',      len(b_M)-1, b_M)
+    weighed_M_02       = rt.TH1F('weighed_M_02',       'weighed_M_02',      len(b_M)-1, b_M)
+    weighed_m_triL     = rt.TH1F('weighed_m_triL',     'weighed_m_triL',    len(b_M)-1, b_M)
+    observed_pt        = rt.TH1F('obs_pt',             'obs_pt',            len(b_pt)-1, b_pt)
+    observed_dr_12     = rt.TH1F('obs_dr_12',          'obs_dr_12',         len(b_dR)-1, b_dR)
+    observed_2disp     = rt.TH1F('obs_2disp',          'obs_2disp',         len(b_2d)-1, b_2d)
+    observed_2disp_sig = rt.TH1F('obs_2disp_sig',      'obs_2disp_sig',     len(b_2d_sig)-1, b_2d_sig)
+    observed_m_dimu    = rt.TH1F('obs_m_dimu',         'obs_m_dimu',        len(b_m)-1, b_m)
+    observed_M_dimu    = rt.TH1F('obs_M_dimu',         'obs_M_dimu',        len(b_M)-1, b_M)
+    observed_M_01      = rt.TH1F('obs_M_01',           'obs_M_01',          len(b_M)-1, b_M)
+    observed_M_02      = rt.TH1F('obs_M_02',           'obs_M_02',          len(b_M)-1, b_M)
+    observed_m_triL    = rt.TH1F('obs_m_triL',         'obs_m_triL',        len(b_M)-1, b_M)
+                                                       
+    print '\n\tentries:', t.GetEntriesFast()           
+                                                       
+    print '\tdrawing M_02 ...'
 
-    print '\n\tentries:', t.GetEntriesFast()
+    t.Draw( 'hnl_m_02 >> obs_M_02', cut_T )  
+    print '\tobs M_02 done'
+
+    t.Draw( 'hnl_m_02  >> weighed_M_02',             '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
+    print '\tweighed M_02 done'
+
+    c_M_02 = rt.TCanvas('M_02', 'M_02')
+    weighed_M_02.SetLineColor(rt.kGreen+2); weighed_M_02.SetLineWidth(2); weighed_M_02.SetMarkerStyle(0)
+    weighed_M_02.SetTitle('; m(#mu_{0},  #mu_{2}) [GeV]; Counts')
+    observed_M_02.SetTitle('; m(#mu_{0},  #mu_{2}) [GeV]; Counts')
+    observed_M_02.SetMarkerColor(rt.kMagenta+2)
+    observed_M_02.Draw()
+    weighed_M_02.Draw('histsame')
+    leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+    leg.AddEntry(observed_M_02, 'observed')
+    leg.AddEntry(weighed_M_02, 'expected')
+    leg.Draw()
+    show
+    save(c_M_02, iso_cut, 'DDE_' + sample, ch, '')
+
+    print '\tdrawing M_01 ...'
+
+    t.Draw( 'hnl_m_01 >> obs_M_01', cut_T )  
+    print '\tobs mass_01 done'
+
+    t.Draw( 'hnl_m_01  >> weighed_M_01',             '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
+    print '\tweighed M_01 done'
+
+    c_M_01 = rt.TCanvas('M_01', 'M_01')
+    weighed_M_01.SetLineColor(rt.kGreen+2); weighed_M_01.SetLineWidth(2); weighed_M_01.SetMarkerStyle(0)
+    weighed_M_01.SetTitle('; m(#mu_{0},  #mu_{1}) [GeV]; Counts')
+    observed_M_01.SetTitle('; m(#mu_{0},  #mu_{1}) [GeV]; Counts')
+    observed_M_01.SetMarkerColor(rt.kMagenta+2)
+    observed_M_01.Draw()
+    weighed_M_01.Draw('histsame')
+    leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+    leg.AddEntry(observed_M_01, 'observed')
+    leg.AddEntry(weighed_M_01, 'expected')
+    leg.Draw()
+    show
+    save(c_M_01, iso_cut, 'DDE_' + sample, ch, '')
+
+    print '\tdrawing dr_12 ...'
+
+    t.Draw( 'hnl_dr_12 >> obs_dr_12', cut_T )  
+    print '\tobs dr_12 done'
+
+    t.Draw( 'hnl_dr_12  >> weighed_dr_12',             '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
+    print '\tweighed dr_12 done'
+
+    c_dr_12 = rt.TCanvas('dr_12', 'dr_12')
+    weighed_dr_12.SetLineColor(rt.kGreen+2); weighed_dr_12.SetLineWidth(2); weighed_dr_12.SetMarkerStyle(0)
+    weighed_dr_12.SetTitle('; #DeltaR(#mu_{1}, #mu_{2}); Counts')
+    observed_dr_12.SetTitle('; #DeltaR(#mu_{1}, #mu_{2}); Counts')
+    observed_dr_12.SetMarkerColor(rt.kMagenta+2)
+    observed_dr_12.Draw()
+    weighed_dr_12.Draw('histsame')
+    leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+    leg.AddEntry(observed_dr_12, 'observed')
+    leg.AddEntry(weighed_dr_12, 'expected')
+    leg.Draw()
+    show
+    save(c_dr_12, iso_cut, 'DDE_' + sample, ch, '')
 
     print '\n\tdrawing pt ...'
 
-    t.Draw( 'hnl_hn_vis_pt >> obs_pt', cut_T ) 
+    t.Draw( PTCONE + ' >> obs_pt', cut_T ) 
+#    t.Draw( 'hnl_hn_vis_pt >> obs_pt', cut_T ) 
     print '\tobs pt done'
 
-    t.Draw( ptCone2F_dimu(iso_cut) + '>> weighed_pt',  '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
+    t.Draw( PTCONE + ' >> weighed_pt',  '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
+#    t.Draw( ptCone2F_dimu(iso_cut) + '>> weighed_pt',  '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
     print '\tweighed pt done'
 
     c_pt = rt.TCanvas('pt', 'pt')
-    weighed_pt.SetMarkerColor(rt.kGreen+2)
-    weighed_pt.SetTitle('; p_{T}^{Cone} [GeV]; Counts')
-    observed_pt.SetTitle('; p_{T}^{Cone} [GeV]; Counts')
+    weighed_pt.SetLineColor(rt.kGreen+2); weighed_pt.SetLineWidth(2); weighed_pt.SetMarkerStyle(0)
+    weighed_pt.SetTitle('; p_{T}^{cone} [GeV]; Counts')
+    observed_pt.SetTitle('; p_{T}^{cone} [GeV]; Counts')
     observed_pt.SetMarkerColor(rt.kMagenta+2)
-    weighed_pt.Draw('hist')
-    observed_pt.Draw('same')
+    observed_pt.Draw()
+    weighed_pt.Draw('histsame')
     leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
     leg.AddEntry(observed_pt, 'observed')
     leg.AddEntry(weighed_pt, 'expected')
     leg.Draw()
-    pf.showlogoprelimsim('CMS')
+    show
     save(c_pt, iso_cut, 'DDE_' + sample, ch, '')
 
     print '\tdrawing 2disp ...'
@@ -999,84 +1177,108 @@ def applyTTL(isData=False, VLD=True):
     print '\tweighed 2disp done'
 
     c_2disp = rt.TCanvas('2disp', '2disp')
-    weighed_2disp.SetMarkerColor(rt.kGreen+2)
+    weighed_2disp.SetLineColor(rt.kGreen+2); weighed_2disp.SetLineWidth(2); weighed_2disp.SetMarkerStyle(0)
     weighed_2disp.SetTitle(';2D displacement [cm]; Counts')
     observed_2disp.SetTitle(';2D displacement [cm]; Counts')
     observed_2disp.SetMarkerColor(rt.kMagenta+2)
-    weighed_2disp.Draw('hist')
-    observed_2disp.Draw('same')
+    observed_2disp.Draw()
+    weighed_2disp.Draw('histsame')
     leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
     leg.AddEntry(observed_2disp, 'observed')
     leg.AddEntry(weighed_2disp, 'expected')
     leg.Draw()
-    pf.showlogoprelimsim('CMS')
+    show
     save(c_2disp, iso_cut, 'DDE_' + sample, ch, '')
 
-    print '\tdrawing dimu mass ...'
+    print '\tdrawing m_dimu ...'
 
     t.Draw( 'hnl_m_12 >> obs_m_dimu', cut_T )  
-    print '\tobs dimu mass done'
+    print '\tobs m_dimu done'
 
     t.Draw( 'hnl_m_12  >> weighed_m_dimu',             '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
-    print '\tweighed dimu mass done'
+    print '\tweighed m_dimu done'
 
-    c_mass = rt.TCanvas('mass', 'mass')
-    weighed_m_dimu.SetMarkerColor(rt.kGreen+2)
-    weighed_m_dimu.SetTitle('; m(#mu_{1},  #mu_{2}); Counts')
-    observed_m_dimu.SetTitle('; m(#mu_{1},  #mu_{2}); Counts')
+    c_m_dimu = rt.TCanvas('m_dimu', 'm_dimu')
+    weighed_m_dimu.SetLineColor(rt.kGreen+2); weighed_m_dimu.SetLineWidth(2); weighed_m_dimu.SetMarkerStyle(0)
+    weighed_m_dimu.SetTitle('; m(#mu_{1},  #mu_{2}) [GeV]; Counts')
+    observed_m_dimu.SetTitle('; m(#mu_{1},  #mu_{2}) [GeV]; Counts')
     observed_m_dimu.SetMarkerColor(rt.kMagenta+2)
-    weighed_m_dimu.Draw('hist')
-    observed_m_dimu.Draw('same')
+    observed_m_dimu.Draw()
+    weighed_m_dimu.Draw('histsame')
     leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
     leg.AddEntry(observed_m_dimu, 'observed')
     leg.AddEntry(weighed_m_dimu, 'expected')
     leg.Draw()
-    pf.showlogoprelimsim('CMS')
-    save(c_mass, iso_cut, 'DDE_' + sample, ch, '')
+    show
+    save(c_m_dimu, iso_cut, 'DDE_' + sample, ch, '')
 
-    print '\tdrawing dimu mass_high ...'
+    print '\tdrawing M_dimu ...'
 
     t.Draw( 'hnl_m_12 >> obs_M_dimu', cut_T )  
-    print '\tobs dimu mass_high done'
+    print '\tobs M_dimu done'
 
     t.Draw( 'hnl_m_12  >> weighed_M_dimu',             '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
-    print '\tweighed dimu mass_high done'
+    print '\tweighed M_dimu done'
 
-    c_mass_high = rt.TCanvas('mass_high', 'mass_high')
-    weighed_M_dimu.SetMarkerColor(rt.kGreen+2)
-    weighed_M_dimu.SetTitle('; m(#mu_{1},  #mu_{2}); Counts')
-    observed_M_dimu.SetTitle('; m(#mu_{1},  #mu_{2}); Counts')
+    c_M_dimu = rt.TCanvas('M_dimu', 'M_dimu')
+    weighed_M_dimu.SetLineColor(rt.kGreen+2); weighed_M_dimu.SetLineWidth(2); weighed_M_dimu.SetMarkerStyle(0)
+    weighed_M_dimu.SetTitle('; m(#mu_{1},  #mu_{2}) [GeV]; Counts')
+    observed_M_dimu.SetTitle('; m(#mu_{1},  #mu_{2}) [GeV]; Counts')
     observed_M_dimu.SetMarkerColor(rt.kMagenta+2)
-    weighed_M_dimu.Draw('hist')
-    observed_M_dimu.Draw('same')
+    observed_M_dimu.Draw()
+    weighed_M_dimu.Draw('histsame')
     leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
     leg.AddEntry(observed_M_dimu, 'observed')
     leg.AddEntry(weighed_M_dimu, 'expected')
     leg.Draw()
-    pf.showlogoprelimsim('CMS')
-    save(c_mass_high, iso_cut, 'DDE_' + sample, ch, '')
+    show
+    save(c_M_dimu, iso_cut, 'DDE_' + sample, ch, '')
 
-    print '\tdrawing tri lep mass ...'
+    print '\tdrawing m_triL ...'
 
     t.Draw( 'hnl_w_vis_m >> obs_m_triL', cut_T )  
-    print '\tobs tri lep mass done'
+    print '\tobs m_triL done'
 
     t.Draw( 'hnl_w_vis_m >> weighed_m_triL',           '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
-    print '\tweighed tri lep mass done'
+    print '\tweighed m_triL done'
 
-    c_3l_mass = rt.TCanvas('3l_mass', '3l_mass')
-    weighed_m_triL.SetMarkerColor(rt.kGreen+2)
-    weighed_m_triL.SetTitle('; m(#mu_{0}, #mu_{1},  #mu_{2}); Counts')
-    observed_m_triL.SetTitle('; m(#mu_{0}, #mu_{1},  #mu_{2}); Counts')
+    c_m_triL = rt.TCanvas('m_triL', 'm_triL')
+    weighed_m_triL.SetLineColor(rt.kGreen+2); weighed_m_triL.SetLineWidth(2); weighed_m_triL.SetMarkerStyle(0)
+    weighed_m_triL.SetTitle('; m(#mu_{0}, #mu_{1},  #mu_{2}) [GeV]; Counts')
+    observed_m_triL.SetTitle('; m(#mu_{0}, #mu_{1},  #mu_{2}) [GeV]; Counts')
     observed_m_triL.SetMarkerColor(rt.kMagenta+2)
-    weighed_m_triL.Draw('hist')
-    observed_m_triL.Draw('same')
+    observed_m_triL.Draw()
+    weighed_m_triL.Draw('histsame')
     leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
     leg.AddEntry(observed_m_triL, 'observed')
     leg.AddEntry(weighed_m_triL, 'expected')
     leg.Draw()
-    pf.showlogoprelimsim('CMS')
-    save(c_3l_mass, iso_cut, 'DDE_' + sample, ch, '')
+    show
+    save(c_m_triL, iso_cut, 'DDE_' + sample, ch, '')
+
+    set_trace()
+
+    print '\tdrawing 2disp/sig ...'                    
+
+    t.Draw( 'hnl_2d_disp_sig >> obs_2disp_sig', cut_T )   
+    print '\tobs 2disp/sig done'
+
+    t.Draw( 'hnl_2d_disp_sig >> weighed_2disp_sig',            '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
+    print '\tweighed 2disp/sig done'
+
+    c_2disp_sig = rt.TCanvas('2disp_sig', '2disp_sig')
+    weighed_2disp_sig.SetLineColor(rt.kGreen+2); weighed_2disp_sig.SetLineWidth(2); weighed_2disp_sig.SetMarkerStyle(0)
+    weighed_2disp_sig.SetTitle('; L_{2d}/#sigma ; Counts')
+    observed_2disp_sig.SetTitle('; L_{2d}/#sigma; Counts')
+    observed_2disp_sig.SetMarkerColor(rt.kMagenta+2)
+    observed_2disp_sig.Draw()
+    weighed_2disp_sig.Draw('histsame')
+    leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+    leg.AddEntry(observed_2disp_sig, 'observed')
+    leg.AddEntry(weighed_2disp_sig, 'expected')
+    leg.Draw()
+    show
+    save(c_2disp_sig, iso_cut, 'DDE_' + sample, ch, '')
 
 def ptEtaBin(ipt, ieta):
     iso_cut = 0.15
@@ -1085,6 +1287,91 @@ def ptEtaBin(ipt, ieta):
     cut = ' & {ptcone} < {pthi} & {ptcone} > {ptlo} & {eta} < {etahi} & {eta} > {etalo}'.format( ptcone = ptCone2F_dimu(iso_cut), ptlo = ptlow, pthi = pthigh, eta = 'abs(hnl_hn_vis_eta)', etahi=etahigh, etalo = etalow)
     return cut
 
+def checkpTdRinFRgeq25():
+    fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root')
+    t = fin.Get('tree')
+
+    cut_T   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT
+    cut_L   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
+    cut_LNT = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
+
+    cut_T   += ' & ' + PTCONE + ' > 25'
+    cut_LNT += ' & ' + PTCONE + ' > 25'
+
+    observed_pt_dr_12 = rt.TH2F('obs_pt_dr', 'obs_pt_dr', len(b_pt)-1, b_pt, len(b_dR)-1, b_dR)
+
+    t.Draw( 'hnl_dr_12:' + PTCONE + ' >> obs_pt_dr', cut_T )
+
+    c_pt_dr = rt.TCanvas('obs_pt_dr','obs_pt_dr'); c_pt_dr.cd()
+    observed_pt_dr_12.SetTitle(';p_{T}^{cone} [GeV]; #DeltaR(#mu_{1}, #mu_{2});Counts')
+    observed_pt_dr_12.Draw('colztext')
+    pf.showlogopreliminary()
+    c_pt_dr.Modified(); c_pt_dr.Update()
+    
+def checkpTpTinFRgeq25():
+    fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root')
+    t = fin.Get('tree')
+
+    cut_T   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT
+    cut_L   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
+    cut_LNT = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
+
+    cut_T   += ' & ' + PTCONE + ' > 25'
+    cut_LNT += ' & ' + PTCONE + ' > 25'
+
+    observed_pt_pt = rt.TH2F('obs_pt_pt', 'obs_pt_pt', len(b_pt)-1, b_pt, len(b_pt)-1, b_pt)
+
+    t.Draw( 'l2_pt:l1_pt >> obs_pt_pt', cut_T )
+
+    c_pt_pt = rt.TCanvas('obs_pt_pt','obs_pt_pt'); c_pt_pt.cd()
+    observed_pt_pt.SetTitle(';p_{T}(#mu_{1}) [GeV]; p_{T}(#mu_{2}) [GeV]; Counts')
+    observed_pt_pt.Draw('colztext')
+    pf.showlogopreliminary()
+    c_pt_pt.Modified(); c_pt_pt.Update()
+ 
+    save(c_pt_pt, 0.15, 'DDE_data', 'mu', '') 
+    
+def checkDiMsChi2inFRgeq25():
+    fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root')
+    t = fin.Get('tree')
+
+    cut_T   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT
+    cut_L   = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
+    cut_LNT = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & hnl_w_vis_m > 80 & nbj == 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
+
+    cut_T   += ' & ' + PTCONE + ' > 25'
+    cut_LNT += ' & ' + PTCONE + ' > 25'
+
+    observed_m01_chi2 = rt.TH2F('obs_m01_chi2', 'obs_m01_chi2',len(b_M)-1, b_M,len(b_chi2)-1, b_chi2)
+    observed_m02_chi2 = rt.TH2F('obs_m02_chi2', 'obs_m02_chi2',len(b_M)-1, b_M,len(b_chi2)-1, b_chi2)
+    observed_m12_chi2 = rt.TH2F('obs_m12_chi2', 'obs_m12_chi2',len(b_M)-1, b_M,len(b_chi2)-1, b_chi2)
+
+    t.Draw( 'sv_prob:hnl_m_01 >> obs_m01_chi2', cut_T )
+
+    c_m01_chi2 = rt.TCanvas('obs_m01_chi2','obs_m01_chi2'); c_m01_chi2.cd()
+    observed_m01_chi2.SetTitle(';m(#mu_{0},#mu_{1}) [GeV]; SV probability; Counts')
+    observed_m01_chi2.Draw('colz')
+    pf.showlogopreliminary()
+    c_m01_chi2.Modified(); c_m01_chi2.Update()
+    save(c_m01_chi2, 0.15, 'DDE_data', 'mu', '') 
+
+    t.Draw( 'sv_prob:hnl_m_02 >> obs_m02_chi2', cut_T )
+
+    c_m02_chi2 = rt.TCanvas('obs_m02_chi2','obs_m02_chi2'); c_m02_chi2.cd()
+    observed_m02_chi2.SetTitle(';m(#mu_{0},#mu_{2}) [GeV]; SV probability; Counts')
+    observed_m02_chi2.Draw('colz')
+    pf.showlogopreliminary()
+    c_m02_chi2.Modified(); c_m02_chi2.Update()
+    save(c_m02_chi2, 0.15, 'DDE_data', 'mu', '') 
+
+    t.Draw( 'sv_prob:hnl_m_12 >> obs_m12_chi2', cut_T )
+
+    c_m12_chi2 = rt.TCanvas('obs_m12_chi2','obs_m12_chi2'); c_m12_chi2.cd()
+    observed_m12_chi2.SetTitle(';m(#mu_{1},#mu_{2}) [GeV]; SV probability; Counts')
+    observed_m12_chi2.Draw('colz')
+    pf.showlogopreliminary()
+    c_m12_chi2.Modified(); c_m12_chi2.Update()
+    save(c_m12_chi2, 0.15, 'DDE_data', 'mu', '') 
 
 #print '\n'
 #pool = Pool(processes=len(isolst))
@@ -1128,6 +1415,7 @@ def fill(tree, hist, var, cut='', opt=''):
 
 def save(knvs, iso, sample='', ch='', eta=''):
     iso_str = str(int(iso * 100))
+    knvs.GetFrame().SetLineWidth(0)
     knvs.Modified(); knvs.Update()
     if len(eta):
         knvs.SaveAs('{dr}{smpl}_{ch}_{ttl}_iso{iso}_eta{eta}.png' .format(dr=plotDir, smpl=sample, ttl=knvs.GetTitle(), ch=ch, iso=iso_str, eta=eta))
