@@ -18,6 +18,7 @@ tmp_heppy.py
 
 # VIM SWAP FILES
 *.swp
+*.swo
 
 # ROOT FILES
 *.root

@@ -106,20 +106,28 @@ def showlogo(text):
     logo.SetTextSize(0.045)
     logo.DrawLatex(0.15,0.94,text)
 
-def showlogopreliminary(text1,text2):
+def showTitle(text):
+    logo = ROOT.TLatex()
+    logo.SetNDC()
+    logo.SetTextAlign(11)
+    logo.SetTextFont(42)
+    logo.SetTextSize(0.04)
+    logo.DrawLatex(0.75,0.87,text)
+
+def showlogopreliminary():
     logo = ROOT.TLatex()
     logo.SetNDC()
     logo.SetTextAlign(11)
     logo.SetTextFont(61)
     logo.SetTextSize(0.045)
-    logo.DrawLatex(0.15,0.94,text1)
+    logo.DrawLatex(0.15,0.94,'CMS')
     
     preliminary = ROOT.TLatex()
     preliminary.SetNDC()
     preliminary.SetTextAlign(11)
     preliminary.SetTextFont(52)
     preliminary.SetTextSize(0.038)
-    preliminary.DrawLatex(0.24,0.94,text2)
+    preliminary.DrawLatex(0.24,0.94,'Preliminary')
     
 def showlogoprelimsim(text):
     logo = ROOT.TLatex()
@@ -206,8 +214,8 @@ def setpfstyle():
     pfstyle.SetTitleOffset(1.35,"z")
 
     pfstyle.SetMarkerStyle(20)
-    pfstyle.SetMarkerSize(0.9)
-    pfstyle.SetLineWidth(2)
+    pfstyle.SetMarkerSize(0.5)
+    pfstyle.SetLineWidth(1)
     # pfstyle.SetHistLineWidth(2.)
     pfstyle.SetLineStyleString(2,'[12 12]') # postscript dashes
     
