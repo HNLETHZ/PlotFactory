@@ -18,15 +18,19 @@ from itertools import product
 #gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 pf.setpfstyle()
 ####################################################################################################
-plotDir  = '/eos/user/v/vstampf/plots/DDE/'
-inDir   = '/eos/user/v/vstampf/ntuples/DDE_v0/'
-inDir   = '/eos/user/v/vstampf/ntuples/DDE_v1_DiMuIso/'
-inDir   = '/eos/user/v/vstampf/ntuples/DDE_v2/'
-tempDir = '/eos/user/v/vstampf/ntuples/temp/'
-treeDir = '/eos/user/v/vstampf/ntuples/DDE_v2/prompt_m/added_trees/'
-m_dir   = 'prompt_m/'
-e_dir   = 'prompt_e/'
-suffix  = 'HNLTreeProducer/tree.root'
+plotDir     = '/eos/user/v/vstampf/plots/DDE/'
+inDir       = '/eos/user/v/vstampf/ntuples/DDE_v0/'
+inDir       = '/eos/user/v/vstampf/ntuples/DDE_v1_DiMuIso/'
+inDir       = '/eos/user/v/vstampf/ntuples/DDE_v2/'
+inDirv2     = '/eos/user/d/dezhu/HNL/ntuples/HN3Lv2.0/'
+sigDir_mee  = 'signal/mee/ntuples/'
+sigDir_eee  = 'signal/eee/ntuples/'
+dataDir_eee = 'data/2017/eee/ntuples/Single_ele_2017B/' 
+tempDir     = '/eos/user/v/vstampf/ntuples/temp/'
+treeDir     = '/eos/user/v/vstampf/ntuples/DDE_v2/prompt_m/added_trees/'
+m_dir       = 'prompt_m/'
+e_dir       = 'prompt_e/'
+suffix      = 'HNLTreeProducer/tree.root'
 ####################################################################################################
 DY50_dir_e           = 'prompt_e/DYJetsToLL_M50/'
 DY50_ext_dir_e       = 'prompt_e/DYJetsToLL_M50_ext/'
@@ -111,7 +115,11 @@ mltlst = [ ##  sample          , cuts
 in_acc = 'abs(l0_eta) < 2.4  &  abs(l1_eta) < 2.4  &  abs(l2_eta) < 2.4'
 
 l0_prompt_m_dr = '( (l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13 )'
+
 l0_prompt_e_dr = '( (l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11 )'
+l1_prompt_e_dr = '( (l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 11 )'
+l2_prompt_e_dr = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 11 )'
+
 l1_prompt_dr   = '( (l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13 )'
 l2_prompt_dr   = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13 )'
 
@@ -123,41 +131,54 @@ l2_fake_dr   = '( !' + l2_prompt_dr   + ')'
 #at_least_one_prompt_dr = '(' + l1_prompt_dr + ')  ||  (' + l2_prompt_dr + ')'
 #two_prompt_dr = '(' + l1_prompt_dr + ')  &  (' + l2_prompt_dr + ')'
 
-l0_prompt = '( l0_simType == 4 | (l0_simType == 3 & l0_simFlavour == 15) )'
-l1_prompt = '( l1_simType == 4 | (l1_simType == 3 & l1_simFlavour == 15) )'
-l2_prompt = '( l2_simType == 4 | (l2_simType == 3 & l2_simFlavour == 15) )'
+l0_prompt_old = '( l0_simType == 4 | (l0_simType == 3 & l0_simFlavour == 15) )'
+l1_prompt_old = '( l1_simType == 4 | (l1_simType == 3 & l1_simFlavour == 15) )'
+l2_prompt_old = '( l2_simType == 4 | (l2_simType == 3 & l2_simFlavour == 15) )'
 
-l0_prompt_new = '( abs(l0_simType) == 4 | l0_simFlavour == 15 )'
-l1_prompt_new = '( abs(l1_simType) == 4 | l1_simFlavour == 15 )'
-l2_prompt_new = '( abs(l2_simType) == 4 | l2_simFlavour == 15 )'
+l0_prompt_mu  = '( abs(l0_simType) == 4 | l0_simFlavour == 15 )'
+l1_prompt = '( abs(l1_simType) == 4 | l1_simFlavour == 15 )'
+l2_prompt = '( abs(l2_simType) == 4 | l2_simFlavour == 15 )'
 
-l0_fake_new = '( ! ' + l0_prompt_new + ' )' 
-l1_fake_new = '( ! ' + l1_prompt_new + ' )' 
-l2_fake_new = '( ! ' + l2_prompt_new + ' )' 
+l0_fake_mu = '( ! ' + l0_prompt_mu  + ' )' 
+l1_fake    = '( ! ' + l1_prompt + ' )' 
+l2_fake    = '( ! ' + l2_prompt + ' )' 
 
-l1f_l2p_new     = '(' + l1_fake_new  + ' & ' + l2_prompt_new + ')'
-l2f_l1p_new     = '(' + l2_fake_new  + ' & ' + l1_prompt_new + ')'
-l1f_l2p_l0p_new = '(' + l1f_l2p_new  + ' & ' + l0_prompt_new + ')'
-l2f_l1p_l0p_new = '(' + l2f_l1p_new  + ' & ' + l0_prompt_new + ')'
+l0_fake_e_dr = '( ! ' + l0_prompt_e_dr + ' )' 
+l1_fake_e_dr = '( ! ' + l1_prompt_e_dr + ' )' 
+l2_fake_e_dr = '( ! ' + l2_prompt_e_dr + ' )' 
 
-l0_fake = '( ! ' + l0_prompt + ' )' #(l0_simType != 4)'# & abs(l0_simType) < 1001)'
-l1_fake = '( ! ' + l1_prompt + ' )' #'(l1_simType != 4)'# & abs(l1_simType) < 1001)'
-l2_fake = '( ! ' + l2_prompt + ' )' #'(l2_simType != 4)'# & abs(l2_simType) < 1001)'
+
+l1f_l2p              = '(' + l1_fake  + ' & ' + l2_prompt + ')'
+l2f_l1p              = '(' + l2_fake  + ' & ' + l1_prompt + ')'
+ 
+l1f_l2p_e_dr         = '(' + l1_fake_e_dr  + ' & ' + l2_prompt_e_dr + ')'
+l2f_l1p_e_dr         = '(' + l2_fake_e_dr  + ' & ' + l1_prompt_e_dr + ')'
+
+l1f_l2p_l0p_mu       = '(' + l1f_l2p  + ' & ' + l0_prompt_mu  + ')'
+l2f_l1p_l0p_mu       = '(' + l2f_l1p  + ' & ' + l0_prompt_mu  + ')'
+
+l1f_l2p_e_dr_l0p_mu  = '(' + l1f_l2p_e_dr  + ' & ' + l0_prompt_mu  + ')'
+l2f_l1p_e_dr_l0p_mu  = '(' + l2f_l1p_e_dr  + ' & ' + l0_prompt_mu  + ')'
+
+
+l0_fake_old = '( ! ' + l0_prompt_old + ' )' #'(l0_simType != 4)'# & abs(l0_simType) < 1001)'
+l1_fake_old = '( ! ' + l1_prompt_old + ' )' #'(l1_simType != 4)'# & abs(l1_simType) < 1001)'
+l2_fake_old = '( ! ' + l2_prompt_old + ' )' #'(l2_simType != 4)'# & abs(l2_simType) < 1001)'
 
 l1_heavyfake = 'l1_simType == 3'
 l2_heavyfake = 'l2_simType == 3'
 
-l1f_l2p     = '(' + l1_fake    + ' & ' + l2_prompt    + ')'
-l2f_l1p     = '(' + l2_fake    + ' & ' + l1_prompt    + ')'
+l1f_l2p_old     = '(' + l1_fake_old    + ' & ' + l2_prompt_old    + ')'
+l2f_l1p_old     = '(' + l2_fake_old    + ' & ' + l1_prompt_old    + ')'
 l1f_l2p_dr  = '(' + l1_fake_dr + ' & ' + l2_prompt_dr + ')'
 l2f_l1p_dr  = '(' + l2_fake_dr + ' & ' + l1_prompt_dr + ')'
-l1f_l2p_l0p = '(' + l1f_l2p    + ' & ' + l0_prompt    + ')'
-l2f_l1p_l0p = '(' + l2f_l1p    + ' & ' + l0_prompt    + ')'
+l1f_l2p_l0p_old = '(' + l1f_l2p    + ' & ' + l0_prompt_old    + ')'
+l2f_l1p_l0p_old = '(' + l2f_l1p    + ' & ' + l0_prompt_old    + ')'
 
-l1hf_l2p     = '(' + l1_heavyfake + ' & ' + l2_prompt + ')'
-l2hf_l1p     = '(' + l2_heavyfake + ' & ' + l1_prompt + ')'
-l1hf_l2p_l0p = '(' + l1hf_l2p     + ' & ' + l0_prompt + ')'
-l2hf_l1p_l0p = '(' + l2hf_l1p     + ' & ' + l0_prompt + ')'
+l1hf_l2p_old     = '(' + l1_heavyfake + ' & ' + l2_prompt_old + ')'
+l2hf_l1p_old     = '(' + l2_heavyfake + ' & ' + l1_prompt_old + ')'
+l1hf_l2p_l0p_old = '(' + l1hf_l2p_old     + ' & ' + l0_prompt_old + ')'
+l2hf_l1p_l0p_old = '(' + l2hf_l1p_old     + ' & ' + l0_prompt_old + ')'
 
 l1_LVtx_dr  = '( abs(l1_gen_match_vtx_x) + abs(l1_gen_match_vtx_y) + abs(l1_gen_match_vtx_z) )'
 l2_LVtx_dr  = '( abs(l2_gen_match_vtx_x) + abs(l2_gen_match_vtx_y) + abs(l2_gen_match_vtx_z) )'
@@ -170,16 +191,17 @@ SumLVtx   = '( ' + l1_LVtx_dr + ' + ' + l2_LVtx_dr + ' )'
 sameVtx_dr = '( ' + DeltaLVtx + ' == 0 )'
 sameVtx    = '( l2_simProdZ == l1_simProdZ & l1_simProdZ != 0 )'
 
-two_prompt            = '(' + l1_prompt     + ' & ' + l2_prompt      +  ')'
-two_prompt_new        = '(' + l1_prompt_new + ' & ' + l2_prompt_new  +  ')'
-two_prompt_dr         = '(' + l1_prompt_dr  + ' & ' + l2_prompt_dr   +  ')'
+two_prompt_old    = '(' + l1_prompt_old + ' & ' + l2_prompt_old + ')'
+two_prompt        = '(' + l1_prompt     + ' & ' + l2_prompt     + ')'
+two_prompt_dr     = '(' + l1_prompt_dr  + ' & ' + l2_prompt_dr  + ')'
 
-one_fake_xor          = '(' + l1f_l2p       + ' | ' + l2f_l1p        +  ')' 
-one_fake_xor_new      = '(' + l1f_l2p_new   + ' | ' + l2f_l1p_new    +  ')' 
-one_fake_xor_dr       = '(' + l1f_l2p_dr    + ' | ' + l2f_l1p_dr     +  ')' 
+one_fake_xor_old      = '(' + l1f_l2p_old  + ' | ' + l2f_l1p_old +  ')' 
+one_fake_xor      = '(' + l1f_l2p      + ' | ' + l2f_l1p     +  ')' 
+one_fake_xor_dr       = '(' + l1f_l2p_dr   + ' | ' + l2f_l1p_dr  +  ')' 
 
+two_fakes_old         = '(' + l1_fake_old   + ' & ' + l2_fake_old    +  ')'  
 two_fakes             = '(' + l1_fake       + ' & ' + l2_fake        +  ')'  
-two_fakes_new         = '(' + l1_fake_new   + ' & ' + l2_fake_new    +  ')'  
+two_fakes_e_dr        = '(' + l1_fake_e_dr  + ' & ' + l2_fake_e_dr   +  ')'  
 twoFakes_sameVtx      = '(' + two_fakes     + ' & l2_simProdZ == l1_simProdZ & l1_simProdZ != 0)'  
 two_fakes_dr          = '(' + l1_fake_dr    + ' & ' + l2_fake_dr     +  ')'  
 twoFakes_sameVtx_dr   = '(' + two_fakes_dr  + ' & ' + sameVtx_dr     +  ')'
@@ -188,20 +210,21 @@ twoHeavyFakes         = '(' + l1_heavyfake  + ' & ' + l2_heavyfake   +  ')'
 twoHeavyFakes_sameVtx = '(' + twoHeavyFakes + ' & l2_simProdZ == l1_simProdZ & l1_simProdZ != 0)'  
 
 no_ghosts    = '( l1_simType < 1001 & l2_simType < 1001 )'
-no_fakes     = two_prompt
-no_fakes_new = two_prompt_new
+no_fakes_old = two_prompt_old
+no_fakes = two_prompt
 no_fakes_dr  = two_prompt_dr
 
 #sameJet     = '( l1_jet_pt == l2_jet_pt)'
 #sameJet     = '( abs(l1_jet_pt - l2_jet_pt) < 1 )'
 sameJet     = '( abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 )' # 0.8 is twice the jet size
 
-twoFakes_sameJet           = '(' + two_fakes           + ' & ' + sameJet + ')' 
+twoFakes_sameJet_old       = '(' + two_fakes_old       + ' & ' + sameJet + ')' 
 twoFakes_sameJet_dr        = '(' + two_fakes_dr        + ' & ' + sameJet + ')' 
-twoFakes_sameJet_new       = '(' + two_fakes_new       + ' & ' + sameJet + ')' 
-twoFakes_sameJet_l0p_new   = '(' + two_fakes_new       + ' & ' + sameJet + ' & ' + l0_prompt_new  + ')' 
+twoFakes_sameJet           = '(' + two_fakes       + ' & ' + sameJet + ')' 
+twoFakes_sameJet_e_dr      = '(' + two_fakes_e_dr  + ' & ' + sameJet + ')' 
+twoFakes_sameJet_l0p_mu    = '(' + two_fakes       + ' & ' + sameJet + ' & ' + l0_prompt_mu   + ')' 
 twoFakes_sameVtxJet        = '(' + twoFakes_sameVtx    + ' & ' + sameJet + ')' 
-twoFakes_sameVtxJet_l0p    = '(' + twoFakes_sameVtx    + ' & ' + sameJet + ' & ' + l0_prompt      + ')'
+twoFakes_sameVtxJet_l0p    = '(' + twoFakes_sameVtx    + ' & ' + sameJet + ' & ' + l0_prompt_old      + ')'
 twoFakes_sameVtxJet_l0p_dr = '(' + twoFakes_sameVtx_dr + ' & ' + sameJet + ' & ' + l0_prompt_m_dr + ')'
 
 def LepIDIsoPass(lep, ID, iso_cut):
@@ -362,8 +385,8 @@ def countFakes(DZ=True,DISP=True):
         n_entries             = t.GetEntries(cuts) 
         print '\t',sample, 'entries after selection:', n_entries
         print '\t cuts:', cuts
-        if ch == 'mu':
-            n_l0_is_fake      = t.GetEntries(cuts + ' & ' + l0_fake_new)
+        if ch == 'mmm':
+            n_l0_is_fake      = t.GetEntries(cuts + ' & ' + l0_fake)
             n_l0_is_fake_dr   = t.GetEntries(cuts + ' & ' + l0_fake_m_dr)
         if ch == 'e':
             n_l0_is_fake      = 0
@@ -371,25 +394,25 @@ def countFakes(DZ=True,DISP=True):
         print '\t l0_is_fake \t\t'            , '{:.1%} \t'.format(n_l0_is_fake/n_entries)                 , n_l0_is_fake     
         print '\t l0_is_fake_dr \t\t'         , '{:.1%} \t'.format(n_l0_is_fake_dr/n_entries)              , n_l0_is_fake_dr     
 
-        n_no_fakes            = t.GetEntries(cuts + ' & ' + no_fakes_new)
+        n_no_fakes            = t.GetEntries(cuts + ' & ' + no_fakes)
         print '\t no_fakes \t\t'              , '{:.1%} \t'.format(n_no_fakes/n_entries)                   , n_no_fakes      
 
         n_no_fakes_dr         = t.GetEntries(cuts + ' & ' + no_fakes_dr)
         print '\t no_fakes_dr \t\t'           , '{:.1%} \t'.format(n_no_fakes_dr/n_entries)                , n_no_fakes_dr      
 
-        n_one_fake_xor        = t.GetEntries(cuts + ' & ' + one_fake_xor_new)
+        n_one_fake_xor        = t.GetEntries(cuts + ' & ' + one_fake_xor)
         print '\t one_fake_xor \t\t'          , '{:.1%} \t'.format(n_one_fake_xor/n_entries)               , n_one_fake_xor      
 
         n_one_fake_xor_dr     = t.GetEntries(cuts + ' & ' + one_fake_xor_dr)
         print '\t one_fake_xor_dr \t'         , '{:.1%} \t'.format(n_one_fake_xor_dr/n_entries)            , n_one_fake_xor_dr      
 
-        n_two_fakes           = t.GetEntries(cuts + ' & ' + two_fakes_new)
+        n_two_fakes           = t.GetEntries(cuts + ' & ' + two_fakes)
         print '\t two_fakes \t\t'             , '{:.1%} \t'.format(n_two_fakes/n_entries)                  , n_two_fakes         
 
         n_two_fakes_dr        = t.GetEntries(cuts + ' & ' + two_fakes_dr)
         print '\t two_fakes_dr\t\t'           , '{:.1%} \t'.format(n_two_fakes_dr/n_entries)               , n_two_fakes_dr         
 
-        n_twoFakes_sameJet    = t.GetEntries(cuts + ' & ' + twoFakes_sameJet_new) # THIS IS UPDATED, NO WORRIES
+        n_twoFakes_sameJet    = t.GetEntries(cuts + ' & ' + twoFakes_sameJet) # THIS IS UPDATED, NO WORRIES
         print '\t twoFakes_sameJet \t'        , '{:.1%} \t'.format(n_twoFakes_sameJet/n_two_fakes)         , n_twoFakes_sameJet   , '\t({:.1%})'.format(n_twoFakes_sameJet/n_entries)
 
         n_twoFakes_sameVtx    = t.GetEntries(cuts + ' & ' + twoFakes_sameVtx)
@@ -418,6 +441,7 @@ def countFakes(DZ=True,DISP=True):
         print '\t two_fakes_dr\t\t'           , '{:.1%} \t'.format(n_two_fakes_dr/n_entries)               , n_two_fakes_dr         
         print '\t twoFakes_sameVtx \t'        , '{:.1%} \t'.format(n_twoFakes_sameVtx/n_two_fakes)         , n_twoFakes_sameVtx   , '\t({:.1%})'.format(n_twoFakes_sameVtx/n_entries)
         print '\t twoFakes_sameJet \t'        , '{:.1%} \t'.format(n_twoFakes_sameJet/n_two_fakes)         , n_twoFakes_sameJet   , '\t({:.1%})'.format(n_twoFakes_sameJet/n_entries)
+        print '\t twoFakes_sameJet_dr \t'     , '{:.1%} \t'.format(n_twoFakes_sameJet_dr/n_two_fakes_dr)   , n_twoFakes_sameJet_dr, '\t({:.1%})'.format(n_twoFakes_sameJet_dr/n_entries)
         print '\t twoFakes_sameVtxJet \t'     , '{:.1%} \t'.format(n_twoFakes_sameVtxJet/n_two_fakes)      , n_twoFakes_sameVtxJet, '\t({:.1%})'.format(n_twoFakes_sameVtxJet/n_entries)
         print '\t twoFakes_sameVtx_dr\t'      , '{:.1%} \t'.format(n_twoFakes_sameVtx_dr/n_two_fakes_dr)   , n_twoFakes_sameVtx_dr, '\t({:.1%})'.format(n_twoFakes_sameVtx_dr/n_entries)
         print ''
@@ -429,11 +453,13 @@ def countFakes(DZ=True,DISP=True):
 ####################################################################################################
 
 ####################################################################################################
-def measureTTLratio(isData=False,DISP=True,SPLIT=None):
+def measureTTLratio(isData=False,DISP=True,SPLIT=None,ch='eee'):
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
-    ch          = 'mu'
-    sample_name = 'data'
+    ch          = 'mmm'
+    ch          = 'mee' 
+    ch          = 'eee'
+    sample_name = 'unknown'
 
     disp = ' & abs(l1_dz) < 2 & abs(l2_dz) < 2'
     dsp = ''
@@ -441,27 +467,61 @@ def measureTTLratio(isData=False,DISP=True,SPLIT=None):
         dsp = '_disp'
         disp += ' & hnl_2d_disp > 0.5'
 
-    if isData == False: 
-        fin = rt.TFile(inDir + TT_dir_m + suffix)
+    t = rt.TChain('tree')
+#        fin = rt.TFile(sample) #inDir + TT_dir_m + suffix)
 #        fin = rt.TFile(inDir + W_dir_m + suffix) # for debuggin: faster
-        t = fin.Get('tree')
-        sample_name = 'TTbar'
-#        cut_T = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + disp
-#        cut_L = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp
-        cut_T = twoFakes_sameJet_new + TIGHT + disp
-        cut_L = twoFakes_sameJet_new + LOOSE + disp
+#        t = fin.Get('tree')
+#    sample_name = 'TTbar'
+#        cut_T = twoFakes_sameJet + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + disp
+#        cut_L = twoFakes_sameJet + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp
+
+    if ch == 'mmm': 
+
+        if isData == True: 
+           all_samples =  [inDir + data_m_B + suffix, inDir + data_m_C + suffix, inDir + data_m_D + suffix, inDir + data_m_F + suffix]
+
+    if ch == 'eee': 
+
+        TIGHT         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05_04 < 0.15 & hnl_iso04_rel_rhoArea < 1 )'                     # & l1_eid_cut_loose & l2_eid_cut_loose )'
+        LOOSE         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05_04 < 0.15'                                                   # & l1_eid_cut_loose & l2_eid_cut_loose' 
+        LOOSE         += ' & (l1_reliso05_04 > 0.15 | l2_reliso05_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
+        LOOSENOTTIGHT =  ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05_04 < 0.15 & l1_reliso05_04 < 0.15 & l2_reliso05_04 < 0.15 )' # & l1_eid_cut_loose & l2_eid_cut_loose )'
+
+        twoFakes_sameJet = twoFakes_sameJet_e_dr
+
+        if isData == False: 
+            all_samples = glob(inDirv2 + sigDir_eee + '*/HNLTreeProducer/tree.root')   
+        if isData == True: 
+            all_samples = [inDirv2 + dataDir_eee + suffix]
+            sample_name = 'data'
+
+    if ch == 'mee': 
+
+        TIGHT         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & hnl_iso04_rel_rhoArea < 1 )'                     # & l1_eid_cut_loose & l2_eid_cut_loose )'
+        LOOSE         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15'                                                   # & l1_eid_cut_loose & l2_eid_cut_loose' 
+        LOOSE         += ' & (l1_reliso05_04 > 0.15 | l2_reliso05_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
+        LOOSENOTTIGHT =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_reliso05_04 < 0.15 & l2_reliso05_04 < 0.15 )' # & l1_eid_cut_loose & l2_eid_cut_loose )'
+
+        twoFakes_sameJet = twoFakes_sameJet_e_dr
+
+        if isData == False: 
+            all_samples = glob(inDirv2 + sigDir_mee + '*/HNLTreeProducer/tree.root')   
+            sample_name = 'signal'
+
+    for sample in all_samples: 
+        t.Add(sample)
+
+
+    if isData == False: 
+        cut_T = twoFakes_sameJet + TIGHT + disp
+        cut_L = twoFakes_sameJet + LOOSE + disp
 
     if isData == True: 
-    ## DATA
-        t = rt.TChain('tree')
-        t.Add(inDir + data_m_B + suffix)
-        t.Add(inDir + data_m_C + suffix)
-        t.Add(inDir + data_m_D + suffix)
-        t.Add(inDir + data_m_F + suffix)
 #        cut_T = 'abs(l1_jet_pt - l2_jet_pt) < 1 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut)
 #        cut_L = 'abs(l1_jet_pt - l2_jet_pt) < 1 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 
         cut_T = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
         cut_L = 'abs(l1_jet_pt - l2_jet_pt) < 1 & hnl_dr_12 < 0.8 & nbj > 0 & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
+
 
     h_pt_eta_T = rt.TH2F('pt_eta_T','pt_eta_T',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
     h_pt_eta_L = rt.TH2F('pt_eta_L','pt_eta_L',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
@@ -501,6 +561,13 @@ def checkTTLratio(DISP=True):
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
     ch = 'mu'
+
+    if ch == 'mee': 
+
+        TIGHT         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & hnl_iso04_rel_rhoArea < 1 )'                     # & l1_eid_cut_loose & l2_eid_cut_loose )'
+        LOOSE         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15'                                                   # & l1_eid_cut_loose & l2_eid_cut_loose' 
+        LOOSE         += ' & (l1_reliso05_04 > 0.15 | l2_reliso05_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
+        LOOSENOTTIGHT =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_reliso05_04 < 0.15 & l2_reliso05_04 < 0.15 )' # & l1_eid_cut_loose & l2_eid_cut_loose )'
 
     disp = ' & abs(l1_dz) < 2 & abs(l2_dz) < 2'
     dsp = ''
@@ -544,10 +611,10 @@ def checkTTLratio(DISP=True):
 
         print '\tsample: %s, drawing single fakes ...'%sample
 
-        t.Draw(PTCONE + ' >> pt_cone_1f_T', cut_T + ' & ' + one_fake_xor_new) 
+        t.Draw(PTCONE + ' >> pt_cone_1f_T', cut_T + ' & ' + one_fake_xor) 
         print '\tentries tight:', h_pt_1f_T.GetEntries()
 
-        t.Draw(PTCONE + '>> pt_cone_1f_L' , cut_L + ' & ' + one_fake_xor_new)
+        t.Draw(PTCONE + '>> pt_cone_1f_L' , cut_L + ' & ' + one_fake_xor)
         print '\tentries loose:', h_pt_1f_L.GetEntries()
 
         h_pt_1f.append(rt.TEfficiency(h_pt_1f_T, h_pt_1f_L))
@@ -566,12 +633,12 @@ def checkTTLratio(DISP=True):
 
         print '\tsingle-fakes done \n\tdrawing double fakes ...'
  
-        t.Draw(PTCONE + ' >> pt_cone_2f_T', cut_T + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet_new)
-#               twoFakes_sameJet_new + TIGHT + disp)  # OLD
+        t.Draw(PTCONE + ' >> pt_cone_2f_T', cut_T + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
+#               twoFakes_sameJet + TIGHT + disp)  # OLD
         print '\tentries tight:', h_pt_2f_T.GetEntries()
 
-        t.Draw(PTCONE + '>> pt_cone_2f_L' , cut_L + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet_new)
- #              twoFakes_sameJet_new + LOOSE + disp ) # OLD   
+        t.Draw(PTCONE + '>> pt_cone_2f_L' , cut_L + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
+ #              twoFakes_sameJet + LOOSE + disp ) # OLD   
         print '\tentries loose:', h_pt_2f_L.GetEntries()
 
         print '\tdouble-fakes done'
@@ -648,10 +715,10 @@ def checkDRandM12(DISP=True):
     tupels = [ [DY50_ext_dir_m, ['', '1']], [TT_dir_m, ['', '1']], [W_ext_dir_m, ['', '1']] ]
     for tupel in tupels:
         h,c = plot(tupel, var = 'hnl_dr_12', name = '2fsJnw_dR'+dsp, binsX = b_dR, xtitle = '#DeltaR(#mu_{1}, #mu_{2})', 
-                   cut = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
+                   cut = twoFakes_sameJet + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
 
         h,c = plot(tupel, var = 'hnl_m_12', name = '2fsJnw_m2l'+dsp, binsX = b_m, xtitle = 'm(#mu_{1}, #mu_{2})', 
-               cut = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
+               cut = twoFakes_sameJet + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
 ####################################################################################################
 
 ####################################################################################################
@@ -665,7 +732,7 @@ def checkTypeFlavour(DISP=True):
     tupels = [ [DY50_ext_dir_m, ['', '1']], [TT_dir_m, ['', '1']]]#, [W_ext_dir_m, ['', '1']] ]
     for tupel in tupels:
         h,c = plot(tupel, var = 'l1_simFlavour : l1_simType', name = '2fsJnw_sT_sF'+dsp, binsX = b_st, binsY = b_sf, xtitle = 'simType(#mu_{1})', ytitle = 'simFlavour(#mu_{2})', mode = 2, 
-                   cut = twoFakes_sameJet_new + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
+                   cut = twoFakes_sameJet + LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1 + disp )
 ####################################################################################################
 
 ####################################################################################################
@@ -992,6 +1059,7 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
     ch = 'mu'
+    ch = 'mee'
     sample = 'data'
     
     if isData == False:
@@ -999,17 +1067,38 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
 #        fin = rt.TFile(tempDir + 'tree_fr_DR_TTbar.root') 
 #        t = fin.Get('tree')
         t = rt.TChain('tree')
-        all_files = glob(tempDir + 'tree_fr_DR_TTbar_slice*.root')
-        for sample in all_files:
+
+        if ch == 'eee': 
+
+            TIGHT         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05_04 < 0.15 & hnl_iso04_rel_rhoArea < 1 )'                     # & l1_eid_cut_loose & l2_eid_cut_loose )'
+            LOOSE         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05_04 < 0.15'                                                   # & l1_eid_cut_loose & l2_eid_cut_loose' 
+            LOOSE         += ' & (l1_reliso05_04 > 0.15 | l2_reliso05_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
+            LOOSENOTTIGHT =  ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05_04 < 0.15 & l1_reliso05_04 < 0.15 & l2_reliso05_04 < 0.15 )' # & l1_eid_cut_loose & l2_eid_cut_loose )'
+
+            all_samples = glob(inDirv2 + sigDir_eee + '*/HNLTreeProducer/tree.root')   
+
+        if ch == 'mmm':
+            all_samples = glob(tempDir + 'tree_fr_DR_TTbar_slice*.root')
+            # sample = 'TTbar'
+        
+        if ch == 'mee': 
+
+            TIGHT         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & hnl_iso04_rel_rhoArea < 1 )'                     # & l1_eid_cut_loose & l2_eid_cut_loose )'
+            LOOSE         =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15'                                                   # & l1_eid_cut_loose & l2_eid_cut_loose' 
+            LOOSE         += ' & (l1_reliso05_04 > 0.15 | l2_reliso05_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
+            LOOSENOTTIGHT =  ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_reliso05_04 < 0.15 & l2_reliso05_04 < 0.15 )' # & l1_eid_cut_loose & l2_eid_cut_loose )'
+
+            all_samples = glob(inDirv2 + sigDir_mee + '*/HNLTreeProducer/tree.root')   
+
+        for sample in all_samples: 
             t.Add(sample)
-        sample = 'TTbar'
-        cut_T     = twoFakes_sameJet_new + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT 
+
+        cut_T     = twoFakes_sameJet + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT 
 #        cut_T     += LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut)
-        cut_L   = twoFakes_sameJet_new + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
+        cut_L   = twoFakes_sameJet + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
 #        cut_L  += LepIDIsoPass(0, 't', iso_cut) + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + twoLepObjIsoleq1
 #        cut_L  += LepIDIsoPass(0, 't', iso_cut) + bothLoose(iso_cut) + twoLepObjIsoleq1
-        cut_LNT = twoFakes_sameJet_new + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
-        show = pf.showlogoprelimsim('CMS')
+        cut_LNT = twoFakes_sameJet + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
 
     if isData == True:
         fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root') #TODO CHANGE TO FULL

@@ -4,10 +4,12 @@ import numpy as np
 from glob import glob
 
 
-ntDir   = '/eos/user/v/vstampf/ntuples/archive/gen_v1_refurbshd/'
+# ntDir   = '/eos/user/v/vstampf/ntuples/archive/gen_v1_refurbshd/'
+ntDir   = '/eos/user/d/dezhu/HNL/ntuples/HN3Lv2.0/signal/mmm/ntuples/'
 plotDir  = '/eos/user/v/vstampf/plots/'
 
-M_all = glob(ntDir + '*/HNLGenTreeProducer/tree.root')
+# M_all = glob(ntDir + '*/HNLGenTreeProducer/tree.root')
+M_all = glob(ntDir + '*/HNLTreeProducer/tree.root')
 
 M_all_e   = [f for f in M_all if '_e' in f]
 M_all_mu = [f for f in M_all if '_mu' in f]
@@ -44,15 +46,17 @@ Mlist_mu = [['1',M1_mu],['2',M2_mu],['2.1',M2p1_mu],['2.5',M2p5_mu],['3',M3_mu],
 
 pf.setpfstyle()
 
-def checkAcc(mode='e'):
-    cut_denom =  ''
-    cut_num   =  'is_in_acc == 1 & l1_matched_dsmuon_pt > 5 & l2_matched_dsmuon_pt > 5' # CHECK this should work for e os and m os 
+def checkAcc(mode='mu'):
+    cut_denom =   ''
+    cut_num   =   'l1_matched_dsmuon_pt > 5 & l2_matched_dsmuon_pt > 5' # CHECK this should work for e os and m os 
+    # cut_num   +=  ' & is_in_acc == 1'
     if mode == 'e':
         cut_num   += ' & l0_matched_electron_pt > 30 & l0_matched_electron_reliso05 < 0.15'
         Mlist = Mlist_e
     if mode == 'mu':
         cut_num   += ' & l0_matched_muon_pt > 25 & l0_matched_muon_reliso05 < 0.15'
-        Mlist = Mlist_mu
+        # Mlist = Mlist_mu
+        Mlist = [['2',M2_mu],['5',M5_mu],['8',M8_mu]]
 
 
     for m, mass in Mlist:

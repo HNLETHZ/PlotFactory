@@ -20,6 +20,7 @@ def makechain(allsamples):
 
     #access multiple trees by "chaining" them
     chain = ROOT.TChain('tree')
+    # all_files = glob(ntup_dir + '*/HNLGenTreeProducer/tree.root')
     all_files = glob(ntup_dir + '*/HNLTreeProducer/tree.root')
 
     if allsamples == True:
@@ -27,20 +28,48 @@ def makechain(allsamples):
             chain.Add(sample)
 
     if allsamples == False:
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00282842712475_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00316227766017_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p004472135955_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p004472135955_mu_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00547722557505_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00547722557505_mu_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00707106781187_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00707106781187_mu_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00836660026534_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00836660026534_mu_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00244948974278_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p00244948974278_mu_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p01_e_onshell/HNLTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_3_V_0p01_mu_onshell/HNLTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00282842712475_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00316227766017_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_mu_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_e_onshell/HNLGenTreeProducer/tree.root')
+        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_mu_onshell/HNLGenTreeProducer/tree.root')
+
+#    if allsamples == False:
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00282842712475_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00316227766017_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_mu_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_e_onshell/HNLTreeProducer/tree.root')
+#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_mu_onshell/HNLTreeProducer/tree.root')
 
     nentries = chain.GetEntries()
     print('Created a TChain object with %d events.'%(nentries))
@@ -77,20 +106,28 @@ def showlogo(text):
     logo.SetTextSize(0.045)
     logo.DrawLatex(0.15,0.94,text)
 
-def showlogopreliminary(text1,text2):
+def showTitle(text):
+    logo = ROOT.TLatex()
+    logo.SetNDC()
+    logo.SetTextAlign(31)
+    logo.SetTextFont(42)
+    logo.SetTextSize(0.04)
+    logo.DrawLatex(0.81,0.87,text)
+
+def showlogopreliminary():
     logo = ROOT.TLatex()
     logo.SetNDC()
     logo.SetTextAlign(11)
     logo.SetTextFont(61)
     logo.SetTextSize(0.045)
-    logo.DrawLatex(0.15,0.94,text1)
+    logo.DrawLatex(0.15,0.94,'CMS')
     
     preliminary = ROOT.TLatex()
     preliminary.SetNDC()
     preliminary.SetTextAlign(11)
     preliminary.SetTextFont(52)
     preliminary.SetTextSize(0.038)
-    preliminary.DrawLatex(0.24,0.94,text2)
+    preliminary.DrawLatex(0.24,0.94,'Preliminary')
     
 def showlogoprelimsim(text):
     logo = ROOT.TLatex()
@@ -177,8 +214,8 @@ def setpfstyle():
     pfstyle.SetTitleOffset(1.35,"z")
 
     pfstyle.SetMarkerStyle(20)
-    pfstyle.SetMarkerSize(0.9)
-    pfstyle.SetLineWidth(2)
+    pfstyle.SetMarkerSize(0.5)
+    pfstyle.SetLineWidth(1)
     # pfstyle.SetHistLineWidth(2.)
     pfstyle.SetLineStyleString(2,'[12 12]') # postscript dashes
     
