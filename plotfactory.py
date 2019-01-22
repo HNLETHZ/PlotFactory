@@ -109,10 +109,10 @@ def showlogo(text):
 def showTitle(text):
     logo = ROOT.TLatex()
     logo.SetNDC()
-    logo.SetTextAlign(11)
+    logo.SetTextAlign(31)
     logo.SetTextFont(42)
     logo.SetTextSize(0.04)
-    logo.DrawLatex(0.75,0.87,text)
+    logo.DrawLatex(0.81,0.87,text)
 
 def showlogopreliminary():
     logo = ROOT.TLatex()
