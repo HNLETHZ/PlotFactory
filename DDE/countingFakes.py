@@ -19,6 +19,7 @@ from itertools import product
 pf.setpfstyle()
 ####################################################################################################
 plotDir     = '/eos/user/v/vstampf/plots/DDE/'
+plotDir     = '/t3home/vstampf/eos/plots/DDE/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v0/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v1_DiMuIso/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v2/'
@@ -41,21 +42,21 @@ DY10_extDir_mee = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/me
 TT_dir_mee      = '/eos/user/d/dezhu/HNL/ntuples/HN3Lv2.0/background/montecarlo/mee/TTJets_amcat/'
 W_dir_mee       = 'background/montecarlo/mee/partial/WJetsToLNu/'
 ####################################################################################################
-DYBBDir_mmm     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mmm/partial/DYBB/'
-DY50Dir_mmm     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mmm/partial/DYJetsToLL_M50/'
-DY50_extDir_mmm = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mmm/partial/DYJetsToLL_M50_ext/'
-DY10Dir_mmm     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mmm/partial/DYJetsToLL_M10to50/'
-DY10_extDir_mmm = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mmm/partial/DYJetsToLL_M10to50_ext/'   
+DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
+DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
+DY50_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50_ext/'
+DY10Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50/'
+DY10_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50_ext/'   
 #TT_dir_mmm      = '/eos/user/d/dezhu/HNL/ntuples/HN3Lv2.0/background/montecarlo/mmm/TTJets_amcat/'
 #W_dir_mmm       = 'background/montecarlo/mmm/partial/WJetsToLNu/'
 ####################################################################################################
-DYBBDir_eee     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYBB/'
-DY50Dir_eee     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50/'
-DY50_extDir_eee = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50_ext/'
-DY10Dir_eee     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50/'
-DY10_extDir_eee = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50_ext/'   
+DYBBDir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYBB/'
+DY50Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50/'
+DY50_extDir_eee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50/'
+DY10_extDir_eee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50_ext/'   
 TT_dir_eee      = 'background/montecarlo/eee/partial/TTJets_amcat/'  
-W_dir_ext_eee   = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/eee/background/montecarlo/eee/partial/WJetsToLNu_ext/'
+W_dir_eee       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/WJetsToLNu_ext/'
 ####################################################################################################
 DY50_dir_e           = 'prompt_e/DYJetsToLL_M50/'
 DY50_ext_dir_e       = 'prompt_e/DYJetsToLL_M50_ext/'
@@ -149,15 +150,15 @@ l2_prompt_m_dr_old = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_ma
 
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13'#& l0_is_real == 1'
-l0_prompt_m_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 )'
+l0_prompt_m_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 & l0_pdgid == l0_gen_match_pdgid )'
 
 l1_prompt_m_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_m_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 13'#& l1_is_real == 1'
-l1_prompt_m_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 )'
+l1_prompt_m_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 & l1_pdgid == l1_gen_match_pdgid )'
 
 l2_prompt_m_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_m_dr += ' | l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 13'#& l2_is_real == 1'
-l2_prompt_m_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 )'
+l2_prompt_m_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 & l2_pdgid == l2_gen_match_pdgid )'
 
 
 l0_prompt_e_dr_old = '( (l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11 )'
@@ -166,12 +167,15 @@ l2_prompt_e_dr_old = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_ma
 
 l0_prompt_e_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_e_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11'#& l0_is_real == 1)'
+l0_prompt_e_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 )'
 
 l1_prompt_e_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_e_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 11 )'#& l1_is_real == 1)'
+l1_prompt_e_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 )'
 
 l2_prompt_e_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_e_dr += ' | l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 11 )'#& l2_is_real == 1)'
+l2_prompt_e_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 )'
 
 
 l0_fake_m_dr = '( !' + l0_prompt_m_dr + ' )'  #'( (l0_gen_match_fromHardProcessFinalState == 0 & l0_gen_match_isPromptFinalState == 0) || abs(l0_gen_match_pdgid) != 13 )'
@@ -274,9 +278,10 @@ SumLVtx   = '( ' + l1_LVtx_dr + ' + ' + l2_LVtx_dr + ' )'
 sameVtx_dr = '( ' + DeltaLVtx + ' == 0 )'
 sameVtx    = '( l2_simProdZ == l1_simProdZ & l1_simProdZ != 0 )'
 
-twoFakes_sameVtx_mm_sh   = '(' + two_fakes_mm_sh        + ' & l2_simProdZ == l1_simProdZ & l1_simProdZ != 0)'  
-twoFakes_sameVtx_mm_dr   = '(' + two_fakes_mm_dr        + ' & ' + sameVtx_dr     +  ')'
-twoFakes_sameVtx_ee_dr   = '(' + two_fakes_ee_dr        + ' & ' + sameVtx_dr     +  ')'
+twoFakes_sameVtx_mm_sh_old  = '(' + two_fakes_mm_sh        + ' & l2_simProdZ == l1_simProdZ & l1_simProdZ != 0)'  
+twoFakes_sameVtx_mm_sh      = '(' + two_fakes_mm_sh        + ' & ' + sameVtx_dr     +  ')' 
+twoFakes_sameVtx_mm_dr      = '(' + two_fakes_mm_dr        + ' & ' + sameVtx_dr     +  ')'
+twoFakes_sameVtx_ee_dr      = '(' + two_fakes_ee_dr        + ' & ' + sameVtx_dr     +  ')'
 
 twoFakes_sameVtxJet_mm_sh        = '(' + twoFakes_sameVtx_mm_sh    + ' & ' + sameJet + ')' 
 twoFakes_sameVtxJet_mm_sh_l0p    = '(' + twoFakes_sameVtx_mm_sh    + ' & ' + sameJet + ' & ' + l0_prompt_m_sh_old      + ')'
@@ -444,7 +449,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
     promptMode = ch[0]
     pairMode = ch[1] + ch[2]
 
-    samples = ['DY']#'WJ','TT','DY']
+    samples = ['WJ']#'DY']#,'TT','DY']
 
     if ch == 'eee':
         DYBB_dir       =   DYBBDir_eee     
@@ -452,6 +457,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
         DY10_ext_dir   =   DY10_extDir_eee 
         DY50_dir       =   DY50Dir_eee      
         DY50_ext_dir   =   DY50_extDir_eee 
+	W_dir          =   W_dir_eee
         TT_dir         =   TT_dir_eee
         TIGHT = TIGHT_EEE
 
@@ -503,8 +509,8 @@ def countFakes(ch='mee',DZ=True,DISP=True):
 
         if sample == 'WJ':
             t = rt.TChain('tree')
-            t.Add(W_dir_m + suffix)
-            t.Add(W_ext_dir_m + suffix)
+            t.Add(W_dir + suffix)
+#            t.Add(W_ext_dir_m + suffix)
             print '\t', sample, 'entries before selection:', t.GetEntries()
 
         n_entries             = t.GetEntries(cuts) 
@@ -556,8 +562,8 @@ def countFakes(ch='mee',DZ=True,DISP=True):
             n_twoFakes_sameVtx_sh    = t.GetEntries(cuts + ' & ' + twoFakes_sameVtx_mm_sh)
             print '\t twoFakes_sameVtx_sh \t\t'    , '{:.1%} \t\t'.format(n_twoFakes_sameVtx_sh/n_two_fakes_sh)    , n_twoFakes_sameVtx_sh   , '\t({:.1%})'.format(n_twoFakes_sameVtx_sh/n_entries)
 
-            n_twoFakes_sameVtxJet_sh = t.GetEntries(cuts + ' & ' + twoFakes_sameVtxJet_mm_sh)
-            print '\t twoFakes_sameVtxJet_sh \t'   , '{:.1%} \t\t'.format(n_twoFakes_sameVtxJet_sh/n_two_fakes_sh) , n_twoFakes_sameVtxJet_sh, '\t({:.1%})'.format(n_twoFakes_sameVtxJet_sh/n_entries)
+#            n_twoFakes_sameVtxJet_sh = t.GetEntries(cuts + ' & ' + twoFakes_sameVtxJet_mm_sh)
+#            print '\t twoFakes_sameVtxJet_sh \t'   , '{:.1%} \t\t'.format(n_twoFakes_sameVtxJet_sh/n_two_fakes_sh) , n_twoFakes_sameVtxJet_sh, '\t({:.1%})'.format(n_twoFakes_sameVtxJet_sh/n_entries)
             print ''
 
         # THE REST HOLDS IN ALL MODES
