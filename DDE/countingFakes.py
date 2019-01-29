@@ -34,11 +34,11 @@ m_dir       = 'prompt_m/'
 e_dir       = 'prompt_e/'
 suffix      = 'HNLTreeProducer/tree.root'
 ####################################################################################################
-DYBBDir_mee     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mee/partial_wtau/DYBB/'
-DY50Dir_mee     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mee/partial_wtau/DYJetsToLL_M50/'
-DY50_extDir_mee = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mee/partial_wtau/DYJetsToLL_M50_ext/'
-DY10Dir_mee     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mee/partial_wtau/DYJetsToLL_M10to50/'
-DY10_extDir_mee = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mee/partial_wtau/DYJetsToLL_M10to50_ext/'   
+DYBBDir_mee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYBB/'
+DY50Dir_mee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50/'
+DY50_extDir_mee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_mee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50/'
+DY10_extDir_mee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50_ext/'   
 TT_dir_mee      = '/eos/user/d/dezhu/HNL/ntuples/HN3Lv2.0/background/montecarlo/mee/TTJets_amcat/'
 W_dir_mee       = 'background/montecarlo/mee/partial/WJetsToLNu/'
 ####################################################################################################
@@ -449,7 +449,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
     promptMode = ch[0]
     pairMode = ch[1] + ch[2]
 
-    samples = ['WJ']#'DY']#,'TT','DY']
+    samples = ['DY']#,'TT','WJ']#
 
     if ch == 'eee':
         DYBB_dir       =   DYBBDir_eee     
@@ -496,10 +496,10 @@ def countFakes(ch='mee',DZ=True,DISP=True):
 
         if sample == 'DY':
             t = rt.TChain('tree')
-            t.Add(DYBB_dir + suffix)
+#            t.Add(DYBB_dir + suffix)
             t.Add(DY10_dir + suffix)
-            t.Add(DY50_dir + suffix)
-            t.Add(DY50_ext_dir + suffix)
+#            t.Add(DY50_dir + suffix)
+#            t.Add(DY50_ext_dir + suffix)
             print '\t', sample, 'entries before selection:', t.GetEntries()
 
         if sample == 'TT':
