@@ -34,32 +34,32 @@ m_dir       = 'prompt_m/'
 e_dir       = 'prompt_e/'
 suffix      = 'HNLTreeProducer/tree.root'
 ####################################################################################################
-DYBBDir_mee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYBB/'
-DY50Dir_mee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50/'
-DY50_extDir_mee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50_ext/'
-DY10Dir_mee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50/'
-DY10_extDir_mee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50_ext/'   
-TT_dir_mee      = '/eos/user/d/dezhu/HNL/ntuples/HN3Lv2.0/background/montecarlo/mee/TTJets_amcat/'
-W_dir_mee       = 'background/montecarlo/mee/partial/WJetsToLNu/'
-W_ext_dir_mee   = 'background/montecarlo/mee/partial/WJetsToLNu_ext/'
+DYBBDir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYBB/'
+DY50Dir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50/'
+DY50_extDir_mee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50/'
+DY10_extDir_mee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50_ext/'   
+TT_dir_mee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/TTJets_amcat_20190130/'  
+W_dir_mee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
+W_ext_dir_mee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
 DY50_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50_ext/'
 DY10Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50/'
 DY10_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50_ext/'   
-TT_dir_mmm      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/TTJets_amcat_TauDecayInfo/'
-W_dir_mmm       = 'background/montecarlo/mmm/partial/WJetsToLNu/'
-W_ext_dir_mmm   = 'background/montecarlo/mmm/partial/WJetsToLNu_ext/'
+TT_dir_mmm      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/TTJets_amcat_TauDecayInfo/'  
+W_dir_mmm       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu/'
+W_ext_dir_mmm   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYBB/'
-DY50Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50/'
-DY50_extDir_eee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50_ext/'
-DY10Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50/'
-DY10_extDir_eee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50_ext/'   
-TT_dir_eee      = 'background/montecarlo/eee/partial/TTJets_amcat/'  
-W_dir_eee       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/eee/WJetsToLNu_ext/'
-W_ext_dir_eee   = 'background/montecarlo/eee/partial/WJetsToLNu_ext/'
+DYBBDir_eee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYBB/'
+DY50Dir_eee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50/'
+DY50_extDir_eee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_eee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50/'
+DY10_extDir_eee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/DYJetsToLL_M10to50_ext/'   
+TT_dir_eee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/partial/TTJets_amcat_20190130/'  
+W_dir_eee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/20190129/ntuples/WJetsToLNu/'
+W_ext_dir_eee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/eee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
 DY50_dir_e           = 'prompt_e/DYJetsToLL_M50/'
 DY50_ext_dir_e       = 'prompt_e/DYJetsToLL_M50_ext/'
@@ -153,8 +153,8 @@ l2_prompt_m_dr_old = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_ma
 
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13'#& l0_is_real == 1'
-l0_prompt_m_dr += ' & l0_good_match )'
-# l0_prompt_m_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 & l0_pdgid == l0_gen_match_pdgid )'
+# l0_prompt_m_dr += ' & l0_good_match )'
+l0_prompt_m_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 & l0_pdgid == l0_gen_match_pdgid )'
 
 l1_prompt_m_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_m_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 13'#& l1_is_real == 1'
@@ -173,18 +173,18 @@ l2_prompt_e_dr_old = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_ma
 
 l0_prompt_e_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_e_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11'#& l0_is_real == 1'
-l0_prompt_e_dr += ' & l0_good_match )'
-# l0_prompt_e_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 )'
+# l0_prompt_e_dr += ' & l0_good_match )'
+l0_prompt_e_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 )'
 
 l1_prompt_e_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_e_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 11'#& l1_is_real == 1'
-l1_prompt_e_dr += ' & l1_good_match )'
-# l1_prompt_e_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 )'
+# l1_prompt_e_dr += ' & l1_good_match )'
+l1_prompt_e_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 )'
 
 l2_prompt_e_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_e_dr += ' | l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 11'#& l2_is_real == 1'
-l2_prompt_e_dr += ' & l2_good_match )'
-# l2_prompt_e_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 )'
+# l2_prompt_e_dr += ' & l2_good_match )'
+l2_prompt_e_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 )'
 
 
 l0_fake_m_dr = '( !' + l0_prompt_m_dr + ' )'  #'( (l0_gen_match_fromHardProcessFinalState == 0 & l0_gen_match_isPromptFinalState == 0) || abs(l0_gen_match_pdgid) != 13 )'
@@ -352,6 +352,95 @@ LOOSE_EMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05 
 LOOSENOTTIGHT_EMM = ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05 < 0.15 & l1_id_l & l2_id_l & (l1_reliso_rho_04 > 0.15 | l2_reliso_rho_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )' 
 TIGHT_EMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05 < 0.15 & l1_id_l & l2_id_l & l1_reliso_rho_04 < 0.15 & l2_reliso_rho_04 < 0.15 )' 
 ####################################################################################################
+                 ##                 Martina                  ##
+####################################################################################################
+'''
+if (_lFlavor[i] == 0) { # bracket ends after '// end ele'
+
+    # loose
+    _isLooseCutBasedElectronWithoutIsolatio[i] = true;
+
+    if ( !( _lEleIsEB[i] || _lEleIsEE[i]) ) 
+        _isLooseCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lElefull5x5SigmaIetaIeta[i]            >= (_lEleIsEB[i] ? 0.11     : 0.0314) ) 
+        _isLooseCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleDEtaInSeed [i]                     >= ( _lEleIsEB[i] ? 0.00477 : 0.00868) ) 
+        _isLooseCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleDeltaPhiSuperClusterTrackAtVtx [i] >= ( _lEleIsEB[i] ? 0.222   : 0.213) )
+        _isLooseCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lElehadronicOverEm[i]                  >= ( _lEleIsEB[i] ? 0.298   : 0.101) )
+        _isLooseCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleInvMinusPInv[i]                    >= (_lEleIsEB[i] ? 0.241    : 0.14) ) 
+        _isLooseCutBasedElectronWithoutIsolatio[i] = false;
+
+    # MediumNoIso
+    _isMediumCutBasedElectronWithoutIsolatio[i] = true;
+
+    if ( !( _lEleIsEB[i] || _lEleIsEE[i] ) ) 
+        _isMediumCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lElefull5x5SigmaIetaIeta[i]            >= ( _lEleIsEB[i] ? 0.00998 : 0.0298) )
+        _isMediumCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleDEtaInSeed[i]                      >= ( _lEleIsEB[i] ? 0.00311 : 0.00609) )
+        _isMediumCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleDeltaPhiSuperClusterTrackAtVtx[i]  >= ( _lEleIsEB[i] ? 0.103   : 0.045) )
+        _isMediumCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lElehadronicOverEm[i]                  >= ( _lEleIsEB[i] ? 0.253   : 0.0878) )
+        _isMediumCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleInvMinusPInv[i]                    >= ( _lEleIsEB[i] ? 0.134   : 0.13) )
+        _isMediumCutBasedElectronWithoutIsolatio[i] = false;
+
+
+    # MediumWithIso
+    _isTightCutBasedElectronWithoutIsolatio[i] = true;
+
+    if (!(_lEleIsEB[i] || _lEleIsEE[i])) 
+        _isTightCutBasedElectronWithoutIsolatio[i] =  false;
+
+    if ( _lElefull5x5SigmaIetaIeta[i]            >= ( _lEleIsEB[i] ? 0.00998 : 0.0292 ) )
+        _isTightCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleDEtaInSeed  [i]                    >= ( _lEleIsEB[i] ? 0.00308 : 0.00605) )
+        _isTightCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleDeltaPhiSuperClusterTrackAtVtx[i]  >= ( _lEleIsEB[i] ? 0.0816   : 0.0394) )
+        _isTightCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lElehadronicOverEm[i]                  >= ( _lEleIsEB[i] ? 0.0414   : 0.0641) )
+        _isTightCutBasedElectronWithoutIsolatio[i] = false;
+
+    if ( _lEleInvMinusPInv[i]                    >= ( _lEleIsEB[i] ? 0.0129   : 0.0129) )
+        _isTightCutBasedElectronWithoutIsolatio[i] = false;     } # end ele
+
+
+    # muon
+    if ( _lFlavor[i] == 1 ) {
+        _isOurMedium[i] = false;
+        bool goodGlob = false;
+        goodGlob = _lGlobalMuon[i] && _lCQChi2Position[i] < 12 && _lCQTrackKink[i] < 20;
+        _isOurMedium[i] = _lPOGLoose[i] && _muonSegComp[i] > (goodGlob ? 0.303 : 0.451);
+
+
+        # //time veto
+        _passTimingVeto[i] = true;
+        bool cmbok =(_lMuTimenDof[i] >7   );
+        bool rpcok =(_lMuRPCTimenDof[i] >1  && _lMuRPCTimeErr[i]==0);
+            if (rpcok) {
+                if ((fabs(_lMuRPCTime[i])>10) && !(cmbok && fabs(_lMuTime[i])<10))   _passTimingVeto[i]=false;
+          } else { if (cmbok && (_lMuTime[i]>20 || _lMuTime[i]<-45)) 
+            _passTimingVeto[i]=false; }
+        }   # For rest it should be clear: pT (>5 and 10), relIso < 0.2 (1.2 for FO).
+'''
+####################################################################################################
 ####################################################################################################
 Z_veto_01       = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  (l1_q + l2_q != 0)'
 Z_veto_02       = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'
@@ -429,6 +518,7 @@ b_chi2      = np.arange(0.,1.05,0.05)
 
 framer = rt.TH2F('','',len(b_pt)-1,b_pt,len(b_y)-1,b_y)
 framer.GetYaxis().SetRangeUser(0.,0.5)
+framer.GetYaxis().SetRangeUser(0.,1.0)
 
 cr_tt     = 'abs(hnl_m_12 - 91.18) > 15  &  abs(hnl_w_vis_m - 91.18) > 15  &  nbj >= 1'
 q_pt      = 'l0_pt > 35  &  l1_pt > 4  &  l2_pt > 4  &  l1_q != l2_q'
@@ -466,7 +556,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
 
     samples = sList.split(',')
 
-    if samples == 'all': samples = ['TT','DY','WJ']
+    if samples[0] == 'all': samples = ['TT','DY','WJ']
 
     L_T_LNT, dirs = selectCuts(ch)
 
@@ -480,7 +570,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
     N_ENTRIES = 0
 
     for sample in samples: 
-
+        t = None
         if sample == 'DY':
             t = rt.TChain('tree')
             t.Add(DYBB_dir + suffix)
@@ -496,7 +586,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
         if sample == 'WJ':
             t = rt.TChain('tree')
             t.Add(W_dir + suffix)
-#            t.Add(W_ext_dir + suffix)
+            t.Add(W_ext_dir + suffix)
             N_ENTRIES = t.GetEntries()
 
         n_entries             = t.GetEntries(cuts) 
@@ -519,21 +609,18 @@ def countFakes(ch='mee',DZ=True,DISP=True):
             n_one_fake_xor_dr     = t.GetEntries(cuts + ' & ' + one_fake_xor_ee_dr)
             n_two_fakes_dr        = t.GetEntries(cuts + ' & ' + two_fakes_ee_dr)
             n_twoFakes_sameJet_dr = t.GetEntries(cuts + ' & ' + twoFakes_sameJet_ee_dr) 
-            n_twoFakes_sameVtx_dr = t.GetEntries(cuts + ' & ' + twoFakes_sameVtx_ee_dr)
 
         if pairMode == 'em': # SIMHIT IS MUON SPECIFIC
             n_no_fakes_dr         = t.GetEntries(cuts + ' & ' + no_fakes_em_dr)
             n_one_fake_xor_dr     = t.GetEntries(cuts + ' & ' + one_fake_xor_em_dr)
             n_two_fakes_dr        = t.GetEntries(cuts + ' & ' + two_fakes_em_dr)
             n_twoFakes_sameJet_dr = t.GetEntries(cuts + ' & ' + twoFakes_sameJet_em_dr) 
-            n_twoFakes_sameVtx_dr = t.GetEntries(cuts + ' & ' + twoFakes_sameVtx_em_dr)
 
         if pairMode == 'mm': # SIMHIT IS MUON SPECIFIC
             n_no_fakes_dr         = t.GetEntries(cuts + ' & ' + no_fakes_mm_dr)
             n_one_fake_xor_dr     = t.GetEntries(cuts + ' & ' + one_fake_xor_mm_dr)
             n_two_fakes_dr        = t.GetEntries(cuts + ' & ' + two_fakes_mm_dr)
             n_twoFakes_sameJet_dr = t.GetEntries(cuts + ' & ' + twoFakes_sameJet_mm_dr) 
-            n_twoFakes_sameVtx_dr = t.GetEntries(cuts + ' & ' + twoFakes_sameVtx_mm_dr)
 
             n_no_fakes_sh            = t.GetEntries(cuts + ' & ' + no_fakes_mm_sh)
             print '\t no_fakes_sh \t\t\t'          , '{:.1%} \t\t'.format(n_no_fakes_sh/n_entries)                 , n_no_fakes_sh      
@@ -545,10 +632,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
             print '\t two_fakes_sh \t\t\t'         , '{:.1%} \t\t'.format(n_two_fakes_sh/n_entries)                , n_two_fakes_sh         
 
             n_twoFakes_sameJet_sh    = t.GetEntries(cuts + ' & ' + twoFakes_sameJet_mm_sh) # THIS IS UPDATED, NO WORRIES
-            print '\t twoFakes_sameJet_sh \t\t'    , '{:.1%} \t\t'.format(n_twoFakes_sameJet_sh/n_two_fakes_sh)    , n_twoFakes_sameJet_sh   , '\t({:.1%})'.format(n_twoFakes_sameJet_sh/n_entries)
-
-            n_twoFakes_sameVtx_sh    = t.GetEntries(cuts + ' & ' + twoFakes_sameVtx_mm_sh)
-            print '\t twoFakes_sameVtx_sh \t\t'    , '{:.1%} \t\t'.format(n_twoFakes_sameVtx_sh/n_two_fakes_sh)    , n_twoFakes_sameVtx_sh   , '\t({:.1%})\n'.format(n_twoFakes_sameVtx_sh/n_entries)
+            print '\t twoFakes_sameJet_sh \t\t'    , '{:.1%} \t\t'.format(n_twoFakes_sameJet_sh/n_two_fakes_sh)    , n_twoFakes_sameJet_sh   , '\t({:.1%})\n'.format(n_twoFakes_sameJet_sh/n_entries)
 
         # THE REST HOLDS IN ALL MODES
         print '\t l0_is_fake_dr \t\t\t'            , '{:.1%} \t\t'.format(n_l0_is_fake_dr/n_entries)              , n_l0_is_fake_dr     
@@ -556,7 +640,6 @@ def countFakes(ch='mee',DZ=True,DISP=True):
         print '\t one_fake_xor_dr \t\t'            , '{:.1%} \t\t'.format(n_one_fake_xor_dr/n_entries)            , n_one_fake_xor_dr      
         print '\t two_fakes_dr\t\t\t'              , '{:.1%} \t\t'.format(n_two_fakes_dr/n_entries)               , n_two_fakes_dr         
         print '\t twoFakes_sameJet_dr \t\t'        , '{:.1%} \t\t'.format(n_twoFakes_sameJet_dr/n_two_fakes_dr)   , n_twoFakes_sameJet_dr, '\t({:.1%})'.format(n_twoFakes_sameJet_dr/n_entries)
-        print '\t twoFakes_sameVtx_dr\t\t'         , '{:.1%} \t\t'.format(n_twoFakes_sameVtx_dr/n_two_fakes_dr)   , n_twoFakes_sameVtx_dr, '\t({:.1%})'.format(n_twoFakes_sameVtx_dr/n_entries)
 
         sys.stdout = open(plotDir + sample + '_%s'%ch + '.py', 'w+')
 
@@ -566,22 +649,20 @@ def countFakes(ch='mee',DZ=True,DISP=True):
         print '\n\t TIGHT WP: %s\n' %TIGHT
 
         if pairMode == 'mm': # SIMHIT IS MUON SPECIFIC
-            print '\t l0_is_fake_sh \t\t'            , '{:.1%} \t'.format(n_l0_is_fake_sh/n_entries)              , n_l0_is_fake     
+            print '\t l0_is_fake_sh \t\t'            , '{:.1%} \t'.format(n_l0_is_fake_sh/n_entries)              , n_l0_is_fake_sh     
             print '\t no_fakes_sh \t\t'              , '{:.1%} \t'.format(n_no_fakes_sh/n_entries)                , n_no_fakes_sh      
-            print '\t one_fake_xor_sh \t\t'          , '{:.1%} \t'.format(n_one_fake_xor/n_entries)               , n_one_fake_xor_sh      
-            print '\t two_fakes_sh \t\t'             , '{:.1%} \t'.format(n_two_fakes/n_entries)                  , n_two_fakes_sh         
-            print '\t twoFakes_sameJet_sh \t'        , '{:.1%} \t'.format(n_twoFakes_sameJet_sh/n_two_fakes)      , n_twoFakes_sameJet_sh   , '\t({:.1%})'.format(n_twoFakes_sameJet_sh/n_entries)
-            print '\t twoFakes_sameVtx_sh \t'        , '{:.1%} \t'.format(n_twoFakes_sameVtx_sh/n_two_fakes)      , n_twoFakes_sameVtx_sh   , '\t({:.1%})\n'.format(n_twoFakes_sameVtx_sh/n_entries)
+            print '\t one_fake_xor_sh \t\t'          , '{:.1%} \t'.format(n_one_fake_xor_sh/n_entries)            , n_one_fake_xor_sh      
+            print '\t two_fakes_sh \t\t'             , '{:.1%} \t'.format(n_two_fakes_sh/n_entries)               , n_two_fakes_sh         
+            print '\t twoFakes_sameJet_sh \t'        , '{:.1%} \t'.format(n_twoFakes_sameJet_sh/n_two_fakes_sh)   , n_twoFakes_sameJet_sh   , '\t({:.1%})\n'.format(n_twoFakes_sameJet_sh/n_entries)
 
         print '\t l0_is_fake_dr \t\t'                , '{:.1%} \t'.format(n_l0_is_fake_dr/n_entries)              , n_l0_is_fake_dr     
         print '\t no_fakes_dr \t\t'                  , '{:.1%} \t'.format(n_no_fakes_dr/n_entries)                , n_no_fakes_dr      
         print '\t one_fake_xor_dr \t'                , '{:.1%} \t'.format(n_one_fake_xor_dr/n_entries)            , n_one_fake_xor_dr      
         print '\t two_fakes_dr\t\t'                  , '{:.1%} \t'.format(n_two_fakes_dr/n_entries)               , n_two_fakes_dr         
         print '\t twoFakes_sameJet_dr \t'            , '{:.1%} \t'.format(n_twoFakes_sameJet_dr/n_two_fakes_dr)   , n_twoFakes_sameJet_dr, '\t({:.1%})'.format(n_twoFakes_sameJet_dr/n_entries)
-        print '\t twoFakes_sameVtx_dr\t'             , '{:.1%} \t'.format(n_twoFakes_sameVtx_dr/n_two_fakes_dr)   , n_twoFakes_sameVtx_dr, '\t({:.1%})'.format(n_twoFakes_sameVtx_dr/n_entries)
         
-        sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__
+        sys.stdout = sys.__stdout__
 
         print '\n\t', sample + '_%s\t\t done\n'%ch
 ####################################################################################################
@@ -596,7 +677,7 @@ def checkTTLratio(ch='mmm',mode='dr'):
     sList = raw_input('\tchoose between TT, DY and WJ (inclusively)\n\t')
     samples = sList.split(',')
 
-    if samples == 'all': samples = ['TT','DY','WJ']
+    if samples[0] == 'all': samples = ['TT','DY','WJ']
 
     h_pt_1f = []; h_pt_2f = []; i = 0
     iso_cut = 0.15
@@ -620,12 +701,12 @@ def checkTTLratio(ch='mmm',mode='dr'):
     dRdefList, sHdefList = selectDefs(ch)
 
     if mode == 'dr':
-        l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet, twoFakes_sameVtx = dRdefList
+        l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet = dRdefList
     if mode == 'sh':
-        l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet, twoFakes_sameVtx = sHdefList
+        l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet = sHdefList
 
     for sample in samples: 
-
+        t = None
         if sample == 'DY':
             t = rt.TChain('tree')
             t.Add(DYBB_dir + suffix)
@@ -719,7 +800,7 @@ def checkTTLratio(ch='mmm',mode='dr'):
         framer.GetYaxis().SetTitle('tight-to-loose ratio')
         framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
         h_pt_1f[i].Draw('same')
-        h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
+        h_pt_1f[i].SetMarkerColor(rt.kRed+1+i)
         h_pt_2f[i].Draw('same')
         leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
         leg.AddEntry(h_pt_2f[i], 'double fakes')
@@ -733,12 +814,15 @@ def checkTTLratio(ch='mmm',mode='dr'):
 
     if len(samples) > 1:
 
+        rnch = 3
+        if ch == 'mmm': rnch = 2
+
         c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
         framer.Draw()
         framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
         framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
         leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-        for i in range(len(samples)):
+        for i in range(rnch):
             h_pt_1f[i].Draw('same')
             leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
         leg.Draw()
@@ -751,7 +835,7 @@ def checkTTLratio(ch='mmm',mode='dr'):
         framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
         framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
         leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
-        for i in range(len(samples)-1): # forget WJ for now
+        for i in range(rnch): # forget WJ for now
             h_pt_2f[i].Draw('same')
             leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
         leg.Draw()
@@ -1952,8 +2036,8 @@ def selectDefs(ch):
     promptMode = ch[0]
     pairMode   = ch[1] + ch[2]
 
-    l0_is_fake_dr, no_fakes_dr, one_fake_xor_dr, two_fakes_dr, twoFakes_sameJet_dr, twoFakes_sameVtx_dr = '','','','','','' 
-    l0_is_fake_sh, no_fakes_sh, one_fake_xor_sh, two_fakes_sh, twoFakes_sameJet_sh, twoFakes_sameVtx_sh = '','','','','','' 
+    l0_is_fake_dr, no_fakes_dr, one_fake_xor_dr, two_fakes_dr, twoFakes_sameJet_dr = '','','','','' 
+    l0_is_fake_sh, no_fakes_sh, one_fake_xor_sh, two_fakes_sh, twoFakes_sameJet_sh = '','','','','' 
     
     if promptMode == 'm': 
         l0_is_fake_sh       = l0_fake_m_sh
@@ -1968,23 +2052,20 @@ def selectDefs(ch):
         one_fake_xor_dr     = one_fake_xor_ee_dr
         two_fakes_dr        = two_fakes_ee_dr
         twoFakes_sameJet_dr = twoFakes_sameJet_ee_dr 
-        twoFakes_sameVtx_dr = twoFakes_sameVtx_ee_dr
 
     if pairMode == 'em': 
         no_fakes_dr         = no_fakes_em_dr
         one_fake_xor_dr     = one_fake_xor_em_dr
         two_fakes_dr        = two_fakes_em_dr
         twoFakes_sameJet_dr = twoFakes_sameJet_em_dr 
-        twoFakes_sameVtx_dr = twoFakes_sameVtx_em_dr
 
     if pairMode == 'mm':
         no_fakes_dr         = no_fakes_mm_dr
         one_fake_xor_dr     = one_fake_xor_mm_dr
         two_fakes_dr        = two_fakes_mm_dr
         twoFakes_sameJet_dr = twoFakes_sameJet_mm_dr 
-        twoFakes_sameVtx_dr = twoFakes_sameVtx_mm_dr
 
-    dRdefList = [l0_is_fake_dr, no_fakes_dr, one_fake_xor_dr, two_fakes_dr, twoFakes_sameJet_dr, twoFakes_sameVtx_dr]
-    sHdefList = [l0_is_fake_sh, no_fakes_sh, one_fake_xor_sh, two_fakes_sh, twoFakes_sameJet_sh, twoFakes_sameVtx_sh]
+    dRdefList = [l0_is_fake_dr, no_fakes_dr, one_fake_xor_dr, two_fakes_dr, twoFakes_sameJet_dr]
+    sHdefList = [l0_is_fake_sh, no_fakes_sh, one_fake_xor_sh, two_fakes_sh, twoFakes_sameJet_sh]
  
     return dRdefList, sHdefList 

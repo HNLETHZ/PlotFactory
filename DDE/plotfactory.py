@@ -214,7 +214,7 @@ def setpfstyle():
     pfstyle.SetTitleOffset(1.35,"z")
 
     pfstyle.SetMarkerStyle(20)
-    pfstyle.SetMarkerSize(0.5)
+    pfstyle.SetMarkerSize(0.75)
     pfstyle.SetLineWidth(1)
     # pfstyle.SetHistLineWidth(2.)
     pfstyle.SetLineStyleString(2,'[12 12]') # postscript dashes
