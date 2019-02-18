@@ -6,7 +6,7 @@ if ( _lFlavor[i] == 0 ) { // bracket ends after '// end ele'
     if ( !( _lEleIsEB[i] || _lEleIsEE[i]) ) 
         _isLooseCutBasedElectronWithoutIsolatio[i] = false;
 
-    if ( _lElefull5x5SigmaIetaIeta[i]            >= (_lEleIsEB[i] ? 0.11     : 0.0314) ) 
+    if ( _lElefull5x5SigmaIetaIeta[i]            >= ( _lEleIsEB[i] ? 0.11    : 0.0314) ) 
         _isLooseCutBasedElectronWithoutIsolatio[i] = false;
 
     if ( _lEleDEtaInSeed [i]                     >= ( _lEleIsEB[i] ? 0.00477 : 0.00868) ) 
@@ -18,7 +18,7 @@ if ( _lFlavor[i] == 0 ) { // bracket ends after '// end ele'
     if ( _lElehadronicOverEm[i]                  >= ( _lEleIsEB[i] ? 0.298   : 0.101) )
         _isLooseCutBasedElectronWithoutIsolatio[i] = false;
 
-    if ( _lEleInvMinusPInv[i]                    >= (_lEleIsEB[i] ? 0.241    : 0.14) ) 
+    if ( _lEleInvMinusPInv[i]                    >= ( _lEleIsEB[i] ? 0.241   : 0.14) ) 
         _isLooseCutBasedElectronWithoutIsolatio[i] = false;
 
     // MediumNoIso
@@ -71,7 +71,6 @@ if ( _lFlavor[i] == 0 ) { // bracket ends after '// end ele'
         bool goodGlob = false;
         goodGlob = _lGlobalMuon[i] && _lCQChi2Position[i] < 12 && _lCQTrackKink[i] < 20;
         _isOurMedium[i] = _lPOGLoose[i] && _muonSegComp[i] > (goodGlob ? 0.303 : 0.451);
-
 
         // time veto
         _passTimingVeto[i] = true;
