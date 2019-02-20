@@ -17,6 +17,7 @@ import root_pandas
 from itertools import product
 #gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 pf.setpfstyle()
+pi = rt.TMath.Pi()
 ####################################################################################################
 plotDir     = '/eos/user/v/vstampf/plots/DDE/'
 plotDir     = '/t3home/vstampf/eos/plots/DDE/'
@@ -38,16 +39,22 @@ DYBBDir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/monteca
 DY50Dir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50/'
 DY50_extDir_mee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50_ext/'
 DY10Dir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50/'
-DY10_extDir_mee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50_ext/'   
 TT_dir_mee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/TTJets_amcat_20190130/'  
 W_dir_mee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
 W_ext_dir_mee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
+####################################################################################################
+DYBBDir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
+DY50Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
+DY50_extDir_mem = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
+DY10Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
+TT_dir_mem      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
+W_dir_mem       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
+W_ext_dir_mem   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
 DY50_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50_ext/'
 DY10Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50/'
-DY10_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50_ext/'   
 TT_dir_mmm      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/TTJets_amcat_TauDecayInfo/'  
 W_dir_mmm       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu/'
 W_ext_dir_mmm   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu_ext/'
@@ -91,15 +98,16 @@ DY50_ext_dir_m       = 'prompt_m/partial/DYJetsToLL_M50_ext/'
 W_dir_m              = 'prompt_m/partial/WJetsToLNu/'
 W_ext_dir_m          = 'prompt_m/partial/WJetsToLNu_ext/'
 ####################################################################################################
-samples =  [W_dir_e, W_ext_dir_e, TT_dir_e, DYBB_dir_e, DY50_dir_e, DY10to50_ext_dir_e, DY10to50_dir_e, DY50_ext_dir_e] #NOT YET PROCESSED
-samples += [W_dir_m, W_ext_dir_m, TT_dir_m, DYBB_dir_m, DY50_dir_m, DY10to50_ext_dir_m, DY10to50_dir_m, DY50_ext_dir_m]
-####################################################################################################
-## CUTS ##
+                                    ## CUTS ##
 ####################################################################################################
 disp0p5     = 'hnl_2d_disp > 0.5'
 disp1       = 'hnl_2d_disp > 1'
 M10         = 'hnl_m_01 > 10  &  hnl_m_02 > 10  &  hnl_m_12 > 10'
 tt_disp_bj1 = disp0p5 + '  &  nbj > 0'
+####################################################################################################
+dPhi00 = '( (l0_phi-l0_gen_match_phi + 2*pi) * (l0_phi-l0_gen_match_phi < -pi) + (l0_phi-l0_gen_match_phi - 2*pi) * (l0_phi-l0_gen_match_phi > pi) )' 
+dPhi11 = '( (l1_phi-l1_gen_match_phi + 2*pi) * (l1_phi-l1_gen_match_phi < -pi) + (l1_phi-l1_gen_match_phi - 2*pi) * (l1_phi-l1_gen_match_phi > pi) )' 
+dPhi22 = '( (l2_phi-l2_gen_match_phi + 2*pi) * (l2_phi-l2_gen_match_phi < -pi) + (l2_phi-l2_gen_match_phi - 2*pi) * (l2_phi-l2_gen_match_phi > pi) )' 
 ####################################################################################################
 threeMu_pt_rlxd =   'l1_pt > 20  &  l2_pt > 4  &  l0_pt > 4'\
                 '  &  abs(l0_dz) < 0.2 &  abs(l1_dz) < 0.2 &  abs(l2_dz) < 0.2 '\
@@ -117,27 +125,6 @@ threeMu         =   'l1_pt > 20  &  l2_pt > 10  &  l0_pt > 27'\
                 '  & l0_reliso05_03 < 0.1 & l1_reliso05_03 < 0.1 & l2_reliso05_03 < 0.1 '\
                 '  & hnl_dr_01 > 0.05 & hnl_dr_02 > 0.05 & hnl_dr_12 > 0.05 '
 ####################################################################################################
-mltlst = [ ##  sample          , cuts 
-            [W_dir_e           , ['1'              , '1'            ]],
-            [W_ext_dir_e       , ['1'              , '1'            ]],
-            [TT_dir_e          , ['1'              , '1'            ]], 
-            [DYBB_dir_e        , ['1'              , '1'            ]],
-            [DY50_dir_e        , ['1'              , '1'            ]], 
-            [DY10to50_ext_dir_e, ['1'              , '1'            ]],
-            [W_dir_m           , ['1'              , '1'            ]],
-            [W_ext_dir_m       , ['1'              , '1'            ]],
-            [TT_dir_m          , ['1'              , '1'            ]], 
-            [DYBB_dir_m        , ['1'              , '1'            ]],
-            [DY50_dir_m        , ['1'              , '1'            ]], 
-            [DY10to50_ext_dir_m, ['1'              , '1'            ]],
-            [DY10to50_dir_m    , ['1'              , '1'            ]],
-            [TT_dir_e          , ['tt_disp_bj1'    , tt_disp_bj1    ]], 
-            [TT_dir_m          , ['tt_disp_bj1'    , tt_disp_bj1    ]], 
-            [DY50_dir_m        , ['threeMu'        , threeMu        ]],
-            [DY10to50_dir_m    , ['threeMu_pt_rlxd', threeMu_pt_rlxd]],
-            [DY10to50_ext_dir_m, ['threeMu_pt_rlxd', threeMu_pt_rlxd]],
-        ]
-####################################################################################################
                 ##         FAKES / PROMPT         ##
 ####################################################################################################
 '''
@@ -153,17 +140,17 @@ l2_prompt_m_dr_old = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_ma
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 13'#& l0_is_real == 1'
 # l0_prompt_m_dr += ' & l0_good_match )'
-l0_prompt_m_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 & l0_pdgid == l0_gen_match_pdgid )'
+l0_prompt_m_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (' + dPhi00 + ')**2 ) < 0.04 & l0_pdgid == l0_gen_match_pdgid )'
 
 l1_prompt_m_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_m_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 13'#& l1_is_real == 1'
 # l1_prompt_m_dr += ' & l1_good_match )'
-l1_prompt_m_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 & l1_pdgid == l1_gen_match_pdgid )'
+l1_prompt_m_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (' + dPhi11 + ')**2 ) < 0.04 & l1_pdgid == l1_gen_match_pdgid )'
 
 l2_prompt_m_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_m_dr += ' | l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 13'#& l2_is_real == 1'
 # l2_prompt_m_dr += ' & l2_good_match )'
-l2_prompt_m_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 & l2_pdgid == l2_gen_match_pdgid )'
+l2_prompt_m_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (' + dPhi22 + ')**2 ) < 0.04 & l2_pdgid == l2_gen_match_pdgid )'
 
 
 l0_prompt_e_dr_old = '( (l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11 )'
@@ -171,19 +158,19 @@ l1_prompt_e_dr_old = '( (l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_ma
 l2_prompt_e_dr_old = '( (l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 11 )'
 
 l0_prompt_e_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
-l0_prompt_e_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & abs(l0_gen_match_pdgid) == 11'#& l0_is_real == 1'
+l0_prompt_e_dr += ' | l0_gen_match_fromHardProcessFinalState == 1 | l0_gen_match_isPromptFinalState == 1) & ( abs(l0_gen_match_pdgid) == 11 | abs(l0_gen_match_pdgid) == 22 )'
 # l0_prompt_e_dr += ' & l0_good_match )'
-l0_prompt_e_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (l0_phi-l0_gen_match_phi)**2 ) < 0.04 )'
+l0_prompt_e_dr += ' & sqrt( (l0_eta-l0_gen_match_eta)**2 + (' + dPhi00 + ')**2 ) < 0.04 )'
 
 l1_prompt_e_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
-l1_prompt_e_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & abs(l1_gen_match_pdgid) == 11'#& l1_is_real == 1'
+l1_prompt_e_dr += ' | l1_gen_match_fromHardProcessFinalState == 1 | l1_gen_match_isPromptFinalState == 1) & ( abs(l1_gen_match_pdgid) == 11 | abs(l1_gen_match_pdgid) == 22 )'
 # l1_prompt_e_dr += ' & l1_good_match )'
-l1_prompt_e_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (l1_phi-l1_gen_match_phi)**2 ) < 0.04 )'
+l1_prompt_e_dr += ' & sqrt( (l1_eta-l1_gen_match_eta)**2 + (' + dPhi11 + ')**2 ) < 0.04 )'
 
 l2_prompt_e_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 | l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
-l2_prompt_e_dr += ' | l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & abs(l2_gen_match_pdgid) == 11'#& l2_is_real == 1'
+l2_prompt_e_dr += ' | l2_gen_match_fromHardProcessFinalState == 1 | l2_gen_match_isPromptFinalState == 1) & ( abs(l2_gen_match_pdgid) == 11 | abs(l2_gen_match_pdgid) == 22 )'
 # l2_prompt_e_dr += ' & l2_good_match )'
-l2_prompt_e_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (l2_phi-l2_gen_match_phi)**2 ) < 0.04 )'
+l2_prompt_e_dr += ' & sqrt( (l2_eta-l2_gen_match_eta)**2 + (' + dPhi22 + ')**2 ) < 0.04 )'
 
 
 l0_fake_m_dr = '( !' + l0_prompt_m_dr + ' )'  #'( (l0_gen_match_fromHardProcessFinalState == 0 & l0_gen_match_isPromptFinalState == 0) || abs(l0_gen_match_pdgid) != 13 )'
@@ -303,41 +290,20 @@ no_fakes_mm_sh_old = two_prompt_mm_sh_old
 no_fakes_mm_sh     = two_prompt_mm_sh
 no_fakes_mm_dr     = two_prompt_mm_dr
 no_fakes_ee_dr     = two_prompt_ee_dr
-
-
-
-def LepIDIsoPass(lep, ID, iso_cut):
-#    cut_var = ' & l%i_id_%s & l%i_reliso05_03 < %f'%(lep, ID, lep, iso_cut)
-#    cut_var = ' & l%i_id_%s & l%i_reliso05 < %f'%(lep, ID, lep, iso_cut)
-    cut_var = ' & l%i_id_%s & l%i_reliso_rho_04 < %f'%(lep, ID, lep, iso_cut) ## FROM v2 ON
-    return cut_var
-
-def LepIDIsoFail(lep, ID, iso_cut):
-#    cut_var = ' & l%i_id_%s & l%i_reliso05_03 > %f'%(lep, ID, lep, iso_cut)
-#    cut_var = ' & l%i_id_%s & l%i_reliso05 > %f'%(lep, ID, lep, iso_cut)
-    cut_var = ' & l%i_id_%s & l%i_reliso_rho_04 > %f'%(lep, ID, lep, iso_cut) ## FROM v2 ON
-    return cut_var
-
-def LepIDIsoFail_leq1(lep, ID, iso_cut):
-#    cut_var = ' & l%i_id_%s & l%i_reliso05_03 > %f & l%i_reliso05_03 < 1'%(lep, ID, lep, iso_cut, lep)
-#    cut_var = ' & l%i_id_%s & l%i_reliso05 > %f & l%i_reliso05 < 1'%(lep, ID, lep, iso_cut, lep)
-    cut_var = ' & l%i_id_%s & l%i_reliso_rho_04 > %f & l%i_reliso_rho_04 < 1'%(lep, ID, lep, iso_cut, lep)  ## FROM v2 ON
-    return cut_var
-
-def bothLoose(iso_cut): 
-    bL =  '& ( ( 1 ' + LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + ' ) | ( 1 ' 
-    bL += LepIDIsoFail(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + ' ) | ( 1 '
-    bL += LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoFail(2, 'l', iso_cut) + ' ) | ( 1 '
-    bL += LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut) + ' ) )'
-
-    bL = ' & hnl_iso04_rel_rhoArea > %f'%iso_cut 
-    return bL
+####################################################################################################
 ####################################################################################################
               ##               LOOSE / TIGHT REGIONS                ##
+####################################################################################################
+              ##                 DOUBLE FAKE RATE                   ##  
 ####################################################################################################
 DFR_LOOSE_MEE          =  ' & (l1_pt > 3 & l1_LooseNoIso & l2_pt > 3 & l2_LooseNoIso & l0_id_t & l0_reliso_rho_04 < 0.15 & hnl_iso04_rel_rhoArea < 1 )'     
 DFR_LOOSENOTTIGHT_MEE  =  ' & (l1_pt > 3 & l1_LooseNoIso & l2_pt > 3 & l2_LooseNoIso & l0_id_t & l0_reliso_rho_04 < 0.15 & (l1_reliso05 > 0.2 | l2_reliso05 > 0.2) & hnl_iso04_rel_rhoArea < 1 )'#FIXME
 DFR_TIGHT_MEE          =  ' & (l1_pt > 3 & l1_LooseNoIso & l2_pt > 3 & l2_LooseNoIso & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_reliso05 < 0.2 & l2_reliso05 < 0.2 )' 
+####################################################################################################
+# FIXME
+DFR_LOOSE_MEM          =  ' & (l1_pt > 3 & l1_LooseNoIso & l2_pt > 3 & l2_LooseNoIso & l0_id_t & l0_reliso_rho_03 < 0.15 & hnl_iso03_rel_rhoArea < 1 )'     
+DFR_LOOSENOTTIGHT_MEM  =  ' & (l1_pt > 3 & l1_LooseNoIso & l2_pt > 3 & l2_LooseNoIso & l0_id_t & l0_reliso_rho_03 < 0.15 & (l1_reliso05 > 0.2 | l2_reliso05 > 0.2) & hnl_iso03_rel_rhoArea < 1 )'#FIXME
+DFR_TIGHT_MEM          =  ' & (l1_pt > 3 & l1_MediumNoIso & l2_pt > 3 & l2_LooseNoIso & l0_id_t & l0_reliso_rho_03 < 0.15 & l1_reliso05 < 0.2 & l2_reliso05 < 0.2 )' 
 ####################################################################################################
 DFR_LOOSE_MMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & hnl_iso04_rel_rhoArea < 1 )'
 DFR_LOOSENOTTIGHT_MMM = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & (l1_reliso_rho_04 > 0.15 | l2_reliso_rho_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )'# FIXME 
@@ -351,25 +317,47 @@ DFR_LOOSE_EMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_relis
 DFR_LOOSENOTTIGHT_EMM = ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05 < 0.15 & l1_id_l & l2_id_l & (l1_reliso_rho_04 > 0.15 | l2_reliso_rho_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )'  # FIXME 
 DFR_TIGHT_EMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_eid_cut_loose & l0_reliso05 < 0.15 & l1_id_l & l2_id_l & l1_reliso_rho_04 < 0.15 & l2_reliso_rho_04 < 0.15 )' 
 ####################################################################################################
-    # single FR
-    # OSSF, medium ID, ISO < .15, mass ~ Z
+              ##                 SINGLE FAKE RATE                   ##  
+####################################################################################################
 l0l1_ee    = '(l1_pt > 3 & l0_eid_mva_iso_wp90 & l1_eid_mva_iso_wp90 & l0_reliso05 < 0.15 & l1_reliso05 < 0.15'
-l0l1_ee    += ' & hnl_iso03_rel_rhoArea < 3 & abs(hnl_m_01 - 91.19) < 10 & l0_q * l1_q < 0 )'
-l0l1_ee    += ' & ' + l0_prompt_e_dr + ' & ' + l1_prompt_e_dr + ' & ' + l2_fake_e_dr
+l0l1_ee    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_01 - 91.19) < 10 & l0_q * l1_q < 0 & abs(l0_dxy) < 0.05 & abs(l1_dxy) < 0.05)'
+#l0l1_ee    += ' & hnl_iso03_rel_rhoArea < 1 & l0_q * l1_q < 0 & abs(l0_dxy) < 0.05 & abs(l1_dxy) < 0.05)'
+l0l1_ee    += ' & ' + l0_prompt_e_dr + ' & ' + l1_prompt_e_dr 
 
 l0l2_ee    = '(l2_pt > 3 & l0_eid_mva_iso_wp90 & l2_eid_mva_iso_wp90 & l0_reliso05 < 0.15 & l2_reliso05 < 0.15'
-l0l2_ee    += ' & hnl_iso03_rel_rhoArea < 3 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 )'
-l0l2_ee    += ' & ' + l0_prompt_e_dr + ' & ' + l2_prompt_e_dr + ' & ' + l1_fake_e_dr
+l0l2_ee    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05)'
+#l0l2_ee    += ' & hnl_iso03_rel_rhoArea < 1 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05)'
+l0l2_ee    += ' & ' + l0_prompt_e_dr + ' & ' + l2_prompt_e_dr
+####################################################################################################
+l0l1_me    = '(l1_pt > 3 & l0_id_t & l1_eid_mva_iso_wp90 & l0_reliso_rho_03 < 0.15 & l1_reliso05 < 0.15'
+l0l1_me    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_01 - 91.19) < 10 & l0_q * l1_q < 0 & abs(l0_dxy) < 0.05 & abs(l1_dxy) < 0.05)'
+l0l1_me    += ' & ' + l0_prompt_m_dr + ' & ' + l1_prompt_e_dr 
+####################################################################################################
+l0l2_em    = '(l2_pt > 3 & l0_eid_mva_iso_wp90 & l2_id_m & l0_reliso05 < 0.15 & l2_reliso_rho_03 < 0.15'
+l0l2_em    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05)'
+l0l2_em    += ' & ' + l0_prompt_e_dr + ' & ' + l2_prompt_m_dr 
+####################################################################################################
+l0l1_mm    = '(l1_pt > 3 & l0_id_t & l1_id_t & l0_reliso_rho_03 < 0.15 & l1_reliso_rho_03 < 0.15'
+l0l1_mm    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_01 - 91.19) < 10 & l0_q * l1_q < 0 & abs(l0_dxy) < 0.05 & abs(l1_dxy) < 0.05)'
+l0l1_mm    += ' & ' + l0_prompt_m_dr + ' & ' + l1_prompt_m_dr 
 
-l1_e_tight = 'l1_pt > 3 & l1_MediumNoIso & l1_reliso05 < 0.15'
-l2_e_tight = 'l2_pt > 3 & l2_MediumNoIso & l2_reliso05 < 0.15'
-l1_e_lnt   = 'l1_pt > 3 & l1_LooseNoIso & l1_reliso05 > 0.15'
-l2_e_lnt   = 'l2_pt > 3 & l2_LooseNoIso & l2_reliso05 > 0.15'
-l1_e_loose = 'l1_pt > 3 & l1_LooseNoIso'
-l2_e_loose = 'l2_pt > 3 & l2_LooseNoIso'
-#SFR_DY_TIGHT_EEE = '( ' + l0l1_ee + ' & ' + l2_e_tight + ' ) | ( ' + l0l2_ee + ' & ' + l1_e_tight + ' )'
-#SFR_DY_LOOSE_EEE = '( ' + l0l1_ee + ' & ' + l2_e_loose + ' ) | ( ' + l0l2_ee + ' & ' + l1_e_loose + ' )'
-#SFR_DY_LNT_EEE   = '( ' + l0l1_ee + ' & ' + l2_e_lnt   + ' ) | ( ' + l0l2_ee + ' & ' + l1_e_lnt   + ' )'
+l0l2_mm    = '(l2_pt > 3 & l0_id_m & l2_id_m & l0_reliso_rho_03 < 0.15 & l2_reliso_rho_03 < 0.15'
+l0l2_mm    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05)'
+l0l2_mm    += ' & ' + l0_prompt_m_dr + ' & ' + l2_prompt_m_dr 
+####################################################################################################
+l1_e_tight = 'l1_pt > 3 & l1_MediumNoIso & l1_reliso05 < 0.15 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
+l2_e_tight = 'l2_pt > 3 & l2_MediumNoIso & l2_reliso05 < 0.15 & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr
+l1_e_lnt   = 'l1_pt > 3 & l1_LooseNoIso  & l1_reliso05 > 0.15 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr #FIXME
+l2_e_lnt   = 'l2_pt > 3 & l2_LooseNoIso  & l2_reliso05 > 0.15 & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr #FIXME
+l1_e_loose = 'l1_pt > 3 & l1_LooseNoIso  & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
+l2_e_loose = 'l2_pt > 3 & l2_LooseNoIso  & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr
+####################################################################################################
+l1_m_tight = 'l1_pt > 3 & l1_id_l & l1_reliso_rho_03 < 0.15 & ' + l1_fake_m_dr
+l2_m_tight = 'l2_pt > 3 & l2_id_l & l2_reliso_rho_03 < 0.15 & ' + l2_fake_m_dr
+l1_m_lnt   = 'l1_pt > 3 & l1_id_l & l1_reliso_rho_03 > 0.15 & ' + l1_fake_m_dr
+l2_m_lnt   = 'l2_pt > 3 & l2_id_l & l2_reliso_rho_03 > 0.15 & ' + l2_fake_m_dr
+l1_m_loose = 'l1_pt > 3 & l1_id_l & ' + l1_fake_m_dr
+l2_m_loose = 'l2_pt > 3 & l2_id_l & ' + l2_fake_m_dr
 ####################################################################################################
             ###      martina      ###
 ####################################################################################################
@@ -392,10 +380,6 @@ def DFR_LOOSE_M(mu=1):
     cut = ' & abs(l%s_dxy) > 0.01 & l%s_reliso_rho_03 < 1.2 && l%s_Medium & l%s_is_oot == 0' %(mu,mu,mu)
     return cut
 ####################################################################################################
-#DFR_TIGHT_EEE         =  PROMPT_E + DFR_TIGHT_E(1) + DFR_TIGHT_E(2) + ' & hnl_iso04_rel_rhoArea < 1'
-#DFR_LOOSE_EEE         =  ' & (l1_pt > 5 & l1_MediumWithIso & l2_pt > 5 & l2_MediumWithIso & l0_eid_mva_iso_wp90 & l0_reliso05 < 0.1 & l1_reliso05 < 0.1 & l2_reliso05 < 0.1 )' 
-#DFR_LOOSENOTTIGHT_EEE =  ' & (l1_pt > 5 & l1_LooseNoIso & l2_pt > 5 & l2_LooseNoIso & l0_eid_mva_iso_wp90 & l0_reliso05 < 0.1 & (l1_reliso05 > 0.1 | l2_reliso05 > 0.1) & hnl_iso04_rel_rhoArea < 1 )' 
-####################################################################################################
 ####################################################################################################
 Z_veto_01       = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  (l1_q + l2_q != 0)'
 Z_veto_02       = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'
@@ -417,25 +401,6 @@ Z_veto = '(   ' + single_Z_veto + '    |    ' + double_Z_veto + '    |    ' + Z_
 twoLepObjIsoleq1  = ' & ( max(l1_reliso_rho_04 * l1_pt, l2_reliso_rho_04 * l2_pt) / (hnl_hn_vis_pt) ) < 1'   ## FROM v2 ON
 twoLepObjIsoleq1  = ' & hnl_iso04_rel_rhoArea < 1' 
 
-def ptConeLep(lep, iso_cut):
-#    fill_var = '(l%i_pt) * (1 + l%i_reliso05_03 - %f)'%(lep, lep, iso_cut)
-#    fill_var = '(l%i_pt) * (1 + l%i_reliso05 - %f)'%(lep, lep, iso_cut)
-    fill_var = '(l%i_pt) * (1 + l%i_reliso_rho_04 - %f)'%(lep, lep, iso_cut)
-    return fill_var
-
-def ptCone2F(iso_cut):
-    fill_var = '(hnl_hn_vis_pt) * (1 - %f) + max(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03)'%iso_cut
-    return fill_var
-
-def ptCone2F_dimu(iso_cut):
-#    fill_var = '(hnl_hn_vis_pt) * (1 - %f) + max(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03) + (hnl_dr_12 / 0.5) * min(l1_pt * l1_reliso05_03, l2_pt * l2_reliso05_03)'%iso_cut
-#    fill_var = '(hnl_hn_vis_pt) * (1 - %f) + max(l1_pt * l1_reliso05, l2_pt * l2_reliso05) + (hnl_dr_12 / 0.5) * min(l1_pt * l1_reliso05, l2_pt * l2_reliso05)'%iso_cut
-#    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso03_rel_deltaBeta)'%iso_cut
-#    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso03_rel_rhoArea)'%iso_cut
-#    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso04_rel_deltaBeta)'%iso_cut
-    fill_var = '(hnl_hn_vis_pt) * (1 - %f + hnl_iso04_rel_rhoArea)'%iso_cut
-    return fill_var
-
 PTCONE = '(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.15) ) + ( (hnl_iso03_rel_rhoArea>=0.15) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.15) ) )  )'
 
 eta_0to1p2   = '( abs(l1_eta) < 1.2 & abs(l2_eta) < 1.2 )'
@@ -445,6 +410,11 @@ eta_2p1to2p4 = '( abs(l1_eta) > 2.1 & abs(l2_eta) > 2.1 & abs(l1_eta) < 2.4 & ab
 eta_bins = [['0_to_1p2'  , eta_0to1p2],
             ['1p2_to_2p1', eta_1p2to2p1],
             ['2p1_to_2p4', eta_2p1to2p4]]
+
+cr_tt     = 'abs(hnl_m_12 - 91.18) > 15  &  abs(hnl_w_vis_m - 91.18) > 15  &  nbj >= 1'
+q_pt      = 'l0_pt > 35  &  l1_pt > 4  &  l2_pt > 4  &  l1_q != l2_q'
+im_par_l0 = 'abs(l0_dxy) < 0.045 & abs(l0_dz) < 0.2'
+tt_v0 = cr_tt + ' & ' + q_pt + ' & ' + im_par_l0
 
 isolst = [0.10,0.11,0.12,0.13,0.14,0.15,0.16,0.17,0.18,0.19,0.20]
 
@@ -474,11 +444,6 @@ b_chi2      = np.arange(0.,1.05,0.05)
 framer = rt.TH2F('','',len(b_pt)-1,b_pt,len(b_y)-1,b_y)
 framer.GetYaxis().SetRangeUser(0.,0.5)
 framer.GetYaxis().SetRangeUser(0.,1.0)
-
-cr_tt     = 'abs(hnl_m_12 - 91.18) > 15  &  abs(hnl_w_vis_m - 91.18) > 15  &  nbj >= 1'
-q_pt      = 'l0_pt > 35  &  l1_pt > 4  &  l2_pt > 4  &  l1_q != l2_q'
-im_par_l0 = 'abs(l0_dxy) < 0.045 & abs(l0_dz) < 0.2'
-tt_v0 = cr_tt + ' & ' + q_pt + ' & ' + im_par_l0
 ####################################################################################################
 
 ####################################################################################################
@@ -496,9 +461,9 @@ def countFakes(ch='mee',DZ=True,DISP=True):
 
     if samples[0] == 'all': samples = ['TT','DY','WJ']
 
-    L_T_LNT, dirs = selectCuts(ch)
+    SFR, DFR, dirs = selectCuts(ch)
 
-    LOOSE, TIGHT, LOOSENOTTIGHT = L_T_LNT
+    LOOSE, TIGHT, LOOSENOTTIGHT = DFR
     DYBB_dir, DY10_dir, DY50_dir, DY50_ext_dir, TT_dir, W_dir, W_ext_dir = dirs   
 
     cuts += TIGHT
@@ -606,7 +571,7 @@ def countFakes(ch='mee',DZ=True,DISP=True):
 ####################################################################################################
 
 ####################################################################################################
-def checkTTLratio(ch='mmm',mode='dr'):
+def checkTTLratio(ch='mmm',sfr=True,dfr=False,file=True,mode='dr'):
 
     samples = ['TT','DY','WJ']
 
@@ -625,15 +590,10 @@ def checkTTLratio(ch='mmm',mode='dr'):
 
     N_ENTRIES = 0
 
-#   disp = ' & abs(l1_dz) < 2 & abs(l2_dz) < 2'
-#   dsp = ''
-#   if DISP == True:
-#       dsp = '_disp'
-#       disp += ' & hnl_2d_disp > 0.5'
+    SFR, DFR, dirs = selectCuts(ch)
 
-    L_T_LNT, dirs = selectCuts(ch)
-
-    LOOSE, TIGHT, LOOSENOTTIGHT = L_T_LNT
+    l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight = SFR 
+    LOOSE, TIGHT, LOOSENOTTIGHT = DFR
     DYBB_dir, DY10_dir, DY50_dir, DY50_ext_dir, TT_dir, W_dir, W_ext_dir = dirs   
 
     dRdefList, sHdefList = selectDefs(ch)
@@ -643,9 +603,9 @@ def checkTTLratio(ch='mmm',mode='dr'):
     if mode == 'sh':
         l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet = sHdefList
 
-    print '\n\t pT cone: %s\n' %PTCONE 
-
-    sys.stdout = open(plotDir + 'FR_%s_%s' %(ch,samples) + '.py', 'w+')
+    if file == True:
+        print '\n\t pT cone: %s\n' %PTCONE 
+        sys.stdout = open(plotDir + 'FR_%s_%s' %(ch,samples) + '.py', 'w+')
 
     print '\n\t pT cone: %s\n' %PTCONE 
 
@@ -668,35 +628,47 @@ def checkTTLratio(ch='mmm',mode='dr'):
             t.Add(W_ext_dir + suffix)
             N_ENTRIES = t.GetEntries()
 
+        if sfr:
 
-        h_pt_1f_T_012  = rt.TH1F('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt)
-        h_pt_1f_T_021  = rt.TH1F('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt)
-        h_pt_1f_L_012  = rt.TH1F('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt)
-        h_pt_1f_L_021  = rt.TH1F('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt)
+            h_pt_1f_T_012  = rt.TH1F('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt)
+            h_pt_1f_T_021  = rt.TH1F('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt)
+            h_pt_1f_L_012  = rt.TH1F('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt)
+            h_pt_1f_L_021  = rt.TH1F('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt)
 
-#            print '\t',sample, 'entries after loose selection:', t.GetEntries(SFR_DY_LOOSE_EEE)
-#            print '\n\t TIGHT WP: %s\n' %SFR_DY_TIGHT_EEE
-#            print '\n\t LOOSE WP: %s\n' %SFR_DY_LOOSE_EEE
-#            print '\n\t LNT WP: %s\n' %SFR_DY_LNT_EEE
+    #            print '\t',sample, 'entries after loose selection:', t.GetEntries(SFR_DY_LOOSE_EEE)
+    #            print '\n\t TIGHT WP: %s\n' %SFR_DY_TIGHT_EEE
+    #            print '\n\t LOOSE WP: %s\n' %SFR_DY_LOOSE_EEE
+    #            print '\n\t LNT WP: %s\n' %SFR_DY_LNT_EEE
 
-        if sample == 'DY':
+    #        if sample == 'DY':
 
-            cuts_SFR = 'l1_q * l2_q < 0 & hnl_2d_disp > 0.5'
+            cuts_SFR = '1'
 
             print '\tsample: %s, drawing single fakes ...'%sample
             print '\t',sample, 'entries after cuts:', t.GetEntries(cuts)
-            print '\n\t cuts: %s'%cuts
-            print '\n\t TIGHT WP: %s\n' %(l0l1_ee + ' & ' + l2_e_tight)
-            print '\n\t LOOSE WP: %s\n' %(l0l1_ee + ' & ' + l2_e_loose)
-            print '\n\t LNT WP: %s\n'   %(l0l1_ee + ' & ' + l2_e_lnt)
+            print '\n\t cuts: %s'%cuts_SFR
+            print '\n\t TIGHT WP: %s\n\t%s\n' %(l0l1, l2_tight)
+            print '\n\t LOOSE WP: %s\n\t%s\n' %(l0l1, l2_loose)
+            print '\n\t LNT WP: %s\n\t%s\n'   %(l0l1, l2_lnt)
 
-            t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1_ee + ' & ' + l2_e_tight)
-            t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2_ee + ' & ' + l1_e_tight)
+        
+            if ch in ['mmm','eee']:
+                t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_tight)
+                t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_tight)
+
+            if ch == 'mem':
+                t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_tight)
+
             h_pt_1f_T_012.Add(h_pt_1f_T_021)
             print '\tentries tight:', h_pt_1f_T_012.GetEntries()
 
-            t.Draw('l2_pt >> pt_1f_L_012', cuts_SFR + ' & ' + l0l1_ee + ' & ' + l2_e_loose)
-            t.Draw('l1_pt >> pt_1f_L_021', cuts_SFR + ' & ' + l0l2_ee + ' & ' + l1_e_loose)
+            if ch in ['mmm','eee']:
+                t.Draw('l1_pt >> pt_1f_L_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_loose)
+                t.Draw('l2_pt >> pt_1f_L_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_loose)
+
+            if ch == 'mem':
+                t.Draw('l1_pt >> pt_1f_L_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_loose)
+
             h_pt_1f_L_012.Add(h_pt_1f_L_021)
             print '\tentries loose:', h_pt_1f_L_012.GetEntries()
 
@@ -714,47 +686,53 @@ def checkTTLratio(ch='mmm',mode='dr'):
             pf.showlumi(sample+'-'+ch)
             save(c_pt_1f, iso_cut, sample, ch)
 
-            print '\tsingle-fakes done \n\n\tdrawing double fakes ...'
-
-        cut_T = cuts + TIGHT ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
-        cut_L = cuts + LOOSE ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
-
-        n_entries             = t.GetEntries(cuts) 
-
-        print '\n\t', sample, 'entries before selection:', N_ENTRIES 
-        print '\t',sample, 'entries after cuts:', n_entries
-        print '\n\t cuts: %s'%cuts
-        print '\n\t TIGHT WP: %s\n' %TIGHT
-        print '\n\t LOOSE WP: %s\n' %LOOSE
-        print '\n\t LNT WP: %s\n' %LOOSENOTTIGHT
-
-        h_pt_2f_L  = rt.TH1F('pt_cone_2f_L', 'pt_cone_2f_L',len(b_pt)-1,b_pt)
-
-        h_pt_2f_T  = rt.TH1F('pt_cone_2f_T', 'pt_cone_2f_T',len(b_pt)-1,b_pt)
-
-        t.Draw(PTCONE + ' >> pt_cone_2f_T', cut_T + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
-        print '\tentries tight:', h_pt_2f_T.GetEntries()
-
-        t.Draw(PTCONE + '>> pt_cone_2f_L' , cut_L + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
-        print '\tentries loose:', h_pt_2f_L.GetEntries()
-
-        print '\tdouble-fakes done'
-  
-        h_pt_2f.append(rt.TEfficiency(h_pt_2f_T, h_pt_2f_L))
-        h_pt_2f[i].SetTitle('%s; p_{T}^{cone} [GeV]; tight-to-loose ratio (double fakes, same jet)'%sample)
-        h_pt_2f[i].SetMarkerColor(rt.kGreen+i*2)
-        h_pt_2f[i].SetFillColor(rt.kWhite)
-
-        c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
-        framer.Draw()
-        framer.GetYaxis().SetTitle('tight-to-loose ratio')
-        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
-        h_pt_2f[i].Draw('same')
-        pf.showlogoprelimsim('CMS')
-        pf.showlumi(sample+'-'+ch)
-        save(c_pt_2f, iso_cut, sample, ch)
+            print '\n\tsingle-fakes done ...'
  
-        if sample == 'DY':
+        if dfr:
+
+            print '\n\tdrawing double fakes ...'
+
+            cut_T = cuts + TIGHT ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
+            cut_L = cuts + LOOSE ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
+
+            n_entries             = t.GetEntries(cuts) 
+
+            print '\n\t', sample, 'entries before selection:', N_ENTRIES 
+            print '\t',sample, 'entries after cuts:', n_entries
+            print '\n\t cuts: %s'%cuts
+            print '\n\t TIGHT WP: %s\n' %TIGHT
+            print '\n\t LOOSE WP: %s\n' %LOOSE
+            print '\n\t LNT WP: %s\n' %LOOSENOTTIGHT
+
+            h_pt_2f_L  = rt.TH1F('pt_cone_2f_L', 'pt_cone_2f_L',len(b_pt)-1,b_pt)
+
+            h_pt_2f_T  = rt.TH1F('pt_cone_2f_T', 'pt_cone_2f_T',len(b_pt)-1,b_pt)
+
+            t.Draw(PTCONE + ' >> pt_cone_2f_T', cut_T + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
+            print '\tentries tight:', h_pt_2f_T.GetEntries()
+
+            t.Draw(PTCONE + '>> pt_cone_2f_L' , cut_L + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
+            print '\tentries loose:', h_pt_2f_L.GetEntries()
+
+            print '\tdouble-fakes done'
+      
+            h_pt_2f.append(rt.TEfficiency(h_pt_2f_T, h_pt_2f_L))
+            h_pt_2f[i].SetTitle('%s; p_{T}^{cone} [GeV]; tight-to-loose ratio (double fakes, same jet)'%sample)
+            h_pt_2f[i].SetMarkerColor(rt.kGreen+i*2)
+            h_pt_2f[i].SetFillColor(rt.kWhite)
+
+            c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            h_pt_2f[i].Draw('same')
+            pf.showlogoprelimsim('CMS')
+            pf.showlumi(sample+'-'+ch)
+            save(c_pt_2f, iso_cut, sample, ch)
+ 
+#        if sample == 'DY':
+
+        if sfr and dfr:
 
             c_pt_cmprd = rt.TCanvas('ptCone_cmprd', 'ptCone_cmprd')
             framer.Draw()
@@ -776,32 +754,34 @@ def checkTTLratio(ch='mmm',mode='dr'):
     if len(samples) > 1:
 
         rnch = 3
-        if ch == 'mmm': rnch = 2
+#        if ch == 'mmm': rnch = 2
 
-        c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
-        framer.Draw()
-        framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
-        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
-        leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-        for i in range(1):
-            h_pt_1f[i].Draw('same')
-            leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
-        leg.Draw()
-    #    c_pt_1f.SetLogz()
-        pf.showlogoprelimsim('CMS')
-        save(c_pt_1f, iso_cut, 'cmbnd', ch)
+        if sfr:
+            c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+            for i in range(rnch):
+                h_pt_1f[i].Draw('same')
+                leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
+            leg.Draw()
+        #    c_pt_1f.SetLogz()
+            pf.showlogoprelimsim('CMS')
+            save(c_pt_1f, iso_cut, 'cmbnd', ch)
 
-        c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
-        framer.Draw()
-        framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
-        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
-        leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
-        for i in range(rnch): # forget WJ for now
-            h_pt_2f[i].Draw('same')
-            leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
-        leg.Draw()
-        pf.showlogoprelimsim('CMS')
-        save(c_pt_2f, iso_cut, 'cmbnd', ch)
+        if dfr:
+            c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
+            for i in range(rnch): # forget WJ for now
+                h_pt_2f[i].Draw('same')
+                leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
+            leg.Draw()
+            pf.showlogoprelimsim('CMS')
+            save(c_pt_2f, iso_cut, 'cmbnd', ch)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
@@ -893,7 +873,6 @@ def measureTTLratio(isData=False,DISP=True,SPLIT=None,ch='eee'):
     print 'tree entries T & L: ', t.GetEntries(cut_T), t.GetEntries(cut_L)
 
     print '%s iso%s ... double fakes done\nnumerator: %i, denominator: %i'%(sample_name, iso_str, h_pt_eta_T.GetEntries(), h_pt_eta_L.GetEntries())
-
 
 #    h_pt_eta_d.Add(h_pt_eta_n) ## NOW BOTHLOOSE UPDATED, NO MORE ADDING NEEDED!
 
@@ -1668,27 +1647,8 @@ def checkDiMsChi2inFRgeq25():
     pf.showlogopreliminary()
     c_m12_chi2.Modified(); c_m12_chi2.Update()
     save(c_m12_chi2, 0.15, 'DDE_data', 'mu', '') 
+####################################################################################################
 
-#print '\n'
-#pool = Pool(processes=len(isolst))
-#print('number of processes (ie. samples): %i'%len(isolst))
-#pool.map(checkTTLratio, isolst)
-
-#print '\n'
-#pool = Pool(processes=len(eta_bins))
-#print('number of processes (ie. samples): %i'%len(eta_bins))
-#pool.map(checkTTLratio, eta_bins)
-#checkTTLratio(['0-to-2.4', l0_prompt])
-
-#print '\n'
-#TTbarStudy()
-
-#print '\n'
-#pool = Pool(processes=len(mltlst))
-#print('number of processes (ie. samples): %i'%len(mltlst))
-#pool.map(countFakes, mltlst) 
-#countFakes([TT_dir_m          , ['disp0p5', 'hnl_2d_disp > 0.5']])
-#countFakes([TT_dir_m          , ['disp0p5_pt15', 'hnl_2d_disp > 0.5 & l1_pt > 15 & l2_pt > 15']])
 ####################################################################################################
 def th1(name, bins, xtitle=''):
     h = rt.TH1F('h_%s'%name, name, len(bins)-1, bins)
@@ -1933,6 +1893,8 @@ def addBranch(isData=False,START=0,STOP=1):
 
 def selectCuts(channel):
 
+    DFR = []; SFR = []; dirs = []
+
     if channel == 'eee':
         DYBB_dir       =   DYBBDir_eee     
         DY10_dir       =   DY10Dir_eee      
@@ -1946,6 +1908,14 @@ def selectCuts(channel):
         LOOSE          =   DFR_LOOSE_EEE
         LOOSENOTTIGHT  =   DFR_LOOSENOTTIGHT_EEE
 
+        l0l1           = l0l1_ee
+        l0l2           = l0l2_ee
+        l1_loose       = l1_e_loose
+        l2_loose       = l2_e_loose
+        l1_lnt         = l1_e_lnt  
+        l2_lnt         = l2_e_lnt  
+        l1_tight       = l1_e_tight
+        l2_tight       = l2_e_tight
 
     if channel == 'emm':
         DYBB_dir       =   DYBBDir_emm     
@@ -1960,6 +1930,16 @@ def selectCuts(channel):
         LOOSE          =   DFR_LOOSE_EMM
         LOOSENOTTIGHT  =   DFR_LOOSENOTTIGHT_EMM
 
+        l0l1           = l0l1_em
+        l0l2           = l0l2_em
+        l1_loose       = l1_m_loose
+        l2_loose       = l2_m_loose
+        l1_lnt         = l1_m_lnt  
+        l2_lnt         = l2_m_lnt  
+        l1_tight       = l1_m_tight
+        l2_tight       = l2_m_tight
+
+
     if channel == 'mee':
         DYBB_dir       =   DYBBDir_mee     
         DY10_dir       =   DY10Dir_mee      
@@ -1972,6 +1952,38 @@ def selectCuts(channel):
         TIGHT          =   DFR_TIGHT_MEE
         LOOSE          =   DFR_LOOSE_MEE
         LOOSENOTTIGHT  =   DFR_LOOSENOTTIGHT_MEE
+
+        l0l1           = l0l1_me
+        l0l2           = l0l2_me
+        l1_loose       = l1_e_loose
+        l2_loose       = l2_e_loose
+        l1_lnt         = l1_e_lnt  
+        l2_lnt         = l2_e_lnt  
+        l1_tight       = l1_e_tight
+        l2_tight       = l2_e_tight
+
+
+    if channel == 'mem':
+        DYBB_dir       =   DYBBDir_mem     
+        DY10_dir       =   DY10Dir_mem      
+        DY50_dir       =   DY50Dir_mem      
+        DY50_ext_dir   =   DY50_extDir_mem 
+        W_dir          =   W_dir_mem
+        W_ext_dir      =   W_ext_dir_mem
+        TT_dir         =   TT_dir_mem
+
+        TIGHT          =   DFR_TIGHT_MEM
+        LOOSE          =   DFR_LOOSE_MEM
+        LOOSENOTTIGHT  =   DFR_LOOSENOTTIGHT_MEM
+
+        l0l1           = l0l1_me
+        l0l2           = l0l2_mm
+        l1_loose       = l1_e_loose
+        l2_loose       = l2_m_loose
+        l1_lnt         = l1_e_lnt  
+        l2_lnt         = l2_m_lnt  
+        l1_tight       = l1_e_tight
+        l2_tight       = l2_m_tight
 
 
     if channel == 'mmm':
@@ -1987,11 +1999,20 @@ def selectCuts(channel):
         LOOSE          =   DFR_LOOSE_MMM
         LOOSENOTTIGHT  =   DFR_LOOSENOTTIGHT_MMM
 
+        l0l1           = l0l1_mm
+        l0l2           = l0l2_mm
+        l1_loose       = l1_m_loose
+        l2_loose       = l2_m_loose
+        l1_lnt         = l1_m_lnt  
+        l2_lnt         = l2_m_lnt  
+        l1_tight       = l1_m_tight
+        l2_tight       = l2_m_tight
 
-    L_T_LNT = [LOOSE, TIGHT, LOOSENOTTIGHT] 
-    dirs    = [DYBB_dir, DY10_dir, DY50_dir, DY50_ext_dir, TT_dir, W_dir, W_ext_dir] 
+    SFR  = [l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight] 
+    DFR  = [LOOSE, TIGHT, LOOSENOTTIGHT] 
+    dirs = [DYBB_dir, DY10_dir, DY50_dir, DY50_ext_dir, TT_dir, W_dir, W_ext_dir] 
 
-    return L_T_LNT, dirs 
+    return SFR, DFR, dirs 
 ######################################################################################
 
 ######################################################################################
@@ -2017,11 +2038,12 @@ def selectDefs(ch):
         two_fakes_dr        = two_fakes_ee_dr
         twoFakes_sameJet_dr = twoFakes_sameJet_ee_dr 
 
-    if pairMode == 'em': 
-        no_fakes_dr         = no_fakes_em_dr
-        one_fake_xor_dr     = one_fake_xor_em_dr
-        two_fakes_dr        = two_fakes_em_dr
-        twoFakes_sameJet_dr = twoFakes_sameJet_em_dr 
+    #TODO
+#    if pairMode == 'em': 
+#        no_fakes_dr         = no_fakes_em_dr
+#        one_fake_xor_dr     = one_fake_xor_em_dr
+#        two_fakes_dr        = two_fakes_em_dr
+#        twoFakes_sameJet_dr = twoFakes_sameJet_em_dr 
 
     if pairMode == 'mm':
         no_fakes_dr         = no_fakes_mm_dr
@@ -2033,3 +2055,6 @@ def selectDefs(ch):
     sHdefList = [l0_is_fake_sh, no_fakes_sh, one_fake_xor_sh, two_fakes_sh, twoFakes_sameJet_sh]
  
     return dRdefList, sHdefList 
+######################################################################################
+
+######################################################################################
