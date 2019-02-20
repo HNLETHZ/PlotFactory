@@ -359,27 +359,7 @@ l2_m_lnt   = 'l2_pt > 3 & l2_id_l & l2_reliso_rho_03 > 0.15 & ' + l2_fake_m_dr
 l1_m_loose = 'l1_pt > 3 & l1_id_l & ' + l1_fake_m_dr
 l2_m_loose = 'l2_pt > 3 & l2_id_l & ' + l2_fake_m_dr
 ####################################################################################################
-            ###      martina      ###
-####################################################################################################
-PROMPT_E = ' & l0_eid_mva_iso_wp90 & l0_reliso_rho_03 < 0.1 & abs(l0_dxy) < 0.05 & abs(l0_dz) < 0.1 & abs(disp_3d_pv_sig) < 4 & l0_pt > 30' 
-PROMPT_M = ' & l0_id_l & l0_id_m & l0_reliso_rho_03 < 0.1 & abs(l0_dxy) < 0.05 & abs(l0_dz) < 0.1 & abs(disp_3d_pv_sig) < 4 & l0_pt > 25 & l0_is_oot == 0' 
 
-def DFR_TIGHT_E(ele=1):
-    cut = ' & abs(l%s_dxy) > 0.01 & l%s_reliso_rho_03 < 0.2 & l%s_LooseNoIso' %(ele,ele,ele)
-    return cut
-
-def DFR_TIGHT_M(mu=1): 
-    cut = ' & abs(l%s_dxy) > 0.01 & l%s_reliso_rho_03 < 0.2 && l%s_Medium & l%s_is_oot == 0' %(mu,mu,mu)
-    return cut
-
-def DFR_LOOSE_E(ele=1):
-    cut = ' & abs(l%s_dxy) > 0.01 & l%s_reliso_rho_03 < 1.2 & l%s_LooseNoIso' %(ele,ele,ele)
-    return cut
-
-def DFR_LOOSE_M(mu=1): 
-    cut = ' & abs(l%s_dxy) > 0.01 & l%s_reliso_rho_03 < 1.2 && l%s_Medium & l%s_is_oot == 0' %(mu,mu,mu)
-    return cut
-####################################################################################################
 ####################################################################################################
 Z_veto_01       = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  (l1_q + l2_q != 0)'
 Z_veto_02       = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'
@@ -647,9 +627,12 @@ def checkTTLratio(ch='mmm',sfr=True,dfr=False,file=True,mode='dr'):
             print '\tsample: %s, drawing single fakes ...'%sample
             print '\t',sample, 'entries after cuts:', t.GetEntries(cuts)
             print '\n\t cuts: %s'%cuts_SFR
-            print '\n\t TIGHT WP: %s\n\t%s\n' %(l0l1, l2_tight)
-            print '\n\t LOOSE WP: %s\n\t%s\n' %(l0l1, l2_loose)
-            print '\n\t LNT WP: %s\n\t%s\n'   %(l0l1, l2_lnt)
+            print '\n\t l0l1: %s\n'       %(l0l1)
+            print '\n\t l0l2: %s\n'       %(l0l2)
+            print '\n\t l1_loose: %s\n'   %(l1_loose)
+            print '\n\t l1_tight: %s\n'   %(l1_tight)
+            print '\n\t l2_loose: %s\n'   %(l2_loose)
+            print '\n\t l2_tight: %s\n'   %(l2_tight)
 
         
             if ch in ['mmm','eee']:
