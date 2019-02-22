@@ -20,7 +20,7 @@ pf.setpfstyle()
 pi = rt.TMath.Pi()
 ####################################################################################################
 plotDir     = '/eos/user/v/vstampf/plots/DDE/'
-plotDir     = '/t3home/vstampf/eos/plots/DDE/'
+#plotDir     = '/t3home/vstampf/eos/plots/DDE/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v0/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v1_DiMuIso/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v2/'
@@ -31,6 +31,7 @@ sigDir_eee  = 'signal/eee/ntuples/'
 dataDir_eee = 'data/2017/eee/ntuples/Single_ele_2017B/' 
 tempDir     = '/eos/user/v/vstampf/ntuples/temp/'
 treeDir     = '/eos/user/v/vstampf/ntuples/DDE_v2/prompt_m/added_trees/'
+skimDir     = '/eos/user/v/vstampf/ntuples/skimmed_trees/'
 m_dir       = 'prompt_m/'
 e_dir       = 'prompt_e/'
 suffix      = 'HNLTreeProducer/tree.root'
@@ -43,13 +44,13 @@ TT_dir_mee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/monteca
 W_dir_mee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
 W_ext_dir_mee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
-DY50Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
-DY50_extDir_mem = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
-DY10Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
-TT_dir_mem      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
-W_dir_mem       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
-W_ext_dir_mem   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
+DYBBDir_mem     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
+DY50Dir_mem     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
+DY50_extDir_mem = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
+DY10Dir_mem     = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
+TT_dir_mem      = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
+W_dir_mem       = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
+W_ext_dir_mem   = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
@@ -337,20 +338,21 @@ l0l2_em    = '(l2_pt > 3 & l0_eid_mva_iso_wp90 & l2_id_m & l0_reliso05 < 0.15 & 
 l0l2_em    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05)'
 l0l2_em    += ' & ' + l0_prompt_e_dr + ' & ' + l2_prompt_m_dr 
 ####################################################################################################
-l0l1_mm    = '(l1_pt > 3 & l0_id_t & l1_id_t & l0_reliso_rho_03 < 0.15 & l1_reliso_rho_03 < 0.15'
-l0l1_mm    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_01 - 91.19) < 10 & l0_q * l1_q < 0 & abs(l0_dxy) < 0.05 & abs(l1_dxy) < 0.05)'
+l0l1_mm    = 'l1_pt > 3 & l0_id_t & l1_id_t & l0_reliso_rho_03 < 0.15 & l1_reliso_rho_03 < 0.15'
+l0l1_mm    += ' & hnl_iso03_rel_rhoArea < 2 & abs(hnl_m_01 - 91.19) < 10 & l0_q * l1_q < 0 & abs(l0_dxy) < 0.05 & abs(l1_dxy) < 0.05'
 l0l1_mm    += ' & ' + l0_prompt_m_dr + ' & ' + l1_prompt_m_dr 
 
-l0l2_mm    = '(l2_pt > 3 & l0_id_m & l2_id_m & l0_reliso_rho_03 < 0.15 & l2_reliso_rho_03 < 0.15'
-l0l2_mm    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05)'
+l0l2_mm    = 'l0_pt > 15 & l2_pt > 5 & l0_id_m & l2_id_m & l0_reliso_rho_03 < 0.15 & l2_reliso_rho_03 < 0.15'
+#l0l2_mm    += ' & hnl_iso03_rel_rhoArea < 1 & abs(hnl_m_02 - 91.19) < 10 & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05'
+l0l2_mm    += ' & l0_q * l2_q < 0 & abs(l0_dxy) < 0.05 & abs(l2_dxy) < 0.05 & abs(l1_reliso_rho_03) < 0.45'
 l0l2_mm    += ' & ' + l0_prompt_m_dr + ' & ' + l2_prompt_m_dr 
 ####################################################################################################
-l1_e_tight = 'l1_pt > 3 & l1_MediumNoIso & l1_reliso05 < 0.15 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
-l2_e_tight = 'l2_pt > 3 & l2_MediumNoIso & l2_reliso05 < 0.15 & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr
-l1_e_lnt   = 'l1_pt > 3 & l1_LooseNoIso  & l1_reliso05 > 0.15 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr #FIXME
-l2_e_lnt   = 'l2_pt > 3 & l2_LooseNoIso  & l2_reliso05 > 0.15 & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr #FIXME
-l1_e_loose = 'l1_pt > 3 & l1_LooseNoIso  & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
-l2_e_loose = 'l2_pt > 3 & l2_LooseNoIso  & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr
+l1_e_tight = 'l1_pt > 5 & l1_MediumNoIso & l1_reliso05 < 0.15 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
+l2_e_tight = 'l2_pt > 5 & l2_MediumNoIso & l2_reliso05 < 0.15 & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr
+l1_e_lnt   = 'l1_pt > 5 & l1_LooseNoIso  & l1_reliso05 > 0.15 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr #FIXME
+l2_e_lnt   = 'l2_pt > 5 & l2_LooseNoIso  & l2_reliso05 > 0.15 & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr #FIXME
+l1_e_loose = 'l1_pt > 5 & l1_LooseNoIso  & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
+l2_e_loose = 'l2_pt > 5 & l2_LooseNoIso  & abs(l2_dxy) > 0.05 & ' + l2_fake_e_dr
 ####################################################################################################
 l1_m_tight = 'l1_pt > 3 & l1_id_l & l1_reliso_rho_03 < 0.15 & ' + l1_fake_m_dr
 l2_m_tight = 'l2_pt > 3 & l2_id_l & l2_reliso_rho_03 < 0.15 & ' + l2_fake_m_dr
@@ -736,7 +738,7 @@ def checkTTLratio(ch='mmm',sfr=True,dfr=False,file=True,mode='dr'):
 
     if len(samples) > 1:
 
-        rnch = 3
+        rnch = len(samples)
 #        if ch == 'mmm': rnch = 2
 
         if sfr:
@@ -1652,8 +1654,9 @@ def fill(tree, hist, var, cut='', opt=''):
     print 'entries: ', hist.GetEntries()
     return hist
 
-def save(knvs, iso, sample='', ch='', eta=''):
-    iso_str = str(int(iso * 100))
+def save(knvs, iso=0, sample='', ch='', eta=''):
+    if iso == 0: iso_str = '' 
+    if iso != 0: iso_str = str(int(iso * 100))
     knvs.GetFrame().SetLineWidth(0)
     knvs.Modified(); knvs.Update()
     if len(eta):
@@ -1999,6 +2002,92 @@ def selectCuts(channel):
 ######################################################################################
 
 ######################################################################################
+def checkIso(ch='mmm'):
+
+    SFR, DFR, dirs = selectCuts(ch)
+
+    l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight = SFR 
+    LOOSE, TIGHT, LOOSENOTTIGHT = DFR
+    DYBB_dir, DY10_dir, DY50_dir, DY50_ext_dir, TT_dir, W_dir, W_ext_dir = dirs   
+
+    t_dy = rt.TChain('tree')
+    t_dy.Add(DYBB_dir + suffix)
+    t_dy.Add(DY10_dir + suffix)
+    t_dy.Add(DY50_dir + suffix)
+    t_dy.Add(DY50_ext_dir + suffix)
+
+    f_in_t = rt.TFile(TT_dir + suffix)
+    t_tt = f_in_t.Get('tree')
+
+    vars = {'l1_reliso05':'(180,0.05,9.05)', 'l1_reliso_rho_03':'(180,0.05,8.05)', 'l1_pt':'(50,2,102)', 'l2_pt':'(50,2,102)', 'l0_pt':'(50,2,102)', 'abs(l1_dxy)':'(60,0.05,3.05)'}
+ 
+    for var in vars.keys()[0:1]:
+
+        print'\n\tdrawing %s \n' %var
+
+        t_tt.Draw('{var}>>TT{bins}'.format(var=var,bins=vars[var]),l0l2_mm)
+        t_dy.Draw('{var}>>DY{bins}'.format(var=var,bins=vars[var]),l0l2_mm)
+
+        dy = rt.gDirectory.Get('DY')
+        dy.SetMarkerStyle(1); dy.SetMarkerSize(0.5); dy.SetLineColor(rt.kGreen+2); dy.SetMarkerColor(rt.kGreen+2); dy.SetTitle('DY')
+        tt = rt.gDirectory.Get('TT')                                      
+        tt.SetMarkerStyle(1); tt.SetMarkerSize(0.5); tt.SetLineColor(rt.kRed+2);   tt.SetMarkerColor(rt.kRed+2);   tt.SetTitle('TT')
+
+        c = rt.TCanvas(var,var)
+    #    framer.GetYaxis().SetTitle('Normalized entries')
+    #    framer.GetXaxis().SetTitle(var)
+        dy.DrawNormalized()
+        tt.DrawNormalized('same')
+        c.BuildLegend()
+        pf.showlogoprelimsim('CMS')
+        pf.showlumi(ch+'_'+var)
+        save(c, sample='DY_TT_'+var, ch=ch)
+ 
+    sys.stderr = sys.__stderr__
+    sys.stdout = sys.__stdout__
+####################################################################################################
+
+####################################################################################################
+def getIsoCDF(ch='mem'):
+
+        #cumulative
+        h_dy_c = rt.TH1F('iso_c_dy','iso_c_dy',180,0.05,9.05)
+        h_tt_c = rt.TH1F('iso_c_tt','iso_c_tt',180,0.05,9.05)
+
+        h_dy_c.SetMarkerStyle(1); h_dy_c.SetMarkerSize(0.5); h_dy_c.SetLineColor(rt.kGreen+2); h_dy_c.SetMarkerColor(rt.kGreen+2); h_dy_c.SetTitle('DY')
+        h_tt_c.SetMarkerStyle(1); h_tt_c.SetMarkerSize(0.5); h_tt_c.SetLineColor(rt.kRed+2);   h_tt_c.SetMarkerColor(rt.kRed+2);   h_tt_c.SetTitle('TT')
+
+        h_dy = rt.TFile(plotDir+'DY_TT_mem_l1_reliso_rho_03.root').Get('l1_reliso_rho_03').GetPrimitive('l1_reliso_rho_03DY')
+        h_tt = rt.TFile(plotDir+'DY_TT_mem_l1_reliso_rho_03.root').Get('l1_reliso_rho_03').GetPrimitive('l1_reliso_rho_03TT')
+
+        binCont_dy = 0
+        binCont_tt = 0
+        nBins = range(180)
+        for i in nBins:
+            binCont_dy += h_dy.GetBinContent(i+1)
+            binCont_tt += h_tt.GetBinContent(i+1)
+            h_dy_c.SetBinContent(i+1, binCont_dy) 
+            h_tt_c.SetBinContent(i+1, binCont_tt)
+
+        h_dy_by_tt = rt.TH1F('iso_c_div','iso_c_div',180,0.05,9.05)
+        h_dy_by_tt.Divide(h_dy_c,h_tt_c)
+
+        c = rt.TCanvas('iso_c','iso_c')
+        h_dy_c.Draw()
+        h_tt_c.Draw('same')
+        c.BuildLegend()
+        pf.showlogoprelimsim('CMS')
+        pf.showlumi('mem-iso_cdf')
+        save(c, sample='DY_TT', ch=ch)
+
+        c = rt.TCanvas('iso_c_div','iso_c_div')
+        h_dy_by_tt.Draw()
+        pf.showlogoprelimsim('CMS')
+        pf.showlumi('mem-iso_cdf_div')
+        save(c, sample='DY_TT', ch=ch)
+####################################################################################################
+
+####################################################################################################
 def selectDefs(ch):
 
     promptMode = ch[0]
@@ -2041,3 +2130,57 @@ def selectDefs(ch):
 ######################################################################################
 
 ######################################################################################
+cut_l0ml2m    = 'l0_pt > 25 & l2_pt > 15 & l0_id_m & l2_id_m & l0_reliso_rho_03 < 0.25 & l2_reliso_rho_03 < 0.25'
+cut_l0ml2m    += ' & l0_q * l2_q < 0 & l1_pt > 5'
+
+#l1_e_tight = 'l1_pt > 5 & l1_MediumNoIso & l1_reliso05 < 0.1 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
+#l1_e_lnt   = 'l1_pt > 5 & l1_LooseNoIso  & l1_reliso05 > 0.1 & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr #FIXME
+#l1_e_loose = 'l1_pt > 5 & l1_LooseNoIso  & abs(l1_dxy) > 0.05 & ' + l1_fake_e_dr
+
+#l0_prompt_e_dr =  '( ( (dataset['l0_gen_match_isDirectPromptTauDecayProductFinalState'] == 1)  |  (dataset['l0_gen_match_isDirectHardProcessTauDecayProductFinalState'] == 1) '
+#l0_prompt_e_dr += ' |  (dataset['l0_gen_match_fromHardProcessFinalState'] == 1)  |  (dataset['l0_gen_match_isPromptFinalState'] == 1) ) & ( abs( (dataset['l0_gen_match_pdgid']) == 11)  | abs( (dataset['l0_gen_match_pdgid']) == 22)  )'
+# l0_prompt_e_dr += ' & l0_good_match )'
+#l0_prompt_e_dr += ' &  ( sqrt( ( (dataset['l0_eta']-dataset['l0_gen_match_eta'])**2 + (' + dPhi00DS + ')**2 ) < 0.04 ) ) '
+
+#dPhi00 = '( (FF(dataset['l0_phi']-dataset['l0_gen_match_phi'] + 2*pi) * (FF(dataset['l0_phi']-dataset['l0_gen_match_phi'] < -pi) + (FF(dataset['l0_phi']-dataset['l0_gen_match_phi'] - 2*pi) * (FF(dataset['l0_phi']-dataset['l0_gen_match_phi'] > pi) )' 
+
+def skimTrees(ch,sample,treeDir,cut,START=0,STOP=1):
+
+    treeFile = rt.TFile(treeDir+suffix) 
+    tree     = treeFile.Get('tree')
+
+    nevents = tree.GetEntries()
+    aPop = 200000
+    nslices = int(nevents/aPop) + 1
+    print '\n\tnumber of slices:', nslices 
+
+    RANGE = range(nslices)
+    if STOP > 2: RANGE = range(START,STOP)
+    for islice in RANGE:#[:3]:
+        
+        start =  islice  * aPop
+        if (islice + 1) < nslices: stop = (islice + 1) * aPop
+        if (islice + 1) == nslices: stop = nevents
+        
+        print '\n\tloading dataset for slice', (islice + 1)
+        dataset = pandas.DataFrame(root_numpy.tree2array(tree, start=start, stop=stop, selection=cut))
+        print '\tloading done'
+
+        dataset ['l1e_dxy_geq_005'] = abs(dataset.l1_dxy) > 0.05
+        dataset ['z_mass_leq_10']   = abs(dataset.hnl_m_02 - 91.19) < 10
+        dataset ['l0m_prompt']      = abs(dataset.hnl_m_02 - 91.19) < 10
+        dataset ['l1e_fake']        = abs(dataset.hnl_m_02 - 91.19) < 10
+        dataset ['l2m_prompt']      = abs(dataset.hnl_m_02 - 91.19) < 10
+        
+
+        print '\tstaging out...'
+        dataset.to_root(skimDir + 'SFR_%s_%s'%(ch,sample) + '_slice%d.root' %islice, key='tree')
+        print '\tslice', (islice + 1), 'done'
+
+def merge(ch, sample):
+
+    tomerge = glob(skimDir + 'SFR_%s_%s'%(ch,sample) + '_slice*.root')
+    command = 'hadd ' + skimDir + 'SFR_%s_%s'%(ch,sample) + '.root'
+
+    for imerge in tomerge:
+        command += ' ' + imerge
