@@ -1,7 +1,7 @@
 from __future__ import division
 from ROOT import gROOT as gr
 from ROOT import RDataFrame as rdf
-import os
+import os, platform
 import ROOT as rt
 import numpy as np
 import plotfactory as pf
@@ -19,17 +19,26 @@ WATCH OUT THAT CODE HAS TO BE C++ COMPATIBLE
 '''
 
 chain =rt.TChain('tree')
-chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
+chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
+chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
 
 d_dy = rdf(chain)
-d_tt = rdf('tree', '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
+d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
+
 
 pf.setpfstyle()
 
+'''
+Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon         #T3
+Linux-3.10.0-957.1.3.el7.x86_64-x86_64-with-centos-7.6.1810-Core      #LX+
+'''
+eos = '/eos/user/v/vstampf/'
+if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon':
+   eos = eos+''
+
 ####################################################################################################
-skimDir = '/t3home/vstampf/eos/ntuples/skimmed_trees/'
-plotDir = '/t3home/vstampf/eos/plots/DDE/'
+skimDir = eos+'ntuples/skimmed_trees/'
+plotDir = eos+'plots/DDE/'
 suffix  = 'HNLTreeProducer/tree.root'
 ####################################################################################################
 DYBBDir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYBB/'
@@ -40,13 +49,13 @@ TT_dir_mee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/monteca
 W_dir_mee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
 W_ext_dir_mee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
-DY50Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
-DY50_extDir_mem = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
-DY10Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
-TT_dir_mem      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
-W_dir_mem       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
-W_ext_dir_mem   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
+DYBBDir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
+DY50Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
+DY50_extDir_mem = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
+DY10Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
+TT_dir_mem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
+W_dir_mem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
+W_ext_dir_mem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
@@ -56,21 +65,21 @@ TT_dir_mmm      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/monteca
 W_dir_mmm       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu/'
 W_ext_dir_mmm   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
-DY50Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
-DY50_extDir_eee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50_ext/'
-DY10Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M10to50/'
-TT_dir_eee      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/TTJets_amcat/'  
-W_dir_eee       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu/'
-W_ext_dir_eee   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu_ext/'
+DYBBDir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
+DY50Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
+DY50_extDir_eee = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M10to50/'
+TT_dir_eee      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/TTJets_amcat/'  
+W_dir_eee       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu/'
+W_ext_dir_eee   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_eem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYBB/'
-DY50Dir_eem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50/'
-DY50_extDir_eem = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50_ext/'
-DY10Dir_eem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M10to50/'
-TT_dir_eem      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/TTJets_amcat/'  
-W_dir_eem       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu/'
-W_ext_dir_eem   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu_ext/'
+DYBBDir_eem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYBB/'
+DY50Dir_eem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50/'
+DY50_extDir_eem = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50_ext/'
+DY10Dir_eem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M10to50/'
+TT_dir_eem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/TTJets_amcat/'  
+W_dir_eem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu/'
+W_ext_dir_eem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu_ext/'
 ####################################################################################################
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && abs(l0_gen_match_pdgid) == 13'#&& l0_is_real == 1'
@@ -208,25 +217,14 @@ b_reliso = np.concatenate((brl0,brl1,brl2),axis=None)
 
 ######################################################################################
 def checkStuff(ch='mem',iso='L'):
-    
-    if ch == 'eem':
-        chain =rt.TChain('tree')
-        chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-        chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
-
-        d_dy = rdf(chain)
-        d_tt = rdf('tree', '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eem/TTJets_amcat/HNLTreeProducer/tree.root')
-
-        f0_dy = d_dy.Filter(l0l1_ee)
-        f0_tt = d_tt.Filter(l0l1_ee)
 
     if ch == 'eee':
         chain =rt.TChain('tree')
-        chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial_25_2/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-        chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial_25_2/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
+        chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial_25_2/DYJetsToLL_M50/HNLTreeProducer/tree.root')
+        chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial_25_2/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
 
         d_dy = rdf(chain)
-        d_tt = rdf('tree', '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee_25_2/partial/TTJets_amcat/HNLTreeProducer/tree.root')
+        d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee_25_2/partial/TTJets_amcat/HNLTreeProducer/tree.root')
 
         f0_dy_l0l1 = d_dy.Filter(l0l1_ee)
         f0_dy_l0l2 = d_dy.Filter(l0l2_ee)
@@ -250,14 +248,35 @@ def checkStuff(ch='mem',iso='L'):
             f0_dy_l0l2 = f0_dy_l0l2.Filter(l0l2_ee + ' && l2_MediumWithIso')
             f0_tt_l0l1 = f0_tt_l0l1.Filter(l0l1_ee + ' && l1_MediumWithIso')
             f0_tt_l0l2 = f0_tt_l0l2.Filter(l0l2_ee + ' && l2_MediumWithIso')
+    
+
+    if ch == 'eem':
+        chain =rt.TChain('tree')
+        chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
+        chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
+
+        d_dy = rdf(chain)
+        d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/TTJets_amcat/HNLTreeProducer/tree.root')
+
+        f0_dy = d_dy.Filter(l0l1_ee)
+        f0_tt = d_tt.Filter(l0l1_ee)
+
+        if iso=='L':
+            f0_dy = d_dy.Filter(l0l1_ee + ' && l2_id_l && ' + l2_fake_m_dr)
+            f0_tt = d_tt.Filter(l0l1_ee + ' && l2_id_l && ' + l2_fake_m_dr)
+
+        if iso=='M':
+            f0_dy = d_dy.Filter(l0l1_ee + ' && l2_id_m && ' + l2_fake_m_dr)
+            f0_tt = d_tt.Filter(l0l1_ee + ' && l2_id_m && ' + l2_fake_m_dr)
+
 
     if ch == 'mem':
         chain =rt.TChain('tree')
-        chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-        chain.Add('/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
+        chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
+        chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
 
         d_dy = rdf(chain)
-        d_tt = rdf('tree', '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
+        d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
 
         if iso=='L':
             f0_dy = d_dy.Filter(base_l0l2_mm + ' && l1_LooseNoIso')
@@ -364,7 +383,7 @@ def checkStuff(ch='mem',iso='L'):
 ######################################################################################
 def getIsoCDF(ch='mem',mode='rho', abs=False):
 
-#        ch = 'isoT_'+ch
+#        ch = 'isoNo_'+ch
         #cumulative
         h_dy_c     = rt.TH1F('iso_c_dy', 'iso_c_dy',  1500,0.01,15.01)
 #        h_dy_c     = rt.TH1F('iso_c_dy', 'iso_c_dy',  150,0.,150)
@@ -377,8 +396,8 @@ def getIsoCDF(ch='mem',mode='rho', abs=False):
         h_tt_c.SetMarkerStyle(1); h_tt_c.SetMarkerSize(0.5); h_tt_c.SetLineColor(rt.kRed+2);   h_tt_c.SetMarkerColor(rt.kRed+2);   h_tt_c.SetTitle('TT')
 
         if mode == 'rho':
-            h_dy = rt.TFile(plotDir+'DY_TT_'+ch+'_reliso_rho_03.root').Get('reliso_rho_03').GetPrimitive('l1_reliso_rho_03DY')
-            h_tt = rt.TFile(plotDir+'DY_TT_'+ch+'_reliso_rho_03.root').Get('reliso_rho_03').GetPrimitive('l1_reliso_rho_03TT')
+            h_dy = rt.TFile(plotDir+'DY_TT_'+ch+'_reliso_rho_03.root').Get('reliso_rho_03').GetPrimitive('l2_reliso_rho_03DY')
+            h_tt = rt.TFile(plotDir+'DY_TT_'+ch+'_reliso_rho_03.root').Get('reliso_rho_03').GetPrimitive('l2_reliso_rho_03TT')
 
             if abs== True:
                 h_dy = rt.TFile(plotDir+'DY_TT_mem_abs_iso_rho.root').Get('abs_iso_rho').GetPrimitive('l1_abs_iso_rhoDY')
