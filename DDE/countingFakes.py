@@ -1,6 +1,6 @@
 from __future__ import division
 from ROOT import gROOT as gr
-import os
+import os, platform
 import ROOT as rt
 import numpy as np
 import plotfactory as pf
@@ -17,9 +17,16 @@ from itertools import product
 #gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 pf.setpfstyle()
 pi = rt.TMath.Pi()
+'''
+Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon         #T3
+Linux-3.10.0-957.1.3.el7.x86_64-x86_64-with-centos-7.6.1810-Core      #LX+
+'''
+eos = '/eos/user/v/vstampf/'
+if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon':
+   eos = eos+''
 ####################################################################################################
 plotDir     = '/eos/user/v/vstampf/plots/DDE/'
-plotDir     = '/t3home/vstampf/eos/plots/DDE/'
+plotDir     = eos+'plots/DDE/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v0/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v1_DiMuIso/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v2/'
@@ -43,13 +50,13 @@ TT_dir_mee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/monteca
 W_dir_mee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
 W_ext_dir_mee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
-DY50Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
-DY50_extDir_mem = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
-DY10Dir_mem     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
-TT_dir_mem      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
-W_dir_mem       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
-W_ext_dir_mem   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
+DYBBDir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
+DY50Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
+DY50_extDir_mem = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
+DY10Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M10to50/'
+TT_dir_mem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
+W_dir_mem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
+W_ext_dir_mem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
@@ -59,13 +66,13 @@ TT_dir_mmm      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/monteca
 W_dir_mmm       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu/'
 W_ext_dir_mmm   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu_ext/'
 ####################################################################################################
-DYBBDir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
-DY50Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
-DY50_extDir_eee = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50_ext/'
-DY10Dir_eee     = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M10to50/'
-TT_dir_eee      = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/TTJets_amcat/'  
-W_dir_eee       = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu/'
-W_ext_dir_eee   = '/t3home/vstampf/eos/ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu_ext/'
+DYBBDir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
+DY50Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
+DY50_extDir_eee = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M10to50/'
+TT_dir_eee      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/TTJets_amcat/'  
+W_dir_eee       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu/'
+W_ext_dir_eee   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/WJetsToLNu_ext/'
 ####################################################################################################
 DY50_dir_e           = 'prompt_e/DYJetsToLL_M50/'
 DY50_ext_dir_e       = 'prompt_e/DYJetsToLL_M50_ext/'
