@@ -16,7 +16,15 @@ from multiprocessing.dummy import Pool
 from itertools import product
 '''
 WATCH OUT THAT CODE HAS TO BE C++ COMPATIBLE
+
+Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon         #T3
+Linux-3.10.0-957.1.3.el7.x86_64-x86_64-with-centos-7.6.1810-Core      #LX+
 '''
+eos       = '/eos/user/v/vstampf/'
+eos_david = '/eos/user/d/dezhu/HNL/'
+if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon':
+   eos       = '/t3home/vstampf/eos/'
+   eos_david = '/t3home/vstampf/eos-david/'
 
 chain =rt.TChain('tree')
 chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
@@ -28,26 +36,18 @@ d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amc
 
 pf.setpfstyle()
 
-'''
-Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon         #T3
-Linux-3.10.0-957.1.3.el7.x86_64-x86_64-with-centos-7.6.1810-Core      #LX+
-'''
-eos = '/eos/user/v/vstampf/'
-if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon':
-   eos = eos+''
-
 ####################################################################################################
 skimDir = eos+'ntuples/skimmed_trees/'
 plotDir = eos+'plots/DDE/'
 suffix  = 'HNLTreeProducer/tree.root'
 ####################################################################################################
-DYBBDir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYBB/'
-DY50Dir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50/'
-DY50_extDir_mee = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50_ext/'
-DY10Dir_mee     = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50/'
-TT_dir_mee      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/partial/TTJets_amcat_20190130/'  
-W_dir_mee       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
-W_ext_dir_mee   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
+DYBBDir_mee     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYBB/'
+DY50Dir_mee     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50/'
+DY50_extDir_mee = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M50_ext/'
+DY10Dir_mee     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/partial/DYJetsToLL_M10to50/'
+TT_dir_mee      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/partial/TTJets_amcat_20190130/'  
+W_dir_mee       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
+W_ext_dir_mee   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
 DY50Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
@@ -61,9 +61,9 @@ DYBBDir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
 DY50_extDir_mmm = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M50_ext/'
 DY10Dir_mmm     = '/shome/vstampf/ntuples/mmm/partial/DYJetsToLL_M10to50/'
-TT_dir_mmm      = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/TTJets_amcat_TauDecayInfo/'  
-W_dir_mmm       = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu/'
-W_ext_dir_mmm   = '/t3home/vstampf/eos-david/ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu_ext/'
+TT_dir_mmm      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mmm/TTJets_amcat_TauDecayInfo/'  
+W_dir_mmm       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu/'
+W_ext_dir_mmm   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mmm/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
 DY50Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
@@ -143,7 +143,7 @@ DFR_TIGHT_EMM         = ' && (l1_pt > 3 && l2_pt > 3 && l0_eid_cut_loose && l0_r
 l0l1_ee    = '(l1_pt > 5 && l0_eid_mva_iso_wp90 && l1_eid_mva_iso_wp90 && l0_reliso05 < 0.15 && l1_reliso05 < 0.15'
 #l0l1_ee    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_01 - 91.19) < 10 && l0_q * l1_q < 0 && abs(l0_dxy) < 0.05 && abs(l1_dxy) < 0.05)'
 l0l1_ee    += ' && l0_q * l1_q < 0 && abs(l0_dxy) < 0.05 && abs(l1_dxy) < 0.05)' # && hnl_iso03_rel_rhoArea < 1'
-l0l1_ee    += ' && ' + l0_prompt_e_dr + ' && ' + l1_prompt_e_dr 
+l0l1_ee    += ' && ' + l0_prompt_e_dr + ' && ' + l1_prompt_e_dr + ' && abs(l2_dxy) > 0.01' 
 
 l0l2_ee    = '(l2_pt > 3 && l0_eid_mva_iso_wp90 && l2_eid_mva_iso_wp90 && l0_reliso05 < 0.15 && l2_reliso05 < 0.15'
 #l0l2_ee    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_02 - 91.19) < 10 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05)'
