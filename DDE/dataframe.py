@@ -157,22 +157,25 @@ l0l1_mm    += ' && ' + l0_prompt_m_dr + ' && ' + l1_prompt_m_dr
 
 l0l2_mm    = 'l0_pt > 15 && l2_pt > 5 && l0_id_m && l2_id_m && l0_reliso_rho_03 < 0.15 && l2_reliso_rho_03 < 0.15'
 #l0l2_mm    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_02 - 91.19) < 10 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05'
-l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05 && abs(l1_reliso_rho_03) < 0.45'
+l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05 && abs(l1_reliso_rho_03) < 1.1'
+#l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05 && abs(l1_reliso_rho_03) < 0.35' # DON'T CHANGE, STATE OF THE ART
 l0l2_mm    += ' && ' + l0_prompt_m_dr + ' && ' + l2_prompt_m_dr 
 ####################################################################################################
-l1_e_tight = 'l1_pt > 5 && l1_MediumNoIso && l1_reliso05 < 0.15 && abs(l1_dxy) > 0.05 && ' + l1_fake_e_dr
-l2_e_tight = 'l2_pt > 5 && l2_MediumNoIso && l2_reliso05 < 0.15 && abs(l2_dxy) > 0.05 && ' + l2_fake_e_dr
-l1_e_lnt   = 'l1_pt > 5 && l1_LooseNoIso  && l1_reliso05 > 0.15 && abs(l1_dxy) > 0.05 && ' + l1_fake_e_dr #FIXME
-l2_e_lnt   = 'l2_pt > 5 && l2_LooseNoIso  && l2_reliso05 > 0.15 && abs(l2_dxy) > 0.05 && ' + l2_fake_e_dr #FIXME
-l1_e_loose = 'l1_pt > 5 && l1_LooseNoIso  && abs(l1_dxy) > 0.05 && ' + l1_fake_e_dr
-l2_e_loose = 'l2_pt > 5 && l2_LooseNoIso  && abs(l2_dxy) > 0.05 && ' + l2_fake_e_dr
+l1_e_tight = 'l1_pt > 5 && l1_MediumNoIso && l1_reliso_rho_03 < 0.15 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr
+#l1_e_tight = 'l1_pt > 5 && l1_MediumWithIso && l1_reliso_rho_03 < 0.10 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
+l2_e_tight = 'l2_pt > 5 && l2_MediumWithIso && l2_reliso_rho_03 < 0.10 && abs(l2_dxy) > 0.01 && ' + l2_fake_e_dr
+l1_e_lnt   = 'l1_pt > 5 && (l1_MediumWithIso == 0  || l1_reliso_rho_03 > 0.15) && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr 
+l2_e_lnt   = 'l2_pt > 5 && l2_LooseNoIso  && l2_reliso_rho_03 > 0.10 && abs(l2_dxy) > 0.01 && ' + l2_fake_e_dr #FIXME
+l1_e_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
+#l1_e_loose = 'l1_pt > 5 && l1_LooseNoIso  && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
+l2_e_loose = 'l2_pt > 5 && l2_LooseNoIso  && abs(l2_dxy) > 0.01 && ' + l2_fake_e_dr
 ####################################################################################################
-l1_m_tight = 'l1_pt > 5 & l1_id_l & l1_reliso_rho_03 < 0.15 & abs(l1_dxy) > 0.01 & ' + l1_fake_m_dr
-l2_m_tight = 'l2_pt > 5 & l2_id_l & l2_reliso_rho_03 < 0.15 & abs(l2_dxy) > 0.01 & ' + l2_fake_m_dr
-l1_m_lnt   = 'l1_pt > 5 & l1_id_l & l1_reliso_rho_03 > 0.15 & abs(l1_dxy) > 0.01 & ' + l1_fake_m_dr
-l2_m_lnt   = 'l2_pt > 5 & l2_id_l & l2_reliso_rho_03 > 0.15 & abs(l2_dxy) > 0.01 & ' + l2_fake_m_dr
-l1_m_loose = 'l1_pt > 5 & l1_id_l & abs(l1_dxy) > 0.01 & ' + l1_fake_m_dr
-l2_m_loose = 'l2_pt > 5 & l2_id_l & abs(l2_dxy) > 0.01 & ' + l2_fake_m_dr
+l1_m_tight = 'l1_pt > 5 && l1_id_l && l1_reliso_rho_03 < 0.15 && abs(l1_dxy) > 0.01 && ' + l1_fake_m_dr
+l2_m_tight = 'l2_pt > 5 && l2_id_l && l2_reliso_rho_03 < 0.15 && abs(l2_dxy) > 0.01 && ' + l2_fake_m_dr
+l1_m_lnt   = 'l1_pt > 5 && l1_id_l && l1_reliso_rho_03 > 0.15 && abs(l1_dxy) > 0.01 && ' + l1_fake_m_dr
+l2_m_lnt   = 'l2_pt > 5 && l2_id_l && l2_reliso_rho_03 > 0.15 && abs(l2_dxy) > 0.01 && ' + l2_fake_m_dr
+l1_m_loose = 'l1_pt > 5 && l1_id_l && abs(l1_dxy) > 0.01 && ' + l1_fake_m_dr
+l2_m_loose = 'l2_pt > 5 && l2_id_l && abs(l2_dxy) > 0.01 && ' + l2_fake_m_dr
 ####################################################################################################
 
 ####################################################################################################
@@ -241,34 +244,36 @@ l_pt   = { '_pt0t5'   : 'ptcone < 5',                  '_pt5t10' : 'ptcone > 5 &
 def selectBins(ch='mem'):
 
     if ch == 'mem':
-        h = None
+        f_in = rt.TFile(plotDir+'DY_TT_TTL_mem_ptCone_eta.root')
+        c = f_in.Get('ptCone_eta')
+        h = c.GetPrimitive('pt_eta_T')
 
-    eta_pT_sfr =  '   ({eta00t08} && {pt0t5})   * {eta00t08_pt0t5}'  .format(eta00t08 = l_eta['_eta_00t08'], pt0t5   = l_pt['pt0t5']  , eta00t08_pt0t5   = h_[0]) 
-    eta_pT_sfr += ' + ({eta00t08} && {pt5t10})  * {eta00t08_pt5t10}' .format(eta00t08 = l_eta['_eta_00t08'], pt5t10  = l_pt['pt5t10'] , eta00t08_pt5t10  = h_[0])
-    eta_pT_sfr += ' + ({eta00t08} && {pt10t15}) * {eta00t08_pt10t15}'.format(eta00t08 = l_eta['_eta_00t08'], pt10t15 = l_pt['pt10t15'], eta00t08_pt10t15 = h_[0])
-    eta_pT_sfr += ' + ({eta00t08} && {pt15t20}) * {eta00t08_pt15t20}'.format(eta00t08 = l_eta['_eta_00t08'], pt15t20 = l_pt['pt15t20'], eta00t08_pt15t20 = h_[0])
-    eta_pT_sfr += ' + ({eta00t08} && {pt20t25}) * {eta00t08_pt20t25}'.format(eta00t08 = l_eta['_eta_00t08'], pt20t25 = l_pt['pt20t25'], eta00t08_pt20t25 = h_[0])
-    eta_pT_sfr += ' + ({eta00t08} && {pt25t35}) * {eta00t08_pt25t35}'.format(eta00t08 = l_eta['_eta_00t08'], pt25t35 = l_pt['pt25t35'], eta00t08_pt25t35 = h_[0])
-    eta_pT_sfr += ' + ({eta00t08} && {pt35t50}) * {eta00t08_pt35t50}'.format(eta00t08 = l_eta['_eta_00t08'], pt35t50 = l_pt['pt35t50'], eta00t08_pt35t50 = h_[0])
-    eta_pT_sfr += ' + ({eta00t08} && {pt50t70}) * {eta00t08_pt50t70}'.format(eta00t08 = l_eta['_eta_00t08'], pt50t70 = l_pt['pt50t70'], eta00t08_pt50t70 = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt0t5})   * {eta08t15_pt0t5}'  .format(eta08t15 = l_eta['_eta_08t15'], pt0t5   = l_pt['pt0t5']  , eta08t15_pt0t5   = h_[0]) 
-    eta_pT_sfr += ' + ({eta08t15} && {pt5t10})  * {eta08t15_pt5t10}' .format(eta08t15 = l_eta['_eta_08t15'], pt5t10  = l_pt['pt5t10'] , eta08t15_pt5t10  = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt10t15}) * {eta08t15_pt10t15}'.format(eta08t15 = l_eta['_eta_08t15'], pt10t15 = l_pt['pt10t15'], eta08t15_pt10t15 = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt15t20}) * {eta08t15_pt15t20}'.format(eta08t15 = l_eta['_eta_08t15'], pt15t20 = l_pt['pt15t20'], eta08t15_pt15t20 = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt20t25}) * {eta08t15_pt20t25}'.format(eta08t15 = l_eta['_eta_08t15'], pt20t25 = l_pt['pt20t25'], eta08t15_pt20t25 = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt25t35}) * {eta08t15_pt25t35}'.format(eta08t15 = l_eta['_eta_08t15'], pt25t35 = l_pt['pt25t35'], eta08t15_pt25t35 = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt35t50}) * {eta08t15_pt35t50}'.format(eta08t15 = l_eta['_eta_08t15'], pt35t50 = l_pt['pt35t50'], eta08t15_pt35t50 = h_[0])
-    eta_pT_sfr += ' + ({eta08t15} && {pt50t70}) * {eta08t15_pt50t70}'.format(eta08t15 = l_eta['_eta_08t15'], pt50t70 = l_pt['pt50t70'], eta08t15_pt50t70 = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt0t5})   * {eta15t25_pt0t5}'  .format(eta15t25 = l_eta['_eta_15t25'], pt0t5   = l_pt['pt0t5']  , eta15t25_pt0t5   = h_[0]) 
-    eta_pT_sfr += ' + ({eta15t25} && {pt5t10})  * {eta15t25_pt5t10}' .format(eta15t25 = l_eta['_eta_15t25'], pt5t10  = l_pt['pt5t10'] , eta15t25_pt5t10  = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt10t15}) * {eta15t25_pt10t15}'.format(eta15t25 = l_eta['_eta_15t25'], pt10t15 = l_pt['pt10t15'], eta15t25_pt10t15 = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt15t20}) * {eta15t25_pt15t20}'.format(eta15t25 = l_eta['_eta_15t25'], pt15t20 = l_pt['pt15t20'], eta15t25_pt15t20 = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt20t25}) * {eta15t25_pt20t25}'.format(eta15t25 = l_eta['_eta_15t25'], pt20t25 = l_pt['pt20t25'], eta15t25_pt20t25 = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt25t35}) * {eta15t25_pt25t35}'.format(eta15t25 = l_eta['_eta_15t25'], pt25t35 = l_pt['pt25t35'], eta15t25_pt25t35 = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt35t50}) * {eta15t25_pt35t50}'.format(eta15t25 = l_eta['_eta_15t25'], pt35t50 = l_pt['pt35t50'], eta15t25_pt35t50 = h_[0])
-    eta_pT_sfr += ' + ({eta15t25} && {pt50t70}) * {eta15t25_pt50t70}'.format(eta15t25 = l_eta['_eta_15t25'], pt50t70 = l_pt['pt50t70'], eta15t25_pt50t70 = h_[0])
+    sfr =  '   ({eta00t08} && {pt0t5})   * {eta00t08_pt0t5}'  .format(eta00t08 = l_eta['_eta_00t08'], pt0t5   = l_pt['_pt0t5']  , eta00t08_pt0t5   = h.GetBinContent(1,1)/(1-h.GetBinContent(1,1))) 
+    sfr += ' + ({eta00t08} && {pt5t10})  * {eta00t08_pt5t10}' .format(eta00t08 = l_eta['_eta_00t08'], pt5t10  = l_pt['_pt5t10'] , eta00t08_pt5t10  = h.GetBinContent(2,1)/(1-h.GetBinContent(2,1)))
+    sfr += ' + ({eta00t08} && {pt10t15}) * {eta00t08_pt10t15}'.format(eta00t08 = l_eta['_eta_00t08'], pt10t15 = l_pt['_pt10t15'], eta00t08_pt10t15 = h.GetBinContent(3,1)/(1-h.GetBinContent(3,1)))
+    sfr += ' + ({eta00t08} && {pt15t20}) * {eta00t08_pt15t20}'.format(eta00t08 = l_eta['_eta_00t08'], pt15t20 = l_pt['_pt15t20'], eta00t08_pt15t20 = h.GetBinContent(4,1)/(1-h.GetBinContent(4,1)))
+    sfr += ' + ({eta00t08} && {pt20t25}) * {eta00t08_pt20t25}'.format(eta00t08 = l_eta['_eta_00t08'], pt20t25 = l_pt['_pt20t25'], eta00t08_pt20t25 = h.GetBinContent(5,1)/(1-h.GetBinContent(5,1)))
+    sfr += ' + ({eta00t08} && {pt25t35}) * {eta00t08_pt25t35}'.format(eta00t08 = l_eta['_eta_00t08'], pt25t35 = l_pt['_pt25t35'], eta00t08_pt25t35 = h.GetBinContent(6,1)/(1-h.GetBinContent(6,1)))
+    sfr += ' + ({eta00t08} && {pt35t50}) * {eta00t08_pt35t50}'.format(eta00t08 = l_eta['_eta_00t08'], pt35t50 = l_pt['_pt35t50'], eta00t08_pt35t50 = h.GetBinContent(7,1)/(1-h.GetBinContent(7,1)))
+    sfr += ' + ({eta00t08} && {pt50t70}) * {eta00t08_pt50t70}'.format(eta00t08 = l_eta['_eta_00t08'], pt50t70 = l_pt['_pt50t70'], eta00t08_pt50t70 = h.GetBinContent(8,1)/(1-h.GetBinContent(8,1)))
+    sfr += ' + ({eta08t15} && {pt0t5})   * {eta08t15_pt0t5}'  .format(eta08t15 = l_eta['_eta_08t15'], pt0t5   = l_pt['_pt0t5']  , eta08t15_pt0t5   = h.GetBinContent(1,2)/(1-h.GetBinContent(1,2))) 
+    sfr += ' + ({eta08t15} && {pt5t10})  * {eta08t15_pt5t10}' .format(eta08t15 = l_eta['_eta_08t15'], pt5t10  = l_pt['_pt5t10'] , eta08t15_pt5t10  = h.GetBinContent(2,2)/(1-h.GetBinContent(2,2)))
+    sfr += ' + ({eta08t15} && {pt10t15}) * {eta08t15_pt10t15}'.format(eta08t15 = l_eta['_eta_08t15'], pt10t15 = l_pt['_pt10t15'], eta08t15_pt10t15 = h.GetBinContent(3,2)/(1-h.GetBinContent(3,2)))
+    sfr += ' + ({eta08t15} && {pt15t20}) * {eta08t15_pt15t20}'.format(eta08t15 = l_eta['_eta_08t15'], pt15t20 = l_pt['_pt15t20'], eta08t15_pt15t20 = h.GetBinContent(4,2)/(1-h.GetBinContent(4,2)))
+    sfr += ' + ({eta08t15} && {pt20t25}) * {eta08t15_pt20t25}'.format(eta08t15 = l_eta['_eta_08t15'], pt20t25 = l_pt['_pt20t25'], eta08t15_pt20t25 = h.GetBinContent(5,2)/(1-h.GetBinContent(5,2)))
+    sfr += ' + ({eta08t15} && {pt25t35}) * {eta08t15_pt25t35}'.format(eta08t15 = l_eta['_eta_08t15'], pt25t35 = l_pt['_pt25t35'], eta08t15_pt25t35 = h.GetBinContent(6,2)/(1-h.GetBinContent(6,2)))
+    sfr += ' + ({eta08t15} && {pt35t50}) * {eta08t15_pt35t50}'.format(eta08t15 = l_eta['_eta_08t15'], pt35t50 = l_pt['_pt35t50'], eta08t15_pt35t50 = h.GetBinContent(7,2)/(1-h.GetBinContent(7,2)))
+    sfr += ' + ({eta08t15} && {pt50t70}) * {eta08t15_pt50t70}'.format(eta08t15 = l_eta['_eta_08t15'], pt50t70 = l_pt['_pt50t70'], eta08t15_pt50t70 = h.GetBinContent(8,2)/(1-h.GetBinContent(8,2)))
+    sfr += ' + ({eta15t25} && {pt0t5})   * {eta15t25_pt0t5}'  .format(eta15t25 = l_eta['_eta_15t25'], pt0t5   = l_pt['_pt0t5']  , eta15t25_pt0t5   = h.GetBinContent(1,3)/(1-h.GetBinContent(1,3))) 
+    sfr += ' + ({eta15t25} && {pt5t10})  * {eta15t25_pt5t10}' .format(eta15t25 = l_eta['_eta_15t25'], pt5t10  = l_pt['_pt5t10'] , eta15t25_pt5t10  = h.GetBinContent(2,3)/(1-h.GetBinContent(2,3)))
+    sfr += ' + ({eta15t25} && {pt10t15}) * {eta15t25_pt10t15}'.format(eta15t25 = l_eta['_eta_15t25'], pt10t15 = l_pt['_pt10t15'], eta15t25_pt10t15 = h.GetBinContent(3,3)/(1-h.GetBinContent(3,3)))
+    sfr += ' + ({eta15t25} && {pt15t20}) * {eta15t25_pt15t20}'.format(eta15t25 = l_eta['_eta_15t25'], pt15t20 = l_pt['_pt15t20'], eta15t25_pt15t20 = h.GetBinContent(4,3)/(1-h.GetBinContent(4,3)))
+    sfr += ' + ({eta15t25} && {pt20t25}) * {eta15t25_pt20t25}'.format(eta15t25 = l_eta['_eta_15t25'], pt20t25 = l_pt['_pt20t25'], eta15t25_pt20t25 = h.GetBinContent(5,3)/(1-h.GetBinContent(5,3)))
+    sfr += ' + ({eta15t25} && {pt25t35}) * {eta15t25_pt25t35}'.format(eta15t25 = l_eta['_eta_15t25'], pt25t35 = l_pt['_pt25t35'], eta15t25_pt25t35 = h.GetBinContent(6,3)/(1-h.GetBinContent(6,3)))
+    sfr += ' + ({eta15t25} && {pt35t50}) * {eta15t25_pt35t50}'.format(eta15t25 = l_eta['_eta_15t25'], pt35t50 = l_pt['_pt35t50'], eta15t25_pt35t50 = h.GetBinContent(7,3)/(1-h.GetBinContent(7,3)))
+    sfr += ' + ({eta15t25} && {pt50t70}) * {eta15t25_pt50t70}'.format(eta15t25 = l_eta['_eta_15t25'], pt50t70 = l_pt['_pt50t70'], eta15t25_pt50t70 = h.GetBinContent(8,3)/(1-h.GetBinContent(8,3)))
 
-    return eta_pT_sfr
+    return sfr
 ######################################################################################
 
 ######################################################################################
@@ -292,9 +297,11 @@ def measureTTLratio(ch='mem',isData=False):
             df = rdf(chain)
     #
             print '\n\tchain made.'
+     
+            mshReg = 'hnl_w_vis_m > 80'
 
 #            f0 = df.Filter(cuts_SFR + ' && ' + l0l2 + ' && ' + l1_loose)
-            f0 = df.Filter(l0l2 + ' && ' + l1_loose)
+            f0 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
 
     print '\n\tf0 entries:', f0.Count().GetValue()
 
@@ -310,21 +317,21 @@ def measureTTLratio(ch='mem',isData=False):
 
     print '\n\ttight df defined.'
 
-    _pt_eta_T = df0.Histo2D(('pt_eta_T','pt_eta_T',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l1_eta')
-    _pt_eta_L = df0.Histo2D(('pt_eta_L','pt_eta_L',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l1_eta')
+    _pt_eta_T = dft.Histo2D(('pt_eta_T','pt_eta_T',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l1_eta')
+    _pt_eta_L = dfl.Histo2D(('pt_eta_L','pt_eta_L',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l1_eta')
 
     h_pt_eta_T = _pt_eta_T.GetPtr()
     h_pt_eta_L = _pt_eta_L.GetPtr()
 
-    print 'tree entries T & L: ', h_pt_eta_T.GetEntries(), h_pt_eta_L.GetEntries()
+    print '\n\tentries T & L: ', h_pt_eta_T.GetEntries(), h_pt_eta_L.GetEntries()
 
     c_pt_eta = rt.TCanvas('ptCone_eta', 'ptCone_eta')
     h_pt_eta_T.Divide(h_pt_eta_L)
-    h_pt_eta_T.Draw('colz')
+    h_pt_eta_T.Draw('colztextE')
     h_pt_eta_T.SetTitle('; p_{T}^{cone} [GeV]; DiMuon |#eta|; tight-to-loose ratio')
     pf.showlogoprelimsim('CMS')
     pf.showlumi('SFR_'+ch)
-    save(c_pt_eta, 'DY_TT_TTL', ch)
+    save(c_pt_eta, sample='DY_TT_TTL', ch=ch)
 
     # DO AGAIN WITH THREE DIFFERENT TEFFS TO GET ERROR
 ####################################################################################################
@@ -344,77 +351,102 @@ def applyTTL(isData=False, VLD=True, eta_split=False):
 
     l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight = SFR 
 
-    cuts_SFR = l_eta[eta]
+    cuts_SFR = '1==1' #l_eta[eta]
     
+    print '\n\t l0l2: %s\n'       %(l0l2)
+    print '\n\t l1_loose: %s\n'   %(l1_loose)
+    print '\n\t l1_lnt: %s\n'     %(l1_lnt)
+    print '\n\t l1_tight: %s\n'   %(l1_tight)
+
     if isData == False:
-#        fin = rt.TFile(treeDir + 'tree_fr_liteTTbar.root') #TODO CHANGE TO FULL
-#        fin = rt.TFile(tempDir + 'tree_fr_DR_TTbar.root') 
-#        t = fin.Get('tree')
+
         t = rt.TChain('tree')
 
         if ch == 'mem':
             
-            h_in = rt.TFile('<mem_SFR>.root').GetPrimitive('<hist>')
-
             chain =rt.TChain('tree')
             chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
             chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
             chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
 
+            appReg = 'hnl_w_vis_m < 80'
+
+            cuts_SFR = += ' && ' + appReg
+
             df = rdf(chain)
     #
             f0 = df.Filter(cuts_SFR + ' && ' + l0l2 + ' && ' + l1_loose)
-#            f0_wghd = df.Define('f', 
 
-        print '\n\tf0 entries:', f0.Count().GetValue()
+    print '\n\t cuts: %s'%cuts_SFR
 
-        df0 = f0.Define('ptcone', PTCONE)
-        f0.Define('f', eta_pT_bin_select_sfr)
+    print '\n\tf0 entries:', f0.Count().GetValue()
 
+    dfl   = f0.Define('ptcone', PTCONE)
 
-        print '\n\t cuts: %s'%cuts_SFR
-        print '\n\t l0l2: %s\n'       %(l0l2)
-        print '\n\t l1_loose: %s\n'   %(l1_loose)
-        print '\n\t l1_tight: %s\n'   %(l1_tight)
+    print '\n\tptcone defined.'
 
-        if ch == 'mem':
-            t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_tight)
+    dfl0  = dfl.Filter(l1_lnt)
 
-    print '\n\tcut T:', cut_T, '\n\tcut LNT:', cut_LNT
+    print '\n\tlnt df defined.'
 
-    weighed_pt         = rt.TH1F('weighed_pt',         'weighed_pt',        len(b_pt)-1, b_pt)
-    weighed_dr_12      = rt.TH1F('weighed_dr_12',      'weighed_dr_12',     len(b_dR)-1, b_dR)
-    weighed_2disp      = rt.TH1F('weighed_2disp',      'weighed_2disp',     len(b_2d)-1, b_2d)
-    weighed_2disp_sig  = rt.TH1F('weighed_2disp_sig',  'weighed_2disp_sig', len(b_2d_sig)-1, b_2d_sig)
-    weighed_m_dimu     = rt.TH1F('weighed_m_dimu',     'weighed_m_dimu',    len(b_m)-1, b_m)
-    weighed_M_dimu     = rt.TH1F('weighed_M_dimu',     'weighed_M_dimu',    len(b_M)-1, b_M)
-    weighed_M_01       = rt.TH1F('weighed_M_01',       'weighed_M_01',      len(b_M)-1, b_M)
-    weighed_M_02       = rt.TH1F('weighed_M_02',       'weighed_M_02',      len(b_M)-1, b_M)
-    weighed_m_triL     = rt.TH1F('weighed_m_triL',     'weighed_m_triL',    len(b_M)-1, b_M)
-                                                       
-    print '\n\tentries:', t.GetEntriesFast()           
-                                                       
-    print '\tdrawing M_02 ...'
+    dflnt = dfl0.Define('fover1minusf', selectBins(ch))
 
-    t.Draw( 'hnl_m_02 >> obs_M_02', cut_T )  
-    print '\tobs M_02 done'
+    print '\n\tweight f/(1-f) defined.'
 
-    t.Draw( 'hnl_m_02  >> weighed_M_02',             '( ' + cut_LNT + ' ) * ( weight_fr/ (1 - weight_fr) )' )
-    print '\tweighed M_02 done'
+    dft   = dfl.Filter(l1_tight)
+    print '\n\ttight df defined.'
 
-    c_M_02 = rt.TCanvas('M_02', 'M_02')
-    weighed_M_02.SetLineColor(rt.kGreen+2); weighed_M_02.SetLineWidth(2); weighed_M_02.SetMarkerStyle(0)
-    weighed_M_02.SetTitle('; m(#mu_{0},  #mu_{2}) [GeV]; Counts')
-    observed_M_02.SetTitle('; m(#mu_{0},  #mu_{2}) [GeV]; Counts')
-    observed_M_02.SetMarkerColor(rt.kMagenta+2)
-    observed_M_02.Draw()
-    weighed_M_02.Draw('histsame')
-    leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-    leg.AddEntry(observed_M_02, 'observed')
-    leg.AddEntry(weighed_M_02, 'expected')
-    leg.Draw()
-    show
-    save(c_M_02, iso_cut, 'DDE_' + sample, ch, '')
+    whd_pt         = dflnt.Histo1D(('weighed_pt',         'weighed_pt',        len(b_pt)-1,      b_pt),     'ptcone',            'fover1minusf')
+    whd_dr_12      = dflnt.Histo1D(('weighed_dr_12',      'weighed_dr_12',     len(b_dR)-1,      b_dR),     'hnl_dr_12',         'fover1minusf')
+    whd_2disp      = dflnt.Histo1D(('weighed_2disp',      'weighed_2disp',     len(b_2d)-1,      b_2d),     'hnl_2d_disp',       'fover1minusf')
+    whd_2disp_sig  = dflnt.Histo1D(('weighed_2disp_sig',  'weighed_2disp_sig', len(b_2d_sig)-1,  b_2d_sig), 'hnl_2d_disp_sig',   'fover1minusf')
+    whd_m_dimu     = dflnt.Histo1D(('weighed_m_dimu',     'weighed_m_dimu',    len(b_m)-1,       b_m),      'hnl_m_12',          'fover1minusf')
+    whd_M_dimu     = dflnt.Histo1D(('weighed_M_dimu',     'weighed_M_dimu',    len(b_M)-1,       b_M),      'hnl_m_12',          'fover1minusf')
+    whd_M_01       = dflnt.Histo1D(('weighed_M_01',       'weighed_M_01',      len(b_M)-1,       b_M),      'hnl_m_01',          'fover1minusf')
+    whd_M_02       = dflnt.Histo1D(('weighed_M_02',       'weighed_M_02',      len(b_M)-1,       b_M),      'hnl_m_02',          'fover1minusf')
+    whd_m_triL     = dflnt.Histo1D(('weighed_m_triL',     'weighed_m_triL',    len(b_M)-1,       b_M),      'hnl_w_vis_m',       'fover1minusf')
+
+    obs_pt         = dft.Histo1D(('obs_pt',         'obs_pt',        len(b_pt)-1,     b_pt),     'ptcone'         )
+    obs_dr_12      = dft.Histo1D(('obs_dr_12',      'obs_dr_12',     len(b_dR)-1,     b_dR),     'hnl_dr_12'      )
+    obs_2disp      = dft.Histo1D(('obs_2disp',      'obs_2disp',     len(b_2d)-1,     b_2d),     'hnl_2d_disp'    )
+    obs_2disp_sig  = dft.Histo1D(('obs_2disp_sig',  'obs_2disp_sig', len(b_2d_sig)-1, b_2d_sig), 'hnl_2d_disp_sig')
+    obs_m_dimu     = dft.Histo1D(('obs_m_dimu',     'obs_m_dimu',    len(b_m)-1,      b_m),      'hnl_m_12'       )
+    obs_M_dimu     = dft.Histo1D(('obs_M_dimu',     'obs_M_dimu',    len(b_M)-1,      b_M),      'hnl_m_12'       )
+    obs_M_01       = dft.Histo1D(('obs_M_01',       'obs_M_01',      len(b_M)-1,      b_M),      'hnl_m_01'       )
+    obs_M_02       = dft.Histo1D(('obs_M_02',       'obs_M_02',      len(b_M)-1,      b_M),      'hnl_m_02'       )
+    obs_m_triL     = dft.Histo1D(('obs_m_triL',     'obs_m_triL',    len(b_M)-1,      b_M),      'hnl_w_vis_m'    )
+
+    h_list = { 'pt'          : [whd_pt,        obs_pt,       ';p_{T}^{cone} [GeV]; Counts'], 
+               'dr_12'       : [whd_dr_12,     obs_dr_12,    ';#DeltaR(#ell_{1},  #ell_{2}); Counts'], 
+               '2disp'       : [whd_2disp,     obs_2disp,    ';2d_disp [cm]; Counts'], 
+               '2disp_sig'   : [whd_2disp_sig, obs_2disp_sig, ';2d_disp_sig ; Counts'], 
+               'm_dimu'      : [whd_m_dimu,    obs_m_dimu,   ';m(#ell_{1},  #ell_{2}) [GeV]; Counts'], 
+               'M_dimu'      : [whd_M_dimu,    obs_M_dimu,   ';m(#ell_{1},  #ell_{2}) [GeV]; Counts'], 
+               'M_01'        : [whd_M_01,      obs_M_01,     ';m(#ell_{0},  #ell_{1}) [GeV]; Counts'], 
+               'M_02'        : [whd_M_02,      obs_M_02,     ';m(#ell_{0},  #ell_{2}) [GeV]; Counts'], 
+               'm_triL'      : [whd_m_triL,    obs_m_triL,   ';m(#ell_{0},  #ell_{1},  #ell_{2}) [GeV]; Counts'], }
+
+    for k in h_list.keys():
+
+        print'\n\tdrawing', k 
+
+        whd = h_list[k][0].GetPtr()
+        obs = h_list[k][1].GetPtr()
+
+        c = rt.TCanvas(k, k)
+        whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
+        whd.SetTitle(h_list[k][2])
+        obs.SetTitle(h_list[k][2])
+        obs.SetMarkerColor(rt.kMagenta+2)
+        obs.Draw()
+        whd.Draw('histsame')
+        leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+        leg.AddEntry(obs, 'observed')
+        leg.AddEntry(whd, 'expected')
+        leg.Draw()
+        pf.showlogoprelimsim('CMS')
+        pf.showlumi('SFR_'+ch)
+        save(c, sample='DDE', ch=ch)
 ######################################################################################
 
 ######################################################################################
