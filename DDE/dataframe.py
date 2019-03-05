@@ -239,7 +239,7 @@ b_reliso = np.concatenate((brl0,brl1,brl2),axis=None)
 l_eta = {'_eta_00t08' : 'abs(l1_eta) < 0.8', '_eta_08t15' : 'abs(l1_eta) > 0.8 & abs(l1_eta) < 1.479', '_eta_15t25' : 'abs(l1_eta) > 1.479 & abs(l1_eta) < 2.5'}
 
 l_pt   = { '_pt0t5'   : 'ptcone < 5',                  '_pt5t10' : 'ptcone > 5 && ptcone < 10',  '_pt10t15' : 'ptcone > 10 && ptcone < 15', '_pt15t20' : 'ptcone > 15 && ptcone < 20',
-           '_pt20t25' : 'ptcone > 20 && ptcone < 25', '_pt25t35' : 'ptcone > 25 && ptcone < 35', '_pt35t50' : 'ptcone > 35 && ptcone < 50', '_pt50t70' : 'ptcone > 50 && ptcone < 70'}
+           '_pt20t25' : 'ptcone > 20 && ptcone < 25', '_pt25t35' : 'ptcone > 25 && ptcone < 35', '_pt35t50' : 'ptcone > 35 && ptcone < 50', '_pt50t70' : 'ptcone > 50'}# && ptcone < 70'}
     
 def selectBins(ch='mem'):
 
@@ -369,9 +369,18 @@ def applyTTL(isData=False, VLD=True, eta_split=False):
             chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
             chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
 
+            ####################################################################################################
+            l0l2_mm    = 'l0_pt > 27 && l2_pt > 5 && l0_id_m && l2_id_m && l0_reliso_rho_03 < 0.15 && l2_reliso_rho_03 < 0.15'
+            l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05  && abs(l0_dz) < 0.2 && abs(l2_dxy) < 0.05 && abs(l2_dz) < 0.2 && abs(l1_reliso_rho_03) < 1.1'
+            ####################################################################################################
+            l1_e_tight = 'l1_pt > 5 && l1_MediumNoIso && l1_reliso_rho_03 < 0.15 && abs(l1_dxy) > 0.01'
+            l1_e_lnt   = 'l1_pt > 5 && (l1_MediumWithIso == 0  || l1_reliso_rho_03 > 0.15) && abs(l1_dxy) > 0.01'
+            l1_e_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.01'
+            ####################################################################################################
+
             appReg = 'hnl_w_vis_m < 80'
 
-            cuts_SFR = += ' && ' + appReg
+            cuts_SFR += ' && ' + appReg
 
             df = rdf(chain)
     #
@@ -382,19 +391,20 @@ def applyTTL(isData=False, VLD=True, eta_split=False):
     print '\n\tf0 entries:', f0.Count().GetValue()
 
     dfl   = f0.Define('ptcone', PTCONE)
-
     print '\n\tptcone defined.'
 
     dfl0  = dfl.Filter(l1_lnt)
-
     print '\n\tlnt df defined.'
 
-    dflnt = dfl0.Define('fover1minusf', selectBins(ch))
+    print '\n\tlnt df events:', dfl0.Count().GetValue()
 
+    dflnt = dfl0.Define('fover1minusf', selectBins(ch))
     print '\n\tweight f/(1-f) defined.'
 
     dft   = dfl.Filter(l1_tight)
     print '\n\ttight df defined.'
+
+    print '\n\ttight df events:', dft.Count().GetValue()
 
     whd_pt         = dflnt.Histo1D(('weighed_pt',         'weighed_pt',        len(b_pt)-1,      b_pt),     'ptcone',            'fover1minusf')
     whd_dr_12      = dflnt.Histo1D(('weighed_dr_12',      'weighed_dr_12',     len(b_dR)-1,      b_dR),     'hnl_dr_12',         'fover1minusf')
@@ -417,14 +427,14 @@ def applyTTL(isData=False, VLD=True, eta_split=False):
     obs_m_triL     = dft.Histo1D(('obs_m_triL',     'obs_m_triL',    len(b_M)-1,      b_M),      'hnl_w_vis_m'    )
 
     h_list = { 'pt'          : [whd_pt,        obs_pt,       ';p_{T}^{cone} [GeV]; Counts'], 
-               'dr_12'       : [whd_dr_12,     obs_dr_12,    ';#DeltaR(#ell_{1},  #ell_{2}); Counts'], 
+               'dr_12'       : [whd_dr_12,     obs_dr_12,    ';#DeltaR(l_{1},  l_{2}); Counts'], 
                '2disp'       : [whd_2disp,     obs_2disp,    ';2d_disp [cm]; Counts'], 
-               '2disp_sig'   : [whd_2disp_sig, obs_2disp_sig, ';2d_disp_sig ; Counts'], 
-               'm_dimu'      : [whd_m_dimu,    obs_m_dimu,   ';m(#ell_{1},  #ell_{2}) [GeV]; Counts'], 
-               'M_dimu'      : [whd_M_dimu,    obs_M_dimu,   ';m(#ell_{1},  #ell_{2}) [GeV]; Counts'], 
-               'M_01'        : [whd_M_01,      obs_M_01,     ';m(#ell_{0},  #ell_{1}) [GeV]; Counts'], 
-               'M_02'        : [whd_M_02,      obs_M_02,     ';m(#ell_{0},  #ell_{2}) [GeV]; Counts'], 
-               'm_triL'      : [whd_m_triL,    obs_m_triL,   ';m(#ell_{0},  #ell_{1},  #ell_{2}) [GeV]; Counts'], }
+               '2disp_sig'   : [whd_2disp_sig, obs_2disp_sig,';2d_disp_sig ; Counts'], 
+               'm_dimu'      : [whd_m_dimu,    obs_m_dimu,   ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+               'M_dimu'      : [whd_M_dimu,    obs_M_dimu,   ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+               'M_01'        : [whd_M_01,      obs_M_01,     ';m(l_{0},  l_{1}) [GeV]; Counts'], 
+               'M_02'        : [whd_M_02,      obs_M_02,     ';m(l_{0},  l_{2}) [GeV]; Counts'], 
+               'm_triL'      : [whd_m_triL,    obs_m_triL,   ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'], }
 
     for k in h_list.keys():
 
@@ -439,7 +449,7 @@ def applyTTL(isData=False, VLD=True, eta_split=False):
         obs.SetTitle(h_list[k][2])
         obs.SetMarkerColor(rt.kMagenta+2)
         obs.Draw()
-        whd.Draw('histsame')
+        whd.Draw('histEsame')
         leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
         leg.AddEntry(obs, 'observed')
         leg.AddEntry(whd, 'expected')
