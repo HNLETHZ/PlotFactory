@@ -375,6 +375,255 @@ def measureTTLratio(ch='mem',isData=False):
 ####################################################################################################
 
 ####################################################################################################
+def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False):
+
+    l_eta  = {'_eta_all' : '1'}
+
+    if eta_split == True: 
+        if ch == 'mem':
+            l_eta = {'_eta_00t08' : 'abs(l1_eta) < 0.8', '_eta_08t15' : 'abs(l1_eta) > 0.8 & abs(l1_eta) < 1.479', '_eta_15t25' : 'abs(l1_eta) > 1.479 & abs(l1_eta) < 2.5'}
+
+#    print l_eta
+
+    samples = ['TT','DY','WJ']
+
+    print '\n\tmode: %s\n'%ch
+
+    sList = raw_input('\tchoose between TT, DY and WJ (inclusively)\n\t')
+    samples = sList.split(',')
+
+    if samples[0] == 'all': samples = ['TT','DY','WJ']
+
+    iso_cut = 0.15
+    iso_str = str(int(iso_cut * 100))
+
+    cuts_DFR = 'abs(l1_dz) < 2 & abs(l2_dz) < 2 & hnl_2d_disp > 0.5 & l1_q * l2_q < 0'
+
+#    N_ENTRIES = 0
+
+    SFR, DFR, dirs = selectCuts(ch)
+
+    l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight = SFR 
+    LOOSE, TIGHT, LOOSENOTTIGHT = DFR
+    DYBB_dir, DY10_dir, DY50_dir, DY50_ext_dir, TT_dir, W_dir, W_ext_dir = dirs   
+
+    dRdefList, sHdefList = selectDefs(ch)
+
+    l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet = dRdefList
+
+    sys.stdout = Logger(plotDir + 'FR_%s_%s' %(ch,samples))
+
+    print '\n\t pT cone: %s\n' %PTCONE 
+
+    for eta in l_eta.keys():
+        h_pt_1f = []; h_pt_2f = []; i = 0
+
+        t = None
+        t = rt.TChain('tree')
+        t.Add(DYBB_dir + suffix)
+        t.Add(DY10_dir + suffix)
+        t.Add(DY50_dir + suffix)
+        t.Add(DY50_ext_dir + suffix)
+        t.Add(TT_dir + suffix)
+        df = rdf(t)
+        print'\n\tchain made.'
+        N_ENTRIES = df.Count()
+
+        if sfr:
+
+            print '\tdrawing single fakes ...'
+
+            h_pt_1f_T_012  = rt.TH1F('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt)
+            h_pt_1f_T_021  = rt.TH1F('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt)
+            h_pt_1f_L_012  = rt.TH1F('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt)
+            h_pt_1f_L_021  = rt.TH1F('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt)
+
+            cuts_SFR = '1 && ' + l_eta[eta]
+            cuts_l = cuts_SFR + ' && ' + l0l2 + ' && ' + l1_loose
+
+            f0 = df.Filter(cuts_l)
+            print '\tloose defined.'
+
+            dfl = f0.Define('ptcone', PTCONE)
+            print '\tptcone defined.'
+
+            dfl_heavy = dfl.Filter('abs(l1_jet_flavour_parton) == 4 || abs(l1_jet_flavour_parton) == 5 || abs(l1_jet_flavour_parton) == 6 || abs(l1_jet_flavour_parton) == 7 || abs(l1_jet_flavour_parton) == 8')
+            dfl_light = dfl.Filter('abs(l1_jet_flavour_parton) == 3 || abs(l1_jet_flavour_parton) == 2 || abs(l1_jet_flavour_parton) == 1')
+            print '\tlight/heavy defined.'
+
+            dft = dfl.Filter(l1_tight)
+            print '\ttight defined.'
+            
+            print '\n\t cuts: %s'                         %cuts_SFR
+            print '\n\t l0l1: %s\n'                       %(l0l1)
+            print '\n\t l0l2: %s\n'                       %(l0l2)
+            print '\n\t l1_loose: %s\n'                   %(l1_loose)
+            print '\n\t l1_tight: %s\n'                   %(l1_tight)
+            print '\n\t l2_loose: %s\n'                   %(l2_loose)
+            print '\n\t l2_tight: %s\n'                   %(l2_tight)
+
+            print '\t',sample, 'entries loose:',          f0.Count().GetValue()
+            print '\t',sample, 'entries tight:',          dft.Count().GetValue()
+
+        
+#            if ch in ['mmm','eee']:
+#                t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_tight)
+#                t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_tight)
+
+            if ch == 'mem':
+#                    t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_tight)
+                _h_pt_1f_T_021 = dft.Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone')
+                h_pt_1f_T_021 = _h_pt_1f_T_021.GetPtr()
+
+#            if ch == 'eem':
+#                t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_tight)
+
+            h_pt_1f_T_012.Add(h_pt_1f_T_021)
+            print '\tentries tight:', h_pt_1f_T_012.GetEntries()
+
+#           if ch in ['mmm','eee']:
+#               t.Draw('l1_pt >> pt_1f_L_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_loose)
+#               t.Draw('l2_pt >> pt_1f_L_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_loose)
+
+            if ch == 'mem':
+#                    t.Draw('l1_pt >> pt_1f_L_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_loose)
+                _h_pt_1f_L_021 = dfl.Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone')
+                h_pt_1f_L_021 = _h_pt_1f_L_021.GetPtr()
+
+#            if ch == 'eem':
+#                t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_loose)
+
+            h_pt_1f_L_012.Add(h_pt_1f_L_021)
+            print '\tentries loose:', h_pt_1f_L_012.GetEntries()
+
+            h_pt_1f.append(rt.TEfficiency(h_pt_1f_T_012, h_pt_1f_L_012))
+            h_pt_1f[i].SetTitle('%s; p_{T} [GeV]; tight-to-loose ratio (single fakes)'%sample)
+            h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
+            h_pt_1f[i].SetFillColor(rt.kWhite)
+
+            if dbg == True:
+                outfile = rt.TFile(plotDir + '%s_hists_dataframe.root'%sample, 'recreate')
+                outfile.cd()
+                h_pt_1f_T_012.Write()
+                h_pt_1f_L_012.Write()
+                h_pt_1f[i].Write()
+                outfile.Close()
+
+            c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio')
+            framer.GetXaxis().SetTitle('p^{cone}_{T} [GeV]')
+#                c.SetLogy()
+            h_pt_1f[i].Draw('same')
+            pf.showlogoprelimsim('CMS')
+            pf.showlumi(sample+'-'+ch+eta)
+            save(c_pt_1f, iso_cut, sample, ch+eta)
+
+            print '\n\tsingle-fakes done ...'
+ 
+        if dfr:
+
+            print '\n\tdrawing double fakes ...'
+
+            cut_T = cuts + TIGHT ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
+            cut_L = cuts + LOOSE ## UPDATED TO LIMIT JET-JUNK WITH LARGE DR
+
+            n_entries             = t.GetEntries(cuts) 
+
+            print '\n\t', sample, 'entries before selection:', N_ENTRIES.GetValue() 
+            print '\t',sample, 'entries after cuts:', n_entries
+            print '\n\t cuts: %s'%cuts
+            print '\n\t TIGHT WP: %s\n' %TIGHT
+            print '\n\t LOOSE WP: %s\n' %LOOSE
+            print '\n\t LNT WP: %s\n' %LOOSENOTTIGHT
+
+            h_pt_2f_L  = rt.TH1F('pt_cone_2f_L', 'pt_cone_2f_L',len(b_pt)-1,b_pt)
+
+            h_pt_2f_T  = rt.TH1F('pt_cone_2f_T', 'pt_cone_2f_T',len(b_pt)-1,b_pt)
+
+            t.Draw(PTCONE + ' >> pt_cone_2f_T', cut_T + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
+            print '\tentries tight:', h_pt_2f_T.GetEntries()
+
+            t.Draw(PTCONE + '>> pt_cone_2f_L' , cut_L + ' & hnl_dr_12 < 0.8 & ' + twoFakes_sameJet)
+            print '\tentries loose:', h_pt_2f_L.GetEntries()
+
+            print '\tdouble-fakes done'
+      
+            h_pt_2f.append(rt.TEfficiency(h_pt_2f_T, h_pt_2f_L))
+            h_pt_2f[i].SetTitle('%s; p_{T}^{cone} [GeV]; tight-to-loose ratio (double fakes, same jet)'%sample)
+            h_pt_2f[i].SetMarkerColor(rt.kGreen+i*2)
+            h_pt_2f[i].SetFillColor(rt.kWhite)
+
+            c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            h_pt_2f[i].Draw('same')
+            pf.showlogoprelimsim('CMS')
+            pf.showlumi(sample+'-'+ch+eta)
+            save(c_pt_2f, iso_cut, sample, ch+eta)
+ 
+#        if sample == 'DY':
+
+        if sfr and dfr:
+
+            c_pt_cmprd = rt.TCanvas('ptCone_cmprd', 'ptCone_cmprd')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            h_pt_1f[i].Draw('same')
+            h_pt_1f[i].SetMarkerColor(rt.kRed+1+i)
+            h_pt_2f[i].Draw('same')
+            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+            leg.AddEntry(h_pt_2f[i], 'double fakes')
+            leg.AddEntry(h_pt_1f[i], 'single fakes ')
+            leg.Draw()
+            pf.showlumi(sample+'-'+ch+eta)
+            pf.showlogoprelimsim('CMS')
+            save(c_pt_cmprd, iso_cut, sample, ch+eta)
+
+        i += 1
+
+    if len(samples) > 1:
+
+        rnch = len(samples)
+#        if ch == 'mmm': rnch = 2
+
+        if sfr:
+            c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+            for i in range(rnch):
+                h_pt_1f[i].Draw('same')
+                leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
+            leg.Draw()
+        #    c_pt_1f.SetLogz()
+            pf.showlumi(ch+eta)
+            pf.showlogoprelimsim('CMS')
+            save(c_pt_1f, iso_cut, 'cmbnd', ch+eta)
+
+        if dfr:
+            c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
+            framer.Draw()
+            framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
+            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+            leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
+            for i in range(rnch): # forget WJ for now
+                h_pt_2f[i].Draw('same')
+                leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
+            leg.Draw()
+            pf.showlumi(ch+eta)
+            pf.showlogoprelimsim('CMS')
+            save(c_pt_2f, iso_cut, 'cmbnd', ch+eta)
+
+    sys.stderr = sys.__stderr__
+    sys.stdout = sys.__stdout__
+    print '\n\t %s_%s_iso%s\t done'%(sample, ch+eta, iso_str)
+####################################################################################################
+
+####################################################################################################
 def checkTTLratio(ch='mem',eta_split=True,sfr=True,dfr=False):
 
     l_eta  = {'_eta_all' : '1'}
@@ -515,6 +764,13 @@ def checkTTLratio(ch='mem',eta_split=True,sfr=True,dfr=False):
                 h_pt_1f[i].SetTitle('%s; p_{T} [GeV]; tight-to-loose ratio (single fakes)'%sample)
                 h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
                 h_pt_1f[i].SetFillColor(rt.kWhite)
+
+                outfile = rt.TFile(plotDir + '%s_hists_dataframe.root'%sample, 'recreate')
+                outfile.cd()
+                h_pt_1f_T_012.Write()
+                h_pt_1f_L_012.Write()
+                h_pt_1f[i].Write()
+                outfile.Close()
 
                 c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
                 framer.Draw()
