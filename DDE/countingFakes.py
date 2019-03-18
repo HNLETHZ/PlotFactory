@@ -704,6 +704,13 @@ def checkTTLratio(ch='mmm',eta_split=True,sfr=True,dfr=False,file=True):
                 h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
                 h_pt_1f[i].SetFillColor(rt.kWhite)
 
+                outfile = rt.TFile(plotDir + '%s_hists.root'%sample, 'recreate')
+                outfile.cd()
+                h_pt_1f_T_012.Write()
+                h_pt_1f_L_012.Write()
+                h_pt_1f[i].Write()
+                outfile.Close()
+
                 c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
                 framer.Draw()
                 framer.GetYaxis().SetTitle('tight-to-loose ratio')
