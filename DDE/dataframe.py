@@ -416,7 +416,7 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
     print '\n\t pT cone: %s\n' %PTCONE 
 
     for eta in l_eta.keys():
-        h_pt_1f = []; h_pt_2f = []; i = 0
+        h_pt_1f = {}; h_pt_2f = []; i = 0
 
         t = None
         t = rt.TChain('tree')
@@ -438,6 +438,15 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
             h_pt_1f_L_012  = rt.TH1F('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt)
             h_pt_1f_L_021  = rt.TH1F('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt)
 
+            h_pt_1f_T_012_heavy = rt.TH1F('pt_1f_T_012_heavy', 'pt_1f_T_012_heavy',len(b_pt)-1,b_pt)
+            h_pt_1f_T_012_light = rt.TH1F('pt_1f_T_012_light', 'pt_1f_T_012_light',len(b_pt)-1,b_pt)
+            h_pt_1f_T_021_heavy = rt.TH1F('pt_1f_T_021_heavy', 'pt_1f_T_021_heavy',len(b_pt)-1,b_pt)
+            h_pt_1f_T_021_light = rt.TH1F('pt_1f_T_021_light', 'pt_1f_T_021_light',len(b_pt)-1,b_pt)
+            h_pt_1f_L_012_heavy = rt.TH1F('pt_1f_L_012_heavy', 'pt_1f_L_012_heavy',len(b_pt)-1,b_pt)
+            h_pt_1f_L_012_light = rt.TH1F('pt_1f_L_012_light', 'pt_1f_L_012_light',len(b_pt)-1,b_pt)
+            h_pt_1f_L_021_heavy = rt.TH1F('pt_1f_L_021_heavy', 'pt_1f_L_021_heavy',len(b_pt)-1,b_pt)
+            h_pt_1f_L_021_light = rt.TH1F('pt_1f_L_021_light', 'pt_1f_L_021_light',len(b_pt)-1,b_pt)
+
             cuts_SFR = '1 && ' + l_eta[eta]
             cuts_l = cuts_SFR + ' && ' + l0l2 + ' && ' + l1_loose
 
@@ -451,7 +460,8 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
             dfl_light = dfl.Filter('abs(l1_jet_flavour_parton) == 3 || abs(l1_jet_flavour_parton) == 2 || abs(l1_jet_flavour_parton) == 1')
             print '\tlight/heavy defined.'
 
-            dft = dfl.Filter(l1_tight)
+            dft_heavy = dfl_heavy.Filter(l1_tight)
+            dft_light = dfl_light.Filter(l1_tight)
             print '\ttight defined.'
             
             print '\n\t cuts: %s'                         %cuts_SFR
@@ -472,13 +482,20 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
 
             if ch == 'mem':
 #                    t.Draw('l1_pt >> pt_1f_T_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_tight)
-                _h_pt_1f_T_021 = dft.Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone')
-                h_pt_1f_T_021 = _h_pt_1f_T_021.GetPtr()
+                _h_pt_1f_T_021_heavy = dft_heavy.Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone')
+                _h_pt_1f_T_021_light = dft_light.Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone')
+                h_pt_1f_T_021_heavy = _h_pt_1f_T_021_heavy.GetPtr()
+                h_pt_1f_T_021_light = _h_pt_1f_T_021_light.GetPtr()
 
 #            if ch == 'eem':
 #                t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_tight)
 
-            h_pt_1f_T_012.Add(h_pt_1f_T_021)
+            h_pt_1f_T_012_heavy.Add(h_pt_1f_T_021_heavy)
+            h_pt_1f_T_012_light.Add(h_pt_1f_T_021_light)
+            print '\tentries tight:', h_pt_1f_T_012_heavy.GetEntries() + h_pt_1f_T_012_light.GetEntries()
+
+            h_pt_1f_T_012.Add(h_pt_1f_T_012_heavy)  
+            h_pt_1f_T_012.Add(h_pt_1f_T_012_light)  
             print '\tentries tight:', h_pt_1f_T_012.GetEntries()
 
 #           if ch in ['mmm','eee']:
@@ -487,26 +504,50 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
 
             if ch == 'mem':
 #                    t.Draw('l1_pt >> pt_1f_L_021', cuts_SFR + ' & ' + l0l2 + ' & ' + l1_loose)
-                _h_pt_1f_L_021 = dfl.Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone')
-                h_pt_1f_L_021 = _h_pt_1f_L_021.GetPtr()
+                _h_pt_1f_L_021_heavy = dfl_heavy.Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone')
+                _h_pt_1f_L_021_light = dfl_light.Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone')
+                h_pt_1f_L_021_heavy = _h_pt_1f_L_021_heavy.GetPtr()
+                h_pt_1f_L_021_light = _h_pt_1f_L_021_light.GetPtr()
 
 #            if ch == 'eem':
 #                t.Draw('l2_pt >> pt_1f_T_012', cuts_SFR + ' & ' + l0l1 + ' & ' + l2_loose)
 
-            h_pt_1f_L_012.Add(h_pt_1f_L_021)
+            h_pt_1f_L_012_heavy.Add(h_pt_1f_L_021_heavy)
+            h_pt_1f_L_012_light.Add(h_pt_1f_L_021_light)
+            print '\tentries loose:', h_pt_1f_L_012_heavy.GetEntries() + h_pt_1f_L_012_light.GetEntries()
+
+            h_pt_1f_L_012.Add(h_pt_1f_L_012_heavy)  
+            h_pt_1f_L_012.Add(h_pt_1f_L_012_light)  
             print '\tentries loose:', h_pt_1f_L_012.GetEntries()
 
-            h_pt_1f.append(rt.TEfficiency(h_pt_1f_T_012, h_pt_1f_L_012))
-            h_pt_1f[i].SetTitle('%s; p_{T} [GeV]; tight-to-loose ratio (single fakes)'%sample)
-            h_pt_1f[i].SetMarkerColor(rt.kBlue+(4-i*2))
-            h_pt_1f[i].SetFillColor(rt.kWhite)
+            h_pt_1f['heavy'] = rt.TEfficiency(h_pt_1f_T_012_heavy, h_pt_1f_L_012_heavy)
+            h_pt_1f['light'] = rt.TEfficiency(h_pt_1f_T_012_light, h_pt_1f_L_012_light)
+            h_pt_1f['all']   = rt.TEfficiency(h_pt_1f_T_012, h_pt_1f_L_012)
+
+            h_pt_1f['heavy'].SetTitle('heavy; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
+            h_pt_1f['light'].SetTitle('light; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
+            h_pt_1f['all'].  SetTitle(  'all; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
+
+            h_pt_1f['heavy'].SetMarkerColor(rt.kRed+1)
+            h_pt_1f['light'].SetMarkerColor(rt.kBlue+1)
+            h_pt_1f['all']  .SetMarkerColor(rt.kBlack)
+
+            h_pt_1f['heavy'].SetFillColor(rt.kWhite)
+            h_pt_1f['light'].SetFillColor(rt.kWhite)
+            h_pt_1f['all']  .SetFillColor(rt.kWhite)
 
             if dbg == True:
-                outfile = rt.TFile(plotDir + '%s_hists_dataframe.root'%sample, 'recreate')
+                outfile = rt.TFile(plotDir + '1f_hists.root', 'recreate')
                 outfile.cd()
                 h_pt_1f_T_012.Write()
                 h_pt_1f_L_012.Write()
-                h_pt_1f[i].Write()
+                h_pt_1f_T_012_heavy.Write()
+                h_pt_1f_L_012_light.Write()
+                h_pt_1f_T_012_heavy.Write()
+                h_pt_1f_L_012_light.Write()
+                h_pt_1f['heavy'].Write()
+                h_pt_1f['light'].Write()
+                h_pt_1f['all']  .Write()
                 outfile.Close()
 
             c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
@@ -514,10 +555,17 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
             framer.GetYaxis().SetTitle('tight-to-loose ratio')
             framer.GetXaxis().SetTitle('p^{cone}_{T} [GeV]')
 #                c.SetLogy()
-            h_pt_1f[i].Draw('same')
+            h_pt_1f['heavy'].Draw('same')
+            h_pt_1f['light'].Draw('same')
+            h_pt_1f['all']  .Draw('same')
+            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+            leg.AddEntry(h_pt_1f['heavy'], h_pt_1f['heavy'].GetTitle())
+            leg.AddEntry(h_pt_1f['light'], h_pt_1f['light'].GetTitle())
+            leg.AddEntry(h_pt_1f['all'], h_pt_1f['all'].GetTitle())
+            leg.Draw()
             pf.showlogoprelimsim('CMS')
-            pf.showlumi(sample+'-'+ch+eta)
-            save(c_pt_1f, iso_cut, sample, ch+eta)
+            pf.showlumi(ch+eta)
+            save(c_pt_1f, iso_cut, 'TT_DY', ch+eta)
 
             print '\n\tsingle-fakes done ...'
  
@@ -565,58 +613,51 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
  
 #        if sample == 'DY':
 
-        if sfr and dfr:
+    if sfr and dfr:
 
-            c_pt_cmprd = rt.TCanvas('ptCone_cmprd', 'ptCone_cmprd')
-            framer.Draw()
-            framer.GetYaxis().SetTitle('tight-to-loose ratio')
-            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        c_pt_cmprd = rt.TCanvas('ptCone_cmprd', 'ptCone_cmprd')
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        h_pt_1f[i].Draw('same')
+        h_pt_1f[i].SetMarkerColor(rt.kRed+1+i)
+        h_pt_2f[i].Draw('same')
+        leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+        leg.AddEntry(h_pt_2f[i], 'double fakes')
+        leg.AddEntry(h_pt_1f[i], 'single fakes ')
+        leg.Draw()
+        pf.showlumi(sample+'-'+ch+eta)
+        pf.showlogoprelimsim('CMS')
+        save(c_pt_cmprd, iso_cut, sample, ch+eta)
+
+    if sfr:
+        c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+        for i in range(rnch):
             h_pt_1f[i].Draw('same')
-            h_pt_1f[i].SetMarkerColor(rt.kRed+1+i)
+            leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
+        leg.Draw()
+    #    c_pt_1f.SetLogz()
+        pf.showlumi(ch+eta)
+        pf.showlogoprelimsim('CMS')
+        save(c_pt_1f, iso_cut, 'cmbnd', ch+eta)
+
+    if dfr:
+        c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
+        framer.Draw()
+        framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
+        framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
+        leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
+        for i in range(rnch): # forget WJ for now
             h_pt_2f[i].Draw('same')
-            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-            leg.AddEntry(h_pt_2f[i], 'double fakes')
-            leg.AddEntry(h_pt_1f[i], 'single fakes ')
-            leg.Draw()
-            pf.showlumi(sample+'-'+ch+eta)
-            pf.showlogoprelimsim('CMS')
-            save(c_pt_cmprd, iso_cut, sample, ch+eta)
-
-        i += 1
-
-    if len(samples) > 1:
-
-        rnch = len(samples)
-#        if ch == 'mmm': rnch = 2
-
-        if sfr:
-            c_pt_1f = rt.TCanvas('ptCone_1f', 'ptCone_1f')
-            framer.Draw()
-            framer.GetYaxis().SetTitle('tight-to-loose ratio (single fakes)')
-            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
-            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-            for i in range(rnch):
-                h_pt_1f[i].Draw('same')
-                leg.AddEntry(h_pt_1f[i], h_pt_1f[i].GetTitle())
-            leg.Draw()
-        #    c_pt_1f.SetLogz()
-            pf.showlumi(ch+eta)
-            pf.showlogoprelimsim('CMS')
-            save(c_pt_1f, iso_cut, 'cmbnd', ch+eta)
-
-        if dfr:
-            c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
-            framer.Draw()
-            framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
-            framer.GetXaxis().SetTitle('p_{T}^{cone} [GeV]')
-            leg = rt.TLegend(0.57, 0.78, 0.8, 0.9)
-            for i in range(rnch): # forget WJ for now
-                h_pt_2f[i].Draw('same')
-                leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
-            leg.Draw()
-            pf.showlumi(ch+eta)
-            pf.showlogoprelimsim('CMS')
-            save(c_pt_2f, iso_cut, 'cmbnd', ch+eta)
+            leg.AddEntry(h_pt_2f[i], h_pt_2f[i].GetTitle())
+        leg.Draw()
+        pf.showlumi(ch+eta)
+        pf.showlogoprelimsim('CMS')
+        save(c_pt_2f, iso_cut, 'cmbnd', ch+eta)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
