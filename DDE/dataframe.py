@@ -42,6 +42,7 @@ TT_dir_mee      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/partial/
 W_dir_mee       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu/'
 W_ext_dir_mee   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/mee/20190129/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
+# version with last plots 3_15_19
 DYBBDir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYBB/'
 DY50Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/'
 DY50_extDir_mem = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/'
@@ -49,6 +50,15 @@ DY10Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_
 TT_dir_mem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/'  
 W_dir_mem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
 W_ext_dir_mem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
+####################################################################################################
+# latest version 3_18_19
+DYBBDir_mem     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/DYBB/'
+DY50Dir_mem     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/DYJetsToLL_M50/'
+DY50_extDir_mem = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/DYJetsToLL_M50_ext/'
+DY10Dir_mem     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/DYJetsToLL_M10to50/'
+TT_dir_mem      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/TTJets/'  
+W_dir_mem       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/WJetsToLNu/'
+W_ext_dir_mem   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/WJetsToLNu_ext/'
 ####################################################################################################
 DYBBDir_mmm     = '/work/vstampf/ntuples/mmm/partial/DYBB/'
 DY50Dir_mmm     = '/work/vstampf/ntuples/mmm/partial/DYJetsToLL_M50/'
@@ -83,17 +93,10 @@ dPhi11  =  '( (l1_phi-l1_gen_match_phi + 2*TMath::Pi()) * (l1_phi-l1_gen_match_p
 dPhi22  =  '( (l2_phi-l2_gen_match_phi + 2*TMath::Pi()) * (l2_phi-l2_gen_match_phi < -TMath::Pi()) + (l2_phi-l2_gen_match_phi - 2*TMath::Pi()) * (l2_phi-l2_gen_match_phi > TMath::Pi())'\
            ' + (l2_phi-l2_gen_match_phi) * ( (l2_phi-l2_gen_match_phi > -TMath::Pi()) && (l2_phi-l2_gen_match_phi < TMath::Pi()) ) )' 
 ####################################################################################################
-## SHITTY CODE TODO REMOVE!!
-dPhi00  =  '( (l0_phi-l0_gen_match_phi + 2*TMath::Pi()) * (l0_phi-l0_gen_match_phi < -TMath::Pi()) + (l0_phi-l0_gen_match_phi - 2*TMath::Pi()) * (l0_phi-l0_gen_match_phi > TMath::Pi()) )'
-
-dPhi11  =  '( (l1_phi-l1_gen_match_phi + 2*TMath::Pi()) * (l1_phi-l1_gen_match_phi < -TMath::Pi()) + (l1_phi-l1_gen_match_phi - 2*TMath::Pi()) * (l1_phi-l1_gen_match_phi > TMath::Pi()) )'
-
-dPhi22  =  '( (l2_phi-l2_gen_match_phi + 2*TMath::Pi()) * (l2_phi-l2_gen_match_phi < -TMath::Pi()) + (l2_phi-l2_gen_match_phi - 2*TMath::Pi()) * (l2_phi-l2_gen_match_phi > TMath::Pi()) )'
-####################################################################################################
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && abs(l0_gen_match_pdgid) == 13'#&& l0_is_real == 1'
 #l0_prompt_m_dr += ' && l0_good_match == 1 )'
-l0_prompt_m_dr += ' && sqrt( pow((l0_eta-l0_gen_match_eta),2) + pow((' + dPhi00 + '),2) ) < 0.04 && l0_pdgid == l0_gen_match_pdgid )' #FIXME
+l0_prompt_m_dr += ' && sqrt( pow((l0_eta-l0_gen_match_eta),2) + pow((' + dPhi00 + '),2) ) < 0.04 )' 
 
 l1_prompt_m_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_m_dr += ' || l1_gen_match_fromHardProcessFinalState == 1 || l1_gen_match_isPromptFinalState == 1) && abs(l1_gen_match_pdgid) == 13'#&& l1_is_real == 1'
@@ -103,7 +106,7 @@ l1_prompt_m_dr += ' && sqrt( pow((l1_eta-l1_gen_match_eta),2) + pow((' + dPhi11 
 l2_prompt_m_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_m_dr += ' || l2_gen_match_fromHardProcessFinalState == 1 || l2_gen_match_isPromptFinalState == 1) && abs(l2_gen_match_pdgid) == 13'#&& l2_is_real == 1'
 #l2_prompt_m_dr += ' && l2_good_match == 1 )'
-l2_prompt_m_dr += ' && sqrt( pow((l2_eta-l2_gen_match_eta),2) + pow((' + dPhi22 + '),2) ) < 0.04 && l2_pdgid == l2_gen_match_pdgid )' #FIXME
+l2_prompt_m_dr += ' && sqrt( pow((l2_eta-l2_gen_match_eta),2) + pow((' + dPhi22 + '),2) ) < 0.04 )' 
 
 l0_prompt_e_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_e_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && ( abs(l0_gen_match_pdgid) == 11 || abs(l0_gen_match_pdgid) == 22 )'
@@ -179,14 +182,14 @@ l0l1_mm    += ' && ' + l0_prompt_m_dr + ' && ' + l1_prompt_m_dr
 
 l0l2_mm    = 'l0_pt > 15 && l2_pt > 5 && l0_id_m == 1 && l2_id_m == 1 && l0_reliso_rho_03 < 0.15 && l2_reliso_rho_03 < 0.15'
 #l0l2_mm    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_02 - 91.19) < 10 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05'
-l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05 && abs(l1_reliso_rho_03) < 1.1'
+l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05'
 #l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05 && abs(l1_reliso_rho_03) < 0.35' # DON'T CHANGE, STATE OF THE ART
 l0l2_mm    += ' && ' + l0_prompt_m_dr + ' && ' + l2_prompt_m_dr 
 ####################################################################################################
-l1_e_tight = 'l1_pt > 5 && l1_MediumNoIso == 1 && l1_reliso_rho_03 < 0.15 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr
 #l1_e_tight = 'l1_pt > 5 && l1_MediumWithIso == 1 && l1_reliso_rho_03 < 0.10 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
-l1_e_lnt   = 'l1_pt > 5 && (l1_MediumWithIso == 0 || l1_reliso_rho_03 > 0.15) && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr 
-l1_e_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
+l1_e_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.01 && abs(l1_reliso_rho_03) < 1.1 && l1_MediumNoIso == 1 && l1_reliso_rho_03 < 0.15 && ' + l1_fake_e_dr
+l1_e_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.01 && abs(l1_reliso_rho_03) < 1.1 && (l1_MediumWithIso == 0 || l1_reliso_rho_03 > 0.15) && ' + l1_fake_e_dr 
+l1_e_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.01 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
 
 l2_e_tight = 'l2_pt > 5 && l2_MediumWithIso == 1 && l2_reliso_rho_03 < 0.10 && abs(l2_dxy) > 0.05 && ' + l2_fake_e_dr
 l2_e_lnt   = 'l2_pt > 5 && l2_LooseNoIso == 1 && l2_reliso_rho_03 > 0.10 && abs(l2_dxy) > 0.01 && ' + l2_fake_e_dr #FIXME
@@ -473,7 +476,7 @@ def checkTTLratio_JetFlavor(ch='mem',eta_split=True,sfr=True,dfr=False,dbg=False
             print '\n\t l2_tight: %s\n'                   %(l2_tight)
 
             print '\t',sample, 'entries loose:',          f0.Count().GetValue()
-            print '\t',sample, 'entries tight:',          dft.Count().GetValue()
+            print '\t',sample, 'entries tight:',          dft_heavy.Count().GetValue() + dft_light.Count().GetValue()
 
         
 #            if ch in ['mmm','eee']:
