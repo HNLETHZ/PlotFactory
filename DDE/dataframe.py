@@ -95,18 +95,18 @@ dPhi22  =  '( (l2_phi-l2_gen_match_phi + 2*TMath::Pi()) * (l2_phi-l2_gen_match_p
 ########################################################################################################################################################################################################
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && abs(l0_gen_match_pdgid) == 13'#&& l0_is_real == 1'
-#l0_prompt_m_dr += ' && l0_good_match == 1 )'
-l0_prompt_m_dr += ' && sqrt( pow((l0_eta-l0_gen_match_eta),2) + pow((' + dPhi00 + '),2) ) < 0.04 )' 
+l0_prompt_m_dr += ' && l0_good_match == 1 )'
+#l0_prompt_m_dr += ' && sqrt( pow((l0_eta-l0_gen_match_eta),2) + pow((' + dPhi00 + '),2) ) < 0.04 )' 
 
 l1_prompt_m_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_m_dr += ' || l1_gen_match_fromHardProcessFinalState == 1 || l1_gen_match_isPromptFinalState == 1) && abs(l1_gen_match_pdgid) == 13'#&& l1_is_real == 1'
-#l1_prompt_m_dr += ' && l1_good_match == 1 )'
-l1_prompt_m_dr += ' && sqrt( pow((l1_eta-l1_gen_match_eta),2) + pow((' + dPhi11 + '),2) ) < 0.04 )'
+l1_prompt_m_dr += ' && l1_good_match == 1 )'
+#l1_prompt_m_dr += ' && sqrt( pow((l1_eta-l1_gen_match_eta),2) + pow((' + dPhi11 + '),2) ) < 0.04 )'
 
 l2_prompt_m_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_m_dr += ' || l2_gen_match_fromHardProcessFinalState == 1 || l2_gen_match_isPromptFinalState == 1) && abs(l2_gen_match_pdgid) == 13'#&& l2_is_real == 1'
-#l2_prompt_m_dr += ' && l2_good_match == 1 )'
-l2_prompt_m_dr += ' && sqrt( pow((l2_eta-l2_gen_match_eta),2) + pow((' + dPhi22 + '),2) ) < 0.04 )' 
+l2_prompt_m_dr += ' && l2_good_match == 1 )'
+#l2_prompt_m_dr += ' && sqrt( pow((l2_eta-l2_gen_match_eta),2) + pow((' + dPhi22 + '),2) ) < 0.04 )' 
 
 l0_prompt_e_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_e_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && ( abs(l0_gen_match_pdgid) == 11 || abs(l0_gen_match_pdgid) == 22 )'
@@ -723,7 +723,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
             h_pt_2f[i].Draw('same')
             pf.showlogoprelimsim('CMS')
             pf.showlumi(sample+'-'+ch+eta)
-            save(c_pt_2f, iso_cut, sample, ch+eta)
+            save(knvs=c_pt_2f, sample='', ch=ch+eta)
  
 #        if sample == 'DY':
 
@@ -742,7 +742,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
         leg.Draw()
         pf.showlumi(sample+'-'+ch+eta)
         pf.showlogoprelimsim('CMS')
-        save(c_pt_cmprd, iso_cut, sample, ch+eta)
+        save(knvs=c_pt_cmprd, sample='', ch=ch+eta)
 
     if dfr:
         c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
@@ -756,11 +756,11 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
         leg.Draw()
         pf.showlumi(ch+eta)
         pf.showlogoprelimsim('CMS')
-        save(c_pt_2f, iso_cut, 'cmbnd', ch+eta)
+        save(knvs=c_pt_2f, sample='cmbnd', ch=ch+eta)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
-    print '\n\t %s_%s_iso%s\t done'%(sample, ch+eta, iso_str)
+    print '\n\t ch+eta done'
 ########################################################################################################################################################################################################
 
 ########################################################################################################################################################################################################
