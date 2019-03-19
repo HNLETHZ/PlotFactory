@@ -60,13 +60,13 @@ TT_dir_mem      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20
 W_dir_mem       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/WJetsToLNu/'
 W_ext_dir_mem   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/WJetsToLNu_ext/'
 ########################################################################################################################################################################################################
-DYBBDir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYBB/'
-DY50Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50/'
-DY50_extDir_mmm = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50_ext/'
-DY10Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M10to50/'
-TT_dir_mmm      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/TTJets/'  
-W_dir_mmm       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/WJetsToLNu/'
-W_ext_dir_mmm   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/WJetsToLNu_ext/'
+DYBBDir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYBB/'
+DY50Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50/'
+DY50_extDir_mmm = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50_ext/'
+DY10Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M10to50/'
+TT_dir_mmm      = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/TTJets/'  
+W_dir_mmm       = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/WJetsToLNu/'
+W_ext_dir_mmm   = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/WJetsToLNu_ext/'
 ########################################################################################################################################################################################################
 DYBBDir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
 DY50Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
@@ -401,8 +401,8 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
         t = rt.TChain('tree')
         t.Add(DYBB_dir + suffix)
         t.Add(DY10_dir + suffix)
-#        t.Add(DY50_dir + suffix)
-#        t.Add(DY50_ext_dir + suffix)
+        t.Add(DY50_dir + suffix)
+        t.Add(DY50_ext_dir + suffix)
         t.Add(TT_dir + suffix)
         t.Add(W_dir + suffix)
         t.Add(W_ext_dir + suffix)
@@ -470,8 +470,8 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
                 dfl_021_c     = dfl_021.Filter('abs(l1_jet_flavour_parton) == 4')
                 dfl_021_glu   = dfl_021.Filter('abs(l1_jet_flavour_parton) == 21 || abs(l1_jet_flavour_parton) == 9')
                 dfl_021_light = dfl_021.Filter('abs(l1_jet_flavour_parton) == 3 || abs(l1_jet_flavour_parton) == 2 || abs(l1_jet_flavour_parton) == 1')
-                dfl_021_other = dfl_021.Filter('abs(l1_jet_flavour_parton) != 1 || abs(l1_jet_flavour_parton) != 2 || abs(l1_jet_flavour_parton) != 3 || abs(l1_jet_flavour_parton) != 4'\
-                                               ' || abs(l1_jet_flavour_parton) != 5 || abs(l1_jet_flavour_parton) != 9 || abs(l1_jet_flavour_parton) != 21')
+                dfl_021_other = dfl_021.Filter('abs(l1_jet_flavour_parton) != 1 && abs(l1_jet_flavour_parton) != 2 && abs(l1_jet_flavour_parton) != 3 && abs(l1_jet_flavour_parton) != 4'\
+                                               ' && abs(l1_jet_flavour_parton) != 5 && abs(l1_jet_flavour_parton) != 9 && abs(l1_jet_flavour_parton) != 21')
                 print '\tflavours 021 defined.'
 
                 dft_021_c     = dfl_021_c    .Filter(l1_tight)
@@ -495,8 +495,8 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
                 dfl_012_c     = dfl_012.Filter('abs(l2_jet_flavour_parton) == 4')
                 dfl_012_glu   = dfl_012.Filter('abs(l2_jet_flavour_parton) == 21 || abs(l2_jet_flavour_parton) == 9')
                 dfl_012_light = dfl_012.Filter('abs(l2_jet_flavour_parton) == 3 || abs(l2_jet_flavour_parton) == 2 || abs(l2_jet_flavour_parton) == 1')
-                dfl_012_other = dfl_012.Filter('abs(l2_jet_flavour_parton) != 1 || abs(l2_jet_flavour_parton) != 2 || abs(l2_jet_flavour_parton) != 3 || abs(l2_jet_flavour_parton) != 4'\
-                                                   ' || abs(l2_jet_flavour_parton) != 5 || abs(l2_jet_flavour_parton) != 9 || abs(l2_jet_flavour_parton) != 21')
+                dfl_012_other = dfl_012.Filter('abs(l2_jet_flavour_parton) != 1 && abs(l2_jet_flavour_parton) != 2 && abs(l2_jet_flavour_parton) != 3 && abs(l2_jet_flavour_parton) != 4'\
+                                               ' && abs(l2_jet_flavour_parton) != 5 && abs(l2_jet_flavour_parton) != 9 && abs(l2_jet_flavour_parton) != 21')
                 print '\tflavours 012 defined.'
 
                 dft_012_c     = dfl_012_c    .Filter(l2_tight)
@@ -512,29 +512,33 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
                 print '\n\t l0l1: %s\n'          %(l0l1)
                 print '\n\t l2_loose: %s\n'      %(l2_loose)
                 print '\n\t l2_tight: %s\n'      %(l2_tight)
-                print '\tentries loose:',        f0_012.Count().GetValue()
-                print '\tentries tight:',        dft_012_c.Count().GetValue() + dft_012_light.Count().GetValue() + dft_012_other.Count().GetValue() + dft_012_b.Count().GetValue() + dft_012_glu.Count().GetValue()
+                print '\tsum loose:',            f0_012.Count().GetValue()
+                print '\tentries loose:',        dfl_012_c.Count().GetValue(), dfl_012_light.Count().GetValue(), dfl_012_b.Count().GetValue(), dfl_012_other.Count().GetValue(), dfl_012_glu.Count().GetValue()
+                print '\tsum tight:',            dft_012_c.Count().GetValue() + dft_012_light.Count().GetValue() + dft_012_other.Count().GetValue() + dft_012_b.Count().GetValue() + dft_012_glu.Count().GetValue()
+                print '\tentries tight:',        dft_012_c.Count().GetValue(), dft_012_light.Count().GetValue(), dft_012_b.Count().GetValue(), dft_012_other.Count().GetValue(), dft_012_glu.Count().GetValue()
             if mode021 ==True:
                 print '\n\t l0l2: %s\n'          %(l0l2)
                 print '\n\t l1_loose: %s\n'      %(l1_loose)
                 print '\n\t l1_tight: %s\n'      %(l1_tight)
-                print '\tentries loose:',        f0_021.Count().GetValue()
-                print '\tentries tight:',        dft_021_c.Count().GetValue() + dft_021_light.Count().GetValue() + dft_021_other.Count().GetValue() + dft_021_b.Count().GetValue() + dft_021_glu.Count().GetValue()
+                print '\tsum loose:',            f0_021.Count().GetValue()
+                print '\tentries loose:',        dfl_021_c.Count().GetValue(), dfl_021_light.Count().GetValue(), dfl_021_b.Count().GetValue(), dfl_021_other.Count().GetValue(), dfl_021_glu.Count().GetValue()
+                print '\tsum tight:',            dft_021_c.Count().GetValue() + dft_021_light.Count().GetValue() + dft_021_other.Count().GetValue() + dft_021_b.Count().GetValue() + dft_021_glu.Count().GetValue()
+                print '\tentries loose:',        dft_021_c.Count().GetValue(), dft_021_light.Count().GetValue(), dft_021_b.Count().GetValue(), dft_021_other.Count().GetValue(), dft_021_glu.Count().GetValue()
 
             ### FILLING
             if mode021 ==True:
 
-                _h_pt_1f_T_021_c     = dft_021_c    .Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_T_021_glu   = dft_021_glu  .Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_T_021_b     = dft_021_b    .Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_T_021_light = dft_021_light.Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_T_021_other = dft_021_other.Histo1D(('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_T_021_c     = dft_021_c    .Histo1D(('pt_1f_T_021_c'    , 'pt_1f_T_021_c'    ,len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_T_021_glu   = dft_021_glu  .Histo1D(('pt_1f_T_021_glu'  , 'pt_1f_T_021_glu'  ,len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_T_021_b     = dft_021_b    .Histo1D(('pt_1f_T_021_b'    , 'pt_1f_T_021_b'    ,len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_T_021_light = dft_021_light.Histo1D(('pt_1f_T_021_light', 'pt_1f_T_021_light',len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_T_021_other = dft_021_other.Histo1D(('pt_1f_T_021_other', 'pt_1f_T_021_other',len(b_pt)-1,b_pt), 'ptcone021')
 
-                _h_pt_1f_L_021_c     = dfl_021_c    .Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_L_021_glu   = dfl_021_glu  .Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_L_021_b     = dfl_021_b    .Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_L_021_light = dfl_021_light.Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone021')
-                _h_pt_1f_L_021_other = dfl_021_other.Histo1D(('pt_1f_L_021', 'pt_1f_L_021',len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_L_021_c     = dfl_021_c    .Histo1D(('pt_1f_L_021_c'    , 'pt_1f_L_021_c'    ,len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_L_021_glu   = dfl_021_glu  .Histo1D(('pt_1f_L_021_glu'  , 'pt_1f_L_021_glu'  ,len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_L_021_b     = dfl_021_b    .Histo1D(('pt_1f_L_021_b'    , 'pt_1f_L_021_b'    ,len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_L_021_light = dfl_021_light.Histo1D(('pt_1f_L_021_light', 'pt_1f_L_021_light',len(b_pt)-1,b_pt), 'ptcone021')
+                _h_pt_1f_L_021_other = dfl_021_other.Histo1D(('pt_1f_L_021_other', 'pt_1f_L_021_other',len(b_pt)-1,b_pt), 'ptcone021')
 
                 h_pt_1f_T_021_c      = _h_pt_1f_T_021_c.GetPtr()
                 h_pt_1f_T_021_glu    = _h_pt_1f_T_021_glu.GetPtr()
@@ -552,17 +556,17 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
 
             if mode012 ==True:
 
-                _h_pt_1f_T_012_c     = dft_012_c    .Histo1D(('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_T_012_glu   = dft_012_glu  .Histo1D(('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_T_012_b     = dft_012_b    .Histo1D(('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_T_012_light = dft_012_light.Histo1D(('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_T_012_other = dft_012_other.Histo1D(('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_T_012_c     = dft_012_c    .Histo1D(('pt_1f_T_012_c'    , 'pt_1f_T_012_c'    ,len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_T_012_glu   = dft_012_glu  .Histo1D(('pt_1f_T_012_glu'  , 'pt_1f_T_012_glu'  ,len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_T_012_b     = dft_012_b    .Histo1D(('pt_1f_T_012_b'    , 'pt_1f_T_012_b'    ,len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_T_012_light = dft_012_light.Histo1D(('pt_1f_T_012_light', 'pt_1f_T_012_light',len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_T_012_other = dft_012_other.Histo1D(('pt_1f_T_012_other', 'pt_1f_T_012_other',len(b_pt)-1,b_pt), 'ptcone012')
                                               
-                _h_pt_1f_L_012_c     = dfl_012_c    .Histo1D(('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_L_012_glu   = dfl_012_glu  .Histo1D(('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_L_012_b     = dfl_012_b    .Histo1D(('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_L_012_light = dfl_012_light.Histo1D(('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt), 'ptcone012')
-                _h_pt_1f_L_012_other = dfl_012_other.Histo1D(('pt_1f_L_012', 'pt_1f_L_012',len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_L_012_c     = dfl_012_c    .Histo1D(('pt_1f_L_012_c'    , 'pt_1f_L_012_c'    ,len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_L_012_glu   = dfl_012_glu  .Histo1D(('pt_1f_L_012_glu'  , 'pt_1f_L_012_glu'  ,len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_L_012_b     = dfl_012_b    .Histo1D(('pt_1f_L_012_b'    , 'pt_1f_L_012_b'    ,len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_L_012_light = dfl_012_light.Histo1D(('pt_1f_L_012_light', 'pt_1f_L_012_light',len(b_pt)-1,b_pt), 'ptcone012')
+                _h_pt_1f_L_012_other = dfl_012_other.Histo1D(('pt_1f_L_012_other', 'pt_1f_L_012_other',len(b_pt)-1,b_pt), 'ptcone012')
 
                 h_pt_1f_T_012_c      = _h_pt_1f_T_012_c.GetPtr()
                 h_pt_1f_T_012_glu    = _h_pt_1f_T_012_glu.GetPtr()
@@ -578,10 +582,10 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
 
                 print '\n\tfilling 012 done.'
 
-            ### ADDING
-            h_pt_1f_T_012_c.Add(h_pt_1f_T_021_c)
-            h_pt_1f_T_012_b.Add(h_pt_1f_T_021_b)
-            h_pt_1f_T_012_glu.Add(h_pt_1f_T_021_glu)
+            ### ADDING 012 + 021
+            h_pt_1f_T_012_c    .Add(h_pt_1f_T_021_c)
+            h_pt_1f_T_012_b    .Add(h_pt_1f_T_021_b)
+            h_pt_1f_T_012_glu  .Add(h_pt_1f_T_021_glu)
             h_pt_1f_T_012_other.Add(h_pt_1f_T_021_other)
             h_pt_1f_T_012_light.Add(h_pt_1f_T_021_light)
             print '\n\tentries tight:', h_pt_1f_T_012_c.GetEntries(), h_pt_1f_T_012_light.GetEntries(), h_pt_1f_T_012_b.GetEntries(), h_pt_1f_T_012_other.GetEntries(), h_pt_1f_T_012_glu.GetEntries()
@@ -594,9 +598,9 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
             h_pt_1f_T_012.Add(h_pt_1f_T_012_other)  
             print '\tentries tight:', h_pt_1f_T_012.GetEntries()
 
-            h_pt_1f_L_012_c.Add(h_pt_1f_L_021_c)
-            h_pt_1f_L_012_b.Add(h_pt_1f_L_021_b)
-            h_pt_1f_L_012_glu.Add(h_pt_1f_L_021_glu)
+            h_pt_1f_L_012_c    .Add(h_pt_1f_L_021_c)
+            h_pt_1f_L_012_b    .Add(h_pt_1f_L_021_b)
+            h_pt_1f_L_012_glu  .Add(h_pt_1f_L_021_glu)
             h_pt_1f_L_012_other.Add(h_pt_1f_L_021_other)
             h_pt_1f_L_012_light.Add(h_pt_1f_L_021_light)
             print '\n\tentries  loose:', h_pt_1f_L_012_c.GetEntries(), h_pt_1f_L_012_light.GetEntries(), h_pt_1f_L_012_b.GetEntries(), h_pt_1f_L_012_other.GetEntries(), h_pt_1f_L_012_glu.GetEntries()
@@ -617,9 +621,9 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
             h_pt_1f['other'] = rt.TEfficiency(h_pt_1f_T_012_other, h_pt_1f_L_012_other)
             h_pt_1f['all']   = rt.TEfficiency(h_pt_1f_T_012,       h_pt_1f_L_012)
 
-            h_pt_1f['c']    .SetTitle('c; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
-            h_pt_1f['glu']  .SetTitle('glu; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
-            h_pt_1f['b']    .SetTitle('b; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
+            h_pt_1f['c']    .SetTitle(    'c; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
+            h_pt_1f['glu']  .SetTitle(  'glu; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
+            h_pt_1f['b']    .SetTitle(    'b; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
             h_pt_1f['other'].SetTitle('other; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
             h_pt_1f['light'].SetTitle('light; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
             h_pt_1f['all'].  SetTitle(  'all; p_{T} [GeV]; tight-to-loose ratio (single fakes)')
@@ -725,7 +729,6 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
             pf.showlumi(sample+'-'+ch+eta)
             save(knvs=c_pt_2f, sample='', ch=ch+eta)
  
-#        if sample == 'DY':
 
     if sfr and dfr:
 
@@ -745,6 +748,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
         save(knvs=c_pt_cmprd, sample='', ch=ch+eta)
 
     if dfr:
+
         c_pt_2f = rt.TCanvas('ptCone_2f', 'ptCone_2f')
         framer.Draw()
         framer.GetYaxis().SetTitle('tight-to-loose ratio (double fakes, same Jet)')
@@ -758,9 +762,9 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
         pf.showlogoprelimsim('CMS')
         save(knvs=c_pt_2f, sample='cmbnd', ch=ch+eta)
 
+    print '\n\t %s done'%ch+eta
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
-    print '\n\t ch+eta done'
 ########################################################################################################################################################################################################
 
 ########################################################################################################################################################################################################
@@ -1276,6 +1280,9 @@ def checkStuff_JetFlavour(ch='mem',ID='L',eta_split=False):
     if eta_split == True: 
         if ch == 'mem':
             l_eta = {'_eta_00t08' : 'abs(l1_eta) < 0.8', '_eta_08t15' : 'abs(l1_eta) > 0.8 & abs(l1_eta) < 1.479', '_eta_15t25' : 'abs(l1_eta) > 1.479 & abs(l1_eta) < 2.5'}
+
+        if ch == 'mmm':
+            l_eta = {'_eta_00t12' : 'abs(l1_eta) < 1.2', '_eta_12t21' : 'abs(l1_eta) > 1.2 & abs(l1_eta) < 2.1', '_eta_21t24' : 'abs(l1_eta) > 2.1 & abs(l1_eta) < 2.4'}
 
     for i_eta in l_eta.keys():
 
