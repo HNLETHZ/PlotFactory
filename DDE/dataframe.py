@@ -63,8 +63,8 @@ W_ext_dir_mem   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20
 DYBBDir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYBB/'
 DY50Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50/'
 DY50_extDir_mmm = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50_ext/'
-DY10Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M10to50/'
 TT_dir_mmm      = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/TTJets/'  
+DY10Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M10to50/'
 W_dir_mmm       = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/WJetsToLNu/'
 W_ext_dir_mmm   = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/WJetsToLNu_ext/'
 ########################################################################################################################################################################################################
@@ -204,13 +204,13 @@ l2_e_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && 
 l2_e_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && (l2_LooseNoIso == 1   || l2_reliso_rho_03 > 0.15)'    
 l2_e_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && l2_LooseNoIso == 1'
 ########################################################################################################################################################################################################
-l1_m_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && l1_id_l == 1 && ' + l1_fake_m_dr + ' && l1_reliso_rho_03 < 0.15'
-l1_m_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && l1_id_l == 1 && ' + l1_fake_m_dr + ' && l1_reliso_rho_03 > 0.15'
-l1_m_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && l1_id_l == 1 && ' + l1_fake_m_dr
+l1_m_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr + ' && (l1_reliso_rho_03 < 0.15 && l1_id_l == 1)'
+l1_m_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr + ' && (l1_reliso_rho_03 > 0.15 || l1_id_l == 0)'
+l1_m_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr                             + ''# && l1_id_l == 1'
 
-l2_m_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && l2_id_l == 1 && ' + l2_fake_m_dr + ' && l2_reliso_rho_03 < 0.15'
-l2_m_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && l2_id_l == 1 && ' + l2_fake_m_dr + ' && l2_reliso_rho_03 > 0.15'
-l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && l2_id_l == 1 && ' + l2_fake_m_dr
+l2_m_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr + ' && (l2_reliso_rho_03 < 0.15 && l2_id_l == 1)'
+l2_m_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr + ' && (l2_reliso_rho_03 > 0.15 || l2_id_l == 0)'
+l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr                             + ''# && l2_id_l == 1'
 ########################################################################################################################################################################################################
 
 ########################################################################################################################################################################################################
@@ -295,11 +295,18 @@ def selectBins(ch='mem'):
 ######################################################################################
 def measureTTLratio(ch='mem',isData=False):
 
+    sys.stdout = Logger(plotDir + 'FR_%s' %ch)
+
     SFR, DFR, dirs = selectCuts(ch)
 
     l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight = SFR 
 
-#    cuts_SFR = l_eta[eta]
+    mshReg = 'hnl_w_vis_m > 80'
+
+    h_pt_eta_T_012  = rt.TH1F('pt_eta_T_012', 'pt_eta_T_012',len(b_pt)-1,b_pt)
+    h_pt_eta_T_021  = rt.TH1F('pt_eta_T_021', 'pt_eta_T_021',len(b_pt)-1,b_pt)
+    h_pt_eta_L_012  = rt.TH1F('pt_eta_L_012', 'pt_eta_L_012',len(b_pt)-1,b_pt)
+    h_pt_eta_L_021  = rt.TH1F('pt_eta_L_021', 'pt_eta_L_021',len(b_pt)-1,b_pt)
     
     if isData == False:
 
@@ -323,42 +330,81 @@ def measureTTLratio(ch='mem',isData=False):
             df = rdf(chain)
     #
             print '\n\tchain made.'
+
+            f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
+
+            mode021 = True
+
+        if ch == 'mmm':
+
+            chain =rt.TChain('tree')
+            chain.Add('/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50/HNLTreeProducer/tree.root')
+            chain.Add('/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
+            chain.Add('/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/TTJets/HNLTreeProducer/tree.root')  
+
+            df = rdf(chain)
+    #
+            print '\n\tchain made.'
      
-            mshReg = 'hnl_w_vis_m > 80'
+            f0_012 = df.Filter(l0l1 + ' && ' + l2_loose + ' && ' + mshReg)
+            f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
 
-#            f0 = df.Filter(cuts_SFR + ' && ' + l0l2 + ' && ' + l1_loose)
-            f0 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
+            mode021 = True
+            mode012 = True
 
-    print '\n\tf0 entries:', f0.Count().GetValue()
 
-    df0 = f0.Define('ptcone', PTCONE)
+    if mode021 == True:
 
-    print '\n\tptcone defined.'
+        print '\n\tf0_021 entries:', f0_021.Count().GetValue()
 
-    dfl = df0.Define('abs_l1_eta', 'abs(l1_eta)')
+        df0_021 = f0_021.Define('ptcone021', PTCONE)
+        print '\n\tptcone021 defined.'
 
-    print '\n\tabs_l1_eta defined.'
+        dfl_021 = df0_021.Define('abs_l1_eta', 'abs(l1_eta)')
+        print '\n\tabs_l1_eta defined.'
 
-    dft = dfl.Filter(l1_tight)
+        dft_021 = dfl_021.Filter(l1_tight)
+        print '\n\ttight df_021 defined.'
 
-    print '\n\ttight df defined.'
+        _pt_eta_T_021 = dft_021.Histo2D(('pt_eta_T_021','pt_eta_T_021',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone021','abs_l1_eta')
+        _pt_eta_L_021 = dfl_021.Histo2D(('pt_eta_L_021','pt_eta_L_021',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone021','abs_l1_eta')
 
-    _pt_eta_T = dft.Histo2D(('pt_eta_T','pt_eta_T',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l1_eta')
-    _pt_eta_L = dfl.Histo2D(('pt_eta_L','pt_eta_L',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l1_eta')
+        h_pt_eta_T_021 = _pt_eta_T_021.GetPtr()
+        h_pt_eta_L_021 = _pt_eta_L_021.GetPtr()
 
-    h_pt_eta_T = _pt_eta_T.GetPtr()
-    h_pt_eta_L = _pt_eta_L.GetPtr()
+    if mode012 == True:
 
-    print '\n\tentries T & L: ', h_pt_eta_T.GetEntries(), h_pt_eta_L.GetEntries()
+        print '\n\tf0_012 entries:', f0_012.Count().GetValue()
+
+        df0_012 = f0_012.Define('ptcone012', PTCONE)
+        print '\n\tptcone012 defined.'
+
+        dfl_012 = df0_012.Define('abs_l2_eta', 'abs(l2_eta)')
+        print '\n\tabs_l2_eta defined.'
+
+        dft_012 = dfl_012.Filter(l1_tight)
+        print '\n\ttight df_012 defined.'
+
+        _pt_eta_T_012 = dft_012.Histo2D(('pt_eta_T_012','pt_eta_T_012',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l2_eta')
+        _pt_eta_L_012 = dfl_012.Histo2D(('pt_eta_L_012','pt_eta_L_012',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta),'ptcone','abs_l2_eta')
+
+        h_pt_eta_T_012 = _pt_eta_T_012.GetPtr()
+        h_pt_eta_L_012 = _pt_eta_L_012.GetPtr()
+
+    h_pt_eta_T_012.Add(h_pt_eta_T_021)
+
+    print '\n\tentries T & L: ', h_pt_eta_T_012.GetEntries(), h_pt_eta_L_012.GetEntries()
 
     c_pt_eta = rt.TCanvas('ptCone_eta', 'ptCone_eta')
-    h_pt_eta_T.Divide(h_pt_eta_L)
-    h_pt_eta_T.Draw('colztextE')
-    h_pt_eta_T.SetTitle('; p_{T}^{cone} [GeV]; DiMuon |#eta|; tight-to-loose ratio')
+    h_pt_eta_T_012.Divide(h_pt_eta_L_012)
+    h_pt_eta_T_012.Draw('colztextE')
+    h_pt_eta_T_012.SetTitle('; p_{T}^{cone} [GeV]; DiMuon |#eta|; tight-to-loose ratio')
     pf.showlogoprelimsim('CMS')
     pf.showlumi('SFR_'+ch)
-    save(c_pt_eta, sample='DY_TT_TTL_noTruth', ch=ch)
+    save(knvs=c_pt_eta, sample='DY_TT_WJ_T2Lratio', ch=ch)
 
+    sys.stderr = sys.__stderr__
+    sys.stdout = sys.__stdout__
     # DO AGAIN WITH THREE DIFFERENT TEFFS TO GET ERROR
 ########################################################################################################################################################################################################
 
@@ -446,7 +492,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
             print '\n\tdrawing single fakes ...'
             mode021 = False; mode012 = False
 
-            cuts_SFR = '1 && ' + l_eta[eta]
+            cuts_SFR = l_eta[eta]
 
             #### CHANNEL SPECIFIC
             if ch == 'mem':
@@ -483,7 +529,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,dbg=False
 
 
             if mode012 == True:
-                cuts_l_012 = cuts_SFR + ' && ' + l0l1 + ' && ' + l2_loose
+                cuts_l_012 = re.sub('l1_eta','l2_eta',cuts_SFR) + ' && ' + l0l1 + ' && ' + l2_loose
 
                 f0_012 = df.Filter(cuts_l_012)
                 print '\n\tloose 012 defined.'
@@ -1273,6 +1319,7 @@ def applyTTL(isData=False, VLD=True, eta_split=False):
 ######################################################################################
 
 ######################################################################################
+## FIXME ## TODO ## FINISH THIS FOR MMM AT LEAST ## TODO ## FIXME ##
 def checkStuff_JetFlavour(ch='mem',ID='L',eta_split=False):
 
     l_eta  = {'_eta_all' : '1'}
@@ -1286,145 +1333,76 @@ def checkStuff_JetFlavour(ch='mem',ID='L',eta_split=False):
 
     for i_eta in l_eta.keys():
 
-        if ch == 'eee':
-            chain =rt.TChain('tree')
-            chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial_25_2/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-            chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial_25_2/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
+        ### PREPARE TREES
+        t = None
+        t = rt.TChain('tree')
+        t.Add(DYBB_dir + suffix)
+        t.Add(DY10_dir + suffix)
+        t.Add(DY50_dir + suffix)
+        t.Add(DY50_ext_dir + suffix)
+        t.Add(TT_dir + suffix)
+        t.Add(W_dir + suffix)
+        t.Add(W_ext_dir + suffix)
+        df = rdf(t)
+        print'\n\tchain made.'
+        N_ENTRIES = df.Count()
 
-            d_dy = rdf(chain)
-            d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee_25_2/partial/TTJets_amcat/HNLTreeProducer/tree.root')
+        if ch == 'mmm':
+            mode012 = True
+            mode021 = True
 
-            f0_dy_l0l1 = d_dy.Filter(l0l1_ee)
-            f0_dy_l0l2 = d_dy.Filter(l0l2_ee)
-            f0_tt_l0l1 = d_tt.Filter(l0l1_ee)
-            f0_tt_l0l2 = d_tt.Filter(l0l2_ee)
+        if mode021 == True:
+            cuts_l_021 = cuts_SFR + ' && ' + l0l2 + ' && ' + l1_loose
+            f0_021 = df.Filter(cuts_l_021)
+            print '\n\tloose 021 defined.'
 
-            if ID=='L':
-                f0_dy_l0l1 = f0_dy_l0l1.Filter(l0l1_ee + ' && l1_LooseNoIso == 1')
-                f0_dy_l0l2 = f0_dy_l0l2.Filter(l0l2_ee + ' && l2_LooseNoIso == 1')
-                f0_tt_l0l1 = f0_tt_l0l1.Filter(l0l1_ee + ' && l1_LooseNoIso == 1')
-                f0_tt_l0l2 = f0_tt_l0l2.Filter(l0l2_ee + ' && l2_LooseNoIso == 1')
+            df_021 = f0_021.Define('ptcone021', PTCONE)
+            print '\tptcone 021 defined.'
 
-            if ID=='M':
-                f0_dy_l0l1 = f0_dy_l0l1.Filter(l0l1_ee + ' && l1_MediumNoIso == 1')
-                f0_dy_l0l2 = f0_dy_l0l2.Filter(l0l2_ee + ' && l2_MediumNoIso == 1')
-                f0_tt_l0l1 = f0_tt_l0l1.Filter(l0l1_ee + ' && l1_MediumNoIso == 1')
-                f0_tt_l0l2 = f0_tt_l0l2.Filter(l0l2_ee + ' && l2_MediumNoIso == 1')
+            df_021_b     = df_021.Filter('abs(l1_jet_flavour_parton) == 5')
+            df_021_c     = df_021.Filter('abs(l1_jet_flavour_parton) == 4')
+            df_021_glu   = df_021.Filter('abs(l1_jet_flavour_parton) == 21 || abs(l1_jet_flavour_parton) == 9')
+            df_021_light = df_021.Filter('abs(l1_jet_flavour_parton) == 3 || abs(l1_jet_flavour_parton) == 2 || abs(l1_jet_flavour_parton) == 1')
+            df_021_other = df_021.Filter('abs(l1_jet_flavour_parton) != 1 && abs(l1_jet_flavour_parton) != 2 && abs(l1_jet_flavour_parton) != 3 && abs(l1_jet_flavour_parton) != 4'\
+                                           ' && abs(l1_jet_flavour_parton) != 5 && abs(l1_jet_flavour_parton) != 9 && abs(l1_jet_flavour_parton) != 21')
+            print '\tflavours 021 defined.'
 
-            if ID=='T':
-                f0_dy_l0l1 = f0_dy_l0l1.Filter(l0l1_ee + ' && l1_MediumWithIso == 1')
-                f0_dy_l0l2 = f0_dy_l0l2.Filter(l0l2_ee + ' && l2_MediumWithIso == 1')
-                f0_tt_l0l1 = f0_tt_l0l1.Filter(l0l1_ee + ' && l1_MediumWithIso == 1')
-                f0_tt_l0l2 = f0_tt_l0l2.Filter(l0l2_ee + ' && l2_MediumWithIso == 1')
-        
-
-        if ch == 'eem':
-            chain =rt.TChain('tree')
-            chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-            chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
-
-            d_dy = rdf(chain)
-            d_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/TTJets_amcat/HNLTreeProducer/tree.root')
-
-            f0_dy = d_dy.Filter(l0l1_ee + ' && ' + l2_fake_m_dr)
-            f0_tt = d_tt.Filter(l0l1_ee + ' && ' + l2_fake_m_dr)
-
-            if ID=='L':
-                f0_dy = d_dy.Filter(l0l1_ee + ' && l2_id_l == 1 && ' + l2_fake_m_dr)
-                f0_tt = d_tt.Filter(l0l1_ee + ' && l2_id_l == 1 && ' + l2_fake_m_dr)
-
-            if ID=='M':
-                f0_dy = d_dy.Filter(l0l1_ee + ' && l2_id_m == 1 && ' + l2_fake_m_dr)
-                f0_tt = d_tt.Filter(l0l1_ee + ' && l2_id_m == 1 && ' + l2_fake_m_dr)
-
-            if ID=='MM':
-                f0_dy = d_dy.Filter(l0l1_ee + ' && l2_Medium == 1 && ' + l2_fake_m_dr)
-                f0_tt = d_tt.Filter(l0l1_ee + ' && l2_Medium == 1 && ' + l2_fake_m_dr)
+            df_021_c     = df_021_c    .Filter(l1_tight)
+            df_021_b     = df_021_b    .Filter(l1_tight)
+            df_021_glu   = df_021_glu  .Filter(l1_tight)
+            df_021_light = df_021_light.Filter(l1_tight)
+            df_021_other = df_021_other.Filter(l1_tight)
+            print '\ttight 021 defined.'
 
 
-        if ch == 'mem':
-            chain =rt.TChain('tree')
+        if mode012 == True:
+            cuts_l_012 = cuts_SFR + ' && ' + l0l1 + ' && ' + l2_loose
 
-            chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
-            chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/DYJetsToLL_M10to50/HNLTreeProducer/tree.root')
-            chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/TTJets/') 
+            f0_012 = df.Filter(cuts_l_012)
+            print '\n\tloose 012 defined.'
 
-            df = rdf(chain)
+            df_012 = f0_012.Define('ptcone012', PTCONE)
+            print '\tptcone 012 defined.'
 
-            base = l0l2_mm + ' && l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_gen_match_pdgid) != 22 && ' + l1_fake_e_dr + ' && ' + l_eta[i_eta]
+            df_012_b     = df_012.Filter('abs(l2_jet_flavour_parton) == 5')
+            df_012_c     = df_012.Filter('abs(l2_jet_flavour_parton) == 4')
+            df_012_glu   = df_012.Filter('abs(l2_jet_flavour_parton) == 21 || abs(l2_jet_flavour_parton) == 9')
+            df_012_light = df_012.Filter('abs(l2_jet_flavour_parton) == 3 || abs(l2_jet_flavour_parton) == 2 || abs(l2_jet_flavour_parton) == 1')
+            df_012_other = df_012.Filter('abs(l2_jet_flavour_parton) != 1 && abs(l2_jet_flavour_parton) != 2 && abs(l2_jet_flavour_parton) != 3 && abs(l2_jet_flavour_parton) != 4'\
+                                           ' && abs(l2_jet_flavour_parton) != 5 && abs(l2_jet_flavour_parton) != 9 && abs(l2_jet_flavour_parton) != 21')
+            print '\tflavours 012 defined.'
 
-            print '\n\t',base    
+            df_012_c     = df_012_c    .Filter(l2_tight)
+            df_012_b     = df_012_b    .Filter(l2_tight)
+            df_012_glu   = df_012_glu  .Filter(l2_tight)
+            df_012_light = df_012_light.Filter(l2_tight)
+            df_012_other = df_012_other.Filter(l2_tight)
+            print '\ttight 012 defined.'
 
-            f0 = df.Filter(base)
 
-            if ID=='L':
-                f0 = d_dy.Filter(base + ' && l1_LooseNoIso == 1')
-
-            if ID=='M':
-                f0 = d_dy.Filter(base + ' && l1_MediumNoIso == 1')
-
-            if ID=='T':
-                f0 = d_dy.Filter(base + ' && l1_MediumWithIso == 1')
-
-        dfl_heavy = f0.Filter('abs(l1_jet_flavour_parton) == 4 || abs(l1_jet_flavour_parton) == 5 || abs(l1_jet_flavour_parton) == 6 || abs(l1_jet_flavour_parton) == 7 || abs(l1_jet_flavour_parton) == 8')
-        dfl_light = f0.Filter('abs(l1_jet_flavour_parton) == 3 || abs(l1_jet_flavour_parton) == 2 || abs(l1_jet_flavour_parton) == 1')
-
-        n_df_light = df_light.Count()
-        n_df_heavy = df_heavy.Count()
-
-    #    if not ch =='eee': 
-
-    #        f0_dy = f0_dy.Define('abs_l1_dxy', 'abs(l1_dxy)') 
-    #        f0_tt = f0_tt.Define('abs_l1_dxy', 'abs(l1_dxy)') 
-
-    #        f0_dy = f0_dy.Define('l1_abs_iso_rho', 'l1_reliso_rho_03 * l1_pt') 
-    #        f0_tt = f0_tt.Define('l1_abs_iso_rho', 'l1_reliso_rho_03 * l1_pt') 
-
-    #        f0_dy = f0_dy.Define('l1_abs_iso_db', 'l1_reliso05 * l1_pt') 
-    #        f0_tt = f0_tt.Define('l1_abs_iso_db', 'l1_reliso05 * l1_pt') 
-
-    #        n_f0_dy = f0_dy.Count()
-    #        n_f0_tt = f0_tt.Count()
-
-        if ch in ['eee','mmm']:
-            n_f0_dy_l0l1 = f0_dy_l0l1.Count()
-            n_f0_dy_l0l2 = f0_dy_l0l2.Count()
-            n_f0_tt_l0l1 = f0_tt_l0l1.Count()
-            n_f0_tt_l0l2 = f0_tt_l0l2.Count()
-       
-        if ch in ['eem','mem']:
-
-            n_f0_dy = f0_dy.Count()
-            n_f0_tt = f0_tt.Count()
-
-    #        f0_dy_l0l1 = f0_dy_l0l1.Define('abs_l1_dxy', 'abs(l1_dxy)') 
-    #        f0_tt_l0l2 = f0_tt_l0l2.Define('abs_l1_dxy', 'abs(l1_dxy)') 
-
-        SFR, DFR, dirs = selectCuts(ch)
-
-        l0l1, l0l2, l1_loose, l2_loose, l1_lnt, l2_lnt, l1_tight, l2_tight = SFR 
-
-        # ele
-        vars = {'reliso_rho_03':[1500,0.01,15.01]}#, 'reliso05':[1500,0.01,15.01]}
+        vars = {'reliso_rho_03':[1500,0.01,15.01]}
         #'pt':[50,0.,102],  'abs_iso_rho': [150,0,150], 'abs_iso_db': [150,0,150]}#,  'l2_pt':[50,2,102], 'l0_pt':[50,2,102], 'abs_dxy':[60,0.05,3.05]}
         
-        # mu
-    #    vars = { 'reliso_dB_05':[1500,0.01,15.01], 'reliso_rho_03':[1500,0.01,15.01]}
-
-        if ch =='eem': 
-            print'\n\tDY after pre-sel: %d, initial: %d'   %(n_f0_dy.GetValue(), n_d_dy.GetValue())
-            print'\n\tTT after pre-sel: %d, initial: %d\n' %(n_f0_tt.GetValue(), n_d_tt.GetValue())
-
-        if ch =='mem': 
-            print'\n\tDY after pre-sel: %d, initial: %d'   %(n_f0_dy.GetValue(), n_d_dy.GetValue())
-            print'\n\tTT after pre-sel: %d, initial: %d\n' %(n_f0_tt.GetValue(), n_d_tt.GetValue())
-
-        if ch == 'eee':
-            print'\n\tDY after pre-sel: %d, initial: %d'   %(n_f0_dy_l0l1.GetValue(), n_d_dy.GetValue())
-            print'\n\tDY after pre-sel: %d, initial: %d'   %(n_f0_dy_l0l2.GetValue(), n_d_dy.GetValue())
-            print'\n\tTT after pre-sel: %d, initial: %d'   %(n_f0_tt_l0l1.GetValue(), n_d_tt.GetValue())
-            print'\n\tTT after pre-sel: %d, initial: %d\n' %(n_f0_tt_l0l2.GetValue(), n_d_tt.GetValue())
-     
         for var in vars.keys():
 
             print'\n\t%s: drawing %s \n' %(i_eta,var)
