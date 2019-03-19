@@ -60,13 +60,13 @@ TT_dir_mem      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20
 W_dir_mem       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/WJetsToLNu/'
 W_ext_dir_mem   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mem/ntuples/WJetsToLNu_ext/'
 ########################################################################################################################################################################################################
-DYBBDir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYBB/'
-DY50Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50/'
-DY50_extDir_mmm = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M50_ext/'
-DY10Dir_mmm     = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/DYJetsToLL_M10to50/'
-TT_dir_mmm      = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/TTJets/'  
-W_dir_mmm       = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/WJetsToLNu/'
-W_ext_dir_mmm   = '/work/dezhu/4_production/production_20190306_BkgMC/mmm/ntuples/WJetsToLNu_ext/'
+DYBBDir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYBB/'
+DY50Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50/'
+DY50_extDir_mmm = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50_ext/'
+DY10Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M10to50/'
+TT_dir_mmm      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/TTJets/'  
+W_dir_mmm       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/WJetsToLNu/'
+W_ext_dir_mmm   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/WJetsToLNu_ext/'
 ########################################################################################################################################################################################################
 DYBBDir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
 DY50Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
@@ -201,16 +201,16 @@ l1_e_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && 
 l1_e_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
 
 l2_e_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && l2_MediumWithIso == 1 && l2_reliso_rho_03 < 0.15'
-l2_e_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && (l2_LooseNoIso == 1   || l2_reliso_rho_03 > 0.15)'    
+l2_e_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && (l2_LooseNoIso == 0   || l2_reliso_rho_03 > 0.15)'    
 l2_e_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && l2_LooseNoIso == 1'
 ########################################################################################################################################################################################################
-l1_m_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && l1_id_l == 1 && ' + l1_fake_m_dr + ' && l1_reliso_rho_03 < 0.15'
-l1_m_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && l1_id_l == 1 && ' + l1_fake_m_dr + ' && l1_reliso_rho_03 > 0.15'
-l1_m_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && l1_id_l == 1 && ' + l1_fake_m_dr
-
-l2_m_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && l2_id_l == 1 && ' + l2_fake_m_dr + ' && l2_reliso_rho_03 < 0.15'
-l2_m_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && l2_id_l == 1 && ' + l2_fake_m_dr + ' && l2_reliso_rho_03 > 0.15'
-l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && l2_id_l == 1 && ' + l2_fake_m_dr
+l1_m_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr + ' && (l1_reliso_rho_03 < 0.15 && l1_id_l == 1)'
+l1_m_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr + ' && (l1_reliso_rho_03 > 0.15 || l1_id_l == 0)'
+l1_m_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr                             + ''# && l1_id_l == 1'
+                                                                                                                                               
+l2_m_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr + ' && (l2_reliso_rho_03 < 0.15 && l2_id_l == 1)'
+l2_m_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr + ' && (l2_reliso_rho_03 > 0.15 || l2_id_l == 0)'
+l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr                             + ''# && l2_id_l == 1'
 ########################################################################################################################################################################################################
 
 ########################################################################################################################################################################################################
