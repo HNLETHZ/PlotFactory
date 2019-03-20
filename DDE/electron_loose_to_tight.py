@@ -4,6 +4,20 @@ import numpy as np
 from root_numpy import hist2array
 from collections import OrderedDict
 
+'''
+WATCH OUT THAT CODE HAS TO BE C++ COMPATIBLE
+
+Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon         #T3
+Linux-3.10.0-957.1.3.el7.x86_64-x86_64-with-centos-7.6.1810-Core      #LX+
+'''
+eos       = '/eos/user/v/vstampf/'
+eos_david = '/eos/user/d/dezhu/HNL/'
+if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon':
+   eos       = '/t3home/vstampf/eos/'
+   eos_david = '/t3home/vstampf/eos-david/'
+
+plotDir = eos+'/plots/DDE/'
+
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True)
 ROOT.TH1.SetDefaultSumw2()
@@ -17,7 +31,7 @@ tree.Add('/work/dezhu/4_production/production_20190306_BkgMC/mem/ntuples/TTJets/
 outfile = ROOT.TFile.Open('electron_single_fr_tight_to_loose.root', 'recreate')
 
 baseline_selection = '&'.join([
-    'l0_pt>27 & abs(l0_eta)<2.4 & l0_id_t & l0_dz<0.2 & l0_dxy<0.05 & l0_reliso_rho_04<0.2', # l0 genuine
+    'l0_pt>27 & abs(l0_eta)<2.4 & l0_id_t & l0_dz<0.2 & l0_dxy<0.05 & l1_reliso_rho_04<0.2', # l0 genuine
     'l2_pt>15 & abs(l2_eta)<2.4 & l2_id_t & l2_dz<0.2 & l2_dxy<0.05 & l2_reliso_rho_04<0.2', # l2 genuine 
     'hnl_q_02==0'                                                                          , # opposite charge
     'l1_pt>5 & abs(l1_eta)<2.5 & l1_dz<0.2 & l1_dxy>0.05'                                  , # l1 kinematics and impact parameter
@@ -66,14 +80,14 @@ for k, v in eta_bins.iteritems():
     sel_t_l = '&'.join([baseline_selection, tight_selection   , v[1]      , flavour_selections['light']])
     sel_l_l = '&'.join([baseline_selection, no_tight_selection, v[0], v[1], flavour_selections['light']])
     
-    tree.Draw('l1_pt * (1. + l0_reliso_rho_04) >> ptcone_tight', sel_t)
-    tree.Draw('l1_pt * (1. + l0_reliso_rho_04) >> ptcone_loose', sel_l)
+    tree.Draw('l1_pt * (1. + l1_reliso_rho_04) >> ptcone_tight', sel_t)
+    tree.Draw('l1_pt * (1. + l1_reliso_rho_04) >> ptcone_loose', sel_l)
 
-    tree.Draw('l1_pt * (1. + l0_reliso_rho_04) >> ptcone_tight_heavy', sel_t_h)
-    tree.Draw('l1_pt * (1. + l0_reliso_rho_04) >> ptcone_loose_heavy', sel_l_h)
+    tree.Draw('l1_pt * (1. + l1_reliso_rho_04) >> ptcone_tight_heavy', sel_t_h)
+    tree.Draw('l1_pt * (1. + l1_reliso_rho_04) >> ptcone_loose_heavy', sel_l_h)
 
-    tree.Draw('l1_pt * (1. + l0_reliso_rho_04) >> ptcone_tight_light', sel_t_l)
-    tree.Draw('l1_pt * (1. + l0_reliso_rho_04) >> ptcone_loose_light', sel_l_l)
+    tree.Draw('l1_pt * (1. + l1_reliso_rho_04) >> ptcone_tight_light', sel_t_l)
+    tree.Draw('l1_pt * (1. + l1_reliso_rho_04) >> ptcone_loose_light', sel_l_l)
     
     ratio = histos['tight'].Clone()
     ratio.Divide(histos['tight'], histos['loose'])
@@ -111,7 +125,7 @@ for k, v in eta_bins.iteritems():
     ROOT.gPad.SetGridx(True)
     ROOT.gPad.SetGridy(True)
     ROOT.gPad.Update()
-    ROOT.gPad.SaveAs('tight_to_loose_%s.pdf' %k)
+    ROOT.gPad.SaveAs(plotDir+'tight_to_loose_%s.pdf' %k)
 
     ratio  .SetName('tight_to_loose_%s' %k)
     ratio_l.SetName('tight_to_loose_light_%s' %k)
