@@ -1,6 +1,20 @@
 import ROOT
 from itertools import product
 
+'''
+WATCH OUT THAT CODE HAS TO BE C++ COMPATIBLE
+
+Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon         #T3
+Linux-3.10.0-957.1.3.el7.x86_64-x86_64-with-centos-7.6.1810-Core      #LX+
+'''
+eos       = '/eos/user/v/vstampf/'
+eos_david = '/eos/user/d/dezhu/HNL/'
+if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.6-Carbon':
+   eos       = '/t3home/vstampf/eos/'
+   eos_david = '/t3home/vstampf/eos-david/'
+
+plotDir = eos+'/plots/DDE/'
+
 # f1 = ROOT.TFile.Open('electron_single_fr.root.bkp', 'read')
 f1 = ROOT.TFile.Open('electron_single_fr.root', 'read')
 f1.cd()
@@ -59,7 +73,7 @@ for ieta, iid in product(eta_bins, e_ids_bins):
 
     ratio.Draw('hist')
     
-    c1.SaveAs('electron_single_fr_ratios/ratio_%s_%s.pdf'%(ieta, iid))
+    c1.SaveAs(plotDir + 'electron_single_fr_ratios/ratio_%s_%s.pdf'%(ieta, iid))
 
     outfile.cd()
     ratio.Write()
