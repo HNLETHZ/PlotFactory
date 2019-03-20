@@ -352,6 +352,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
         if ch == 'mmm':
 
             chain =rt.TChain('tree')
+            chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYBB/HNLTreeProducer/tree.root')
             chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50/HNLTreeProducer/tree.root')
             chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M10to50/HNLTreeProducer/tree.root')
             chain.Add(eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
@@ -374,7 +375,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
         print '\n\tf0_021 entries:', f0_021.Count().GetValue()
 
-        df0_021 = f0_021.Define('ptcone021', PTCONE)
+        df0_021 = f0_021.Define('ptcone021', PTCONEL1)
         print '\n\tptcone021 defined.'
 
         dfl_021 = df0_021.Define('abs_l1_eta', 'abs(l1_eta)')
@@ -393,7 +394,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
         print '\n\tf0_012 entries:', f0_012.Count().GetValue()
 
-        df0_012 = f0_012.Define('ptcone012', PTCONE)
+        df0_012 = f0_012.Define('ptcone012', PTCONEL2)
         print '\n\tptcone012 defined.'
 
         dfl_012 = df0_012.Define('abs_l2_eta', 'abs(l2_eta)')
