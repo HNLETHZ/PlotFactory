@@ -215,7 +215,7 @@ l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && 
 ###########################################################################################################################################################################################
 
 ###########################################################################################################################################################################################
-### RICCARDO 19-3-19
+### RICCARDO 19_3_19
 l0l2_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
 l0l2_mm += ' && l2_pt > 15 && abs(l2_eta) < 2.4 && l2_id_t == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2'  # l2 genuine 
 l0l2_mm += ' && hnl_q_02 == 0'                                                                                                        # opposite charge
@@ -223,10 +223,12 @@ l0l2_mm += ' && hnl_q_02 == 0'                                                  
 l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
 l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 l1_e_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
+l1_e_loose += ' && l1_reliso_rho_04 < 1.0' ### RESULT FROM CHECKISO_MEM_220319 
 
 l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
+l1_e_lnt   = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_04 > 0.2)'
 
-### LET'S DO THE SAME FOR MMM
+### LET'S DO THE SAME FOR MMM 22_3_19
 l0l1_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
 l0l1_mm += ' && l2_pt > 15 && abs(l2_eta) < 2.4 && l2_id_t == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2'  # l2 genuine 
 l0l1_mm += ' && hnl_q_02 == 0'                                                                                                        # opposite charge
@@ -289,6 +291,8 @@ def selectBins(ch='mem',lep=1):
 
     l_pt   = { '_pt0t5'   : 'ptcone < 5',                  '_pt5t10' : 'ptcone > 5 && ptcone < 10',  '_pt10t15' : 'ptcone > 10 && ptcone < 15', '_pt15t20' : 'ptcone > 15 && ptcone < 20',
                '_pt20t25' : 'ptcone > 20 && ptcone < 25', '_pt25t35' : 'ptcone > 25 && ptcone < 35', '_pt35t50' : 'ptcone > 35 && ptcone < 50', '_pt50t70' : 'ptcone > 50'}# && ptcone < 70'}
+    for i in l_pt.keys(): 
+        l_pt[i] = re.sub('ptcone','ptcone021',l_pt[i])
 
     if ch == 'mem':
         f_in = rt.TFile(plotDir+'DY_TT_WJ_T2Lratio_mem_ptCone_eta.root')
@@ -298,8 +302,6 @@ def selectBins(ch='mem',lep=1):
     if ch == 'mmm':
         f_in = rt.TFile(plotDir+'DY_TT_WJ_T2Lratio_mmm_ptCone_eta.root')
         l_eta = {'eta_bin_0' : 'abs(l1_eta) < 1.2', 'eta_bin_1' : 'abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1', 'eta_bin_2' : 'abs(l1_eta) > 2.1 && abs(l1_eta) < 2.4'}
-        for i in l_pt.keys(): 
-            l_pt[i] = re.sub('ptcone','ptcone021',l_pt[i])
   
     if lep == 2: 
         for i in l_eta.keys(): 
@@ -341,19 +343,21 @@ def selectBins(ch='mem',lep=1):
 ######################################################################################
 def make_FR_map(ch='mem',mode='sfr',isData=False):
 
+    plotDir = makeFolder('make_FR_map_%s'%ch)
+    print '\n\tplotDir:', plotDir
     sys.stdout = Logger(plotDir + 'make_FR_map_%s' %ch)
     mode021 = False; mode012 = False; mshReg = ''
 
     if mode == 'sfr':
-        mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 > 0.4'
+        mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 > 0.3'
 
     if mode == 'dfr':
-        mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 < 0.4'
+        mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 < 0.3'
 
-    h_pt_eta_T_012  = rt.TH1F('pt_eta_T_012', 'pt_eta_T_012',len(b_pt)-1,b_pt)
-    h_pt_eta_T_021  = rt.TH1F('pt_eta_T_021', 'pt_eta_T_021',len(b_pt)-1,b_pt)
-    h_pt_eta_L_012  = rt.TH1F('pt_eta_L_012', 'pt_eta_L_012',len(b_pt)-1,b_pt)
-    h_pt_eta_L_021  = rt.TH1F('pt_eta_L_021', 'pt_eta_L_021',len(b_pt)-1,b_pt)
+    h_pt_eta_T_012  = rt.TH2F('pt_eta_T_012','pt_eta_T_012',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
+    h_pt_eta_T_021  = rt.TH2F('pt_eta_T_021','pt_eta_T_021',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
+    h_pt_eta_L_012  = rt.TH2F('pt_eta_L_012','pt_eta_L_012',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
+    h_pt_eta_L_021  = rt.TH2F('pt_eta_L_021','pt_eta_L_021',len(b_pt)-1,b_pt,len(b_eta)-1,b_eta)
     
     ### PREPARE CUTS AND FILES
     SFR, DFR, dirs = selectCuts(ch)
@@ -366,10 +370,6 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
     l0_is_fake, no_fakes, one_fake_xor, two_fakes, twoFakes_sameJet = dRdefList
     
-    ### LOG STDOUT TO FILE
-    sys.stdout = Logger(plotDir + 'FR_%s' %ch)
-
-
     ### PREPARE TREES
     t = None
     t = rt.TChain('tree')
@@ -378,7 +378,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
     t.Add(DY50_dir + suffix)
     t.Add(DY50_ext_dir + suffix)
     t.Add(TT_dir + suffix)
-    t.Add(W_dir + suffix)
+#    t.Add(W_dir + suffix)
     t.Add(W_ext_dir + suffix)
     df = rdf(t)
     print'\n\tchain made.'
@@ -438,6 +438,21 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
         h_pt_eta_L_012 = _pt_eta_L_012.GetPtr()
 
     h_pt_eta_T_012.Add(h_pt_eta_T_021)
+    h_pt_eta_L_012.Add(h_pt_eta_L_021)
+
+    print '\n\t cuts: %s'                %mshReg
+    if mode012 ==True:
+        print '\n\t l0l1: %s\n'          %(l0l1)
+        print '\n\t l2_loose: %s\n'      %(l2_loose)
+        print '\n\t l2_tight: %s\n'      %(l2_tight)
+        print '\ttotal loose: %s\n'      %f0_012.Count().GetValue()
+
+    if mode021 ==True:
+        print '\n\t l0l2: %s\n'          %(l0l2)
+        print '\n\t l1_loose: %s\n'      %(l1_loose)
+        print '\n\t l1_tight: %s\n'      %(l1_tight)
+        print '\ttotal loose: %s\n'      %f0_021.Count().GetValue()
+
 
     print '\n\tentries T && L: ', h_pt_eta_T_012.GetEntries(), h_pt_eta_L_012.GetEntries()
 
@@ -447,7 +462,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
     h_pt_eta_T_012.SetTitle('; p_{T}^{cone} [GeV]; DiMuon |#eta|; tight-to-loose ratio')
     pf.showlogoprelimsim('CMS')
     pf.showlumi('SFR_'+ch)
-    save(knvs=c_pt_eta, sample='DY_TT_WJ_T2Lratio', ch=ch)
+    save(knvs=c_pt_eta, sample='DY_TT_WJ_T2Lratio', ch=ch, DIR=plotDir)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
@@ -470,7 +485,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
         if ch == 'mem' or ch == 'eee':
             l_eta = None
             l_eta = OrderedDict()
-            l_eta ['_eta_00t08'] = 'abs(l1_eta) < 0.8'; l_eta ['_eta_15t25'] = 'abs(l1_eta) > 1.479 && abs(l1_eta) < 2.5'; l_eta ['_eta_08t15'] = 'abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479'
+            l_eta ['_eta_00t08'] = 'abs(l1_eta) < 0.8'; l_eta ['_eta_08t15'] = 'abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479'; l_eta ['_eta_15t25'] = 'abs(l1_eta) > 1.479 && abs(l1_eta) < 2.5'
 
         if ch == 'mmm' or ch == 'eem':
             l_eta = None
@@ -1123,7 +1138,8 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
 ###########################################################################################################################################################################################
 def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
     
-    ### LOG STDOUT TO FILE
+    plotDir = makeFolder('closureTest_%s'%ch)
+    print '\n\tplotDir:', plotDir
     sys.stdout = Logger(plotDir + 'closureTest_%s' %ch)
 
     print '\n\tmode: %s\n'%ch
@@ -1162,12 +1178,13 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
         t.Add(DY50_dir + suffix)
         t.Add(DY50_ext_dir + suffix)
         t.Add(TT_dir + suffix)
-        t.Add(W_dir + suffix)
+#        t.Add(W_dir + suffix)
         t.Add(W_ext_dir + suffix)
         df = rdf(t)
         print'\n\tchain made.'
 
         cuts_SFR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
+        cuts_SFR = 'hnl_dr_12 > 0.3 && ' + l_eta[eta]
         print '\n\t cuts: %s'%cuts_SFR
         
         if isData == False:
@@ -1175,24 +1192,8 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
             mode021 = False; mode012 = False
 
             if ch == 'mem':
+                mode021 = True
                 
-                t = rt.TChain('tree')
-                chain =rt.TChain('tree')
-                chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50/HNLTreeProducer/tree.root')
-                chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/HNLTreeProducer/tree.root')
-    #            chain.Add(eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
-                df_tt = rdf('tree', eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets_amcat/HNLTreeProducer/tree.root')
-
-                ## FROM MAR 5 
-                #######################################################################################################################################################################################
-                l0l2    = 'l0_pt > 27 && l2_pt > 5 && l0_id_m == 1 && l2_id_m == 1 && l0_reliso_rho_03 < 0.15 && l2_reliso_rho_03 < 0.15'
-                l0l2    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05  && abs(l0_dz) < 0.2 && abs(l2_dxy) < 0.05 && abs(l2_dz) < 0.2 && abs(l1_reliso_rho_03) < 1.1'
-                #######################################################################################################################################################################################
-                l1_tight = 'l1_pt > 5 && l1_MediumNoIso == 1 && l1_reliso_rho_03 < 0.15 && abs(l1_dxy) > 0.05'
-                l1_lnt   = 'l1_pt > 5 && (l1_MediumWithIso == 0  || l1_reliso_rho_03 > 0.15) && abs(l1_dxy) > 0.05'
-                l1_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05'
-                #######################################################################################################################################################################################
-
             if ch == 'mmm':
                 mode021 = True
                 mode012 = True
@@ -1315,15 +1316,15 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
                            'BGM_02'      : [whd_012_BGM_02,    obs_012_BGM_02,    ],
                            'm_triL'      : [whd_012_m_triL,    obs_012_m_triL,    ]}
 
-            info  = { 'pt'          : [b_pt,     ';p_{T}^{cone} [GeV]; Counts'], 
-                      'dr_12'       : [b_dR,     ';#DeltaR(l_{1},  l_{2}); Counts'], 
-                      '2disp'       : [b_2d,     ';2d_disp [cm]; Counts'], 
-                      '2disp_sig'   : [b_2d_sig, ';2d_disp_sig ; Counts'], 
-                      'm_dimu'      : [b_m,      ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-                      'BGM_dimu'    : [b_M,      ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-                      'BGM_01'      : [b_M,      ';m(l_{0},  l_{1}) [GeV]; Counts'], 
-                      'BGM_02'      : [b_M,      ';m(l_{0},  l_{2}) [GeV]; Counts'], 
-                      'm_triL'      : [b_M,      ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'], }
+        info  = { 'pt'          : [b_pt,     ';p_{T}^{cone} [GeV]; Counts'], 
+                  'dr_12'       : [b_dR,     ';#DeltaR(l_{1},  l_{2}); Counts'], 
+                  '2disp'       : [b_2d,     ';2d_disp [cm]; Counts'], 
+                  '2disp_sig'   : [b_2d_sig, ';2d_disp_sig ; Counts'], 
+                  'm_dimu'      : [b_m,      ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+                  'BGM_dimu'    : [b_M,      ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+                  'BGM_01'      : [b_M,      ';m(l_{0},  l_{1}) [GeV]; Counts'], 
+                  'BGM_02'      : [b_M,      ';m(l_{0},  l_{2}) [GeV]; Counts'], 
+                  'm_triL'      : [b_M,      ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'], }
 
         for k in info.keys():
 
@@ -1364,7 +1365,7 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
             leg.Draw()
             pf.showlogoprelimsim('CMS')
             pf.showlumi('SFR_'+ch+eta)
-            save(c, sample='DDE', ch=ch+eta)
+            save(c, sample='DDE', ch=ch+eta, DIR=plotDir)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
