@@ -223,27 +223,33 @@ l0l2_mm += ' && hnl_q_02 == 0'                                                  
 l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
 l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 l1_e_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
-l1_e_loose += ' && l1_reliso_rho_04 < 1.0' ### RESULT FROM CHECKISO_MEM_220319 
+
+l1_e_loose += ' && l1_reliso_rho_04 < 1.0'                                                                                            # reliso bound for LOOSE cf. checkIso_mem_220319 
 
 l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
 l1_e_lnt   = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_04 > 0.2)'
 
 ### LET'S DO THE SAME FOR MMM 22_3_19
-l0l1_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
-l0l1_mm += ' && l2_pt > 15 && abs(l2_eta) < 2.4 && l2_id_t == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2'  # l2 genuine 
-l0l1_mm += ' && hnl_q_02 == 0'                                                                                                        # opposite charge
-
 l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
 l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 l1_m_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
 
 l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
 
-l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
-l1_m_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'
+l0l1_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
+l0l1_mm += ' && l1_pt > 15 && abs(l1_eta) < 2.4 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2'  # l1 genuine 
+l0l1_mm += ' && hnl_q_01 == 0'                                                                                                        # opposite charge
 
-l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
+l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.5 && abs(l2_dz) < 0.2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
+l2_m_loose += ' && l2_gen_match_pdgid != 22'                                                                                          # no conversions 
+l2_m_loose += ' && hnl_dr_02 > 0.3 && hnl_dr_12 > 0.3'
+
+l2_m_tight = l2_m_loose + ' && l2_Medium == 1 && l2_reliso_rho_04 < 0.2'
+
+### AND EEM
+l0l1_ee  = 'l0_pt > 27 && abs(l0_eta) < 2.5 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
+l0l1_ee += ' && l1_pt > 15 && abs(l1_eta) < 2.5 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2'  # l1 genuine 
+l0l1_ee += ' && hnl_q_01 == 0'                                                                                                        # opposite charge
 ###########################################################################################################################################################################################
 
 ###########################################################################################################################################################################################
@@ -1690,6 +1696,11 @@ def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,dR='04',full
                 L1ID = ' && l1_MediumNoIso == 1'
             if ID == 'L':
                 L1ID = ' && l1_LooseNoIso == 1'
+
+        if ch == 'eem':
+           mode012 = True
+           if ID == 'M':
+                L2ID = ' && l2_Medium == 1'
 
         if ch == 'mmm':
            mode012 = True
