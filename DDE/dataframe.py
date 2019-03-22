@@ -218,10 +218,10 @@ l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && 
 ### RICCARDO 19-3-19
 l0l2_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
 l0l2_mm += ' && l2_pt > 15 && abs(l2_eta) < 2.4 && l2_id_t == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2'  # l2 genuine 
-l0l2_mm += ' && hnl_q_02 == 0'                                                                                              # opposite charge
+l0l2_mm += ' && hnl_q_02 == 0'                                                                                                        # opposite charge
 
 l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                # no conversions 
+l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 l1_e_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
 
 l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
@@ -229,16 +229,16 @@ l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
 ### LET'S DO THE SAME FOR MMM
 l0l1_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
 l0l1_mm += ' && l2_pt > 15 && abs(l2_eta) < 2.4 && l2_id_t == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2'  # l2 genuine 
-l0l1_mm += ' && hnl_q_02 == 0'                                                                                              # opposite charge
+l0l1_mm += ' && hnl_q_02 == 0'                                                                                                        # opposite charge
 
 l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                # no conversions 
+l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 l1_m_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
 
 l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
 
 l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                # no conversions 
+l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 l1_m_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'
 
 l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
@@ -1625,7 +1625,7 @@ def prepareDF(ch='mem'):
 ######################################################################################
 
 ######################################################################################
-def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,fullSplit=False):
+def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,dR='04',fullSplit=False):
 
     plotDir = makeFolder('checkIsoPDF_%s' %ch)
     print '\n\tplotDir:', plotDir
@@ -1661,12 +1661,12 @@ def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,fullSplit=Fa
     t = None
     t = rt.TChain('tree')
     t.Add(DYBB_dir + suffix)
-#    t.Add(DY10_dir + suffix)
-#    t.Add(DY50_dir + suffix)
-#    t.Add(DY50_ext_dir + suffix)
-#    t.Add(TT_dir + suffix)
-##    t.Add(W_dir + suffix)
-#    t.Add(W_ext_dir + suffix)
+    t.Add(DY10_dir + suffix)
+    t.Add(DY50_dir + suffix)
+    t.Add(DY50_ext_dir + suffix)
+    t.Add(TT_dir + suffix)
+#    t.Add(W_dir + suffix)
+    t.Add(W_ext_dir + suffix)
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -1766,7 +1766,7 @@ def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,fullSplit=Fa
         if mode021 ==True:  
             print '\ttotal 021 loose: %s\n'      %f0_021.Count().GetValue()
 
-    vars = {'reliso_rho_04':[1500,0.01,15.01]}
+    vars = {'reliso_rho_%s'%dR:[1500,0.01,15.01]}
     #'pt':[50,0.,102],  'abs_iso_rho': [150,0,150], 'abs_iso_db': [150,0,150]}#,  'l2_pt':[50,2,102], 'l0_pt':[50,2,102], 'abs_dxy':[60,0.05,3.05]}
     
     for var in vars.keys():
@@ -1860,12 +1860,15 @@ def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,fullSplit=Fa
             h_light = _h_light[i]
             h_heavy = _h_heavy[i]
 
+            h_light.Scale(1./h_light.Integral())
+            h_heavy.Scale(1./h_heavy.Integral())
+
             CH=ch
             if l_eta[i_eta] != '1': CH=ch+i_eta
 
             c = rt.TCanvas(var,var)
-            h_light.DrawNormalized()
-            h_heavy.DrawNormalized('same')
+            h_light.Draw()
+            h_heavy.Draw('same')
             c.BuildLegend()
             pf.showlogoprelimsim('CMS')
             pf.showlumi(CH+'_'+var)
@@ -1877,80 +1880,30 @@ def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,fullSplit=Fa
             h_light_cdf.SetMarkerStyle(1); h_light_cdf.SetMarkerSize(0.5); h_light_cdf.SetLineColor(rt.kGreen+2); h_light_cdf.SetMarkerColor(rt.kGreen+2); h_light_cdf.SetTitle('light')
             h_heavy_cdf.SetMarkerStyle(1); h_heavy_cdf.SetMarkerSize(0.5); h_heavy_cdf.SetLineColor(rt.kRed+2);   h_heavy_cdf.SetMarkerColor(rt.kRed+2);   h_heavy_cdf.SetTitle('heavy')
 
-            h_heavy_over_light = rt.TH1F('cdf_div','cdf_div', vars[var][0], vars[var][1], vars[var][2])
-            h_heavy_over_light.Divide(h_heavy_cdf, h_light_cdf)
-
             c = rt.TCanvas('cdf_'+'rho_'+dR,'cdf_'+'rho_'+dR)
             h_light_cdf.Draw()
             h_heavy_cdf.Draw('same')
             c.BuildLegend()
             pf.showlogoprelimsim('CMS')
             pf.showlumi(CH+'cdf_'+'rho_'+dR)
-            save(c, sample='checkIsoCDF_'+ID, ch=CH, DIR=plotDir)
+            save(c, sample='checkIsoCDF_ID'+ID, ch=CH, DIR=plotDir)
+
+            h_heavy_over_light = rt.TH1F('cdf_div','cdf_div', vars[var][0], vars[var][1], vars[var][2])
+            h_heavy_over_light.Divide(h_heavy_cdf, h_light_cdf)
 
             c = rt.TCanvas('cdf_div_'+'rho_'+dR,'cdf_div_'+'rho_'+dR)
-            h_heavy_over_light.SetRangeUser(0.01,10,'X')
+            h_heavy_over_light.GetXaxis().SetRangeUser(0.01,10)
             h_heavy_over_light.Draw()
             pf.showlogoprelimsim('CMS')
             pf.showlumi(CH+'_cdf_div_'+'rho_'+dR)
-            save(c, sample='checkIsoCDF_'+ID, ch=CH, DIR=plotDir)
+            c.SetLogx()
+            save(c, sample='checkIsoCDF_ID'+ID, ch=CH, DIR=plotDir)
             i += 1
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
-######################################################################################
-
-######################################################################################
-def getIsoCDF(ch='mmm',ID='No',eta=0,dR='04', abs=False):
-
-        #ch = 'isoNo_'+ch
-        ID = 'ID'+ID
-
-        if ch == 'mem':
-            eta_l = ['00t08', '08t15', '15t25']
-            ch += '_eta_' + eta_l[eta]
-
-        if ch == 'mmm':
-            eta_l = ['00t12', '12t21', '21t24']
-            ch += '_eta_' + eta_l[eta]
-
-        #cumulative
-        h_light_c          = rt.TH1F('iso_c_dy', 'iso_c_dy',  1500,0.01,15.01)
-        h_heavy_c          = rt.TH1F('iso_c_tt', 'iso_c_tt',  1500,0.01,15.01)
-        h_heavy_over_light = rt.TH1F('iso_c_div','iso_c_div', 1500,0.01,15.01)
-
-        h_light_c.SetMarkerStyle(1); h_light_c.SetMarkerSize(0.5); h_light_c.SetLineColor(rt.kGreen+2); h_light_c.SetMarkerColor(rt.kGreen+2); h_light_c.SetTitle('light')
-        h_heavy_c.SetMarkerStyle(1); h_heavy_c.SetMarkerSize(0.5); h_heavy_c.SetLineColor(rt.kRed+2);   h_heavy_c.SetMarkerColor(rt.kRed+2);   h_heavy_c.SetTitle('heavy')
-
-        h_light = rt.TFile(plotDir+'checkIsoPDF_'+ID+'_'+ch+'_reliso_rho_%s.root'%dR).Get('reliso_rho_%s'%dR).GetPrimitive('l2_reliso_rho_%seta%d_light'%(dR,eta))
-        h_heavy = rt.TFile(plotDir+'checkIsoPDF_'+ID+'_'+ch+'_reliso_rho_%s.root'%dR).Get('reliso_rho_%s'%dR).GetPrimitive('l2_reliso_rho_%seta%d_heavy'%(dR,eta))
-
-        binCont_light = 0
-        binCont_heavy = 0
-        nBins = range(1500)
-        for i in nBins:
-            binCont_light += h_light.GetBinContent(i+1)
-            binCont_heavy += h_heavy.GetBinContent(i+1)
-            h_light_c.SetBinContent(i+1, binCont_light) 
-            h_heavy_c.SetBinContent(i+1, binCont_heavy)
-
-        h_heavy_over_light.Divide(h_heavy_c,h_light_c)
-
-        c = rt.TCanvas('iso_c_'+'rho_'+dR,'iso_c_'+'rho_'+dR)
-        h_light_c.Draw()
-        h_heavy_c.Draw('same')
-        c.BuildLegend()
-        pf.showlogoprelimsim('CMS')
-        pf.showlumi(ch+'_iso_cdf_'+'rho_'+dR)
-        save(c, sample='checkIsoCDF_'+ID, ch=ch, DIR=plotDir)
-
-        c = rt.TCanvas('iso_c_div_'+'rho_'+dR,'iso_c_div_'+'rho_'+dR)
-        h_heavy_over_light.Draw()
-        pf.showlogoprelimsim('CMS')
-        pf.showlumi(ch+'_iso_cdf_div_'+'rho_'+dR)
-        save(c, sample='checkIsoCDF_'+ID, ch=ch, DIR=plotDir)
 ###########################################################################################################################################################################################
-
+    #############       UTILS       ###############
 ###########################################################################################################################################################################################
 def selectCuts(channel):
 
