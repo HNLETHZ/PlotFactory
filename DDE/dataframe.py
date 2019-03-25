@@ -85,6 +85,8 @@ TT_dir_eem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/TTJets_amca
 W_dir_eem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu/'
 W_ext_dir_eem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu_ext/'
 ###########################################################################################################################################################################################
+##### GEN MATCHING: DELTA PHI PERIODICITY
+###########################################################################################################################################################################################
 dPhi00  =  '( (l0_phi-l0_gen_match_phi + 2*TMath::Pi()) * (l0_phi-l0_gen_match_phi < -TMath::Pi()) + (l0_phi-l0_gen_match_phi - 2*TMath::Pi()) * (l0_phi-l0_gen_match_phi > TMath::Pi())'\
            ' + (l0_phi-l0_gen_match_phi) * ( (l0_phi-l0_gen_match_phi > -TMath::Pi()) && (l0_phi-l0_gen_match_phi < TMath::Pi()) ) )' 
 
@@ -94,29 +96,26 @@ dPhi11  =  '( (l1_phi-l1_gen_match_phi + 2*TMath::Pi()) * (l1_phi-l1_gen_match_p
 dPhi22  =  '( (l2_phi-l2_gen_match_phi + 2*TMath::Pi()) * (l2_phi-l2_gen_match_phi < -TMath::Pi()) + (l2_phi-l2_gen_match_phi - 2*TMath::Pi()) * (l2_phi-l2_gen_match_phi > TMath::Pi())'\
            ' + (l2_phi-l2_gen_match_phi) * ( (l2_phi-l2_gen_match_phi > -TMath::Pi()) && (l2_phi-l2_gen_match_phi < TMath::Pi()) ) )' 
 ###########################################################################################################################################################################################
+##### GEN MATCHING: DEFINE PROMPT AND FAKE LEPTONS
+###########################################################################################################################################################################################
 l0_prompt_m_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_m_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && abs(l0_gen_match_pdgid) == 13'#&& l0_is_real == 1'
-#l0_prompt_m_dr += ' && l0_good_match == 1 )'
 l0_prompt_m_dr += ' && sqrt( pow((l0_eta-l0_gen_match_eta),2) + pow((' + dPhi00 + '),2) ) < 0.04 )' 
 
 l1_prompt_m_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_m_dr += ' || l1_gen_match_fromHardProcessFinalState == 1 || l1_gen_match_isPromptFinalState == 1) && abs(l1_gen_match_pdgid) == 13'#&& l1_is_real == 1'
-#l1_prompt_m_dr += ' && l1_good_match == 1 )'
 l1_prompt_m_dr += ' && sqrt( pow((l1_eta-l1_gen_match_eta),2) + pow((' + dPhi11 + '),2) ) < 0.04 )'
 
 l2_prompt_m_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_m_dr += ' || l2_gen_match_fromHardProcessFinalState == 1 || l2_gen_match_isPromptFinalState == 1) && abs(l2_gen_match_pdgid) == 13'#&& l2_is_real == 1'
-#l2_prompt_m_dr += ' && l2_good_match == 1 )'
 l2_prompt_m_dr += ' && sqrt( pow((l2_eta-l2_gen_match_eta),2) + pow((' + dPhi22 + '),2) ) < 0.04 )' 
 
 l0_prompt_e_dr =  '( (l0_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l0_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l0_prompt_e_dr += ' || l0_gen_match_fromHardProcessFinalState == 1 || l0_gen_match_isPromptFinalState == 1) && ( abs(l0_gen_match_pdgid) == 11 || abs(l0_gen_match_pdgid) == 22 )'
-#l0_prompt_e_dr += ' && l0_good_match == 1 )'
 l0_prompt_e_dr += ' && sqrt( pow((l0_eta-l0_gen_match_eta),2) + pow((' + dPhi00 + '),2) ) < 0.04 )'
 
 l1_prompt_e_dr =  '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l1_prompt_e_dr += ' || l1_gen_match_fromHardProcessFinalState == 1 || l1_gen_match_isPromptFinalState == 1) && ( abs(l1_gen_match_pdgid) == 11 || abs(l1_gen_match_pdgid) == 22 )'
-#l1_prompt_e_dr += ' && l1_good_match == 1 )'
 l1_prompt_e_dr += ' && sqrt( pow((l1_eta-l1_gen_match_eta),2) + pow((' + dPhi11 + '),2) ) < 0.04 )'
 
 l1_prompt_e_dr_noConv  = '( (l1_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l1_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
@@ -125,7 +124,6 @@ l1_prompt_e_dr_noConv += ' && sqrt( pow((l1_eta-l1_gen_match_eta),2) + pow((' + 
 
 l2_prompt_e_dr =  '( (l2_gen_match_isDirectPromptTauDecayProductFinalState == 1 || l2_gen_match_isDirectHardProcessTauDecayProductFinalState == 1'
 l2_prompt_e_dr += ' || l2_gen_match_fromHardProcessFinalState == 1 || l2_gen_match_isPromptFinalState == 1) && ( abs(l2_gen_match_pdgid) == 11 || abs(l2_gen_match_pdgid) == 22 )'
-#l2_prompt_e_dr += ' && l2_good_match == 1 )'
 l2_prompt_e_dr += ' && sqrt( pow((l2_eta-l2_gen_match_eta),2) + pow((' + dPhi22 + '),2) ) < 0.04 )'
 
 l0_fake_m_dr = '( !' + l0_prompt_m_dr + ' )' 
@@ -222,7 +220,6 @@ l0l2_mm += ' && hnl_q_02 == 0'                                                  
 
 l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
 l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
-l1_e_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
 
 l1_e_loose += ' && l1_reliso_rho_04 < 1.0'                                                                                            # reliso bound for LOOSE cf. checkIso_mem_220319 
 
@@ -230,46 +227,56 @@ l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
 l1_e_lnt   = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_04 > 0.2)'
 
 ### LET'S DO THE SAME FOR MMM 22_3_19
-l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
+l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
 l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
-l1_m_loose += ' && hnl_dr_01 > 0.3 && hnl_dr_12 > 0.3'  
+
+l1_m_loose += ' && l1_reliso_rho_04 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
 
 l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
+l1_m_lnt   = l1_m_loose + ' && (l1_Medium == 0 || l1_reliso_rho_04 > 0.2)'
 
 l0l1_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
 l0l1_mm += ' && l1_pt > 15 && abs(l1_eta) < 2.4 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2'  # l1 genuine 
 l0l1_mm += ' && hnl_q_01 == 0'                                                                                                        # opposite charge
 
-l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.5 && abs(l2_dz) < 0.2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
+l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 0.2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
 l2_m_loose += ' && l2_gen_match_pdgid != 22'                                                                                          # no conversions 
-l2_m_loose += ' && hnl_dr_02 > 0.3 && hnl_dr_12 > 0.3'
+
+
+l2_m_loose += ' && l2_reliso_rho_04 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
 
 l2_m_tight = l2_m_loose + ' && l2_Medium == 1 && l2_reliso_rho_04 < 0.2'
+l2_m_lnt   = l2_m_loose + ' && (l2_Medium == 0 || l2_reliso_rho_04 > 0.2)'
 
 ### AND EEM
 l0l1_ee  = 'l0_pt > 27 && abs(l0_eta) < 2.5 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
 l0l1_ee += ' && l1_pt > 15 && abs(l1_eta) < 2.5 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2'  # l1 genuine 
 l0l1_ee += ' && hnl_q_01 == 0'                                                                                                        # opposite charge
 ###########################################################################################################################################################################################
-
+### ENERGY-IN-CONE CORRECTED PT
 ###########################################################################################################################################################################################
-
 PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso04_rel_rhoArea<0.15) ) + ( (hnl_iso04_rel_rhoArea>=0.15) * ( hnl_hn_vis_pt * (1. + hnl_iso04_rel_rhoArea - 0.15) ) )  )'
 PTCONEL1 = '(  ( l1_pt * (l1_reliso_rho_04<0.15) ) + ( (l1_reliso_rho_04>=0.15) * ( l1_pt * (1. + l1_reliso_rho_04 - 0.15) ) )  )'
 PTCONEL2 = '(  ( l2_pt * (l2_reliso_rho_04<0.15) ) + ( (l2_reliso_rho_04>=0.15) * ( l2_pt * (1. + l2_reliso_rho_04 - 0.15) ) )  )'
-
+###########################################################################################################################################################################################
+### BINNING FOR CLOSURE TEST 
+###########################################################################################################################################################################################
 b_pt_std    = np.arange(5.,105,5)
 b_pt        = np.array([ 0., 5., 10., 15., 20., 25., 35., 50., 70.])
-b_2d        = np.arange(0., 10, 0.2)
-b_2d_sig    = np.arange(0., 50, 0.25)
-b_2d_sig    = np.arange(0., 100, 0.5)
-b_m         = np.arange(0., 5.25, 0.25)
-b_M         = np.arange(0.,202,2)
+#b_2d        = np.arange(0., 10, 0.2)
+b_2d        = np.arange(0., 11, 1)
+#b_2d_sig    = np.arange(0., 50, 0.25)
+#b_2d_sig    = np.arange(0., 100, 0.5)
+b_2d_sig    = np.arange(0., 105, 5)
+#b_m         = np.arange(0., 5.25, 0.25)
+b_m         = np.arange(0.,11,1)
+#b_M         = np.arange(0.,202,2)
+b_M         = np.arange(0.,210,10)
 b_eta       = np.array([0., 1.2, 2.1, 2.4]) 
-b_rho       = np.arange(-100.,100,4)
-b_rho_crs   = np.arange(0.,10,0.25)
+#b_rho       = np.arange(-100.,100,4)
 b_rho       = np.arange(0.,15,0.25)
-b_dR        = np.arange(0.,6.05,0.05)
+b_rho_crs   = np.arange(0.,10,0.25)
+#b_dR        = np.arange(0.,6.05,0.05)
 b_dR        = np.arange(0.,0.85,0.05)
 b_dR_coarse = np.arange(0.,6,0.2)
 b_dR_Coarse = np.arange(0.,6,0.4)
@@ -355,7 +362,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
     mode021 = False; mode012 = False; mshReg = ''
 
     if mode == 'sfr':
-        mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 > 0.3'
+        mshReg  = 'hnl_w_vis_m > 80 && hnl_dr_12 > 0.3'
 
     if mode == 'dfr':
         mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 < 0.3'
@@ -392,17 +399,21 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
     if ch == 'mem':
 
-        f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
-
         mode021 = True
+        l1_loose += ' && hnl_dr_01 > 0.3'                                                        # no conversions, only use this to measure t2l ratio 
+
+        f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
 
     if ch == 'mmm':
 
-        f0_012 = df.Filter(l0l1 + ' && ' + l2_loose + ' && ' + mshReg)
-        f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
-
         mode021 = True
         mode012 = True
+
+        l1_loose += ' && hnl_dr_01 > 0.3'                                                        # no conversions, only use this to measure t2l ratio 
+        l2_loose += ' && hnl_dr_02 > 0.3'                                                        # no conversions, only use this to measure t2l ratio 
+
+        f0_012 = df.Filter(l0l1 + ' && ' + l2_loose + ' && ' + mshReg)
+        f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
 
 
     if mode021 == True:
@@ -773,26 +784,34 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
 
             if mode012 == True:
                 if fullSplit == True:
-                    print'\t','df 012 sum loose:', _dfl_012_c[i].Count().GetValue() + _dfl_012_light[i].Count().GetValue() + _dfl_012_other[i].Count().GetValue() + _dfl_012_b[i].Count().GetValue() + _dfl_012_glu[i].Count().GetValue()
-                    print'\t','df 012 entries loose:',_dfl_012_c[i].Count().GetValue(), _dfl_012_light[i].Count().GetValue(), _dfl_012_b[i].Count().GetValue(), _dfl_012_other[i].Count().GetValue(), _dfl_012_glu[i].Count().GetValue()
-                    print'\t','df 012 sum tight:', _dft_012_c[i].Count().GetValue() + _dft_012_light[i].Count().GetValue() + _dft_012_other[i].Count().GetValue() + _dft_012_b[i].Count().GetValue() + _dft_012_glu[i].Count().GetValue()
-                    print'\t','df 012 entries tight:',_dft_012_c[i].Count().GetValue(), _dft_012_light[i].Count().GetValue(), _dft_012_b[i].Count().GetValue(), _dft_012_other[i].Count().GetValue(), _dft_012_glu[i].Count().GetValue()
+                    print'\t','df 012 sum loose:',     _dfl_012_c[i].Count().GetValue() + _dfl_012_light[i].Count().GetValue() + \
+                                                       _dfl_012_other[i].Count().GetValue() + _dfl_012_b[i].Count().GetValue() + _dfl_012_glu[i].Count().GetValue()
+                    print'\t','df 012 entries loose:', _dfl_012_c[i].Count().GetValue(), _dfl_012_light[i].Count().GetValue(), \
+                                                       _dfl_012_b[i].Count().GetValue(), _dfl_012_other[i].Count().GetValue(), _dfl_012_glu[i].Count().GetValue()
+                    print'\t','df 012 sum tight:',     _dft_012_c[i].Count().GetValue() + _dft_012_light[i].Count().GetValue() + \
+                                                       _dft_012_other[i].Count().GetValue() + _dft_012_b[i].Count().GetValue() + _dft_012_glu[i].Count().GetValue()
+                    print'\t','df 012 entries tight:', _dft_012_c[i].Count().GetValue(), _dft_012_light[i].Count().GetValue(), \
+                                                       _dft_012_b[i].Count().GetValue(), _dft_012_other[i].Count().GetValue(), _dft_012_glu[i].Count().GetValue()
                 if fullSplit == False:
-                    print'\t','df 012 sum loose:',    _dfl_012_heavy[i].Count().GetValue() + _dfl_012_light[i].Count().GetValue()
-                    print'\t','df 012 entries loose:',_dfl_012_heavy[i].Count().GetValue(), _dfl_012_light[i].Count().GetValue()
-                    print'\t','df 012 sum tight:',    _dft_012_heavy[i].Count().GetValue() + _dft_012_light[i].Count().GetValue()
-                    print'\t','df 012 entries tight:',_dft_012_heavy[i].Count().GetValue(), _dft_012_light[i].Count().GetValue()
+                    print'\t','df 012 sum loose:',     _dfl_012_heavy[i].Count().GetValue() + _dfl_012_light[i].Count().GetValue()
+                    print'\t','df 012 entries loose:', _dfl_012_heavy[i].Count().GetValue(), _dfl_012_light[i].Count().GetValue()
+                    print'\t','df 012 sum tight:',     _dft_012_heavy[i].Count().GetValue() + _dft_012_light[i].Count().GetValue()
+                    print'\t','df 012 entries tight:', _dft_012_heavy[i].Count().GetValue(), _dft_012_light[i].Count().GetValue()
             if mode021 == True:
                 if fullSplit == True:
-                    print'\t','df 021 sum loose:', _dfl_021_c[i].Count().GetValue() + _dfl_021_light[i].Count().GetValue() + _dfl_021_other[i].Count().GetValue() + _dfl_021_b[i].Count().GetValue() + _dfl_021_glu[i].Count().GetValue()
-                    print'\t','df 021 entries loose:',_dfl_021_c[i].Count().GetValue(), _dfl_021_light[i].Count().GetValue(), _dfl_021_b[i].Count().GetValue(), _dfl_021_other[i].Count().GetValue(), _dfl_021_glu[i].Count().GetValue()
-                    print'\t','df 021 sum tight:', _dft_021_c[i].Count().GetValue() + _dft_021_light[i].Count().GetValue() + _dft_021_other[i].Count().GetValue() + _dft_021_b[i].Count().GetValue() + _dft_021_glu[i].Count().GetValue()
-                    print'\t','df 021 entries tight:',_dft_021_c[i].Count().GetValue(), _dft_021_light[i].Count().GetValue(), _dft_021_b[i].Count().GetValue(), _dft_021_other[i].Count().GetValue(), _dft_021_glu[i].Count().GetValue()
+                    print'\t','df 021 sum loose:',     _dfl_021_c[i].Count().GetValue() + _dfl_021_light[i].Count().GetValue() + \
+                                                       _dfl_021_other[i].Count().GetValue() + _dfl_021_b[i].Count().GetValue() + _dfl_021_glu[i].Count().GetValue()
+                    print'\t','df 021 entries loose:', _dfl_021_c[i].Count().GetValue(), _dfl_021_light[i].Count().GetValue(), \
+                                                       _dfl_021_b[i].Count().GetValue(), _dfl_021_other[i].Count().GetValue(), _dfl_021_glu[i].Count().GetValue()
+                    print'\t','df 021 sum tight:',     _dft_021_c[i].Count().GetValue() + _dft_021_light[i].Count().GetValue() + \
+                                                       _dft_021_other[i].Count().GetValue() + _dft_021_b[i].Count().GetValue() + _dft_021_glu[i].Count().GetValue()
+                    print'\t','df 021 entries tight:', _dft_021_c[i].Count().GetValue(), _dft_021_light[i].Count().GetValue(), \
+                                                       _dft_021_b[i].Count().GetValue(), _dft_021_other[i].Count().GetValue(), _dft_021_glu[i].Count().GetValue()
                 if fullSplit == False:
-                    print'\t','df 021 sum loose:',    _dfl_021_heavy[i].Count().GetValue() + _dfl_021_light[i].Count().GetValue()
-                    print'\t','df 021 entries loose:',_dfl_021_heavy[i].Count().GetValue(), _dfl_021_light[i].Count().GetValue()
-                    print'\t','df 021 sum tight:',    _dft_021_heavy[i].Count().GetValue() + _dft_021_light[i].Count().GetValue()
-                    print'\t','df 021 entries tight:',_dft_021_heavy[i].Count().GetValue(), _dft_021_light[i].Count().GetValue()
+                    print'\t','df 021 sum loose:',     _dfl_021_heavy[i].Count().GetValue() + _dfl_021_light[i].Count().GetValue()
+                    print'\t','df 021 entries loose:', _dfl_021_heavy[i].Count().GetValue(), _dfl_021_light[i].Count().GetValue()
+                    print'\t','df 021 sum tight:',     _dft_021_heavy[i].Count().GetValue() + _dft_021_light[i].Count().GetValue()
+                    print'\t','df 021 entries tight:', _dft_021_heavy[i].Count().GetValue(), _dft_021_light[i].Count().GetValue()
 
             h_pt_1f_T_012  = rt.TH1F('pt_1f_T_012', 'pt_1f_T_012',len(b_pt)-1,b_pt)
             h_pt_1f_T_021  = rt.TH1F('pt_1f_T_021', 'pt_1f_T_021',len(b_pt)-1,b_pt)
@@ -1189,8 +1208,8 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
         df = rdf(t)
         print'\n\tchain made.'
 
-        cuts_SFR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
-        cuts_SFR = 'hnl_dr_12 > 0.3 && ' + l_eta[eta]
+#        cuts_SFR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
+        cuts_SFR = appReg + ' && hnl_dr_12 > 0.3 && ' + l_eta[eta]
         print '\n\t cuts: %s'%cuts_SFR
         
         if isData == False:
