@@ -1116,7 +1116,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
 ###########################################################################################################################################################################################
 
 ###########################################################################################################################################################################################
-def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
+def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
     
     plotDir = makeFolder('closureTest_%s'%ch)
     print '\n\tplotDir:', plotDir
@@ -1202,21 +1202,15 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
                 print '\n\tlnt df 021 events:', dfl0_021.Count().GetValue()
 
                 dflnt_021 = dfl0_021.Define('fover1minusf021', selectBins(ch=ch,lep=1))
-                if label == True:
-                    dflntDYbb_021   = dflnt_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dflntDY50_021   = dflnt_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dflntTT_021     = dflnt_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dflnt_extConv   = dflnt_021.Filter('abs(l1_gen_match_pdgid) == 22') 
-                    dflnt_intConv   = dflnt_021.Filter('l1_gen_match_isPromptFinalState == 1') 
                 print '\n\tweight f/(1-f)  021 defined. (without lumi/data normalization)'
 
                 dft_021     = dfl_021.Filter(l1_tight)
                 if label == True:
-                    dftDYbb_021   = dft_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dftDY50_021   = dft_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dftTT_021     = dft_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dft_extConv   = dft_021.Filter('abs(l1_gen_match_pdgid) == 22') 
-                    dft_intConv   = dft_021.Filter('l1_gen_match_isPromptFinalState == 1') 
+                    dftDYbb_021      = dft_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftDY50_021      = dft_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftTT_021        = dft_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftExtConv_021   = dft_021.Filter('abs(l1_gen_match_pdgid) == 22') 
+                    dftIntConv_021   = dft_021.Filter('l1_gen_match_isPromptFinalState == 1') 
                 print '\n\ttight df 021 defined.'
 
                 print '\n\ttight df 021 events:', dft_021.Count().GetValue()
@@ -1243,170 +1237,140 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
                 print '\n\tweight f/(1-f)  012 defined. (without lumi/data normalization)'
 
                 dft_012   = dfl_012.Filter(l2_tight)
+                if label == True:
+                    dftDYbb_012      = dft_012.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftDY50_012      = dft_012.Filter('label == 1 && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState == 0')
+                    dftTT_012        = dft_012.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftExtConv_012   = dft_012.Filter('abs(l2_gen_match_pdgid) == 22') 
+                    dftIntConv_012   = dft_012.Filter('l2_gen_match_isPromptFinalState == 1') 
                 print '\n\ttight df 012 defined.'
 
                 print '\n\ttight df 012 events:', dft_012.Count().GetValue()
 
                 print '\n\tf0 012 entries:', f0_012.Count().GetValue()
 
+        VARS = {'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
+                '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    , ';2d_disp [cm]; Counts'], 
+                '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig', ';2d_disp_sig ; Counts'], 
+                'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+                'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+                'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'], 
+                'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts'], 
+                'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'],
+                'pt' : None}
+
+        _H_OBS_012   = OrderedDict()
+        _H_WHD_012 = OrderedDict()
+        H_OBS_012    = OrderedDict()
+        H_WHD_012  = OrderedDict()
+
+        _H_OBS_021   = OrderedDict()
+        _H_WHD_021 = OrderedDict()
+        H_OBS_021    = OrderedDict()
+        H_WHD_021  = OrderedDict()
+
+        for v in VARS.keys():
+            _H_OBS_021[v] = OrderedDict()
+            H_OBS_021[v]  = OrderedDict()
+
+            _H_OBS_012[v] = OrderedDict()
+            H_OBS_012[v]  = OrderedDict()
 
         if mode021 == True:
 
-            if label == False:
-                obs_021_pt         = dft_021.Histo1D(('obs_021_pt',         'obs_021_pt',        len(b_pt)-1,     b_pt),     'ptcone021'      )
-                obs_021_dr_12      = dft_021.Histo1D(('obs_021_dr_12',      'obs_021_dr_12',     len(b_dR)-1,     b_dR),     'hnl_dr_12'      )
-                obs_021_2disp      = dft_021.Histo1D(('obs_021_2disp',      'obs_021_2disp',     len(b_2d)-1,     b_2d),     'hnl_2d_disp'    )
-                obs_021_2disp_sig  = dft_021.Histo1D(('obs_021_2disp_sig',  'obs_021_2disp_sig', len(b_2d_sig)-1, b_2d_sig), 'hnl_2d_disp_sig')
-                obs_021_m_dimu     = dft_021.Histo1D(('obs_021_m_dimu',     'obs_021_m_dimu',    len(b_m)-1,      b_m),      'hnl_m_12'       )
-                obs_021_BGM_dimu   = dft_021.Histo1D(('obs_021_BGM_dimu',   'obs_021_BGM_dimu',  len(b_M)-1,      b_M),      'hnl_m_12'       )
-                obs_021_BGM_01     = dft_021.Histo1D(('obs_021_BGM_01',     'obs_021_BGM_01',    len(b_M)-1,      b_M),      'hnl_m_01'       )
-                obs_021_BGM_02     = dft_021.Histo1D(('obs_021_BGM_02',     'obs_021_BGM_02',    len(b_M)-1,      b_M),      'hnl_m_02'       )
-                obs_021_m_triL     = dft_021.Histo1D(('obs_021_m_triL',     'obs_021_m_triL',    len(b_M)-1,      b_M),      'hnl_w_vis_m'    )
+            VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone021'      , ';p_{T}^{cone} [GeV]; Counts']
 
-                whd_021_pt         = dflnt_021.Histo1D(('whd_021_pt',         'whd_021_pt',        len(b_pt)-1,      b_pt),     'ptcone021',         'fover1minusf021')
-                whd_021_dr_12      = dflnt_021.Histo1D(('whd_021_dr_12',      'whd_021_dr_12',     len(b_dR)-1,      b_dR),     'hnl_dr_12',         'fover1minusf021')
-                whd_021_2disp      = dflnt_021.Histo1D(('whd_021_2disp',      'whd_021_2disp',     len(b_2d)-1,      b_2d),     'hnl_2d_disp',       'fover1minusf021')
-                whd_021_2disp_sig  = dflnt_021.Histo1D(('whd_021_2disp_sig',  'whd_021_2disp_sig', len(b_2d_sig)-1,  b_2d_sig), 'hnl_2d_disp_sig',   'fover1minusf021')
-                whd_021_m_dimu     = dflnt_021.Histo1D(('whd_021_m_dimu',     'whd_021_m_dimu',    len(b_m)-1,       b_m),      'hnl_m_12',          'fover1minusf021')
-                whd_021_BGM_dimu   = dflnt_021.Histo1D(('whd_021_BGM_dimu',   'whd_021_BGM_dimu',  len(b_M)-1,       b_M),      'hnl_m_12',          'fover1minusf021')
-                whd_021_BGM_01     = dflnt_021.Histo1D(('whd_021_BGM_01',     'whd_021_BGM_01',    len(b_M)-1,       b_M),      'hnl_m_01',          'fover1minusf021')
-                whd_021_BGM_02     = dflnt_021.Histo1D(('whd_021_BGM_02',     'whd_021_BGM_02',    len(b_M)-1,       b_M),      'hnl_m_02',          'fover1minusf021')
-                whd_021_m_triL     = dflnt_021.Histo1D(('whd_021_m_triL',     'whd_021_m_triL',    len(b_M)-1,       b_M),      'hnl_w_vis_m',       'fover1minusf021')
+            dft_021_L = {'DYbb' : dftDYbb_021,   'DY50' : dftDY50_021,   'TT' : dftTT_021,   'ExtConv' : dftExtConv_021,   'IntConv' : dftIntConv_021  }
+            KEYS = dft_021_L.keys()
 
-                h_list_021 = { 'pt'          : [whd_021_pt,        obs_021_pt,        ],
-                               'dr_12'       : [whd_021_dr_12,     obs_021_dr_12,     ],
-                               '2disp'       : [whd_021_2disp,     obs_021_2disp,     ],
-                               '2disp_sig'   : [whd_021_2disp_sig, obs_021_2disp_sig, ],
-                               'm_dimu'      : [whd_021_m_dimu,    obs_021_m_dimu,    ],
-                               'BGM_dimu'    : [whd_021_BGM_dimu,  obs_021_BGM_dimu,  ],
-                               'BGM_01'      : [whd_021_BGM_01,    obs_021_BGM_01,    ],
-                               'BGM_02'      : [whd_021_BGM_02,    obs_021_BGM_02,    ],
-                               'm_triL'      : [whd_021_m_triL,    obs_021_m_triL,    ]}
+            for v in VARS.keys():
 
-            if label == True:
-
-            VARS = {'pt':        [len(b_pt)-1,     b_pt,     'ptcone012'      ],
-                    'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      ],
-                    '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    ],
-                    '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig'],
-                    'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       ],
-                    'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       ],
-                    'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       ],
-                    'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       ],
-                    'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    ]}
-
-                  dft_021_L = {'DYbb' : dftDYbb_021,   'DY50' : dftDY50_021,   'TT' : dftTT_021,   'extConv' : dft_extConv_021,   'intConv' : dft_intConv_021  }
-                dflnt_021_L = {'DYbb' : dflntDYbb_021, 'DY50' : dflntDY50_021, 'TT' : dflntTT_021, 'extConv' : dflnt_extConv_021, 'intConv' : dflnt_intConv_021 }
-
-                _H_DFT_021   = OrderedDict()
-                _H_DFLNT_021 = OrderedDict()
-                H_DFT_021    = OrderedDict()
-                H_DFLNT_021  = OrderedDict()
-
-                for v in VARS.keys():
-                    _H_DFT_021[v]   : OrderedDict()
-                    _H_DFLNT_021[v] : OrderedDict()
-                    H_DFT_021[v]    : OrderedDict()
-                    H_DFLNT_021[v]  : OrderedDict()
+                _H_WHD_021[v]   = dflnt_021.Histo1D(('whd_021_%s'%v,'whd_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'fover1minusf021')
+                if label == False:
+                    _H_OBS_021[v] = dft_021.Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
 
                     for DF in dft_021_L.keys():
-                        _H_DFT_021[v][DF]   : dft_021_L[DF]  .Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2]))
-                        _H_DFLNT_021[v][DF] : dflnt_021_L[DF].Histo1D(('whd_021_%s'%v,'whd_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2]), 'fover1minusf021')
-
-                for v in VARS.keys():
-                    for DF in dft_021_L.keys():
-                        print '\n\tDrawing:', v, DF
-                        H_DFT_021[v][DF]   : _H_DFT_021[v][DF]  .GetPtr()
-                        H_DFLNT_021[v][DF] : _H_DFLNT_021[v][DF].GetPtr()
-
-                    stack = rt.THStack()    
-                    c = rt.TCanvas('asd','asd'); c.cd()
-
+                        _H_OBS_021[v][DF] = dft_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
 
         if mode012 == True:
 
-            obs_012_pt         = dft_012.Histo1D(('obs_012_pt',         'obs_012_pt',        len(b_pt)-1,     b_pt),     'ptcone012'      )
-            obs_012_dr_12      = dft_012.Histo1D(('obs_012_dr_12',      'obs_012_dr_12',     len(b_dR)-1,     b_dR),     'hnl_dr_12'      )
-            obs_012_2disp      = dft_012.Histo1D(('obs_012_2disp',      'obs_012_2disp',     len(b_2d)-1,     b_2d),     'hnl_2d_disp'    )
-            obs_012_2disp_sig  = dft_012.Histo1D(('obs_012_2disp_sig',  'obs_012_2disp_sig', len(b_2d_sig)-1, b_2d_sig), 'hnl_2d_disp_sig')
-            obs_012_m_dimu     = dft_012.Histo1D(('obs_012_m_dimu',     'obs_012_m_dimu',    len(b_m)-1,      b_m),      'hnl_m_12'       )
-            obs_012_BGM_dimu   = dft_012.Histo1D(('obs_012_BGM_dimu',   'obs_012_BGM_dimu',  len(b_M)-1,      b_M),      'hnl_m_12'       )
-            obs_012_BGM_01     = dft_012.Histo1D(('obs_012_BGM_01',     'obs_012_BGM_01',    len(b_M)-1,      b_M),      'hnl_m_01'       )
-            obs_012_BGM_02     = dft_012.Histo1D(('obs_012_BGM_02',     'obs_012_BGM_02',    len(b_M)-1,      b_M),      'hnl_m_02'       )
-            obs_012_m_triL     = dft_012.Histo1D(('obs_012_m_triL',     'obs_012_m_triL',    len(b_M)-1,      b_M),      'hnl_w_vis_m'    )
+            VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone012'      , ';p_{T}^{cone} [GeV]; Counts']
 
-            whd_012_pt         = dflnt_012.Histo1D(('whd_012_pt',         'whd_012_pt',        len(b_pt)-1,      b_pt),     'ptcone012',         'fover1minusf012')
-            whd_012_dr_12      = dflnt_012.Histo1D(('whd_012_dr_12',      'whd_012_dr_12',     len(b_dR)-1,      b_dR),     'hnl_dr_12',         'fover1minusf012')
-            whd_012_2disp      = dflnt_012.Histo1D(('whd_012_2disp',      'whd_012_2disp',     len(b_2d)-1,      b_2d),     'hnl_2d_disp',       'fover1minusf012')
-            whd_012_2disp_sig  = dflnt_012.Histo1D(('whd_012_2disp_sig',  'whd_012_2disp_sig', len(b_2d_sig)-1,  b_2d_sig), 'hnl_2d_disp_sig',   'fover1minusf012')
-            whd_012_m_dimu     = dflnt_012.Histo1D(('whd_012_m_dimu',     'whd_012_m_dimu',    len(b_m)-1,       b_m),      'hnl_m_12',          'fover1minusf012')
-            whd_012_BGM_dimu   = dflnt_012.Histo1D(('whd_012_BGM_dimu',   'whd_012_BGM_dimu',  len(b_M)-1,       b_M),      'hnl_m_12',          'fover1minusf012')
-            whd_012_BGM_01     = dflnt_012.Histo1D(('whd_012_BGM_01',     'whd_012_BGM_01',    len(b_M)-1,       b_M),      'hnl_m_01',          'fover1minusf012')
-            whd_012_BGM_02     = dflnt_012.Histo1D(('whd_012_BGM_02',     'whd_012_BGM_02',    len(b_M)-1,       b_M),      'hnl_m_02',          'fover1minusf012')
-            whd_012_m_triL     = dflnt_012.Histo1D(('whd_012_m_triL',     'whd_012_m_triL',    len(b_M)-1,       b_M),      'hnl_w_vis_m',       'fover1minusf012')
+            dft_012_L = {'DYbb' : dftDYbb_012,   'DY50' : dftDY50_012,   'TT' : dftTT_012,   'ExtConv' : dftExtConv_012,   'IntConv' : dftIntConv_012  }
+            KEYS = dft_012_L.keys()
 
+            for v in VARS.keys():
 
-            h_list_012 = { 'pt'          : [whd_012_pt,        obs_012_pt,        ],
-                           'dr_12'       : [whd_012_dr_12,     obs_012_dr_12,     ],
-                           '2disp'       : [whd_012_2disp,     obs_012_2disp,     ],
-                           '2disp_sig'   : [whd_012_2disp_sig, obs_012_2disp_sig, ],
-                           'm_dimu'      : [whd_012_m_dimu,    obs_012_m_dimu,    ],
-                           'BGM_dimu'    : [whd_012_BGM_dimu,  obs_012_BGM_dimu,  ],
-                           'BGM_01'      : [whd_012_BGM_01,    obs_012_BGM_01,    ],
-                           'BGM_02'      : [whd_012_BGM_02,    obs_012_BGM_02,    ],
-                           'm_triL'      : [whd_012_m_triL,    obs_012_m_triL,    ]}
+                _H_WHD_012[v]   = dflnt_012.Histo1D(('whd_012_%s'%v,'whd_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'fover1minusf012')
+                if label == False:
+                    _H_OBS_012[v] = dft_012.Histo1D(('obs_012_%s'%v,'obs_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
 
-        info  = { 'pt'          : [b_pt,     ';p_{T}^{cone} [GeV]; Counts'], 
-                  'dr_12'       : [b_dR,     ';#DeltaR(l_{1},  l_{2}); Counts'], 
-                  '2disp'       : [b_2d,     ';2d_disp [cm]; Counts'], 
-                  '2disp_sig'   : [b_2d_sig, ';2d_disp_sig ; Counts'], 
-                  'm_dimu'      : [b_m,      ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-                  'BGM_dimu'    : [b_M,      ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-                  'BGM_01'      : [b_M,      ';m(l_{0},  l_{1}) [GeV]; Counts'], 
-                  'BGM_02'      : [b_M,      ';m(l_{0},  l_{2}) [GeV]; Counts'], 
-                  'm_triL'      : [b_M,      ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'], }
+                    for DF in dft_021_L.keys():
+                        _H_OBS_012[v][DF] = dft_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
 
-        if label == False:
-            for k in info.keys():
+        for v in VARS.keys():
 
-                print'\n\tdrawing', k 
+            H_WHD_012[v] = rt.TH1F('whd_012_%s_'%(v),'whd_012_%s'%(v), VARS[v][0], VARS[v][1])
+            H_WHD_021[v] = rt.TH1F('whd_021_%s_'%(v),'whd_021_%s'%(v), VARS[v][0], VARS[v][1])
 
-                whd_021 = rt.TH1F('whd_021_'+k,'whd_021_'+k,len(info[k][0])-1,info[k][0])
-                obs_021 = rt.TH1F('obs_021_'+k,'obs_021_'+k,len(info[k][0])-1,info[k][0])
+            for DF in KEYS:
+                H_OBS_012[v][DF] = rt.TH1F('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
+                H_OBS_021[v][DF] = rt.TH1F('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
 
-                whd_012 = rt.TH1F('whd_012_'+k,'whd_012_'+k,len(info[k][0])-1,info[k][0])
-                obs_012 = rt.TH1F('obs_012_'+k,'obs_012_'+k,len(info[k][0])-1,info[k][0])
+            if mode021 == True:
+                H_WHD_021[v] = _H_WHD_021[v].GetPtr()
+                if label == False:
+                    H_OBS_021[v] = _H_OBS_021[v].GetPtr()
+                if label == True:
+                    for DF in dft_021_L.keys():
+                        _H_OBS_021[v][DF] = dft_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
+                        print '\n\tDrawing:', v, DF
+                        H_OBS_021[v][DF]  = _H_OBS_021[v][DF].GetPtr()
+            
+            if mode012 == True:
+                H_WHD_012[v] = _H_WHD_012[v].GetPtr()
+                if label == False:
+                    H_OBS_012[v] = _H_OBS_012[v].GetPtr()
+                if label == True:
+                    for DF in dft_012_L.keys():
+                        _H_OBS_012[v][DF] = dft_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
+                        print '\n\tDrawing:', v, DF
+                        H_OBS_012[v][DF]  = _H_OBS_012[v][DF].GetPtr()
+            
+            if label == True:
+                obs = rt.THStack('obs_%s'%v,'obs_%s'%v)
+                for DF in KEYS:
+                    H_OBS_012[v][DF].Add(H_OBS_021[v][DF])
+                    obs.Add(H_OBS_012[v][DF])
+            if label == False:
+                H_OBS_012[v].Add(H_OBS_021[v])
+                obs = H_OBS_012[v]
 
-                if mode021 == True:
-                    whd_021 = h_list_021[k][0].GetPtr()
-                    obs_021 = h_list_021[k][1].GetPtr()
+            H_WHD_012[v].Add(H_WHD_021[v]); whd = H_WHD_012[v]
 
-                if mode012 == True:
-                    whd_012 = h_list_012[k][0].GetPtr()
-                    obs_012 = h_list_012[k][1].GetPtr()
+            if v == 'pt':
+                if label == False: n_obs = obs.GetEntries()
+                if label == True: 
+                    n_obs = 0
+                    for DF in KEYS: 
+                        n_obs += H_OBS_012[v][DF].GetEntries()
+                print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(whd.GetEntries(), n_obs)
 
-                whd_012.Add(whd_021)
-                obs_012.Add(obs_021)
-
-                whd = whd_012; obs = obs_012
-
-                if k == 'pt':
-                    print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(whd.GetEntries(), obs.GetEntries())
-
-                c = rt.TCanvas(k, k)
-                whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
-                whd.SetTitle(info[k][1])
-                obs.SetTitle(info[k][1])
+            c = rt.TCanvas(v, v); c.cd()
+            whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
+            whd.SetTitle(VARS[v][3])
+            if label == False:
+                obs.SetTitle(VARS[v][3])
                 obs.SetMarkerColor(rt.kMagenta+2)
-                obs.Draw()
-                whd.Draw('histEsame')
-                leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-                leg.AddEntry(obs, 'observed')
-                leg.AddEntry(whd, 'expected')
-                leg.Draw()
-                pf.showlogoprelimsim('CMS')
-                pf.showlumi('SFR_'+ch+eta)
-                save(c, sample='DDE', ch=ch+eta, DIR=plotDir)
+            obs.Draw()
+            whd.Draw('histEsame')
+            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+            leg.AddEntry(obs, 'observed')
+            leg.AddEntry(whd, 'expected')
+            leg.Draw()
+            pf.showlogoprelimsim('CMS')
+            pf.showlumi('SFR_'+ch+eta)
+            save(knvs=c, sample='DDE', ch=ch+eta, DIR=plotDir)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
