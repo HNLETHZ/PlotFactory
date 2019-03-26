@@ -137,127 +137,72 @@ l2_fake_e_dr = '( !' + l2_prompt_e_dr + ' )'
 l1_fake_e_dr_noConv = '( !' + l1_prompt_e_dr_noConv + ' )' 
 ###########################################################################################################################################################################################
               ##               LOOSE / TIGHT REGIONS                ##
-###########################################################################################################################################################################################
-              ##                 DOUBLE FAKE RATE                   ##  
-###########################################################################################################################################################################################
-DFR_LOOSE_MEE          =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_id_t == 1 && l0_reliso_rho_04 < 0.15 && hnl_iso04_rel_rhoArea < 1 )'     
-DFR_LOOSENOTTIGHT_MEE  =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_id_t == 1 && l0_reliso_rho_04 < 0.15 && (l1_reliso05 > 0.2 || l2_reliso05 > 0.2) && hnl_iso04_rel_rhoArea < 1 )'#FIXME
-DFR_TIGHT_MEE          =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_id_t == 1 && l0_reliso_rho_04 < 0.15 && l1_reliso05 < 0.2 && l2_reliso05 < 0.2 )' 
-###########################################################################################################################################################################################
+DFR_LOOSE_MEE          = None
+DFR_LOOSENOTTIGHT_MEE  = None
+DFR_TIGHT_MEE          = None
+######################## None
 # FIXME
-DFR_LOOSE_MEM          =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_id_t == 1 && l0_reliso_rho_03 < 0.15 && hnl_iso03_rel_rhoArea < 1 )'     
-DFR_LOOSENOTTIGHT_MEM  =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_id_t == 1 && l0_reliso_rho_03 < 0.15 && (l1_reliso05 > 0.2 || l2_reliso05 > 0.2) && hnl_iso03_rel_rhoArea < 1 )'#FIXME
-DFR_TIGHT_MEM          =  ' && (l1_pt > 3 && l1_MediumNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_id_t == 1 && l0_reliso_rho_03 < 0.15 && l1_reliso05 < 0.2 && l2_reliso05 < 0.2 )' 
-###########################################################################################################################################################################################
-DFR_LOOSE_MMM         = ' && (l1_pt > 3 && l2_pt > 3 && l0_id_t == 1 && l0_reliso_rho_04 < 0.15 && l1_id_l == 1 && l2_id_l == 1 && hnl_iso04_rel_rhoArea < 1 )'
-DFR_LOOSENOTTIGHT_MMM = ' && (l1_pt > 3 && l2_pt > 3 && l0_id_t == 1 && l0_reliso_rho_04 < 0.15 && l1_id_l == 1 && l2_id_l == 1 && (l1_reliso_rho_04 > 0.15 || l2_reliso_rho_04 > 0.15) && hnl_iso04_rel_rhoArea < 1 )'# FIXME 
-DFR_TIGHT_MMM         = ' && (l1_pt > 3 && l2_pt > 3 && l0_id_t == 1 && l0_reliso_rho_04 < 0.15 && l1_id_l == 1 && l2_id_l == 1 && l1_reliso_rho_04 < 0.15 && l2_reliso_rho_04 < 0.15 )' 
-###########################################################################################################################################################################################
-DFR_LOOSE_EEE         =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_eid_mva_iso_wp90 == 1 && l0_reliso05 < 0.15 && hnl_iso03_rel_rhoArea < 3 )' 
-DFR_LOOSENOTTIGHT_EEE =  ' && (l1_pt > 3 && l1_LooseNoIso == 1 && l2_pt > 3 && l2_LooseNoIso == 1 && l0_eid_mva_iso_wp90 == 1 && l0_reliso05 < 0.15 && (l1_reliso05 > 0.15 || l2_reliso05 > 0.15) && hnl_iso04_rel_rhoArea < 3 )' 
-DFR_TIGHT_EEE         =  ' && (l1_pt > 3 && l1_MediumNoIso == 1 && l2_pt > 3 && l2_MediumNoIso == 1 && l0_eid_mva_iso_wp90 == 1 && l0_reliso05 < 0.15 && l1_reliso05 < 0.15 && l2_reliso05 < 0.15 )' 
-###########################################################################################################################################################################################
-DFR_LOOSE_EMM         = ' && (l1_pt > 3 && l2_pt > 3 && l0_eid_cut_loose && l0_reliso05 < 0.15 && l1_id_l == 1 && l2_id_l == 1 && hnl_iso04_rel_rhoArea < 1 )'
-DFR_LOOSENOTTIGHT_EMM = ' && (l1_pt > 3 && l2_pt > 3 && l0_eid_cut_loose && l0_reliso05 < 0.15 && l1_id_l == 1 && l2_id_l == 1 && (l1_reliso_rho_04 > 0.15 || l2_reliso_rho_04 > 0.15) && hnl_iso04_rel_rhoArea < 1 )'  # FIXME 
-DFR_TIGHT_EMM         = ' && (l1_pt > 3 && l2_pt > 3 && l0_eid_cut_loose && l0_reliso05 < 0.15 && l1_id_l == 1 && l2_id_l == 1 && l1_reliso_rho_04 < 0.15 && l2_reliso_rho_04 < 0.15 )' 
+DFR_LOOSE_MEM          = None
+DFR_LOOSENOTTIGHT_MEM  = None
+DFR_TIGHT_MEM          = None
+######################## None
+DFR_LOOSE_MMM         =  None
+DFR_LOOSENOTTIGHT_MMM =  None
+DFR_TIGHT_MMM         =  None
+######################## None
+DFR_LOOSE_EEE         =  None
+DFR_LOOSENOTTIGHT_EEE =  None
+DFR_TIGHT_EEE         =  None
+######################## None
+DFR_LOOSE_EMM         =  None
+DFR_LOOSENOTTIGHT_EMM =  None
+DFR_TIGHT_EMM         =  None
 ###########################################################################################################################################################################################
               ##                 SINGLE FAKE RATE                   ##  
 ###########################################################################################################################################################################################
-l0l1_ee    = '(l1_pt > 5 && l0_eid_mva_iso_wp90 == 1 && l1_eid_mva_iso_wp90 == 1 && l0_reliso05 < 0.15 && l1_reliso05 < 0.15'
-#l0l1_ee    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_01 - 91.19) < 10 && l0_q * l1_q < 0 && abs(l0_dxy) < 0.05 && abs(l1_dxy) < 0.05)'
-l0l1_ee    += ' && l0_q * l1_q < 0 && abs(l0_dxy) < 0.05 && abs(l1_dxy) < 0.05)' # && hnl_iso03_rel_rhoArea < 1'
-l0l1_ee    += ' && ' + l0_prompt_e_dr + ' && ' + l1_prompt_e_dr + ' && abs(l2_dxy) > 0.01' 
-
-l0l2_ee    = '(l2_pt > 3 && l0_eid_mva_iso_wp90 == 1 && l2_eid_mva_iso_wp90 == 1 && l0_reliso05 < 0.15 && l2_reliso05 < 0.15'
-#l0l2_ee    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_02 - 91.19) < 10 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05)'
-l0l2_ee    += ' && hnl_iso03_rel_rhoArea < 1 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05)'
-l0l2_ee    += ' && ' + l0_prompt_e_dr + ' && ' + l2_prompt_e_dr
-###########################################################################################################################################################################################
-l0l1_me    = '(l1_pt > 3 && l0_id_t == 1 && l1_eid_mva_iso_wp90 == 1 && l0_reliso_rho_03 < 0.15 && l1_reliso05 < 0.15'
-l0l1_me    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_01 - 91.19) < 10 && l0_q * l1_q < 0 && abs(l0_dxy) < 0.05 && abs(l1_dxy) < 0.05)'
-l0l1_me    += ' && ' + l0_prompt_m_dr + ' && ' + l1_prompt_e_dr + ' && abs(l2_dxy) > 0.01' 
-###########################################################################################################################################################################################
-l0l2_em    = '(l2_pt > 3 && l0_eid_mva_iso_wp90 && l2_id_m == 1 && l0_reliso05 < 0.15 && l2_reliso_rho_03 < 0.15'
-l0l2_em    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_02 - 91.19) < 10 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05)'
-l0l2_em    += ' && ' + l0_prompt_e_dr + ' && ' + l2_prompt_m_dr 
-###########################################################################################################################################################################################
-l0l1_mm    =  'l0_pt > 15 && l1_pt > 3 && l0_id_m == 1 && l1_id_m == 1 && l0_reliso_rho_03 < 0.15 && l1_reliso_rho_03 < 0.15'
-l0l1_mm    += ' && l0_q * l1_q < 0 && abs(l0_dxy) < 0.05 && abs(l1_dxy) < 0.05'
-l0l1_mm    += ' && ' + l0_prompt_m_dr + ' && ' + l1_prompt_m_dr 
-
-l0l2_mm    =  'l0_pt > 15 && l2_pt > 5 && l0_id_m == 1 && l2_id_m == 1 && l0_reliso_rho_03 < 0.15 && l2_reliso_rho_03 < 0.15'
-l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05'
-l0l2_mm    += ' && ' + l0_prompt_m_dr + ' && ' + l2_prompt_m_dr 
-
-## THIS WAS FOR MEM WITH CDF-OPTIMIZATION
-#l0l2_mm    += ' && hnl_iso03_rel_rhoArea < 1 && abs(hnl_m_02 - 91.19) < 10 && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05'
-#l0l2_mm    += ' && l0_q * l2_q < 0 && abs(l0_dxy) < 0.05 && abs(l2_dxy) < 0.05 && abs(l1_reliso_rho_03) < 0.35' # DON'T CHANGE, STATE OF THE ART
-###########################################################################################################################################################################################
-#l1_e_tight = 'l1_pt > 5 && l1_MediumWithIso == 1 && l1_reliso_rho_03 < 0.10 && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
-#l1_e_loose = 'l1_pt > 5 && l1_LooseNoIso  && abs(l1_dxy) > 0.01 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
-l1_e_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_e_dr + ' && l1_LooseNoIso == 1 && l1_reliso_rho_03 < 0.15' 
-l1_e_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_e_dr + ' && (l1_LooseNoIso == 0 || l1_reliso_rho_03 > 0.15)' 
-l1_e_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_e_dr # DON'T CHANGE, STATE OF THE ART
-
-l2_e_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && l2_MediumWithIso == 1 && l2_reliso_rho_03 < 0.15'
-l2_e_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && (l2_LooseNoIso == 0   || l2_reliso_rho_03 > 0.15)'    
-l2_e_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_e_dr + ' && l2_LooseNoIso == 1'
-###########################################################################################################################################################################################
-l1_m_tight = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr + ' && (l1_reliso_rho_03 < 0.15 && l1_id_l == 1)'
-l1_m_lnt   = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr + ' && (l1_reliso_rho_03 > 0.15 || l1_id_l == 0)'
-l1_m_loose = 'l1_pt > 5 && abs(l1_dxy) > 0.05 && abs(l1_reliso_rho_03) < 1.1 && ' + l1_fake_m_dr                             + ''# && l1_id_l == 1'
-
-l2_m_tight = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr + ' && (l2_reliso_rho_03 < 0.15 && l2_id_l == 1)'
-l2_m_lnt   = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr + ' && (l2_reliso_rho_03 > 0.15 || l2_id_l == 0)'
-l2_m_loose = 'l2_pt > 5 && abs(l2_dxy) > 0.05 && abs(l2_reliso_rho_03) < 1.1 && ' + l2_fake_m_dr                             + ''# && l2_id_l == 1'
-###########################################################################################################################################################################################
-
-###########################################################################################################################################################################################
 ### RICCARDO 19_3_19
-l0l2_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
-l0l2_mm += ' && l2_pt > 15 && abs(l2_eta) < 2.4 && l2_id_t == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2'  # l2 genuine 
+l0l2_mm  = 'l0_pt > 25 && abs(l0_eta) < 2.4 && l0_id_m == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2'      # l0 genuine
+l0l2_mm += ' && l2_pt > 10 && abs(l2_eta) < 2.4 && l2_id_m == 1 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_03 < 0.2'  # l2 genuine 
 l0l2_mm += ' && hnl_q_02 == 0'                                                                                                        # opposite charge
 
-l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
+l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
+#l1_e_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 
-l1_e_loose += ' && l1_reliso_rho_04 < 1.0'                                                                                            # reliso bound for LOOSE cf. checkIso_mem_220319 
+#l1_e_loose += ' && l1_reliso_rho_03 < .35'                                                                                            # reliso bound for LOOSE cf. checkIso_mem_220319 
 
-l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
-l1_e_lnt   = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_04 > 0.2)'
+l1_e_tight = l1_e_loose + ' && l1_MediumNoIso == 1 && l1_reliso_rho_03 < 0.2'
+l1_e_lnt   = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_03 > 0.2)'
 
 ### LET'S DO THE SAME FOR MMM 22_3_19
-l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
+l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.4 && abs(l1_dz) < 2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
+#l1_m_loose += ' && l1_gen_match_pdgid != 22'                                                                                          # no conversions 
 
-l1_m_loose += ' && l1_reliso_rho_04 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
+#l1_m_loose += ' && l1_reliso_rho_03 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
 
-l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
-l1_m_lnt   = l1_m_loose + ' && (l1_Medium == 0 || l1_reliso_rho_04 > 0.2)'
+l1_m_tight = l1_m_loose + ' && l1_Medium == 1 && l1_reliso_rho_03 < 0.2'
+l1_m_lnt   = l1_m_loose + ' && (l1_Medium == 0 || l1_reliso_rho_03 > 0.2)'
 
-l0l1_mm  = 'l0_pt > 27 && abs(l0_eta) < 2.4 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
-l0l1_mm += ' && l1_pt > 15 && abs(l1_eta) < 2.4 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2'  # l1 genuine 
+l0l1_mm  = 'l0_pt > 25 && abs(l0_eta) < 2.4 && l0_id_m == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2'      # l0 genuine
+l0l1_mm += ' && l1_pt > 10 && abs(l1_eta) < 2.4 && l1_id_m == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2'  # l1 genuine 
 l0l1_mm += ' && hnl_q_01 == 0'                                                                                                        # opposite charge
 
-l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 0.2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
-l2_m_loose += ' && l2_gen_match_pdgid != 22'                                                                                          # no conversions 
+l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
 
+#l2_m_loose += ' && l2_reliso_rho_03 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
 
-l2_m_loose += ' && l2_reliso_rho_04 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
-
-l2_m_tight = l2_m_loose + ' && l2_Medium == 1 && l2_reliso_rho_04 < 0.2'
-l2_m_lnt   = l2_m_loose + ' && (l2_Medium == 0 || l2_reliso_rho_04 > 0.2)'
+l2_m_tight = l2_m_loose + ' && l2_Medium == 1 && l2_reliso_rho_03 < 0.2'
+l2_m_lnt   = l2_m_loose + ' && (l2_Medium == 0 || l2_reliso_rho_03 > 0.2)'
 
 ### AND EEM
-l0l1_ee  = 'l0_pt > 27 && abs(l0_eta) < 2.5 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2'      # l0 genuine
-l0l1_ee += ' && l1_pt > 15 && abs(l1_eta) < 2.5 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2'  # l1 genuine 
+l0l1_ee  = 'l0_pt > 27 && abs(l0_eta) < 2.5 && l0_id_t == 1 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2'      # l0 genuine
+l0l1_ee += ' && l1_pt > 15 && abs(l1_eta) < 2.5 && l1_id_t == 1 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2'  # l1 genuine 
 l0l1_ee += ' && hnl_q_01 == 0'                                                                                                        # opposite charge
 ###########################################################################################################################################################################################
 ### ENERGY-IN-CONE CORRECTED PT
 ###########################################################################################################################################################################################
-PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso04_rel_rhoArea<0.15) ) + ( (hnl_iso04_rel_rhoArea>=0.15) * ( hnl_hn_vis_pt * (1. + hnl_iso04_rel_rhoArea - 0.15) ) )  )'
-PTCONEL1 = '(  ( l1_pt * (l1_reliso_rho_04<0.15) ) + ( (l1_reliso_rho_04>=0.15) * ( l1_pt * (1. + l1_reliso_rho_04 - 0.15) ) )  )'
-PTCONEL2 = '(  ( l2_pt * (l2_reliso_rho_04<0.15) ) + ( (l2_reliso_rho_04>=0.15) * ( l2_pt * (1. + l2_reliso_rho_04 - 0.15) ) )  )'
+PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )'
+PTCONEL1 = '(  ( l1_pt * (l1_reliso_rho_03<0.2) ) + ( (l1_reliso_rho_03>=0.2) * ( l1_pt * (1. + l1_reliso_rho_03 - 0.2) ) )  )'
+PTCONEL2 = '(  ( l2_pt * (l2_reliso_rho_03<0.2) ) + ( (l2_reliso_rho_03>=0.2) * ( l2_pt * (1. + l2_reliso_rho_03 - 0.2) ) )  )'
 ###########################################################################################################################################################################################
 ### BINNING FOR CLOSURE TEST 
 ###########################################################################################################################################################################################
@@ -363,6 +308,9 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
     if mode == 'sfr':
         mshReg  = 'hnl_w_vis_m > 80 && hnl_dr_12 > 0.3'
+        mshReg  = 'hnl_dr_12 > 0.3' # RIC: FIRST DO VALIDITY TEST OF THE METHOD
+        if ch == 'mem':
+            mshReg  += ' && l1_gen_match_pdgid != 22'
 
     if mode == 'dfr':
         mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 < 0.3'
@@ -385,14 +333,15 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
     
     ### PREPARE TREES
     t = None
-    t = rt.TChain('tree')
-    t.Add(DYBB_dir + suffix)
-    t.Add(DY10_dir + suffix)
-    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
-    t.Add(TT_dir + suffix)
-#    t.Add(W_dir + suffix)
-    t.Add(W_ext_dir + suffix)
+#    t = rt.TChain('tree')
+#    t.Add(DYBB_dir + suffix)
+#    t.Add(DY10_dir + suffix)
+#    t.Add(DY50_dir + suffix)
+#    t.Add(DY50_ext_dir + suffix)
+#    t.Add(TT_dir + suffix)
+##    t.Add(W_dir + suffix)
+#    t.Add(W_ext_dir + suffix)
+    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -401,6 +350,7 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
         mode021 = True
         l1_loose += ' && hnl_dr_01 > 0.3'                                                        # no conversions, only use this to measure t2l ratio 
+        l1_loose += ' && ( (l1_reliso_rho_03 < 0.6 && abs(l1_eta) < 0.8) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 0.8) )'
 
         f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
 
@@ -496,6 +446,7 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
     l_eta = None
     l_eta  = OrderedDict()
     l_eta['_eta_all'] = '1 == 1'
+    l_cuts_sfr = ['1 == 1','1 == 1','1 == 1']
 
     if eta_split == True: 
 
@@ -503,6 +454,8 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
             l_eta = None
             l_eta = OrderedDict()
             l_eta ['_eta_00t08'] = 'abs(l1_eta) < 0.8'; l_eta ['_eta_08t15'] = 'abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479'; l_eta ['_eta_15t25'] = 'abs(l1_eta) > 1.479 && abs(l1_eta) < 2.5'
+
+            l_cuts_sfr = ['l1_reliso_rho_03 < 0.6','l1_reliso_rho_03 < 0.35','l1_reliso_rho_03 < 0.35']
 
         if ch == 'mmm' or ch == 'eem':
             l_eta = None
@@ -524,13 +477,15 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
     ### PREPARE TREES
     t = None
     t = rt.TChain('tree')
-    t.Add(DYBB_dir + suffix)
-    t.Add(DY10_dir + suffix)
-    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
-    t.Add(TT_dir + suffix)
-#    t.Add(W_dir + suffix)
-    t.Add(W_ext_dir + suffix)
+#    t = rt.TChain('tree')
+#    t.Add(DYBB_dir + suffix)
+#    t.Add(DY10_dir + suffix)
+#    t.Add(DY50_dir + suffix)
+#    t.Add(DY50_ext_dir + suffix)
+#    t.Add(TT_dir + suffix)
+##    t.Add(W_dir + suffix)
+#    t.Add(W_ext_dir + suffix)
+    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -580,14 +535,14 @@ def checkTTLratio_JetFlavor(ch='mmm',eta_split=True,sfr=True,dfr=False,fullSplit
             print '\tflavours 021 defined.'
 
             if fullSplit == False:
-                dfl_021_light_eta0 = dfl_021_light.Filter(l_eta[l_eta.keys()[0]])
-                dfl_021_heavy_eta0 = dfl_021_heavy.Filter(l_eta[l_eta.keys()[0]])
+                dfl_021_light_eta0 = dfl_021_light.Filter(l_eta[l_eta.keys()[0]] + ' && ' + l_cuts_sfr[0])
+                dfl_021_heavy_eta0 = dfl_021_heavy.Filter(l_eta[l_eta.keys()[0]] + ' && ' + l_cuts_sfr[0])
 
-                dfl_021_light_eta1 = dfl_021_light.Filter(l_eta[l_eta.keys()[1]])
-                dfl_021_heavy_eta1 = dfl_021_heavy.Filter(l_eta[l_eta.keys()[1]])
+                dfl_021_light_eta1 = dfl_021_light.Filter(l_eta[l_eta.keys()[1]] + ' && ' + l_cuts_sfr[1])
+                dfl_021_heavy_eta1 = dfl_021_heavy.Filter(l_eta[l_eta.keys()[1]] + ' && ' + l_cuts_sfr[1])
 
-                dfl_021_light_eta2 = dfl_021_light.Filter(l_eta[l_eta.keys()[2]])
-                dfl_021_heavy_eta2 = dfl_021_heavy.Filter(l_eta[l_eta.keys()[2]])
+                dfl_021_light_eta2 = dfl_021_light.Filter(l_eta[l_eta.keys()[2]] + ' && ' + l_cuts_sfr[2])
+                dfl_021_heavy_eta2 = dfl_021_heavy.Filter(l_eta[l_eta.keys()[2]] + ' && ' + l_cuts_sfr[2])
 
             if fullSplit == True:
                 dfl_021_c_eta0     = dfl_021_c    .Filter(l_eta[l_eta.keys()[0]])
@@ -1169,11 +1124,13 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
 
     print '\n\tmode: %s\n'%ch
     l_eta  = {'_eta_all' : '1 == 1'}
+    l_cuts_sfr = ['1 == 1', '1 == 1', '1 == 1']
 
     if eta_split == True: 
 
         if ch == 'mem':
             l_eta = {'_eta_00t08' : 'abs(l1_eta) < 0.8', '_eta_08t15' : 'abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479', '_eta_15t25' : 'abs(l1_eta) > 1.479 && abs(l1_eta) < 2.5'}
+            l_cuts_sfr = ['l1_reliso_rho_03 < 0.6','l1_reliso_rho_03 < 0.35','l1_reliso_rho_03 < 0.35']
 
         if ch == 'mmm':
             l_eta = {'_eta_00t12' : 'abs(l1_eta) < 1.2', '_eta_12t21' : 'abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1', '_eta_21t24' : 'abs(l1_eta) > 2.1 && abs(l1_eta) < 2.4'}
@@ -1191,25 +1148,29 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
 
     ### APPLICATION REGION
     appReg = 'hnl_w_vis_m < 80'
+    appReg = '1 == 1' # RIC: FIRST DO VALIDITY TEST OF THE METHOD
 
+    ii = 0
     for eta in l_eta.keys():
         h_pt_1f = {}; h_pt_2f = []; i = 0
 
         ### PREPARE TREES
         t = None
-        t = rt.TChain('tree')
-        t.Add(DYBB_dir + suffix)
-        t.Add(DY10_dir + suffix)
-        t.Add(DY50_dir + suffix)
-        t.Add(DY50_ext_dir + suffix)
-        t.Add(TT_dir + suffix)
-#        t.Add(W_dir + suffix)
-        t.Add(W_ext_dir + suffix)
+    #    t = rt.TChain('tree')
+    #    t.Add(DYBB_dir + suffix)
+    #    t.Add(DY10_dir + suffix)
+    #    t.Add(DY50_dir + suffix)
+    #    t.Add(DY50_ext_dir + suffix)
+    #    t.Add(TT_dir + suffix)
+    ##    t.Add(W_dir + suffix)
+    #    t.Add(W_ext_dir + suffix)
+        fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
         df = rdf(t)
         print'\n\tchain made.'
 
 #        cuts_SFR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
-        cuts_SFR = appReg + ' && hnl_dr_12 > 0.3 && ' + l_eta[eta]
+        cuts_SFR = appReg + ' && hnl_dr_12 > 0.3 && ' + l_eta[eta] + ' && ' + l_cuts_sfr[ii]
+        ii += 1
         print '\n\t cuts: %s'%cuts_SFR
         
         if isData == False:
@@ -1218,6 +1179,7 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
 
             if ch == 'mem':
                 mode021 = True
+                l1_loose += ' && ( (l1_reliso_rho_03 < 0.6 && abs(l1_eta) < 0.8) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 0.8) )'
                 
             if ch == 'mmm':
                 mode021 = True
@@ -1240,9 +1202,21 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
                 print '\n\tlnt df 021 events:', dfl0_021.Count().GetValue()
 
                 dflnt_021 = dfl0_021.Define('fover1minusf021', selectBins(ch=ch,lep=1))
+                if label == True:
+                    dflntDYbb_021   = dflnt_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dflntDY50_021   = dflnt_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dflntTT_021     = dflnt_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dflnt_extConv   = dflnt_021.Filter('abs(l1_gen_match_pdgid) == 22') 
+                    dflnt_intConv   = dflnt_021.Filter('l1_gen_match_isPromptFinalState == 1') 
                 print '\n\tweight f/(1-f)  021 defined. (without lumi/data normalization)'
 
-                dft_021   = dfl_021.Filter(l1_tight)
+                dft_021     = dfl_021.Filter(l1_tight)
+                if label == True:
+                    dftDYbb_021   = dft_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftDY50_021   = dft_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftTT_021     = dft_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dft_extConv   = dft_021.Filter('abs(l1_gen_match_pdgid) == 22') 
+                    dft_intConv   = dft_021.Filter('l1_gen_match_isPromptFinalState == 1') 
                 print '\n\ttight df 021 defined.'
 
                 print '\n\ttight df 021 events:', dft_021.Count().GetValue()
@@ -1278,35 +1252,76 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
 
         if mode021 == True:
 
-            obs_021_pt         = dft_021.Histo1D(('obs_021_pt',         'obs_021_pt',        len(b_pt)-1,     b_pt),     'ptcone021'      )
-            obs_021_dr_12      = dft_021.Histo1D(('obs_021_dr_12',      'obs_021_dr_12',     len(b_dR)-1,     b_dR),     'hnl_dr_12'      )
-            obs_021_2disp      = dft_021.Histo1D(('obs_021_2disp',      'obs_021_2disp',     len(b_2d)-1,     b_2d),     'hnl_2d_disp'    )
-            obs_021_2disp_sig  = dft_021.Histo1D(('obs_021_2disp_sig',  'obs_021_2disp_sig', len(b_2d_sig)-1, b_2d_sig), 'hnl_2d_disp_sig')
-            obs_021_m_dimu     = dft_021.Histo1D(('obs_021_m_dimu',     'obs_021_m_dimu',    len(b_m)-1,      b_m),      'hnl_m_12'       )
-            obs_021_BGM_dimu   = dft_021.Histo1D(('obs_021_BGM_dimu',   'obs_021_BGM_dimu',  len(b_M)-1,      b_M),      'hnl_m_12'       )
-            obs_021_BGM_01     = dft_021.Histo1D(('obs_021_BGM_01',     'obs_021_BGM_01',    len(b_M)-1,      b_M),      'hnl_m_01'       )
-            obs_021_BGM_02     = dft_021.Histo1D(('obs_021_BGM_02',     'obs_021_BGM_02',    len(b_M)-1,      b_M),      'hnl_m_02'       )
-            obs_021_m_triL     = dft_021.Histo1D(('obs_021_m_triL',     'obs_021_m_triL',    len(b_M)-1,      b_M),      'hnl_w_vis_m'    )
+            if label == False:
+                obs_021_pt         = dft_021.Histo1D(('obs_021_pt',         'obs_021_pt',        len(b_pt)-1,     b_pt),     'ptcone021'      )
+                obs_021_dr_12      = dft_021.Histo1D(('obs_021_dr_12',      'obs_021_dr_12',     len(b_dR)-1,     b_dR),     'hnl_dr_12'      )
+                obs_021_2disp      = dft_021.Histo1D(('obs_021_2disp',      'obs_021_2disp',     len(b_2d)-1,     b_2d),     'hnl_2d_disp'    )
+                obs_021_2disp_sig  = dft_021.Histo1D(('obs_021_2disp_sig',  'obs_021_2disp_sig', len(b_2d_sig)-1, b_2d_sig), 'hnl_2d_disp_sig')
+                obs_021_m_dimu     = dft_021.Histo1D(('obs_021_m_dimu',     'obs_021_m_dimu',    len(b_m)-1,      b_m),      'hnl_m_12'       )
+                obs_021_BGM_dimu   = dft_021.Histo1D(('obs_021_BGM_dimu',   'obs_021_BGM_dimu',  len(b_M)-1,      b_M),      'hnl_m_12'       )
+                obs_021_BGM_01     = dft_021.Histo1D(('obs_021_BGM_01',     'obs_021_BGM_01',    len(b_M)-1,      b_M),      'hnl_m_01'       )
+                obs_021_BGM_02     = dft_021.Histo1D(('obs_021_BGM_02',     'obs_021_BGM_02',    len(b_M)-1,      b_M),      'hnl_m_02'       )
+                obs_021_m_triL     = dft_021.Histo1D(('obs_021_m_triL',     'obs_021_m_triL',    len(b_M)-1,      b_M),      'hnl_w_vis_m'    )
 
-            whd_021_pt         = dflnt_021.Histo1D(('whd_021_pt',         'whd_021_pt',        len(b_pt)-1,      b_pt),     'ptcone021',         'fover1minusf021')
-            whd_021_dr_12      = dflnt_021.Histo1D(('whd_021_dr_12',      'whd_021_dr_12',     len(b_dR)-1,      b_dR),     'hnl_dr_12',         'fover1minusf021')
-            whd_021_2disp      = dflnt_021.Histo1D(('whd_021_2disp',      'whd_021_2disp',     len(b_2d)-1,      b_2d),     'hnl_2d_disp',       'fover1minusf021')
-            whd_021_2disp_sig  = dflnt_021.Histo1D(('whd_021_2disp_sig',  'whd_021_2disp_sig', len(b_2d_sig)-1,  b_2d_sig), 'hnl_2d_disp_sig',   'fover1minusf021')
-            whd_021_m_dimu     = dflnt_021.Histo1D(('whd_021_m_dimu',     'whd_021_m_dimu',    len(b_m)-1,       b_m),      'hnl_m_12',          'fover1minusf021')
-            whd_021_BGM_dimu   = dflnt_021.Histo1D(('whd_021_BGM_dimu',   'whd_021_BGM_dimu',  len(b_M)-1,       b_M),      'hnl_m_12',          'fover1minusf021')
-            whd_021_BGM_01     = dflnt_021.Histo1D(('whd_021_BGM_01',     'whd_021_BGM_01',    len(b_M)-1,       b_M),      'hnl_m_01',          'fover1minusf021')
-            whd_021_BGM_02     = dflnt_021.Histo1D(('whd_021_BGM_02',     'whd_021_BGM_02',    len(b_M)-1,       b_M),      'hnl_m_02',          'fover1minusf021')
-            whd_021_m_triL     = dflnt_021.Histo1D(('whd_021_m_triL',     'whd_021_m_triL',    len(b_M)-1,       b_M),      'hnl_w_vis_m',       'fover1minusf021')
+                whd_021_pt         = dflnt_021.Histo1D(('whd_021_pt',         'whd_021_pt',        len(b_pt)-1,      b_pt),     'ptcone021',         'fover1minusf021')
+                whd_021_dr_12      = dflnt_021.Histo1D(('whd_021_dr_12',      'whd_021_dr_12',     len(b_dR)-1,      b_dR),     'hnl_dr_12',         'fover1minusf021')
+                whd_021_2disp      = dflnt_021.Histo1D(('whd_021_2disp',      'whd_021_2disp',     len(b_2d)-1,      b_2d),     'hnl_2d_disp',       'fover1minusf021')
+                whd_021_2disp_sig  = dflnt_021.Histo1D(('whd_021_2disp_sig',  'whd_021_2disp_sig', len(b_2d_sig)-1,  b_2d_sig), 'hnl_2d_disp_sig',   'fover1minusf021')
+                whd_021_m_dimu     = dflnt_021.Histo1D(('whd_021_m_dimu',     'whd_021_m_dimu',    len(b_m)-1,       b_m),      'hnl_m_12',          'fover1minusf021')
+                whd_021_BGM_dimu   = dflnt_021.Histo1D(('whd_021_BGM_dimu',   'whd_021_BGM_dimu',  len(b_M)-1,       b_M),      'hnl_m_12',          'fover1minusf021')
+                whd_021_BGM_01     = dflnt_021.Histo1D(('whd_021_BGM_01',     'whd_021_BGM_01',    len(b_M)-1,       b_M),      'hnl_m_01',          'fover1minusf021')
+                whd_021_BGM_02     = dflnt_021.Histo1D(('whd_021_BGM_02',     'whd_021_BGM_02',    len(b_M)-1,       b_M),      'hnl_m_02',          'fover1minusf021')
+                whd_021_m_triL     = dflnt_021.Histo1D(('whd_021_m_triL',     'whd_021_m_triL',    len(b_M)-1,       b_M),      'hnl_w_vis_m',       'fover1minusf021')
 
-            h_list_021 = { 'pt'          : [whd_021_pt,        obs_021_pt,        ],
-                           'dr_12'       : [whd_021_dr_12,     obs_021_dr_12,     ],
-                           '2disp'       : [whd_021_2disp,     obs_021_2disp,     ],
-                           '2disp_sig'   : [whd_021_2disp_sig, obs_021_2disp_sig, ],
-                           'm_dimu'      : [whd_021_m_dimu,    obs_021_m_dimu,    ],
-                           'BGM_dimu'    : [whd_021_BGM_dimu,  obs_021_BGM_dimu,  ],
-                           'BGM_01'      : [whd_021_BGM_01,    obs_021_BGM_01,    ],
-                           'BGM_02'      : [whd_021_BGM_02,    obs_021_BGM_02,    ],
-                           'm_triL'      : [whd_021_m_triL,    obs_021_m_triL,    ]}
+                h_list_021 = { 'pt'          : [whd_021_pt,        obs_021_pt,        ],
+                               'dr_12'       : [whd_021_dr_12,     obs_021_dr_12,     ],
+                               '2disp'       : [whd_021_2disp,     obs_021_2disp,     ],
+                               '2disp_sig'   : [whd_021_2disp_sig, obs_021_2disp_sig, ],
+                               'm_dimu'      : [whd_021_m_dimu,    obs_021_m_dimu,    ],
+                               'BGM_dimu'    : [whd_021_BGM_dimu,  obs_021_BGM_dimu,  ],
+                               'BGM_01'      : [whd_021_BGM_01,    obs_021_BGM_01,    ],
+                               'BGM_02'      : [whd_021_BGM_02,    obs_021_BGM_02,    ],
+                               'm_triL'      : [whd_021_m_triL,    obs_021_m_triL,    ]}
+
+            if label == True:
+
+            VARS = {'pt':        [len(b_pt)-1,     b_pt,     'ptcone012'      ],
+                    'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      ],
+                    '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    ],
+                    '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig'],
+                    'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       ],
+                    'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       ],
+                    'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       ],
+                    'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       ],
+                    'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    ]}
+
+                  dft_021_L = {'DYbb' : dftDYbb_021,   'DY50' : dftDY50_021,   'TT' : dftTT_021,   'extConv' : dft_extConv_021,   'intConv' : dft_intConv_021  }
+                dflnt_021_L = {'DYbb' : dflntDYbb_021, 'DY50' : dflntDY50_021, 'TT' : dflntTT_021, 'extConv' : dflnt_extConv_021, 'intConv' : dflnt_intConv_021 }
+
+                _H_DFT_021   = OrderedDict()
+                _H_DFLNT_021 = OrderedDict()
+                H_DFT_021    = OrderedDict()
+                H_DFLNT_021  = OrderedDict()
+
+                for v in VARS.keys():
+                    _H_DFT_021[v]   : OrderedDict()
+                    _H_DFLNT_021[v] : OrderedDict()
+                    H_DFT_021[v]    : OrderedDict()
+                    H_DFLNT_021[v]  : OrderedDict()
+
+                    for DF in dft_021_L.keys():
+                        _H_DFT_021[v][DF]   : dft_021_L[DF]  .Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2]))
+                        _H_DFLNT_021[v][DF] : dflnt_021_L[DF].Histo1D(('whd_021_%s'%v,'whd_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2]), 'fover1minusf021')
+
+                for v in VARS.keys():
+                    for DF in dft_021_L.keys():
+                        print '\n\tDrawing:', v, DF
+                        H_DFT_021[v][DF]   : _H_DFT_021[v][DF]  .GetPtr()
+                        H_DFLNT_021[v][DF] : _H_DFLNT_021[v][DF].GetPtr()
+
+                    stack = rt.THStack()    
+                    c = rt.TCanvas('asd','asd'); c.cd()
+
 
         if mode012 == True:
 
@@ -1351,46 +1366,47 @@ def closureTest(ch='mmm', eta_split=False, isData=False, VLD=False):
                   'BGM_02'      : [b_M,      ';m(l_{0},  l_{2}) [GeV]; Counts'], 
                   'm_triL'      : [b_M,      ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'], }
 
-        for k in info.keys():
+        if label == False:
+            for k in info.keys():
 
-            print'\n\tdrawing', k 
+                print'\n\tdrawing', k 
 
-            whd_021 = rt.TH1F('whd_021_'+k,'whd_021_'+k,len(info[k][0])-1,info[k][0])
-            obs_021 = rt.TH1F('obs_021_'+k,'obs_021_'+k,len(info[k][0])-1,info[k][0])
+                whd_021 = rt.TH1F('whd_021_'+k,'whd_021_'+k,len(info[k][0])-1,info[k][0])
+                obs_021 = rt.TH1F('obs_021_'+k,'obs_021_'+k,len(info[k][0])-1,info[k][0])
 
-            whd_012 = rt.TH1F('whd_012_'+k,'whd_012_'+k,len(info[k][0])-1,info[k][0])
-            obs_012 = rt.TH1F('obs_012_'+k,'obs_012_'+k,len(info[k][0])-1,info[k][0])
+                whd_012 = rt.TH1F('whd_012_'+k,'whd_012_'+k,len(info[k][0])-1,info[k][0])
+                obs_012 = rt.TH1F('obs_012_'+k,'obs_012_'+k,len(info[k][0])-1,info[k][0])
 
-            if mode021 == True:
-                whd_021 = h_list_021[k][0].GetPtr()
-                obs_021 = h_list_021[k][1].GetPtr()
+                if mode021 == True:
+                    whd_021 = h_list_021[k][0].GetPtr()
+                    obs_021 = h_list_021[k][1].GetPtr()
 
-            if mode012 == True:
-                whd_012 = h_list_012[k][0].GetPtr()
-                obs_012 = h_list_012[k][1].GetPtr()
+                if mode012 == True:
+                    whd_012 = h_list_012[k][0].GetPtr()
+                    obs_012 = h_list_012[k][1].GetPtr()
 
-            whd_012.Add(whd_021)
-            obs_012.Add(obs_021)
+                whd_012.Add(whd_021)
+                obs_012.Add(obs_021)
 
-            whd = whd_012; obs = obs_012
+                whd = whd_012; obs = obs_012
 
-            if k == 'pt':
-                print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(whd.GetEntries(), obs.GetEntries())
+                if k == 'pt':
+                    print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(whd.GetEntries(), obs.GetEntries())
 
-            c = rt.TCanvas(k, k)
-            whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
-            whd.SetTitle(info[k][1])
-            obs.SetTitle(info[k][1])
-            obs.SetMarkerColor(rt.kMagenta+2)
-            obs.Draw()
-            whd.Draw('histEsame')
-            leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-            leg.AddEntry(obs, 'observed')
-            leg.AddEntry(whd, 'expected')
-            leg.Draw()
-            pf.showlogoprelimsim('CMS')
-            pf.showlumi('SFR_'+ch+eta)
-            save(c, sample='DDE', ch=ch+eta, DIR=plotDir)
+                c = rt.TCanvas(k, k)
+                whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
+                whd.SetTitle(info[k][1])
+                obs.SetTitle(info[k][1])
+                obs.SetMarkerColor(rt.kMagenta+2)
+                obs.Draw()
+                whd.Draw('histEsame')
+                leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
+                leg.AddEntry(obs, 'observed')
+                leg.AddEntry(whd, 'expected')
+                leg.Draw()
+                pf.showlogoprelimsim('CMS')
+                pf.showlumi('SFR_'+ch+eta)
+                save(c, sample='DDE', ch=ch+eta, DIR=plotDir)
 
     sys.stderr = sys.__stderr__
     sys.stdout = sys.__stdout__
@@ -1651,7 +1667,7 @@ def prepareDF(ch='mem'):
 ######################################################################################
 
 ######################################################################################
-def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,dR='04',fullSplit=False):
+def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,dR='03',fullSplit=False):
 
     plotDir = makeFolder('checkIsoPDF_%s' %ch)
     print '\n\tplotDir:', plotDir
@@ -1685,14 +1701,15 @@ def checkIsoPDF_JetFlavour(ch='mmm',ID='No',eta_split=True,sfr=True,dR='04',full
 
     ### PREPARE TREES
     t = None
-    t = rt.TChain('tree')
-    t.Add(DYBB_dir + suffix)
-    t.Add(DY10_dir + suffix)
-    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
-    t.Add(TT_dir + suffix)
-#    t.Add(W_dir + suffix)
-    t.Add(W_ext_dir + suffix)
+#    t = rt.TChain('tree')
+#    t.Add(DYBB_dir + suffix)
+#    t.Add(DY10_dir + suffix)
+#    t.Add(DY50_dir + suffix)
+#    t.Add(DY50_ext_dir + suffix)
+#    t.Add(TT_dir + suffix)
+##    t.Add(W_dir + suffix)
+#    t.Add(W_ext_dir + suffix)
+    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -2045,7 +2062,7 @@ def selectCuts(channel):
         LOOSE          =   DFR_LOOSE_MEM
         LOOSENOTTIGHT  =   DFR_LOOSENOTTIGHT_MEM
 
-        l0l1           = l0l1_me
+        l0l1           = None
         l0l2           = l0l2_mm
         l1_loose       = l1_e_loose
         l2_loose       = l2_m_loose
