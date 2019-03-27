@@ -28,6 +28,7 @@ if platform.platform() == 'Linux-2.6.32-754.3.5.el6.x86_64-x86_64-with-redhat-6.
    eos_david = '/t3home/vstampf/eos-david/'
 
 pf.setpfstyle()
+#rt.TStyle.SetOptStat(0)
 
 pi = rt.TMath.Pi()
 ###########################################################################################################################################################################################
@@ -216,7 +217,7 @@ b_2d_sig    = np.arange(0., 105, 5)
 #b_m         = np.arange(0., 5.25, 0.25)
 b_m         = np.arange(0.,11,1)
 #b_M         = np.arange(0.,202,2)
-b_M         = np.arange(0.,210,10)
+b_M         = np.arange(0.,204,4)
 b_eta       = np.array([0., 1.2, 2.1, 2.4]) 
 #b_rho       = np.arange(-100.,100,4)
 b_rho       = np.arange(0.,15,0.25)
@@ -310,7 +311,8 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
         mshReg  = 'hnl_w_vis_m > 80 && hnl_dr_12 > 0.3'
         mshReg  = 'hnl_dr_12 > 0.3' # RIC: FIRST DO VALIDITY TEST OF THE METHOD
         if ch == 'mem':
-            mshReg  += ' && l1_gen_match_pdgid != 22'
+#            mshReg  += ' && l1_gen_match_pdgid != 22'
+            mshReg  += ' && l1_gen_match_pdgid != 22 && label == 1' # DY50 only
 
     if mode == 'dfr':
         mshReg = 'hnl_w_vis_m > 80 && hnl_dr_12 < 0.3'
@@ -336,12 +338,12 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 #    t = rt.TChain('tree')
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
-#    t.Add(DY50_dir + suffix)
-#    t.Add(DY50_ext_dir + suffix)
+    t.Add(DY50_dir + suffix)
+    t.Add(DY50_ext_dir + suffix)
 #    t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
-    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
+#    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -364,7 +366,6 @@ def make_FR_map(ch='mem',mode='sfr',isData=False):
 
         f0_012 = df.Filter(l0l1 + ' && ' + l2_loose + ' && ' + mshReg)
         f0_021 = df.Filter(l0l2 + ' && ' + l1_loose + ' && ' + mshReg)
-
 
     if mode021 == True:
 
@@ -1148,7 +1149,8 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
 
     ### APPLICATION REGION
     appReg = 'hnl_w_vis_m < 80'
-    appReg = '1 == 1' # RIC: FIRST DO VALIDITY TEST OF THE METHOD
+    appReg = '1 == 1' # RIC: FIRST DO VALIDITY TEST OF THE METHOD (26_03)
+#    appReg = 'hnl_w_vis_m > 100' # RIC: Make me happy (27_03)
 
     ii = 0
     for eta in l_eta.keys():
@@ -1170,6 +1172,7 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
 
 #        cuts_SFR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
         cuts_SFR = appReg + ' && hnl_dr_12 > 0.3 && ' + l_eta[eta] + ' && ' + l_cuts_sfr[ii]
+        cuts_SFR = appReg + ' && ' + l_eta[eta] + ' && ' + l_cuts_sfr[ii] # 27_3_19
         ii += 1
         print '\n\t cuts: %s'%cuts_SFR
         
@@ -1207,10 +1210,10 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
                 dft_021     = dfl_021.Filter(l1_tight)
                 if label == True:
                     dftDYbb_021      = dft_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dftDY50_021      = dft_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+                    dftDY50_021      = dft_021.Filter('label == 1')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState != 1')
                     dftTT_021        = dft_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dftExtConv_021   = dft_021.Filter('abs(l1_gen_match_pdgid) == 22') 
-                    dftIntConv_021   = dft_021.Filter('l1_gen_match_isPromptFinalState == 1') 
+                    dftExtConv_021   = dft_021.Filter('label == 1 && abs(l1_gen_match_pdgid) == 22') 
+                    dftIntConv_021   = dft_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1') 
                 print '\n\ttight df 021 defined.'
 
                 print '\n\ttight df 021 events:', dft_021.Count().GetValue()
@@ -1239,10 +1242,10 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
                 dft_012   = dfl_012.Filter(l2_tight)
                 if label == True:
                     dftDYbb_012      = dft_012.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dftDY50_012      = dft_012.Filter('label == 1 && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState == 0')
+                    dftDY50_012      = dft_012.Filter('label == 1')# && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState != 1')
                     dftTT_012        = dft_012.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-                    dftExtConv_012   = dft_012.Filter('abs(l2_gen_match_pdgid) == 22') 
-                    dftIntConv_012   = dft_012.Filter('l2_gen_match_isPromptFinalState == 1') 
+                    dftExtConv_012   = dft_012.Filter('label == 1 && abs(l2_gen_match_pdgid) == 22') 
+                    dftIntConv_012   = dft_012.Filter('label == 1 && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState == 1') 
                 print '\n\ttight df 012 defined.'
 
                 print '\n\ttight df 012 events:', dft_012.Count().GetValue()
@@ -1272,16 +1275,21 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
         for v in VARS.keys():
             _H_OBS_021[v] = OrderedDict()
             H_OBS_021[v]  = OrderedDict()
+            _H_WHD_021[v] = OrderedDict()
+            H_WHD_021[v]  = OrderedDict()
 
             _H_OBS_012[v] = OrderedDict()
             H_OBS_012[v]  = OrderedDict()
+            _H_WHD_012[v] = OrderedDict()
+            H_WHD_012[v]  = OrderedDict()
 
         if mode021 == True:
 
             VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone021'      , ';p_{T}^{cone} [GeV]; Counts']
 
-            dft_021_L = {'DYbb' : dftDYbb_021,   'DY50' : dftDY50_021,   'TT' : dftTT_021,   'ExtConv' : dftExtConv_021,   'IntConv' : dftIntConv_021  }
-            KEYS = dft_021_L.keys()
+            if label == True:
+                dft_021_L = {'DY50' : dftDY50_021,   'IntConv' : dftIntConv_021,   'ExtConv' : dftExtConv_021}#, 'DYbb' : dftDYbb_021,   'TT' : dftTT_021    }
+                KEYS = dft_021_L.keys()
 
             for v in VARS.keys():
 
@@ -1289,6 +1297,7 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
                 if label == False:
                     _H_OBS_021[v] = dft_021.Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
 
+                if label == True:
                     for DF in dft_021_L.keys():
                         _H_OBS_021[v][DF] = dft_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
 
@@ -1296,8 +1305,9 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
 
             VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone012'      , ';p_{T}^{cone} [GeV]; Counts']
 
-            dft_012_L = {'DYbb' : dftDYbb_012,   'DY50' : dftDY50_012,   'TT' : dftTT_012,   'ExtConv' : dftExtConv_012,   'IntConv' : dftIntConv_012  }
-            KEYS = dft_012_L.keys()
+            if label == True:
+                dft_012_L = {'DY50' : dftDY50_012,    'ExtConv' : dftExtConv_012,   'IntConv' : dftIntConv_012}#,    'TT' : dftTT_012,   'DYbb' : dftDYbb_012,     }
+                KEYS = dft_012_L.keys()
 
             for v in VARS.keys():
 
@@ -1305,6 +1315,7 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
                 if label == False:
                     _H_OBS_012[v] = dft_012.Histo1D(('obs_012_%s'%v,'obs_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
 
+                if label == True:
                     for DF in dft_021_L.keys():
                         _H_OBS_012[v][DF] = dft_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
 
@@ -1312,10 +1323,14 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
 
             H_WHD_012[v] = rt.TH1F('whd_012_%s_'%(v),'whd_012_%s'%(v), VARS[v][0], VARS[v][1])
             H_WHD_021[v] = rt.TH1F('whd_021_%s_'%(v),'whd_021_%s'%(v), VARS[v][0], VARS[v][1])
+            if label == False:
+                H_OBS_012[v] = rt.TH1F('obs_012_%s'%(v),'obs_012_%s'%(v), VARS[v][0], VARS[v][1])           
+                H_OBS_021[v] = rt.TH1F('obs_021_%s'%(v),'obs_021_%s'%(v), VARS[v][0], VARS[v][1])           
 
-            for DF in KEYS:
-                H_OBS_012[v][DF] = rt.TH1F('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
-                H_OBS_021[v][DF] = rt.TH1F('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
+            if label == True:
+                for DF in KEYS:
+                    H_OBS_012[v][DF] = rt.TH1F('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
+                    H_OBS_021[v][DF] = rt.TH1F('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
 
             if mode021 == True:
                 H_WHD_021[v] = _H_WHD_021[v].GetPtr()
@@ -1336,37 +1351,69 @@ def closureTest(ch='mmm', eta_split=False, isData=False, label=True):
                         _H_OBS_012[v][DF] = dft_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
                         print '\n\tDrawing:', v, DF
                         H_OBS_012[v][DF]  = _H_OBS_012[v][DF].GetPtr()
-            
+
+            # STACK COLORS            
+            col = OrderedDict() 
+            col['TT']      = rt.kBlue+1
+            col['DYbb']    = rt.kRed+1
+            col['DY50']    = rt.kYellow+1
+            col['IntConv'] = rt.kRed+1
+            col['ExtConv'] = rt.kCyan+1
+            col['whd']     = rt.kGreen+1
+
             if label == True:
                 obs = rt.THStack('obs_%s'%v,'obs_%s'%v)
+                whd = rt.THStack('whd_%s'%v,'whd_%s'%v)
+                
                 for DF in KEYS:
                     H_OBS_012[v][DF].Add(H_OBS_021[v][DF])
-                    obs.Add(H_OBS_012[v][DF])
+                    if not DF == 'DY50':
+                        H_OBS_012[v][DF].SetFillColor(col[DF])
+                        H_OBS_012[v][DF].SetLineColor(rt.kBlack)
+                        H_OBS_012[v][DF].SetMarkerSize(0)
+                        H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
+#                    obs.Add(H_OBS_012[v][DF])
+
+                # WHD = SFR + INT & EXT CONVs // OBS = IS ONLY DY FOR NOW (27_03)
+                obs = H_OBS_012[v]['DY50'] 
+                obs.SetTitle(VARS[v][3])
+                obs.SetMarkerColor(rt.kMagenta+2)
+
+                whd.Add(H_WHD_012[v])
+                whd.Add(H_OBS_012[v]['IntConv'])
+                whd.Add(H_OBS_012[v]['ExtConv'])
+
             if label == False:
                 H_OBS_012[v].Add(H_OBS_021[v])
                 obs = H_OBS_012[v]
+                obs.SetTitle(VARS[v][3])
+                obs.SetMarkerColor(rt.kMagenta+2)
 
-            H_WHD_012[v].Add(H_WHD_021[v]); whd = H_WHD_012[v]
+            H_WHD_012[v].Add(H_WHD_021[v]); H_WHD_012[v].SetFillColor(col['whd']); H_WHD_012[v].SetLineColor(rt.kBlack); H_WHD_012[v].SetMarkerSize(0); H_WHD_012[v].SetMarkerColor(rt.kBlack)
 
             if v == 'pt':
-                if label == False: n_obs = obs.GetEntries()
+                if label == False: whd = H_WHD_012[v]; n_obs = obs.GetEntries(); n_whd = whd.GetEntries()
                 if label == True: 
                     n_obs = 0
                     for DF in KEYS: 
+                        print '\n\t', H_OBS_012[v][DF].GetEntries() 
                         n_obs += H_OBS_012[v][DF].GetEntries()
-                print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(whd.GetEntries(), n_obs)
+                        n_whd = H_WHD_012[v].GetEntries()
+                print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(n_whd, n_obs)
 
             c = rt.TCanvas(v, v); c.cd()
-            whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
-            whd.SetTitle(VARS[v][3])
-            if label == False:
-                obs.SetTitle(VARS[v][3])
-                obs.SetMarkerColor(rt.kMagenta+2)
-            obs.Draw()
-            whd.Draw('histEsame')
+#            whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
+#            whd.SetTitle(VARS[v][3])
+            whd.Draw('histE')
+            obs.Draw('same')
             leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
-            leg.AddEntry(obs, 'observed')
-            leg.AddEntry(whd, 'expected')
+            if label == False: 
+                leg.AddEntry(obs, 'observed')
+            if label == True: 
+                for DF in KEYS:
+                    if not DF == 'DY50': leg.AddEntry(H_OBS_012[v][DF], DF)
+                    if DF == 'DY50': leg.AddEntry(H_OBS_012[v][DF], 'observed')
+            leg.AddEntry(H_WHD_012[v], 'expected SFR')
             leg.Draw()
             pf.showlogoprelimsim('CMS')
             pf.showlumi('SFR_'+ch+eta)
