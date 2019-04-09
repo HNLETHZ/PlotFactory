@@ -67,6 +67,7 @@ DY10Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_
 TT_dir_mem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets/'  
 W_dir_mem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
 W_ext_dir_mem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
+data_B_mem      = eos+'ntuples/HN3Lv2.0/data/mem/2017B/Single_mu_2017B/HNLTreeProducer/tree.root'
 ###########################################################################################################################################################################################
 DYBBDir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYBB/'
 DY50Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50/'
@@ -95,8 +96,8 @@ W_ext_dir_eem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eem/WJetsToLNu_
 #######
 ## SKIMMED TREES
 ####
-skim_mem = '/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'
-skim_mmm = '/eos/user/v/vstampf/ntuples/mmm_merged.root'
+skim_mem = eos+'ntuples/mme_tree.root'
+skim_mmm = eos+'ntuples/mmm_merged.root'
 ###########################################################################################################################################################################################
 ##### GEN MATCHING: DELTA PHI PERIODICITY
 ###########################################################################################################################################################################################
@@ -201,8 +202,9 @@ DFR_MEM_T   =  DFR_MEM_L + ' && ' + l1_e_tight + ' && ' + l2_m_tight
               ##                 SINGLE FAKE RATE                   ##  
 ###########################################################################################################################################################################################
 ### SFR:: LOOSE CUTS OBTAINED THROUGH CDF HEAVY/LIGHT COMPARISON 
-SFR_MMM_L_CUT = ' && ( (l1_reliso_rho_03 < 0.42 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 1.2) )'
-SFR_MEM_L_CUT = ' && ( (l1_reliso_rho_03 < 0.6  && abs(l1_eta) < 0.8) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 0.8) )'
+SFR_MMM_L_CUT = ' && ( (l1_reliso_rho_03 < 0.42 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 1.2) )'  # dR 03
+#SFR_MEM_L_CUT = ' && ( (l1_reliso_rho_03 < 0.6  && abs(l1_eta) < 0.8) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 0.8) )'  # dR 03
+SFR_MEM_L_CUT = ' && ( (l1_reliso_rho_04 < 0.4  && abs(l1_eta) < 0.8) || (l1_reliso_rho_04 < 0.7 && abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479) || (l1_reliso_rho_04 < 0.3 && abs(l1_eta) > 1.479) )'  # dR 04
 
 ### SFR::MMM 
 SFR_MMM_021_L   =  l0_m + ' && ' + l2_m + ' && ' + l1_m_loose 
@@ -220,9 +222,9 @@ SFR_MMM_012_T   =  SFR_MMM_012_L + ' && ' + l2_m_tight
 ### SFR::MEM 
 SFR_MEM_021_L   =  l0_m + ' && ' + l2_m + ' && ' + l1_e_loose 
 SFR_MEM_021_L   += charge_02                                        # opposite charge 
-SFR_MEM_021_L   += SFR_MMM_L_CUT                                    # reliso bound for LOOSE cf. checkIso_mmm_220319 
-SFR_MEM_021_LNT =  SFR_MMM_021_L + ' && ' + l1_e_lnt
-SFR_MEM_021_T   =  SFR_MMM_021_L + ' && ' + l1_e_tight 
+#SFR_MEM_021_L   += SFR_MMM_L_CUT                                    # reliso bound for LOOSE cf. checkIso_mmm_220319 
+SFR_MEM_021_LNT =  SFR_MEM_021_L + ' && ' + l1_e_lnt
+SFR_MEM_021_T   =  SFR_MEM_021_L + ' && ' + l1_e_tight 
 
 ###########################################################################################################################################################################################
 ### ENERGY-IN-CONE CORRECTED PT
@@ -267,8 +269,8 @@ brl2 = np.arange(10.,20.2,0.2)
 b_reliso = np.concatenate((brl0,brl1,brl2),axis=None)
 
 framer = rt.TH2F('','',len(b_pt)-1,b_pt,len(b_y)-1,b_y)
-framer.GetYaxis().SetRangeUser(0.,0.5)
 framer.GetYaxis().SetRangeUser(0.,1.0)
+framer.GetYaxis().SetRangeUser(0.,0.5)
 #framer.GetYaxis().SetRangeUser(0.01,0.5)
 ############################################################################################################################################################################
 
@@ -332,7 +334,7 @@ def selectBins(ch='mem', lep=1, isData=False):
 ######################################################################################
 def map_FR(ch='mem',mode='sfr',isData=True):
 
-    sfr = False; dfr = False
+    sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s' %(mode, ch)
     if mode == 'sfr': sfr = True
     if mode == 'dfr': dfr = True
 
@@ -437,8 +439,8 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 
     ### PREPARE TREES
     t = None
-    t = rt.TChain('tree')
-    t.Add(data_B_mmm)
+#    t = rt.TChain('tree')
+#    t.Add(data_B_mmm)
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
@@ -446,7 +448,7 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 #    t.Add(TT_dir + suffix)
 #    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
-#    fin = rt.TFile(skim_mem); t = fin.Get('tree')
+    fin = rt.TFile(skim_mem); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -582,9 +584,9 @@ def happyTreeFriends(ch='mmm', mode='sfr', isData=True, label=True):
 ###########################################################################################################################################################################################
 
 ###########################################################################################################################################################################################
-def checkTTLratio(ch='mmm',eta_split=True,mode='dfr',dbg=False):
+def checkTTLratio(ch='mmm',eta_split=True,mode='sfr',dbg=False):
 
-    sfr = False; dfr = False
+    sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s' %(mode, ch)
     if mode == 'sfr': sfr = True
     if mode == 'dfr': dfr = True
 
@@ -592,7 +594,6 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='dfr',dbg=False):
     print '\n\tplotDir:', plotDir
     sys.stdout = Logger(plotDir + 'checkTTLratio_%s' %ch)
 
-    print '\n\tmode: %s\n'%ch
     l_eta = None; l_eta  = OrderedDict()
     l_eta['_eta_all'] = '1 == 1'
 
@@ -648,8 +649,8 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='dfr',dbg=False):
         if ch == 'mmm':
             cuts_FR_012 = cuts_FR + ' && ' + SFR_MMM_012_L
             cuts_FR_021 = cuts_FR + ' && ' + SFR_MMM_021_L
-            tight_021 = SFR_MEM_021_T
-            tight_012 = SFR_MEM_021_T
+            tight_021 = SFR_MMM_021_T
+            tight_012 = SFR_MMM_021_T
             mode012 = True
             mode021 = True
 
@@ -669,15 +670,16 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='dfr',dbg=False):
             tight_021 = DFR_MEM_T
 
     ### PREPARE TREES
-    t = None; t = rt.TChain('tree')
+    t = None
+#    t = rt.TChain('tree')
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
-    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
-    t.Add(TT_dir + suffix)
-    t.Add(W_dir + suffix)
-    t.Add(W_ext_dir + suffix)
-#    fin = rt.TFile(skim_mem); t = fin.Get('tree')
+#    t.Add(DY50_dir + suffix)
+#    t.Add(DY50_ext_dir + suffix)
+#    t.Add(TT_dir + suffix)
+#    t.Add(W_dir + suffix)
+#    t.Add(W_ext_dir + suffix)
+    fin = rt.TFile(skim_mem); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -868,17 +870,15 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='dfr',dbg=False):
 ###########################################################################################################################################################################################
 
 ###########################################################################################################################################################################################
-def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
+def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
     
-    sfr = False; dfr = False
+    sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s' %(mode, ch)
     if mode == 'sfr': sfr = True
     if mode == 'dfr': dfr = True
 
     plotDir = makeFolder('closureTest_%s'%ch)
     print '\n\tplotDir:', plotDir
     sys.stdout = Logger(plotDir + 'closureTest_%s' %ch)
-
-    print '\n\tmode: %s\n'%ch
 
     ### PREPARE CUTS AND FILES
     SFR, DFR, dirs = selectCuts(ch)
@@ -897,6 +897,10 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 #    appReg = 'hnl_w_vis_m > 100' # RIC: Make me happy (27_03)
     flavors = ['all', 'heavy', 'light']
 
+#        cuts_FR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
+    cuts_FR = appReg + ' && hnl_dr_12 > 0.3' 
+    cuts_FR = appReg # 27_3 FOR CLOSURE TEST LEAVE DR_12 < 0.3 TO SEE WHAT HAPPENS
+
     if sfr:
 
         #### GENERAL 
@@ -904,8 +908,6 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         ptconel2 = PTCONEL2
         print '\n\tdrawing single fakes ...'
         mode021 = False; mode012 = False
-
-        cuts_FR = 'hnl_dr_12 > 0.3 && ' + appReg
 
         #### CHANNEL SPECIFIC
         if ch == 'mem':
@@ -924,8 +926,8 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         if ch == 'mmm':
             cuts_FR_012 = cuts_FR + ' && ' + SFR_MMM_012_L
             cuts_FR_021 = cuts_FR + ' && ' + SFR_MMM_021_L
-            tight_021 = SFR_MEM_021_T
-            tight_012 = SFR_MEM_021_T
+            tight_021 = SFR_MMM_021_T
+            tight_012 = SFR_MMM_021_T
             mode012 = True
             mode021 = True
 
@@ -936,7 +938,6 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         print '\n\tdrawing double fakes ...'
         mode021 = False; mode012 = False
 
-        cuts_FR = 'hnl_dr_12 < 0.3'
         #### CHANNEL SPECIFIC
         if ch == 'mem':
             mode021 = True
@@ -946,7 +947,7 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 
     ### PREPARE TREES
     t = None
-#    t = rt.TChain('tree')
+    t = rt.TChain('tree')
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
@@ -954,17 +955,14 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 #    t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
-    fin = rt.TFile(skim_mem); t = fin.Get('tree')
 #    fin = rt.TFile(skim_mem); t = fin.Get('tree')
+#    fin = rt.TFile(data_B_mmm); t = fin.Get('tree')
+    t.Add(skim_mem); t.Add(data_B_mem)
     df = rdf(t)
     print'\n\tchain made.'
 
-#        cuts_FR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
-    cuts_FR = appReg + ' && hnl_dr_12 > 0.3' 
-    cuts_FR = appReg # 27_3 FOR CLOSURE TEST LEAVE DR_12 < 0.3 TO SEE WHAT HAPPENS
-
-    if isData == True:
-        print 'IM SCREWED'
+    # TODO SCALE MC
+    # data B lumi = 4 792 /pb
 
     ### PREPARE DATAFRAMES
     if mode021 == True:
@@ -974,15 +972,21 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         print '\n\tloose df 021 defined.'
 
         dfL_021   = f0_021.Define('ptcone021', ptconel1)
-        dfL0_021  = dfL_021.Filter(lnt_021)
+
+        if isData == True: 
+            dfL0_021  = dfL_021.Filter(lnt_021 + ' && run > 1')
+        if isData == False:
+            dfL0_021  = dfL_021.Filter(lnt_021)
         print '\n\tlnt df 021 defined.'
+
+        dfLNT_021 = dfL0_021.Define('fover1minusf021', selectBins(ch=ch,lep=1,isData=isData))
+        print '\n\tweight f/(1-f)  021 defined. (without lumi/data normalization)'
 
         print '\n\tlnt df 021 events:', dfL0_021.Count().GetValue()
 
-        dfLNT_021 = dfL0_021.Define('fover1minusf021', selectBins(ch=ch,lep=1))
-        print '\n\tweight f/(1-f)  021 defined. (without lumi/data normalization)'
-
         dfT_021     = dfL_021.Filter(tight_021)
+        if isData == True: 
+            dfTdata_021      = dfT_021.Filter('run > 1')
         if label == True:
             dfTDYbb_021      = dfT_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
             dfTDY50_021      = dfT_021.Filter('label == 1')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState != 1')
@@ -1004,15 +1008,21 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         print '\n\tloose df 012 defined.'
 
         dfL_012   = f0_012.Define('ptcone012', ptconlel2)
-        dfL0_012  = dfL_012.Filter(lnt_012)
+
+        if isData == True: 
+            dfL0_012  = dfL_012.Filter(lnt_012 + ' && run > 1')
+        if isData == False:
+            dfL0_012  = dfL_012.Filter(lnt_012)
         print '\n\tlnt df 012 defined.'
+
+        dfLNT_012 = dfL0_012.Define('fover1minusf012', selectBins(ch=ch,lep=1,isData=isData))
+        print '\n\tweight f/(1-f)  012 defined. (without lumi/data normalization)'
 
         print '\n\tlnt df 012 events:', dfL0_012.Count().GetValue()
 
-        dfLNT_012 = dfL0_012.Define('fover1minusf012', selectBins(ch=ch,lep=2))
-        print '\n\tweight f/(1-f)  012 defined. (without lumi/data normalization)'
-
         dfT_012   = dfL_012.Filter(tight_012)
+        if isData == True: 
+            dfTdata_012      = dfT_012.Filter('run > 1')
         if label == True:
             dfTDYbb_012      = dfT_012.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
             dfTDY50_012      = dfT_012.Filter('label == 1')# && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState != 1')
@@ -1034,19 +1044,20 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         print '\ttotal loose 021: %s\n'      %f0_021.Count().GetValue()
     
     ## SAVE FR OUTPUT BRANCH IN TREE
-    branchList_021 = rt.vector('string')(); branchList_012 = rt.vector('string')()
-    for br in ['event', 'lumi']:
-        branchList_021.push_back(br)
-        branchList_012.push_back(br)
-    if label == True: branchList_021.push_back('label'); branchList_012.push_back('label')
-    time_string = ch + '_' + mode + '_' + date + '_' + hour + '_' + minit
-    if mode021 == True:
-        branchList_021.push_back('fover1minusf021')
-        set_trace()
-        dfLNT_021.Snapshot('tree', plotDir + 'fr_021_%s.root'%time_string, branchList_021)
-    if mode012 == True:
-        branchList_012.push_back('fover1minusf012')
-        dfLNT_012.Snapshot('tree', plotDir + 'fr_012_%s.root'%time_string, branchList_012)
+    if output == True:
+        branchList_021 = rt.vector('string')(); branchList_012 = rt.vector('string')()
+        for br in ['event', 'lumi']:
+            branchList_021.push_back(br)
+            branchList_012.push_back(br)
+        if label == True: branchList_021.push_back('label'); branchList_012.push_back('label')
+        time_string = ch + '_' + mode + '_' + date + '_' + hour + '_' + minit
+        if mode021 == True:
+            branchList_021.push_back('fover1minusf021')
+            set_trace()
+            dfLNT_021.Snapshot('tree', plotDir + 'fr_021_%s.root'%time_string, branchList_021)
+        if mode012 == True:
+            branchList_012.push_back('fover1minusf012')
+            dfLNT_012.Snapshot('tree', plotDir + 'fr_012_%s.root'%time_string, branchList_012)
 
 
     VARS = {'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
@@ -1084,17 +1095,20 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 
         VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone021'      , ';p_{T}^{cone} [GeV]; Counts']
 
+        dfT_021_L = OrderedDict()
+        if isData == True:
+            dfT_021_L ['data'] = dfTdata_021
         if label == True:
-            dfT_021_L = {'DY50' : dfTDY50_021,   'IntConv' : dfTIntConv_021,   'ExtConv' : dfTExtConv_021}#, 'DYbb' : dfTDYbb_021,   'TT' : dfTTT_021    }
-            KEYS = dfT_021_L.keys()
+            dfT_021_L ['DY50'] = dfTDY50_021;  dfT_021_L['IntConv'] = dfTIntConv_021; dfT_021_L['ExtConv'] = dfTExtConv_021#, 'DYbb' : dfTDYbb_021,   'TT' : dfTTT_021    }
+        KEYS = dfT_021_L.keys()
 
         for v in VARS.keys():
 
             _H_WHD_021[v]   = dfLNT_021.Histo1D(('whd_021_%s'%v,'whd_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'fover1minusf021')
-            if label == False:
+            if label == False and isData == False:
                 _H_OBS_021[v] = dfT_021.Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
 
-            if label == True:
+            if label == True or isData == True:
                 for DF in dfT_021_L.keys():
                     _H_OBS_021[v][DF] = dfT_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
 
@@ -1102,17 +1116,20 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 
         VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone012'      , ';p_{T}^{cone} [GeV]; Counts']
 
+        dfT_012_L = OrderedDict()
+        if isData == True:
+            dfT_012_L ['data'] = dfTdata_012
         if label == True:
-            dfT_012_L = {'DY50' : dfTDY50_012,    'ExtConv' : dfTExtConv_012,   'IntConv' : dfTIntConv_012}#,    'TT' : dfTTT_012,   'DYbb' : dfTDYbb_012,     }
-            KEYS = dfT_012_L.keys()
+            dfT_012_L ['DY50'] = dfTDY50_012;  dfT_012_L['IntConv'] = dfTIntConv_012; dfT_012_L['ExtConv'] = dfTExtConv_012#, 'DYbb' : dfTDYbb_012,   'TT' : dfTTT_012    }
+        KEYS = dfT_012_L.keys()
 
         for v in VARS.keys():
 
             _H_WHD_012[v]   = dfLNT_012.Histo1D(('whd_012_%s'%v,'whd_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'fover1minusf012')
-            if label == False:
+            if label == False and isData == False:
                 _H_OBS_012[v] = dfT_012.Histo1D(('obs_012_%s'%v,'obs_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
 
-            if label == True:
+            if label == True or isData == True:
                 for DF in dfT_021_L.keys():
                     _H_OBS_012[v][DF] = dfT_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
 
@@ -1120,11 +1137,11 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 
         H_WHD_012[v] = rt.TH1F('whd_012_%s_'%(v),'whd_012_%s'%(v), VARS[v][0], VARS[v][1])
         H_WHD_021[v] = rt.TH1F('whd_021_%s_'%(v),'whd_021_%s'%(v), VARS[v][0], VARS[v][1])
-        if label == False:
+        if label == False and isData == False:
             H_OBS_012[v] = rt.TH1F('obs_012_%s'%(v),'obs_012_%s'%(v), VARS[v][0], VARS[v][1])           
             H_OBS_021[v] = rt.TH1F('obs_021_%s'%(v),'obs_021_%s'%(v), VARS[v][0], VARS[v][1])           
 
-        if label == True:
+        if label == True or isData == True:
             for DF in KEYS:
                 H_OBS_012[v][DF] = rt.TH1F('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
                 H_OBS_021[v][DF] = rt.TH1F('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1])           
@@ -1132,9 +1149,9 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         if mode021 == True:
             VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone021'      , ';p_{T}^{cone} [GeV]; Counts']
             H_WHD_021[v] = _H_WHD_021[v].GetPtr()
-            if label == False:
+            if label == False and isData == False:
                 H_OBS_021[v] = _H_OBS_021[v].GetPtr()
-            if label == True:
+            if label == True or isData == True:
                 for DF in dfT_021_L.keys():
                     _H_OBS_021[v][DF] = dfT_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
                     print '\n\tDrawing:', v, DF
@@ -1143,9 +1160,9 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
         if mode012 == True:
             VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone012'      , ';p_{T}^{cone} [GeV]; Counts']
             H_WHD_012[v] = _H_WHD_012[v].GetPtr()
-            if label == False:
+            if label == False and isData == False:
                 H_OBS_012[v] = _H_OBS_012[v].GetPtr()
-            if label == True:
+            if label == True or isData == True:
                 for DF in dfT_012_L.keys():
                     _H_OBS_012[v][DF] = dfT_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
                     print '\n\tDrawing:', v, DF
@@ -1153,6 +1170,7 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 
         # STACK COLORS            
         col = OrderedDict() 
+        col['data']    = rt.kBlack
         col['TT']      = rt.kBlue+1
         col['DYbb']    = rt.kRed+1
         col['DY50']    = rt.kYellow+1
@@ -1177,7 +1195,10 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
 #                    obs.Add(H_OBS_012[v][DF])
 
             # WHD = SFR + INT & EXT CONVs // OBS = IS ONLY DY FOR NOW (27_03)
-            obs = H_OBS_012[v]['DY50'] 
+            if isData == False:
+                obs = H_OBS_012[v]['DY50'] 
+            if isData == True:
+                obs = H_OBS_012[v]['data'] 
 
             whd.Add(H_WHD_012[v])
             whd.Add(H_OBS_012[v]['IntConv'])
@@ -1209,8 +1230,11 @@ def closureTest(ch='mmm', mode='sfr', isData=False, label=True):
             leg.AddEntry(obs, 'observed')
         if label == True: 
             for DF in KEYS:
-                if not DF == 'DY50': leg.AddEntry(H_OBS_012[v][DF], DF)
-                if DF == 'DY50': leg.AddEntry(H_OBS_012[v][DF], 'observed')
+                if not DF == 'DY50' and not DF == 'data': leg.AddEntry(H_OBS_012[v][DF], DF)
+                if isData == False:
+                    if DF == 'DY50': leg.AddEntry(H_OBS_012[v][DF], 'observed')
+                if isData == True:
+                    if DF == 'data': leg.AddEntry(H_OBS_012[v][DF], 'observed')
         leg.AddEntry(H_WHD_012[v], 'expected SFR')
         leg.Draw()
         pf.showlogoprelimsim('CMS')
@@ -1352,9 +1376,9 @@ class FakeRate(object):
 ######################################################################################
 
 ######################################################################################
-def checkIsoPDF(ch='mmm',ID='No',eta_split=True,mode='dfr',dR='04',fullSplit=False):
+def checkIsoPDF(ch='mmm',ID='No',eta_split=True,mode='sfr',dR='04',fullSplit=False):
 
-    sfr = False; dfr = False
+    sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s' %(mode, ch)
     if mode == 'sfr': sfr = True
     if mode == 'dfr': dfr = True
 
@@ -1396,15 +1420,15 @@ def checkIsoPDF(ch='mmm',ID='No',eta_split=True,mode='dfr',dR='04',fullSplit=Fal
 
     ### PREPARE TREES
     t = None
-    t = rt.TChain('tree')
+#    t = rt.TChain('tree')
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
-    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
-    t.Add(TT_dir + suffix)
+#    t.Add(DY50_dir + suffix)
+#    t.Add(DY50_ext_dir + suffix)
+#    t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
-    t.Add(W_ext_dir + suffix)
-#    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
+#    t.Add(W_ext_dir + suffix)
+    fin = rt.TFile('/afs/cern.ch/work/m/manzoni/public/forVinzenzDavid/mme_tree.root'); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
