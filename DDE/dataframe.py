@@ -945,6 +945,11 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
             cuts_FR_021 = cuts_FR + ' && ' + DFR_MEM_L
             tight_021 = DFR_MEM_T
 
+#    data_B_mem = '/afs/cern.ch/work/v/vstampf/public/ntuples/data/mem/good/2017B/Single_mu_2017B_Chunk45/HNLTreeProducer/tree.root'
+
+    makeLabel(plotDir)
+
+
     ### PREPARE TREES
     t = None
     t = rt.TChain('tree')
@@ -957,9 +962,14 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 #    t.Add(W_ext_dir + suffix)
 #    fin = rt.TFile(skim_mem); t = fin.Get('tree')
 #    fin = rt.TFile(data_B_mmm); t = fin.Get('tree')
+    #fin = rt.TFile(data_B_mem); tr = fin.Get('tree'); tr.AddFriend('ft = tree', plotDir+'label.root')
     t.Add(skim_mem); t.Add(data_B_mem)
+    t.AddFriend('ft = tree', plotDir+'label.root')
+#    set_trace()
     df = rdf(t)
+#    set_trace()
     print'\n\tchain made.'
+
 
     # TODO SCALE MC
     # data B lumi = 4 792 /pb
@@ -987,6 +997,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         dfT_021     = dfL_021.Filter(tight_021)
         if isData == True: 
             dfTdata_021      = dfT_021.Filter('run > 1')
+            print '\n\tdata 021 defined.'
         if label == True:
             dfTDYbb_021      = dfT_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
             dfTDY50_021      = dfT_021.Filter('label == 1')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState != 1')
@@ -999,10 +1010,10 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 
     if mode012 == True:
 
-        print '\n\t l0l1: %s\n'       %(l0l1)
-        print '\n\t l2_loose: %s\n'   %(l2_loose)
-        print '\n\t l2_lnt: %s\n'     %(l2_lnt)
-        print '\n\t l2_tight: %s\n'   %(l2_tight)
+        print '\n\tl0l1: %s\n'       %(l0l1)
+        print '\n\tl2_loose: %s\n'   %(l2_loose)
+        print '\n\tl2_lnt: %s\n'     %(l2_lnt)
+        print '\n\tl2_tight: %s\n'   %(l2_tight)
 
         f0_012 = df.Filter(cuts_FR + ' && ' + l0l1 + ' && ' + l2_loose)
         print '\n\tloose df 012 defined.'
@@ -1023,6 +1034,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         dfT_012   = dfL_012.Filter(tight_012)
         if isData == True: 
             dfTdata_012      = dfT_012.Filter('run > 1')
+            print '\n\tdata 012 defined.'
+            dfTdata_012      = dfTdata_012.Define('label', '99')
         if label == True:
             dfTDYbb_012      = dfT_012.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
             dfTDY50_012      = dfT_012.Filter('label == 1')# && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState != 1')
@@ -1035,12 +1048,12 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 
     print '\n\t cuts: %s'                    %cuts_FR
     if mode012 ==True:
-        print '\n\t loose 012: %s\n'         %(cuts_FR_012)
-        print '\n\t tight 012: %s\n'         %(tight_012)
+        print '\n\tloose 012: %s\n'         %(cuts_FR_012)
+        print '\n\ttight 012: %s\n'         %(tight_012)
         print '\ttotal loose 012: %s\n'      %f0_012.Count().GetValue()
     if mode021 ==True:
-        print '\n\t loose 021: %s\n'         %(cuts_FR_021)
-        print '\n\t tight 021: %s\n'         %(tight_021)
+        print '\n\tloose 021: %s\n'         %(cuts_FR_021)
+        print '\n\ttight 021: %s\n'         %(tight_021)
         print '\ttotal loose 021: %s\n'      %f0_021.Count().GetValue()
     
     ## SAVE FR OUTPUT BRANCH IN TREE
@@ -1060,14 +1073,14 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
             dfLNT_012.Snapshot('tree', plotDir + 'fr_012_%s.root'%time_string, branchList_012)
 
 
-    VARS = {'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
-            '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    , ';2d_disp [cm]; Counts'], 
-            '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig', ';2d_disp_sig ; Counts'], 
-            'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-            'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-            'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'], 
-            'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts'], 
-            'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'],
+    VARS = {#'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
+#            '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    , ';2d_disp [cm]; Counts'], 
+#            '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig', ';2d_disp_sig ; Counts'], 
+#            'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+#            'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
+#            'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'], 
+#            'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts'], 
+#            'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'],
             'pt' : None}
 
     _H_OBS_012   = OrderedDict()
@@ -1182,17 +1195,18 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         whd = H_WHD_012[v]
 
         if label == True:
-            obs = rt.THStack('obs_%s'%v,'obs_%s'%v)
+#            obs = rt.THStack('obs_%s'%v,'obs_%s'%v)
             whd = rt.THStack('whd_%s'%v,'whd_%s'%v)
             
             for DF in KEYS:
                 H_OBS_012[v][DF].Add(H_OBS_021[v][DF])
-                if not DF == 'DY50':
+                if not DF == 'DY50' and not DF == 'data':
                     H_OBS_012[v][DF].SetFillColor(col[DF])
                     H_OBS_012[v][DF].SetLineColor(rt.kBlack)
                     H_OBS_012[v][DF].SetMarkerSize(0)
                     H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
 #                    obs.Add(H_OBS_012[v][DF])
+#@                if DF == 'DY50' or DF == 'data':
 
             # WHD = SFR + INT & EXT CONVs // OBS = IS ONLY DY FOR NOW (27_03)
             if isData == False:
@@ -1213,7 +1227,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
             if label == True: 
                 n_obs = 0
                 for DF in KEYS: 
-                    print '\n\t', H_OBS_012[v][DF].GetEntries() 
+                    print '\n\t', DF, H_OBS_012[v][DF].GetEntries() 
                     n_obs += H_OBS_012[v][DF].GetEntries()
                     n_whd = H_WHD_012[v].GetEntries()
             print '\n\tyields. weighed: %0.2f, observed: %0.2f' %(n_whd, n_obs)
@@ -1916,3 +1930,15 @@ def makeFolder(name):
     return plotDir
 
 
+def makeLabel(plotDir=plotDir):
+
+#    data_B_mem = '/afs/cern.ch/work/v/vstampf/public/ntuples/data/mem/good/2017B/Single_mu_2017B_Chunk45/HNLTreeProducer/tree.root'
+
+    fin = rt.TFile(data_B_mem)
+    tr = fin.Get('tree')
+    ldf = rdf(tr)
+    asd = ldf.Define('label', 'is_data * 99')
+    bL = rt.vector('string')()
+    for br in ['event', 'label']:
+        bL.push_back(br)
+    asd.Snapshot('tree', plotDir + 'label.root', bL)
