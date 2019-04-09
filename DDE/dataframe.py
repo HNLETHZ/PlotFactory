@@ -6,6 +6,7 @@ import ROOT as rt
 import numpy as np
 import plotfactory as pf
 from glob import glob
+import pickle
 import re, sys
 from datetime import datetime
 from pdb import set_trace
@@ -15,6 +16,10 @@ from collections import OrderedDict
 from multiprocessing import Pool
 from multiprocessing.dummy import Pool
 from itertools import product
+
+## CMG IMPORTS
+from CMGTools.HNL.samples.samples_data_2017_noskim import *
+from CMGTools.HNL.samples.samples_mc_2017_noskim   import *
 
 today   = datetime.now()
 date    = today.strftime('%y%m%d')
@@ -222,7 +227,7 @@ SFR_MMM_012_T   =  SFR_MMM_012_L + ' && ' + l2_m_tight
 ### SFR::MEM 
 SFR_MEM_021_L   =  l0_m + ' && ' + l2_m + ' && ' + l1_e_loose 
 SFR_MEM_021_L   += charge_02                                        # opposite charge 
-#SFR_MEM_021_L   += SFR_MMM_L_CUT                                    # reliso bound for LOOSE cf. checkIso_mmm_220319 
+SFR_MEM_021_L   += SFR_MEM_L_CUT                                    # reliso bound for LOOSE cf. checkIso_mmm_220319 
 SFR_MEM_021_LNT =  SFR_MEM_021_L + ' && ' + l1_e_lnt
 SFR_MEM_021_T   =  SFR_MEM_021_L + ' && ' + l1_e_tight 
 
@@ -947,8 +952,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 
 #    data_B_mem = '/afs/cern.ch/work/v/vstampf/public/ntuples/data/mem/good/2017B/Single_mu_2017B_Chunk45/HNLTreeProducer/tree.root'
 
-    makeLabel(plotDir)
-
+#    makeLabel(plotDir)
 
     ### PREPARE TREES
     t = None
@@ -956,23 +960,30 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
-#    t.Add(DY50_ext_dir + suffix)
+    t.Add(DY50_ext_dir + suffix)
 #    t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
 #    fin = rt.TFile(skim_mem); t = fin.Get('tree')
 #    fin = rt.TFile(data_B_mmm); t = fin.Get('tree')
     #fin = rt.TFile(data_B_mem); tr = fin.Get('tree'); tr.AddFriend('ft = tree', plotDir+'label.root')
-    t.Add(skim_mem); t.Add(data_B_mem)
-    t.AddFriend('ft = tree', plotDir+'label.root')
+#    t.Add(skim_mem); 
+    t.Add(data_B_mem)
+#    t.AddFriend('ft = tree', plotDir+'label.root')
 #    set_trace()
     df = rdf(t)
 #    set_trace()
     print'\n\tchain made.'
 
-
-    # TODO SCALE MC
-    # data B lumi = 4 792 /pb
+    # SCALE MC
+    lumi = 4792.0 #/pb data B
+    pckfile = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/SkimAnalyzerCount/SkimReport.pck'
+    pckobj = pickle.load(open(pckfile, 'r'))
+    counters = dict(pckobj)
+    sumweights = counters['Sum Norm Weights']
+    xsec = DYJetsToLL_M50_ext.xSection
+    dy_scale = lumi * xsec / sumweights
+    print '\n\tlumi: %f, xsec: %f, sumweights: %f, dy_scale: %f' %(lumi, xsec, sumweights, dy_scale)
 
     ### PREPARE DATAFRAMES
     if mode021 == True:
@@ -990,20 +1001,22 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         print '\n\tlnt df 021 defined.'
 
         dfLNT_021 = dfL0_021.Define('fover1minusf021', selectBins(ch=ch,lep=1,isData=isData))
-        print '\n\tweight f/(1-f)  021 defined. (without lumi/data normalization)'
+        dfLNT_021 = dfLNT_021.Define('lnt_021_evt_wht', 'fover1minusf021 * weight * lhe_weight')
+        print '\n\tweight f/(1-f)  021 defined.'
 
         print '\n\tlnt df 021 events:', dfL0_021.Count().GetValue()
 
         dfT_021     = dfL_021.Filter(tight_021)
+        dfT_021     = dfT_021.Define('t_021_evt_wht', 'weight * lhe_weight')
         if isData == True: 
             dfTdata_021      = dfT_021.Filter('run > 1')
             print '\n\tdata 021 defined.'
         if label == True:
-            dfTDYbb_021      = dfT_021.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-            dfTDY50_021      = dfT_021.Filter('label == 1')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState != 1')
-            dfTTT_021        = dfT_021.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-            dfTExtConv_021   = dfT_021.Filter('label == 1 && abs(l1_gen_match_pdgid) == 22') 
-            dfTIntConv_021   = dfT_021.Filter('label == 1 && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1') 
+            dfTDYbb_021      = dfT_021.Filter('run < 1')#label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+            dfTDY50_021      = dfT_021.Filter('run < 1')#label == 1')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState != 1')
+            dfTTT_021        = dfT_021.Filter('run < 1')#label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+            dfTExtConv_021   = dfT_021.Filter('abs(l1_gen_match_pdgid) == 22') 
+            dfTIntConv_021   = dfT_021.Filter('abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1') 
         print '\n\ttight df 021 defined.'
 
         print '\n\ttight df 021 events:', dfT_021.Count().GetValue()
@@ -1027,21 +1040,22 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         print '\n\tlnt df 012 defined.'
 
         dfLNT_012 = dfL0_012.Define('fover1minusf012', selectBins(ch=ch,lep=1,isData=isData))
+        dfLNT_012 = dfLNT_012.Define('lnt_012_evt_wht', 'fover1minusf012 * weight * lhe_weight')
         print '\n\tweight f/(1-f)  012 defined. (without lumi/data normalization)'
 
         print '\n\tlnt df 012 events:', dfL0_012.Count().GetValue()
 
         dfT_012   = dfL_012.Filter(tight_012)
+        dfT_012     = dfT_012.Define('t_012_evt_wht', 'weight * lhe_weight')
         if isData == True: 
             dfTdata_012      = dfT_012.Filter('run > 1')
             print '\n\tdata 012 defined.'
-            dfTdata_012      = dfTdata_012.Define('label', '99')
         if label == True:
-            dfTDYbb_012      = dfT_012.Filter('label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-            dfTDY50_012      = dfT_012.Filter('label == 1')# && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState != 1')
-            dfTTT_012        = dfT_012.Filter('label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
-            dfTExtConv_012   = dfT_012.Filter('label == 1 && abs(l2_gen_match_pdgid) == 22') 
-            dfTIntConv_012   = dfT_012.Filter('label == 1 && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState == 1') 
+            dfTDYbb_012      = dfT_012.Filter('run < 1')#label == 0')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+            dfTDY50_012      = dfT_012.Filter('run < 1')#label == 1')# && abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState != 1')
+            dfTTT_012        = dfT_012.Filter('run < 1')#label == 2')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 0')
+            dfTExtConv_012   = dfT_012.Filter('abs(l2_gen_match_pdgid) == 22') 
+            dfTIntConv_012   = dfT_012.Filter('abs(l2_gen_match_pdgid) != 22 && l2_gen_match_isPromptFinalState == 1') 
         print '\n\ttight df 012 defined.'
 
         print '\n\ttight df 012 events:', dfT_012.Count().GetValue()
@@ -1117,13 +1131,13 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 
         for v in VARS.keys():
 
-            _H_WHD_021[v]   = dfLNT_021.Histo1D(('whd_021_%s'%v,'whd_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'fover1minusf021')
+            _H_WHD_021[v]   = dfLNT_021.Histo1D(('whd_021_%s'%v,'whd_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_021_evt_wht')
             if label == False and isData == False:
-                _H_OBS_021[v] = dfT_021.Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
+                _H_OBS_021[v] = dfT_021.Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 't_021_evt_wht')
 
             if label == True or isData == True:
                 for DF in dfT_021_L.keys():
-                    _H_OBS_021[v][DF] = dfT_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
+                    _H_OBS_021[v][DF] = dfT_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2], 't_021_evt_wht')
 
     if mode012 == True:
 
@@ -1138,13 +1152,13 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 
         for v in VARS.keys():
 
-            _H_WHD_012[v]   = dfLNT_012.Histo1D(('whd_012_%s'%v,'whd_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'fover1minusf012')
+            _H_WHD_012[v]   = dfLNT_012.Histo1D(('whd_012_%s'%v,'whd_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_012_evt_wht')
             if label == False and isData == False:
-                _H_OBS_012[v] = dfT_012.Histo1D(('obs_012_%s'%v,'obs_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2])
+                _H_OBS_012[v] = dfT_012.Histo1D(('obs_012_%s'%v,'obs_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 't_012_evt_wht')
 
             if label == True or isData == True:
                 for DF in dfT_021_L.keys():
-                    _H_OBS_012[v][DF] = dfT_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
+                    _H_OBS_012[v][DF] = dfT_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2], 't_012_evt_wht')
 
     for v in VARS.keys():
 
@@ -1166,7 +1180,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
                 H_OBS_021[v] = _H_OBS_021[v].GetPtr()
             if label == True or isData == True:
                 for DF in dfT_021_L.keys():
-                    _H_OBS_021[v][DF] = dfT_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
+                    _H_OBS_021[v][DF] = dfT_021_L[DF].Histo1D(('obs_021_%s_%s'%(v,DF),'obs_021_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2], 't_021_evt_wht')
                     print '\n\tDrawing:', v, DF
                     H_OBS_021[v][DF]  = _H_OBS_021[v][DF].GetPtr()
         
@@ -1177,7 +1191,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
                 H_OBS_012[v] = _H_OBS_012[v].GetPtr()
             if label == True or isData == True:
                 for DF in dfT_012_L.keys():
-                    _H_OBS_012[v][DF] = dfT_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2])
+                    _H_OBS_012[v][DF] = dfT_012_L[DF].Histo1D(('obs_012_%s_%s'%(v,DF),'obs_012_%s_%s'%(v,DF), VARS[v][0], VARS[v][1]), VARS[v][2], 't_012_evt_wht')
                     print '\n\tDrawing:', v, DF
                     H_OBS_012[v][DF]  = _H_OBS_012[v][DF].GetPtr()
 
@@ -1205,10 +1219,11 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
                     H_OBS_012[v][DF].SetLineColor(rt.kBlack)
                     H_OBS_012[v][DF].SetMarkerSize(0)
                     H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
+                    ## SCALING MC
+                    H_OBS_012[v][DF].Scale(dy_scale)
 #                    obs.Add(H_OBS_012[v][DF])
 #@                if DF == 'DY50' or DF == 'data':
 
-            # WHD = SFR + INT & EXT CONVs // OBS = IS ONLY DY FOR NOW (27_03)
             if isData == False:
                 obs = H_OBS_012[v]['DY50'] 
             if isData == True:
@@ -1942,3 +1957,37 @@ def makeLabel(plotDir=plotDir):
     for br in ['event', 'label']:
         bL.push_back(br)
     asd.Snapshot('tree', plotDir + 'label.root', bL)
+
+def getWeights(): #FIXME DONT USE!
+
+    if sample.name in weighted_list:
+        # sample.sumweights *= initial_weights[sample.name]
+        print '\n\tSet sum weights for sample %s to %d'%(sample.name, sample.sumweights)
+        # print '\n\tSum weights from sample', sample.name, 'in weighted_list: ', sample.sumweights
+    if sample.name not in weighted_list:
+#       pass # turn this off later, for NLO or higher order samples
+        # print '\n\tSet sum weights for sample', sample.name, 'to', sample.sumweights
+        # setSumWeights(sample, 'SkimAnalyzerCount', False)
+
+        if 1==1: ## VS 04/09: applies also to DDE
+            pckfile = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.pck'])
+            try:
+                pckobj = pickle.load(open(pckfile, 'r'))
+                counters = dict(pckobj)
+                # set_trace()
+                if norm:
+                    if 'Sum Norm Weights' in counters:
+                        sample.sumweights = counters['Sum Norm Weights']
+                else:
+                    if 'Sum Weights' in counters:
+                        sample.sumweights = counters['Sum Weights']
+            except IOError:
+                print '\n\tWarning: could not find sum weights information for sample %s'%sample.name
+                pass
+
+        # if sample.is_dde == True:
+            # set_trace()
+            # sample.sumweights *=50000 
+            # print '\n\tsample ' + sample.dir_name + 'has been set to ', sample.sumweights
+
+        print '\n\tSum weights from sample %s not in weighted_list. Setting it to %d' %(sample.name, sample.sumweights)
