@@ -328,7 +328,7 @@ def selectBins(ch='mem', lep=1, isData=False):
 ############################################################################################################################################################################
 
 ######################################################################################
-def map_FR(ch='mem',mode='sfr',isData=True):
+def map_FR(ch='mem',mode='sfr',isData=True, subtract=False):
 
     sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s' %(mode, ch)
     if mode == 'sfr': sfr = True
@@ -357,6 +357,16 @@ def map_FR(ch='mem',mode='sfr',isData=True):
     mshReg  = 'hnl_w_vis_m > 80'
     mshReg  = '1 == 1'
     mshReg  = 'abs(hnl_m_02 - 91.19) < 10'
+
+    # SCALE MC #TODO PUT THIS IN A FUNCTION
+    lumi = 4792.0 #/pb data B
+    pckfile = DY50_ext_dir+'SkimAnalyzerCount/SkimReport.pck'
+    pckobj = pickle.load(open(pckfile, 'r'))
+    counters = dict(pckobj)
+    sumweights = counters['Sum Norm Weights']
+    xsec = DYJetsToLL_M50_ext.xSection
+    dy_scale = lumi * xsec / sumweights
+    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, dy_scale: %0.2f' %(lumi, xsec, sumweights, dy_scale)
 
     if sfr:
 
@@ -442,7 +452,7 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
-#    t.Add(DY50_ext_dir + suffix)
+    t.Add(DY50_ext_dir + suffix)
 #    t.Add(TT_dir + suffix)
 #    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
@@ -453,12 +463,28 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 
     if mode021 == True:
 
+#       FIXME TODO subtract conversions from data for measurement
         f0_021 = df.Filter(cuts_FR_021)
 
         print '\n\tf0_021 entries:', f0_021.Count().GetValue()
 
         df0_021 = f0_021.Define('ptcone021', ptconel1)
         print '\n\tptcone021 defined.'
+
+        dfLNT_021 = dfLNT_021.Define('lnt_021_evt_wht', 'fover1minusf021 * weight * lhe_weight')
+        print '\n\tweight f/(1-f)  021 defined.'
+ 
+        print '\n\tlnt df 021 events:', dfL0_021.Count().GetValue()
+ 
+        dfT_021     = dfL_021.Filter(tight_021)
+        dfT_021     = dfT_021.Define('t_021_evt_wht', 'weight * lhe_weight')
+        if isData == True: 
+            dfTdata_021      = dfT_021.Filter('run > 1')
+            print '\n\tdata 021 defined.'
+        if subtract == True:
+#            dfTDY50_021      = dfT_021.Filter('run < 1')#label == 1')# && abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState != 1')
+            dfTConv_021   = dfT_021.Filter('abs(l1_gen_match_pdgid) == 22 || (abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1)') 
+        print '\n\ttight df 021 defined.'
 
         dfL_021 = df0_021.Define('abs_l1_eta', 'abs(l1_eta)')
         print '\n\tabs_l1_eta defined.'
@@ -875,7 +901,9 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
     if mode == 'dfr': dfr = True
     input = 'MC' if isData == False else 'DATA'
 
-    oldPlotDir = eos+'plots/DDE/map_FR_mem_190410_14h_22m/'
+    oldPlotDir = eos+'plots/DDE/'
+    print '\n\tcopy from: %s' %oldPlotDir
+
     plotDir = makeFolder('closureTest_%s'%ch)
     copyfile(oldPlotDir+'%s_T2Lratio_%s_ptCone_eta.root'%(input,ch), plotDir+'%s_T2Lratio_%s_ptCone_eta.root'%(input,ch) )
     print '\n\tplotDir:', plotDir
@@ -971,9 +999,9 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 #    set_trace()
     print'\n\tchain made.'
 
-    # SCALE MC #TODO VERIFY THIS #TODO PUT THIS IN A FUNCTION
+    # SCALE MC #TODO PUT THIS IN A FUNCTION
     lumi = 4792.0 #/pb data B
-    pckfile = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/SkimAnalyzerCount/SkimReport.pck'
+    pckfile = DY50_ext_dir+'SkimAnalyzerCount/SkimReport.pck'
     pckobj = pickle.load(open(pckfile, 'r'))
     counters = dict(pckobj)
     sumweights = counters['Sum Norm Weights']
@@ -1099,7 +1127,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
     VARS ['BGM_01']     = [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'] 
     VARS ['BGM_02']     = [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts']
 #    VARS ['dphi_01']    = [len(b_dphi)-1,   b_dphi,   'hnl_dphi_01'    , ';#Delta#Phi(l_{0},  l_{1}); Counts']
-           
+
 
     _H_OBS_012   = OrderedDict()
     _H_WHD_012 = OrderedDict()
@@ -1130,7 +1158,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         if isData == True:
             dfT_021_L ['data'] = dfTdata_021
         if label == True:
-            dfT_021_L ['DY50'] = dfTDY50_021;  dfT_021_L['IntConv'] = dfTIntConv_021; dfT_021_L['ExtConv'] = dfTExtConv_021#, 'DYbb' : dfTDYbb_021,   'TT' : dfTTT_021    }
+            dfT_021_L['IntConv'] = dfTIntConv_021; dfT_021_L['ExtConv'] = dfTExtConv_021#;  #, 'DYbb' : dfTDYbb_021,   'TT' : dfTTT_021    }
+            #dfT_021_L ['DY50'] = dfTDY50_021
         KEYS = dfT_021_L.keys()
 
         for v in VARS.keys():
@@ -1151,7 +1180,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         if isData == True:
             dfT_012_L ['data'] = dfTdata_012
         if label == True:
-            dfT_012_L ['DY50'] = dfTDY50_012;  dfT_012_L['IntConv'] = dfTIntConv_012; dfT_012_L['ExtConv'] = dfTExtConv_012#, 'DYbb' : dfTDYbb_012,   'TT' : dfTTT_012    }
+            dfT_012_L['IntConv'] = dfTIntConv_012; dfT_012_L['ExtConv'] = dfTExtConv_012#, 'DYbb' : dfTDYbb_012,   'TT' : dfTTT_012    }
+            #dfT_012_L ['DY50'] = dfTDY50_012;  
         KEYS = dfT_012_L.keys()
 
         for v in VARS.keys():
