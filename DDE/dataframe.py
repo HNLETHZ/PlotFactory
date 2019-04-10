@@ -5,6 +5,7 @@ import os, platform
 import ROOT as rt
 import numpy as np
 import plotfactory as pf
+from shutil import copyfile
 from glob import glob
 import pickle
 import re, sys
@@ -240,24 +241,18 @@ PTCONEL2 = '(  ( l2_pt         * (l2_reliso_rho_04<0.2) )      + ( (l2_reliso_rh
 ###########################################################################################################################################################################################
 ### BINNING FOR CLOSURE TEST 
 ###########################################################################################################################################################################################
-b_N         = np.arange(1., -1.5, 3.5)
+b_nbj       = np.arange(0., 10, 1)
+b_N         = np.arange(-0.5, 3.5,1)
 b_pt_std    = np.arange(5.,105,5)
 b_pt        = np.array([ 0., 5., 10., 15., 20., 25., 35., 50., 70.])
-#b_2d        = np.arange(0., 10, 0.2)
 b_2d        = np.arange(0., 11, 1)
-#b_2d_sig    = np.arange(0., 50, 0.25)
-#b_2d_sig    = np.arange(0., 100, 0.5)
 b_2d_sig    = np.arange(0., 105, 5)
-#b_m         = np.arange(0., 5.25, 0.25)
 b_m         = np.arange(0.,11,1)
-#b_M         = np.arange(0.,202,2)
 b_M         = np.arange(0.,204,4)
 b_eta_mu    = np.array([0., 1.2, 2.1, 2.4]) 
 b_eta_ele   = np.array([0., 0.8, 1.479, 2.5]) 
-#b_rho       = np.arange(-100.,100,4)
 b_rho       = np.arange(0.,15,0.25)
-b_rho_crs   = np.arange(0.,10,0.25)
-#b_dR        = np.arange(0.,6.05,0.05)
+b_dphi      = np.arange(-3.142,3.142,0.3)
 b_dR        = np.arange(0.,0.85,0.05)
 b_dR_coarse = np.arange(0.,6,0.2)
 b_dR_Coarse = np.arange(0.,6,0.4)
@@ -269,11 +264,7 @@ b_sf        = np.arange(-20,20,1)
 b_y         = np.arange(0.,1.,0.1)
 b_chi2      = np.arange(0.,1.05,0.05)
 
-brl0 = np.arange(0.,1.,0.01)
-brl1 = np.arange(1.,10,0.05)
-brl2 = np.arange(10.,20.2,0.2)
-b_reliso = np.concatenate((brl0,brl1,brl2),axis=None)
-
+'''framer for TEfficiency plots'''
 framer = rt.TH2F('','',len(b_pt)-1,b_pt,len(b_y)-1,b_y)
 framer.GetYaxis().SetRangeUser(0.,1.0)
 framer.GetYaxis().SetRangeUser(0.,0.5)
@@ -286,18 +277,17 @@ def selectBins(ch='mem', lep=1, isData=False):
     input = 'MC'
     if isData == True: input = 'DATA'
 
+    f_in = rt.TFile(plotDir+'%s_T2Lratio_%s_ptCone_eta.root' %(input,ch) )
+
     l_pt   = { '_pt0t5'   : 'ptcone < 5',                  '_pt5t10' : 'ptcone > 5 && ptcone < 10',  '_pt10t15' : 'ptcone > 10 && ptcone < 15', '_pt15t20' : 'ptcone > 15 && ptcone < 20',
                '_pt20t25' : 'ptcone > 20 && ptcone < 25', '_pt25t35' : 'ptcone > 25 && ptcone < 35', '_pt35t50' : 'ptcone > 35 && ptcone < 50', '_pt50t70' : 'ptcone > 50'}# && ptcone < 70'}
     for i in l_pt.keys(): 
         l_pt[i] = re.sub('ptcone','ptcone021',l_pt[i])
 
     if ch == 'mem':
-        f_in = rt.TFile(plotDir+'%s_T2Lratio_mem_ptCone_eta.root'%input)
-    
         l_eta = {'eta_bin_0' : 'abs(l1_eta) < 0.8', 'eta_bin_1' : 'abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479', 'eta_bin_2' : 'abs(l1_eta) > 1.479 && abs(l1_eta) < 2.5'}
 
     if ch == 'mmm':
-        f_in = rt.TFile(plotDir+'%s_T2Lratio_mmm_ptCone_eta.root'%input)
         l_eta = {'eta_bin_0' : 'abs(l1_eta) < 1.2', 'eta_bin_1' : 'abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1', 'eta_bin_2' : 'abs(l1_eta) > 2.1 && abs(l1_eta) < 2.4'}
   
     if lep == 2: 
@@ -366,6 +356,7 @@ def map_FR(ch='mem',mode='sfr',isData=True):
     
     mshReg  = 'hnl_w_vis_m > 80'
     mshReg  = '1 == 1'
+    mshReg  = 'abs(hnl_m_02 - 91.19) < 10'
 
     if sfr:
 
@@ -882,8 +873,11 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
     sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s' %(mode, ch)
     if mode == 'sfr': sfr = True
     if mode == 'dfr': dfr = True
+    input = 'MC' if isData == False else 'DATA'
 
+    oldPlotDir = eos+'plots/DDE/map_FR_mem_190410_14h_22m/'
     plotDir = makeFolder('closureTest_%s'%ch)
+    copyfile(oldPlotDir+'%s_T2Lratio_%s_ptCone_eta.root'%(input,ch), plotDir+'%s_T2Lratio_%s_ptCone_eta.root'%(input,ch) )
     print '\n\tplotDir:', plotDir
     sys.stdout = Logger(plotDir + 'closureTest_%s' %ch)
 
@@ -902,6 +896,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
     appReg = 'hnl_w_vis_m < 80'
     appReg = '1 == 1' # RIC: FIRST DO VALIDITY TEST OF THE METHOD (26_03)
 #    appReg = 'hnl_w_vis_m > 100' # RIC: Make me happy (27_03)
+    appReg = 'abs(hnl_m_02 - 91.19) < 10' # RIC 0904: less conversions are picked up here
     flavors = ['all', 'heavy', 'light']
 
 #        cuts_FR = 'hnl_dr_12 > 0.4 && abs(91.19 - hnl_m_01) > 10 && abs(91.19 - hnl_m_02) > 10 && ' + l_eta[eta]
@@ -952,8 +947,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
             cuts_FR_021 = cuts_FR + ' && ' + DFR_MEM_L
             tight_021 = DFR_MEM_T
 
-#    data_B_mem = '/afs/cern.ch/work/v/vstampf/public/ntuples/data/mem/good/2017B/Single_mu_2017B_Chunk45/HNLTreeProducer/tree.root'
-
+#    data_B_mem = eos+'ntuples/small_data_B.root'
 #    makeLabel(plotDir)
 
     ### PREPARE TREES
@@ -995,6 +989,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         print '\n\tloose df 021 defined.'
 
         dfL_021   = f0_021.Define('ptcone021', ptconel1)
+        dfL_021   = dfL_021.Define('_norm_', '1')
 
         if isData == True: 
             dfL0_021  = dfL_021.Filter(lnt_021 + ' && run > 1')
@@ -1034,6 +1029,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         print '\n\tloose df 012 defined.'
 
         dfL_012   = f0_012.Define('ptcone012', ptconlel2)
+        dfL_012   = dfL_012.Define('_norm_', '1')
 
         if isData == True: 
             dfL0_012  = dfL_012.Filter(lnt_012 + ' && run > 1')
@@ -1089,19 +1085,21 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
             dfLNT_012.Snapshot('tree', plotDir + 'fr_012_%s.root'%time_string, branchList_012)
 
 
-    VARS = {'pt' :       None,
-#            'norm':      [len(b_N)-1,      b_N,      '1.'             , ';Normalisation; Counts'], 
-#            'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
-#            'dr_01':     [len(b_dR)-1,     b_dR,     'hnl_dr_01'      , ';#DeltaR(l_{0},  l_{1}); Counts'], 
-# #           'dphi_01':   [len(b_dphi)-1,   b_dphi,   'hnl_dphi_01'    , ';#Delta#Phi(l_{0},  l_{1}); Counts'], 
-#            'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'],
-#            '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    , ';2d_disp [cm]; Counts'], 
-#            '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig', ';2d_disp_sig ; Counts'], 
-#            'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-#            'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
-#            'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'], 
-#            'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts'],}
-            
+    VARS = OrderedDict()
+    VARS ['norm']       = [len(b_N)-1,      b_N,      '_norm_'         , ';Normalisation; Counts'] 
+    VARS ['m_dimu']     = [len(b_m)-1,      b_m,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'] 
+    VARS ['pt']         =  None,
+    VARS ['dr_12']      = [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'] 
+#    VARS [ 'dr_01']     = [len(b_dR)-1,     b_dR,     'hnl_dr_01'      , ';#DeltaR(l_{0},  l_{1}); Counts'] 
+    VARS ['m_triL']     = [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts']
+#    VARS [ '2disp_sig'] = [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig', ';2d_disp_sig ; Counts'] 
+    VARS ['nbj']        = [len(b_nbj)-1,    b_nbj,    'nbj'            , ';Number of b-jets; Counts'] 
+    VARS ['2disp']      = [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    , ';2d_disp [cm]; Counts'] 
+    VARS ['BGM_dimu']   = [len(b_M)-1,      b_M,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'] 
+    VARS ['BGM_01']     = [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'] 
+    VARS ['BGM_02']     = [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts']
+#    VARS ['dphi_01']    = [len(b_dphi)-1,   b_dphi,   'hnl_dphi_01'    , ';#Delta#Phi(l_{0},  l_{1}); Counts']
+           
 
     _H_OBS_012   = OrderedDict()
     _H_WHD_012 = OrderedDict()
