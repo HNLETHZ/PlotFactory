@@ -444,8 +444,9 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 
     ### PREPARE TREES
     t = None
-#    t = rt.TChain('tree')
+    t = rt.TChain('tree')
 #    t.Add(data_B_mmm)
+    t.Add(data_B_mem)
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
@@ -453,7 +454,7 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 #    t.Add(TT_dir + suffix)
 #    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
-    fin = rt.TFile(skim_mem); t = fin.Get('tree')
+#    fin = rt.TFile(skim_mem); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
@@ -977,13 +978,13 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 
     # SCALE MC
     lumi = 4792.0 #/pb data B
-    pckfile = '/eos/user/v/vstampf/ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/SkimAnalyzerCount/SkimReport.pck'
+    pckfile = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/SkimAnalyzerCount/SkimReport.pck'
     pckobj = pickle.load(open(pckfile, 'r'))
     counters = dict(pckobj)
     sumweights = counters['Sum Norm Weights']
     xsec = DYJetsToLL_M50_ext.xSection
     dy_scale = lumi * xsec / sumweights
-    print '\n\tlumi: %f, xsec: %f, sumweights: %f, dy_scale: %f' %(lumi, xsec, sumweights, dy_scale)
+    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, dy_scale: %0.2f' %(lumi, xsec, sumweights, dy_scale)
 
     ### PREPARE DATAFRAMES
     if mode021 == True:
@@ -1250,7 +1251,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
         c = rt.TCanvas(v, v); c.cd()
 #            whd.SetLineColor(rt.kGreen+2); whd.SetLineWidth(2); whd.SetMarkerStyle(0)
         obs.SetTitle(VARS[v][3])
-        obs.SetMarkerColor(rt.kMagenta+2)
+        if isData == False: obs.SetMarkerColor(rt.kMagenta+2)
         whd.Draw('histE')
         whd.SetTitle(VARS[v][3])
         obs.Draw('same')
