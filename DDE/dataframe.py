@@ -444,8 +444,9 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 
     ### PREPARE TREES
     t = None
-#    t = rt.TChain('tree')
+    t = rt.TChain('tree')
 #    t.Add(data_B_mmm)
+    t.Add(data_B_mem)
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
@@ -453,7 +454,7 @@ def map_FR(ch='mem',mode='sfr',isData=True):
 #    t.Add(TT_dir + suffix)
 #    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
-    fin = rt.TFile(skim_mem); t = fin.Get('tree')
+#    fin = rt.TFile(skim_mem); t = fin.Get('tree')
     df = rdf(t)
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
