@@ -240,6 +240,7 @@ PTCONEL2 = '(  ( l2_pt         * (l2_reliso_rho_04<0.2) )      + ( (l2_reliso_rh
 ###########################################################################################################################################################################################
 ### BINNING FOR CLOSURE TEST 
 ###########################################################################################################################################################################################
+b_N         = np.arange(1., -1.5, 3.5)
 b_pt_std    = np.arange(5.,105,5)
 b_pt        = np.array([ 0., 5., 10., 15., 20., 25., 35., 50., 70.])
 #b_2d        = np.arange(0., 10, 0.2)
@@ -976,7 +977,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
 #    set_trace()
     print'\n\tchain made.'
 
-    # SCALE MC
+    # SCALE MC #TODO VERIFY THIS #TODO PUT THIS IN A FUNCTION
     lumi = 4792.0 #/pb data B
     pckfile = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_M50_ext/SkimAnalyzerCount/SkimReport.pck'
     pckobj = pickle.load(open(pckfile, 'r'))
@@ -1088,15 +1089,19 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, output=False):
             dfLNT_012.Snapshot('tree', plotDir + 'fr_012_%s.root'%time_string, branchList_012)
 
 
-    VARS = {#'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
+    VARS = {'pt' :       None,
+#            'norm':      [len(b_N)-1,      b_N,      '1.'             , ';Normalisation; Counts'], 
+#            'dr_12':     [len(b_dR)-1,     b_dR,     'hnl_dr_12'      , ';#DeltaR(l_{1},  l_{2}); Counts'], 
+#            'dr_01':     [len(b_dR)-1,     b_dR,     'hnl_dr_01'      , ';#DeltaR(l_{0},  l_{1}); Counts'], 
+# #           'dphi_01':   [len(b_dphi)-1,   b_dphi,   'hnl_dphi_01'    , ';#Delta#Phi(l_{0},  l_{1}); Counts'], 
+#            'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'],
 #            '2disp':     [len(b_2d)-1,     b_2d,     'hnl_2d_disp'    , ';2d_disp [cm]; Counts'], 
 #            '2disp_sig': [len(b_2d_sig)-1, b_2d_sig, 'hnl_2d_disp_sig', ';2d_disp_sig ; Counts'], 
 #            'm_dimu':    [len(b_m)-1,      b_m,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
 #            'BGM_dimu':  [len(b_M)-1,      b_M,      'hnl_m_12'       , ';m(l_{1},  l_{2}) [GeV]; Counts'], 
 #            'BGM_01':    [len(b_M)-1,      b_M,      'hnl_m_01'       , ';m(l_{0},  l_{1}) [GeV]; Counts'], 
-#            'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts'], 
-#            'm_triL':    [len(b_M)-1,      b_M,      'hnl_w_vis_m'    , ';m(l_{0},  l_{1},  l_{2}) [GeV]; Counts'],
-            'pt' : None}
+#            'BGM_02':    [len(b_M)-1,      b_M,      'hnl_m_02'       , ';m(l_{0},  l_{2}) [GeV]; Counts'],}
+            
 
     _H_OBS_012   = OrderedDict()
     _H_WHD_012 = OrderedDict()
@@ -1940,7 +1945,7 @@ class Logger(object):
 def makeFolder(name):
 
     plotDir = eos+'plots/DDE/'
- 
+    today = datetime.now(); date = today.strftime('%y%m%d'); hour = str(today.hour); minit = str(today.minute)
     plotDir = plotDir + name + '_' + date + '_' + hour + 'h_' + minit + 'm/'
     os.mkdir(plotDir)
     return plotDir
