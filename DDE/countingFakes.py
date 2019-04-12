@@ -18,8 +18,9 @@ from itertools import product
 #gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 pf.setpfstyle()
 ####################################################################################################
-plotDir     = '/eos/user/v/vstampf/plots/DDE/'
-plotDir     = '/t3home/vstampf/eos/plots/DDE/'
+# plotDir     = '/eos/user/v/vstampf/plots/DDE/'
+# plotDir     = '/t3home/vstampf/eos/plots/DDE/'
+plotDir     = '/shome/dezhu/3_figures/1_DataMC/FinalStates/mmm/plotfactory/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v0/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v1_DiMuIso/'
 inDir       = '/eos/user/v/vstampf/ntuples/DDE_v2/'
@@ -1259,13 +1260,37 @@ def applyTTL_old(isData=False):
 ####################################################################################################
    
 ####################################################################################################
-def applyTTL(isData=False, VLD=True, SPLIT=None):
+def applyTTL(isData=True, VLD=False, SPLIT=None):
     iso_cut = 0.15
     iso_str = str(int(iso_cut * 100))
-    ch = 'mu'
-    ch = 'mee'
+    # ch = 'mu'
+    # ch = 'mee'
+    ch = 'mmm'
     sample = 'data'
     
+    Z_veto_01       = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  (l1_q + l2_q != 0)'
+    Z_veto_02       = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'
+    Z_veto_12       = '(l0_q + l1_q != 0)  &  (l0_q + l2_q != 0)  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )' 
+
+    Z_veto_01_02    = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  (l1_q + l2_q != 0)'  
+    Z_veto_01_12    = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  (l0_q + l2_q != 0)  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )'  
+    Z_veto_02_12    = '(l0_q + l1_q != 0)  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )'  
+
+    Z_veto_01_02_12 = '( (l0_q + l1_q == 0) & (abs(hnl_m_01 - 91.2) > 15) )  &  ( (l0_q + l2_q == 0) & (abs(hnl_m_02 - 91.2) > 15) )  &  ( (l1_q + l2_q == 0) & (abs(hnl_m_12 - 91.2) > 15) )'
+
+    single_Z_veto = '(  ' + Z_veto_01 + '   |   ' + Z_veto_02 + '   |   ' + Z_veto_12 + '  )'
+    double_Z_veto = '(  ' + Z_veto_01_02 + '   |   ' + Z_veto_01_12 + '   |   ' + Z_veto_02_12 + '  )'
+
+    Z_veto = '(   ' + single_Z_veto + '    |    ' + double_Z_veto + '    |    ' + Z_veto_01_02_12 + '   )' 
+
+    DFR_LOOSE_MMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & hnl_iso04_rel_rhoArea < 1 )'
+    DFR_LOOSENOTTIGHT_MMM = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & (l1_reliso_rho_04 > 0.15 | l2_reliso_rho_04 > 0.15) & hnl_iso04_rel_rhoArea < 1 )'# FIXME 
+    DFR_TIGHT_MMM         = ' & (l1_pt > 3 & l2_pt > 3 & l0_id_t & l0_reliso_rho_04 < 0.15 & l1_id_l & l2_id_l & l1_reliso_rho_04 < 0.15 & l2_reliso_rho_04 < 0.15 )' 
+
+    LOOSE           =  DFR_LOOSE_MMM          
+    LOOSENOTTIGHT   =  DFR_LOOSENOTTIGHT_MMM  
+    TIGHT           =  DFR_TIGHT_MMM          
+
     if isData == False:
 #        fin = rt.TFile(treeDir + 'tree_fr_liteTTbar.root') #TODO CHANGE TO FULL
 #        fin = rt.TFile(tempDir + 'tree_fr_DR_TTbar.root') 
@@ -1300,6 +1325,7 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
         for sample in all_samples: 
             t.Add(sample)
 
+
         cut_T     = twoFakes_sameJet_mm_sh + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + TIGHT 
 #        cut_T     += LepIDIsoPass(0, 't', iso_cut) + LepIDIsoPass(1, 'l', iso_cut) + LepIDIsoPass(2, 'l', iso_cut)
         cut_L   = twoFakes_sameJet_mm_sh + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSE
@@ -1308,7 +1334,9 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
         cut_LNT = twoFakes_sameJet_mm_sh + ' & hnl_2d_disp > 0.5 & abs(l1_dz) < 2 & abs(l2_dz) < 2' + LOOSENOTTIGHT
 
     if isData == True:
-        fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root') #TODO CHANGE TO FULL
+        # fin = rt.TFile(treeDir + 'tree_fr_DR_data_v2.root') #TODO CHANGE TO FULL
+        # fin = rt.TFile('root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv1.0/mmm/background/DDE/added_trees/tree_fr_DR_data_v2_oldVars.root') #TODO CHANGE TO FULL
+        fin = rt.TFile('/shome/dezhu/playground/tree_fr_DR_data_v2_oldVars.root') #TODO CHANGE TO FULL
         t = fin.Get('tree')
 #        t = rt.TChain('tree')
 #        all_files = glob(tempDir + 'tree_fr_DR_data_slice*.root')
@@ -1343,9 +1371,9 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
         cut_T   += ' & ' + PTCONE + ' > 25'
         cut_LNT += ' & ' + PTCONE + ' > 25'
 
-    ## apply Z veto on all OS combinations:
-    #cut_T   += ' & ' + Z_veto
-    #cut_LNT += ' & ' + Z_veto
+    # apply Z veto on all OS combinations:
+    cut_T   += ' & ' + Z_veto
+    cut_LNT += ' & ' + Z_veto
 
     ## apply cut on vtx fitting quality
     cut_T   += ' & sv_prob > 0.01'
@@ -1372,6 +1400,7 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
     observed_M_02      = rt.TH1F('obs_M_02',           'obs_M_02',          len(b_M)-1, b_M)
     observed_m_triL    = rt.TH1F('obs_m_triL',         'obs_m_triL',        len(b_M)-1, b_M)
                                                        
+
     print '\n\tentries:', t.GetEntriesFast()           
                                                        
     print '\tdrawing M_02 ...'
@@ -1552,7 +1581,6 @@ def applyTTL(isData=False, VLD=True, SPLIT=None):
     show
     save(c_m_triL, iso_cut, 'DDE_' + sample, ch, '')
 
-    set_trace()
 
     print '\tdrawing 2disp/sig ...'                    
 
