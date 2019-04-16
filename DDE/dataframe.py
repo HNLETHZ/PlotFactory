@@ -212,6 +212,7 @@ SFR_MMM_L_CUT = ' && ( (l1_reliso_rho_03 < 0.42 && abs(l1_eta) < 1.2) || (l1_rel
 #SFR_MEM_L_CUT = ' && ( (l1_reliso_rho_03 < 0.6  && abs(l1_eta) < 0.8) || (l1_reliso_rho_03 < 0.35 && abs(l1_eta) > 0.8) )'  # dR 03
 SFR_MEM_L_CUT = ' && ( (l1_reliso_rho_04 < 0.4  && abs(l1_eta) < 0.8) || (l1_reliso_rho_04 < 0.7 && abs(l1_eta) > 0.8 && abs(l1_eta) < 1.479) || (l1_reliso_rho_04 < 0.3 && abs(l1_eta) > 1.479) )'  # dR 04
 
+### DY - SELECTION
 ### SFR::MMM 
 SFR_MMM_021_L   =  l0_m + ' && ' + l2_m + ' && ' + l1_m_loose 
 SFR_MMM_021_L   += charge_02                                        # opposite charge 
@@ -232,6 +233,9 @@ SFR_MEM_021_L   += SFR_MEM_L_CUT                                    # reliso bou
 SFR_MEM_021_LNT =  SFR_MEM_021_L + ' && ' + l1_e_lnt
 SFR_MEM_021_T   =  SFR_MEM_021_L + ' && ' + l1_e_tight 
 
+### TT - SELECTION
+### SFR::MEM 
+SFR_MEM_021_L   += ' && nbj > 0 && abs(hnl_m_02 - 91.19) > 10'
 ###########################################################################################################################################################################################
 ### ENERGY-IN-CONE CORRECTED PT
 ###########################################################################################################################################################################################
@@ -365,8 +369,8 @@ def map_FR(ch='mem',mode='sfr',isData=True, subtract=False):
     counters = dict(pckobj)
     sumweights = counters['Sum Norm Weights']
     xsec = DYJetsToLL_M50_ext.xSection
-    dy_scale = lumi * xsec / sumweights
-    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, dy_scale: %0.2f' %(lumi, xsec, sumweights, dy_scale)
+    SCALE = lumi * xsec / sumweights
+    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec, sumweights, SCALE)
 
     if sfr:
 
@@ -551,8 +555,8 @@ def map_FR(ch='mem',mode='sfr',isData=True, subtract=False):
         h_pt_eta_TConv_012.Add(h_pt_eta_TConv_021)
         h_pt_eta_LConv_012.Add(h_pt_eta_LConv_021)
       
-        h_pt_eta_TConv_012.Scale(dy_scale)
-        h_pt_eta_LConv_012.Scale(dy_scale)
+        h_pt_eta_TConv_012.Scale(SCALE)
+        h_pt_eta_LConv_012.Scale(SCALE)
 
         h_pt_eta_T_012.Add(h_pt_eta_TConv_012, -1.)
         h_pt_eta_L_012.Add(h_pt_eta_LConv_012, -1.)
@@ -958,7 +962,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
     ### APPLICATION REGION
     appReg = 'hnl_w_vis_m < 80'
-    appReg = '1 == 1' # RIC: FIRST DO VALIDITY TEST OF THE METHOD (26_03)
+    appReg = 'hnl_w_vis_m > 95'
 
     cuts_FR = appReg + ' && hnl_dr_12 > 0.3' 
     cuts_FR = appReg # 27_3 FOR CLOSURE TEST LEAVE DR_12 < 0.3 TO SEE WHAT HAPPENS
@@ -1006,7 +1010,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
             cuts_FR_021 = cuts_FR + ' && ' + DFR_MEM_L
             tight_021 = DFR_MEM_T
 
-#    data_B_mem = eos+'ntuples/small_data_B.root'
+    data_B_mem = eos+'ntuples/small_data_B.root'
 #    makeLabel(plotDir)
 
     ### PREPARE TREES
@@ -1015,8 +1019,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
-#    t.Add(TT_dir + suffix)
+#    t.Add(DY50_ext_dir + suffix)
+    t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
 #    fin = rt.TFile(skim_mem); t = fin.Get('tree')
@@ -1031,13 +1035,21 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
     # SCALE MC #TODO PUT THIS IN A FUNCTION
     lumi = 4792.0 #/pb data B
+
+    ## DY
     pckfile = DY50_ext_dir+'SkimAnalyzerCount/SkimReport.pck'
+    xsec    = DYJetsToLL_M50_ext.xSection
+
+    ## TT
+    pckfile = TT_dir+'SkimAnalyzerCount/SkimReport.pck'
+    xsec    = TTJets.xSection
+
     pckobj = pickle.load(open(pckfile, 'r'))
     counters = dict(pckobj)
     sumweights = counters['Sum Norm Weights']
-    xsec = DYJetsToLL_M50_ext.xSection
-    dy_scale = lumi * xsec / sumweights
-    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, dy_scale: %0.2f' %(lumi, xsec, sumweights, dy_scale)
+
+    SCALE = lumi * xsec / sumweights
+    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec, sumweights, SCALE)
 
     ### initialize DF placeholders to avoid empty calls
     dfLNT_021 = None; dfLNTConv_021 = None; dfT_021 = None; dfTdata_021 = None; dfTConv_021 = None
@@ -1265,7 +1277,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
         if subtract == True:
             H_WHD_012[v]['Conv'].Add(H_WHD_021[v]['Conv'])
             if verbose: print '\n\tConv whd entries b4 weighting:', H_WHD_012[v]['Conv'].GetEntries()
-            H_WHD_012[v]['Conv'].Scale(dy_scale)      ## SCALING MC
+            H_WHD_012[v]['Conv'].Scale(SCALE)      ## SCALING MC
             if verbose: print '\n\tConv whd entries after weighting:', H_WHD_012[v]['Conv'].GetEntries()
             if verbose: print '\n\tFR whd entries b4 subtracting:', H_WHD_012[v]['FR'].GetEntries()
             H_WHD_012[v]['FR'].Add(H_WHD_012[v]['Conv'], -1.)
@@ -1285,7 +1297,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
                     H_OBS_012[v][DF].SetLineColor(rt.kBlack)
                     H_OBS_012[v][DF].SetMarkerSize(0)
                     H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
-                    H_OBS_012[v][DF].Scale(dy_scale)  ## SCALING MC
+                    H_OBS_012[v][DF].Scale(SCALE)  ## SCALING MC
             whd.Add(H_OBS_012[v]['Conv'])
             whd.Add(H_WHD_012[v]['FR'])
 
@@ -1314,6 +1326,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
         if isData == False: obs.SetMarkerColor(rt.kMagenta+2)
         obs.Draw()
         whd.Draw('histEsame')
+        obs.Draw('same')
         leg = rt.TLegend(0.57, 0.78, 0.80, 0.9)
         if label == False: 
             leg.AddEntry(obs, 'observed')
