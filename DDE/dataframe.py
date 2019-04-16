@@ -73,7 +73,7 @@ DY10Dir_mem     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/DYJetsToLL_
 TT_dir_mem      = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/TTJets/'  
 W_dir_mem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/'
 W_ext_dir_mem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
-data_B_mem      = eos+'ntuples/HN3Lv2.0/data/mem/2017B/Single_mu_2017B/HNLTreeProducer/tree.root'
+data_B_mem      = eos+'ntuples/HN3Lv2.0/data/mem/2017B/Single_mu_2017B/'
 ###########################################################################################################################################################################################
 DYBBDir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYBB/'
 DY50Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50/'
@@ -457,7 +457,7 @@ def map_FR(ch='mem',mode='sfr',isData=True, subtract=False):
     t = None
     t = rt.TChain('tree')
 #    t.Add(data_B_mmm)
-    t.Add(data_B_mem)
+    t.Add(data_B_mem + suffix)
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
@@ -963,6 +963,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     ### APPLICATION REGION
     appReg = 'hnl_w_vis_m < 80'
     appReg = 'hnl_w_vis_m > 95'
+    appReg = '1 == 1'
 
     cuts_FR = appReg + ' && hnl_dr_12 > 0.3' 
     cuts_FR = appReg # 27_3 FOR CLOSURE TEST LEAVE DR_12 < 0.3 TO SEE WHAT HAPPENS
@@ -1010,7 +1011,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
             cuts_FR_021 = cuts_FR + ' && ' + DFR_MEM_L
             tight_021 = DFR_MEM_T
 
-    data_B_mem = eos+'ntuples/small_data_B.root'
+#    data_B_mem = eos+'ntuples/small_data_B.root'
 #    makeLabel(plotDir)
 
     ### PREPARE TREES
@@ -1019,15 +1020,18 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
-#    t.Add(DY50_ext_dir + suffix)
+    t.Add(DY50_ext_dir + suffix)
     t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
 #    fin = rt.TFile(skim_mem); t = fin.Get('tree')
 #    fin = rt.TFile(data_B_mmm); t = fin.Get('tree')
-    #fin = rt.TFile(data_B_mem); tr = fin.Get('tree'); tr.AddFriend('ft = tree', plotDir+'label.root')
+    #fin = rt.TFile(data_B_mem + suffix); tr = fin.Get('tree'); tr.AddFriend('ft = tree', plotDir+'label.root')
 #    t.Add(skim_mem); 
-    t.Add(data_B_mem)
+    t.Add(data_B_mem + suffix)
+    t.AddFriend('ftdata = tree', plotDir + 'data_B_mem_friend_tree_label_0.root')
+    t.AddFriend('ftdy = tree',   plotDir + 'DY50_ext_mem_friend_tree_label_1.root')
+    t.AddFriend('fttt = tree',   plotDir + 'TT_mem_friend_tree_label_2.root')
 #    t.AddFriend('ft = tree', plotDir+'label.root')
     df0 = rdf(t)
     df  = df0.Define('_norm_', '1')
@@ -1077,8 +1081,9 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
     if mode021 == True: print '\n\tlnt df 021 events:', dfLNT0_021.Count().GetValue()
 
-    dfT0_021 = dfL_021.Filter(tight_021)
-    dfT_021  = dfT0_021.Define('t_021_evt_wht', 'weight * lhe_weight')
+    dfT0_021  = dfL_021.Filter(tight_021)
+    dfT_021   = dfT0_021.Define('t_021_evt_wht', 'weight * lhe_weight')
+    dfTTT_021 = dfT_021.Filter('run == 1')
     if isData == True: 
         dfTdata_021 = dfT_021.Filter('run > 1')
         if mode021 == True: print '\n\tdata 021 defined.'
@@ -1179,6 +1184,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
             dfT_021_L ['data']   = dfTdata_021
             dfLNT_021_L ['FR']   = dfLNTdata_021
         if label == True:    dfT_021_L['Conv'] = dfTConv_021
+        dfT_021_L ['TT']   = dfTTT_021
         KEYS = dfT_021_L.keys(); keys = dfLNT_021_L.keys()
 
         for v in VARS.keys():
@@ -1298,7 +1304,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
                     H_OBS_012[v][DF].SetMarkerSize(0)
                     H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
                     H_OBS_012[v][DF].Scale(SCALE)  ## SCALING MC
-            whd.Add(H_OBS_012[v]['Conv'])
+            whd.Add(H_OBS_012[v]['TT'])
+#            whd.Add(H_OBS_012[v]['Conv'])
             whd.Add(H_WHD_012[v]['FR'])
 
         if v == 'pt':
@@ -2018,49 +2025,15 @@ def makeFolder(name):
     return plotDir
 
 
-def makeLabel(plotDir=plotDir):
-
-#    data_B_mem = '/afs/cern.ch/work/v/vstampf/public/ntuples/data/mem/good/2017B/Single_mu_2017B_Chunk45/HNLTreeProducer/tree.root'
-
-    fin = rt.TFile(data_B_mem)
+def makeLabel(sample_dir, lbl='1'):
+    '''create a label (friend) tree for a respective sample
+       use the following: data: 0, DY: 1, TT: 2, WJ: 3''' 
+    fin = rt.TFile(sample_dir+suffix)
     tr = fin.Get('tree')
     ldf = rdf(tr)
-    asd = ldf.Define('label', 'is_data * 99')
+    df = ldf.Define('label', lbl)
     bL = rt.vector('string')()
-    for br in ['event', 'label']:
+    for br in ['event', 'lumi', 'label']:
         bL.push_back(br)
-    asd.Snapshot('tree', plotDir + 'label.root', bL)
+    df.Snapshot('tree', plotDir + 'friend_tree_label_%s.root'%lbl, bL)
 
-def getWeights(): #FIXME DONT USE!
-
-    if sample.name in weighted_list:
-        # sample.sumweights *= initial_weights[sample.name]
-        print '\n\tSet sum weights for sample %s to %d'%(sample.name, sample.sumweights)
-        # print '\n\tSum weights from sample', sample.name, 'in weighted_list: ', sample.sumweights
-    if sample.name not in weighted_list:
-#       pass # turn this off later, for NLO or higher order samples
-        # print '\n\tSet sum weights for sample', sample.name, 'to', sample.sumweights
-        # setSumWeights(sample, 'SkimAnalyzerCount', False)
-
-        if 1==1: ## VS 04/09: applies also to DDE
-            pckfile = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.pck'])
-            try:
-                pckobj = pickle.load(open(pckfile, 'r'))
-                counters = dict(pckobj)
-                # set_trace()
-                if norm:
-                    if 'Sum Norm Weights' in counters:
-                        sample.sumweights = counters['Sum Norm Weights']
-                else:
-                    if 'Sum Weights' in counters:
-                        sample.sumweights = counters['Sum Weights']
-            except IOError:
-                print '\n\tWarning: could not find sum weights information for sample %s'%sample.name
-                pass
-
-        # if sample.is_dde == True:
-            # set_trace()
-            # sample.sumweights *=50000 
-            # print '\n\tsample ' + sample.dir_name + 'has been set to ', sample.sumweights
-
-        print '\n\tSum weights from sample %s not in weighted_list. Setting it to %d' %(sample.name, sample.sumweights)
