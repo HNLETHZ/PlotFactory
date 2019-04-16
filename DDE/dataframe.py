@@ -1029,9 +1029,9 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     #fin = rt.TFile(data_B_mem + suffix); tr = fin.Get('tree'); tr.AddFriend('ft = tree', plotDir+'label.root')
 #    t.Add(skim_mem); 
     t.Add(data_B_mem + suffix)
-    t.AddFriend('ftdata = tree', plotDir + 'data_B_mem_friend_tree_label_0.root')
-    t.AddFriend('ftdy = tree',   plotDir + 'DY50_ext_mem_friend_tree_label_1.root')
-    t.AddFriend('fttt = tree',   plotDir + 'TT_mem_friend_tree_label_2.root')
+    t.AddFriend('ftdata = tree', oldPlotDir + 'data_B_mem_friend_tree_label_0.root')
+    t.AddFriend('ftdy = tree',   oldPlotDir + 'DY50_ext_mem_friend_tree_label_1.root')
+    t.AddFriend('fttt = tree',   oldPlotDir + 'TT_mem_friend_tree_label_2.root')
 #    t.AddFriend('ft = tree', plotDir+'label.root')
     df0 = rdf(t)
     df  = df0.Define('_norm_', '1')
@@ -1041,19 +1041,25 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     lumi = 4792.0 #/pb data B
 
     ## DY
-    pckfile = DY50_ext_dir+'SkimAnalyzerCount/SkimReport.pck'
-    xsec    = DYJetsToLL_M50_ext.xSection
+    pckfile_dy = DY50_ext_dir+'SkimAnalyzerCount/SkimReport.pck'
+    xsec_dy    = DYJetsToLL_M50_ext.xSection
+
+    pckobj_dy     = pickle.load(open(pckfile_dy, 'r'))
+    counters_dy   = dict(pckobj_dy)
+    sumweights_dy = counters_dy['Sum Norm Weights']
 
     ## TT
-    pckfile = TT_dir+'SkimAnalyzerCount/SkimReport.pck'
-    xsec    = TTJets.xSection
+    pckfile_tt = TT_dir+'SkimAnalyzerCount/SkimReport.pck'
+    xsec_tt    = TTJets.xSection
 
-    pckobj = pickle.load(open(pckfile, 'r'))
-    counters = dict(pckobj)
-    sumweights = counters['Sum Norm Weights']
+    pckobj_tt     = pickle.load(open(pckfile_tt, 'r'))
+    counters_tt   = dict(pckobj_tt)
+    sumweights_tt = counters_tt['Sum Norm Weights']
 
-    SCALE = lumi * xsec / sumweights
-    print '\n\tlumi: %0.2f, xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec, sumweights, SCALE)
+    DY_SCALE = lumi * xsec_dy / sumweights_dy
+    print '\n\tlumi: %0.2f, DY: xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec_dy, sumweights_dy, DY_SCALE)
+    TT_SCALE = lumi * xsec_tt / sumweights_tt
+    print '\n\tlumi: %0.2f, TT: xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec_tt, sumweights_tt, TT_SCALE)
 
     ### initialize DF placeholders to avoid empty calls
     dfLNT_021 = None; dfLNTConv_021 = None; dfT_021 = None; dfTdata_021 = None; dfTConv_021 = None
@@ -1072,22 +1078,22 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     dfLNT1_021 = dfLNT0_021.Define('fover1minusf021', selectBins(ch=ch,lep=1,isData=isData))
     dfLNT2_021 = dfLNT1_021.Define('lnt_021_evt_wht', 'fover1minusf021 * weight * lhe_weight')
     if isData == True: 
-        dfLNTdata_021 = dfLNT2_021.Filter('run > 1')
+        dfLNTdata_021 = dfLNT2_021.Filter('ftdata.label == 0')
         if mode021 == True: print '\n\tdata 021 defined.'
     if mode021 == True: print '\n\tweight f/(1-f)  021 defined.'
 
-    if subtract == True: dfLNTConv_021 = dfLNT2_021.Filter('( (abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1) ||  abs(l1_gen_match_pdgid) == 22 )') 
+    if subtract == True: dfLNTConv_021 = dfLNT2_021.Filter('ftdy.label == 1 && ( (abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1) ||  abs(l1_gen_match_pdgid) == 22 )') 
     if mode021 == True:  print '\n\tlnt df 021 defined.'
 
     if mode021 == True: print '\n\tlnt df 021 events:', dfLNT0_021.Count().GetValue()
 
     dfT0_021  = dfL_021.Filter(tight_021)
     dfT_021   = dfT0_021.Define('t_021_evt_wht', 'weight * lhe_weight')
-    dfTTT_021 = dfT_021.Filter('run == 1')
+    dfTTT_021 = dfT_021.Filter('fttt.label == 2')
     if isData == True: 
-        dfTdata_021 = dfT_021.Filter('run > 1')
+        dfTdata_021 = dfT_021.Filter('ftdata.label == 0')
         if mode021 == True: print '\n\tdata 021 defined.'
-    if label == True: dfTConv_021 = dfT_021.Filter('(abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1) ||  abs(l1_gen_match_pdgid) == 22') 
+    if label == True: dfTConv_021 = dfT_021.Filter('ftdy.label == 1 && ( (abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1) ||  abs(l1_gen_match_pdgid) == 22 )') 
     if mode021 == True: print '\n\ttight df 021 defined.'
 
     if mode021 == True: print '\n\ttight df 021 events:', dfT_021.Count().GetValue()
@@ -1283,7 +1289,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
         if subtract == True:
             H_WHD_012[v]['Conv'].Add(H_WHD_021[v]['Conv'])
             if verbose: print '\n\tConv whd entries b4 weighting:', H_WHD_012[v]['Conv'].GetEntries()
-            H_WHD_012[v]['Conv'].Scale(SCALE)      ## SCALING MC
+            H_WHD_012[v]['Conv'].Scale(DY_SCALE)      ## SCALING MC
             if verbose: print '\n\tConv whd entries after weighting:', H_WHD_012[v]['Conv'].GetEntries()
             if verbose: print '\n\tFR whd entries b4 subtracting:', H_WHD_012[v]['FR'].GetEntries()
             H_WHD_012[v]['FR'].Add(H_WHD_012[v]['Conv'], -1.)
@@ -1303,9 +1309,10 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
                     H_OBS_012[v][DF].SetLineColor(rt.kBlack)
                     H_OBS_012[v][DF].SetMarkerSize(0)
                     H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
-                    H_OBS_012[v][DF].Scale(SCALE)  ## SCALING MC
+            H_OBS_012[v]['Conv'].Scale(DY_SCALE)  ## SCALING MC
+            H_OBS_012[v]['TT'].Scale(TT_SCALE)  ## SCALING MC
             whd.Add(H_OBS_012[v]['TT'])
-#            whd.Add(H_OBS_012[v]['Conv'])
+            whd.Add(H_OBS_012[v]['Conv'])
             whd.Add(H_WHD_012[v]['FR'])
 
         if v == 'pt':
