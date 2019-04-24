@@ -245,52 +245,6 @@ SFR_MEM_012_T   =  SFR_MEM_012_L + ' && ' + l2_m_tight
 SFR_MEM_021_L   += ' && nbj > 0 && abs(hnl_m_02 - 91.19) > 10'
 SFR_MEM_012_L   += ' && nbj > 0'#
 ###########################################################################################################################################################################################
-### FAKEABLE OBJECTS AND PROMPT LEPTON DEFINITIONS
-###########################################################################################################################################################################################
-### PROMPT LEPTONS
-l0_m = 'l0_pt > 27 && abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2 && l0_id_t == 1'                  # l0 genuine muon
-
-l1_m = 'l1_pt > 15 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2 && l1_id_t == 1'                  # l1 genuine muon 
-
-l2_m = 'l2_pt > 15 && abs(l2_eta) < 2.4 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2 && l2_id_t == 1'                  # l2 genuine muon 
-
-l0_e = 'l0_pt > 27 && abs(l0_eta) < 2.5 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2 && l0_eid_mva_iso_wp90 == 1'      # l0 genuine electron
-
-l1_e = 'l1_pt > 15 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2 && l1_eid_mva_iso_wp90 == 1'      # l1 genuine electron 
-
-l2_e = 'l2_pt > 15 && abs(l2_eta) < 2.5 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2 && l2_eid_mva_iso_wp90 == 1'      # l2 genuine electron 
-
-### FAKEABLE OBJECTS
-l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_m_tight  = l1_m_loose + ' &&  l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
-l1_m_lnt    = l1_m_loose + ' && (l1_Medium == 0 || l1_reliso_rho_04 > 0.2)'
-
-l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 0.2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
-l2_m_tight  = l2_m_loose + ' &&  l2_Medium == 1 && l2_reliso_rho_04 < 0.2'
-l2_m_lnt    = l2_m_loose + ' && (l2_Medium == 0 || l2_reliso_rho_04 > 0.2)'
-
-l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_e_tight  = l1_e_loose + ' &&  l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
-l1_e_lnt    = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_04 > 0.2)'
-
-l2_e_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.5 && abs(l2_dz) < 0.2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
-l2_e_tight  = l2_e_loose + ' &&  l2_MediumNoIso == 1 && l2_reliso_rho_04 < 0.2'
-l2_e_lnt    = l2_e_loose + ' && (l2_MediumNoIso == 0 || l2_reliso_rho_04 > 0.2)'
-
-# TRY TO BUILD DFR OUT OF THE ABOVE
-i:
-
-
-### ADDTIONAL CUTS
-ADD_SFR_L0L2 = 'hnl_q_02 == 0'                                                                                                        # opposite charge
-ADD_SFR_L0L1 = 'hnl_q_01 == 0'                                                                                                        # opposite charge
-
-SFR_LOOSE_MEM_L1 = ' && l1_reliso_rho_04 < 1.0'                                                                                            # reliso bound for LOOSE cf. checkIso_mem_220319 
-
-SFR_LOOSE_MMM_L1 = ' && l1_reliso_rho_04 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
-SFR_LOOSE_MMM_L2 = ' && l2_reliso_rho_04 < 0.5'                                                                                            # reliso bound for LOOSE cf. checkIso_mmm_220319 
-
-###########################################################################################################################################################################################
 ### ENERGY-IN-CONE CORRECTED PT
 ###########################################################################################################################################################################################
 PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )'
@@ -802,7 +756,6 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='sfr',dbg=False):
     print'\n\tchain made.'
     N_ENTRIES = df.Count()
 
-
     flavors = ['all', 'heavy', 'light']
 
 
@@ -836,7 +789,6 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='sfr',dbg=False):
 
     if mode012 == True:
         cuts_l_021 = cuts_FR_021 + ' && l1_jet_flavour_parton != -99'
-
         f0_012 = df.Filter(cuts_l_012)
         print '\n\tloose 012 defined.'
 
@@ -871,7 +823,6 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='sfr',dbg=False):
         print '\n\t loose 021: %s\n'         %(cuts_FR_021)
         print '\n\t tight 021: %s\n'         %(tight_021)
         print '\ttotal loose 021: %s\n'      %f0_021.Count().GetValue()
-
 
     i = 0
     for ita in l_eta.keys():
@@ -920,13 +871,11 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='sfr',dbg=False):
             print '\n\tfilling 012 done.'
 
 
-
         ### ADDING 012 + 021
         h_pt['light']['T_012'].Add(h_pt['light']['T_021'])
         h_pt['heavy']['T_012'].Add(h_pt['heavy']['T_021'])
         print '\n\th entries tight:', h_pt['heavy']['T_012'].GetEntries(), h_pt['light']['T_012'].GetEntries()
         print '\th sum tight:', h_pt['heavy']['T_012'].GetEntries() + h_pt['light']['T_012'].GetEntries()
-
 
         h_pt['all']['T_012'].Add(h_pt['light']['T_012'])  
         h_pt['all']['T_012'].Add(h_pt['heavy']['T_012'])  
@@ -1077,7 +1026,6 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 #    data_B_mem = eos+'ntuples/small_data_B.root'
 #    makeLabel(plotDir)
 
-
     ### PREPARE TREES
     t = None
     t = rt.TChain('tree')
@@ -1100,7 +1048,6 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     df0 = rdf(t)
     df  = df0.Define('_norm_', '1')
     print'\n\tchain made.'
-
 
     # SCALE MC #TODO PUT THIS IN A FUNCTION
     lumi = 4792.0 #/pb data B
@@ -1131,13 +1078,11 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
     '''PREPARE DATAFRAMES'''
 
-
     '''MODE 021
        l0 and l2 prompt, l1 is tested'''
     cuts_l_021 = cuts_FR_021
     f0_021 = df.Filter(cuts_l_021)
     if mode021 == True: print '\n\tloose df 021 defined.'
-
 
     dfL_021   = f0_021.Define('ptcone021', ptconel1)
 
@@ -1469,13 +1414,11 @@ class FakeRate(object):
 
         if sfr:
 
-
             #### GENERAL 
             print '\n\tpreparing single fakes ...'
             mode021 = False; mode012 = False
 
             cuts_FR = 'hnl_dr_12 > 0.3'
-
 
             #### CHANNEL SPECIFIC
             if ch == 'mem':
@@ -1485,7 +1428,6 @@ class FakeRate(object):
             if ch == 'mmm':
                mode012 = True
                mode021 = True
-
 
             ### PREPARE DATAFRAMES
             if mode021 == True:
@@ -1566,7 +1508,6 @@ class FakeRate(object):
 
                 _dfL_012_light = [dfL_012_light_eta0, dfL_012_light_eta1, dfL_012_light_eta2]
                 _dfL_012_heavy = [dfL_012_heavy_eta0, dfL_012_heavy_eta1, dfL_012_heavy_eta2]
-
 ######################################################################################
 
 ######################################################################################
@@ -1644,7 +1585,6 @@ def checkIsoPDF(ch='mmm',ID='No',eta_split=True,mode='sfr',dR='04',fullSplit=Fal
             mode021 = True
             cuts_FR += ' && abs(l1_gen_match_pdgid) != 22'
             cuts_FR_021 = cuts_FR + ' && ' + SFR_MEM_021_L
-
             if ID == 'M':
                 L1ID = ' && l1_MediumNoIso == 1'
             if ID == 'L':
@@ -1751,7 +1691,6 @@ def checkIsoPDF(ch='mmm',ID='No',eta_split=True,mode='sfr',dR='04',fullSplit=Fal
         print '\ttotal 012 loose: %s\n'      %f0_012.Count().GetValue()
     if mode021 ==True:  
         print '\ttotal 021 loose: %s\n'      %f0_021.Count().GetValue()
-
 
     vars = {'reliso_rho_%s'%dR:[1500,0.01,15.01]}
     #'pt':[50,0.,102],  'abs_iso_rho': [150,0,150], 'abs_iso_db': [150,0,150]}#,  'l2_pt':[50,2,102], 'l0_pt':[50,2,102], 'abs_dxy':[60,0.05,3.05]}
