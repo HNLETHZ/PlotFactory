@@ -75,14 +75,14 @@ W_dir_mem       = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu/
 W_ext_dir_mem   = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_mem/WJetsToLNu_ext/'
 data_B_mem      = eos+'ntuples/HN3Lv2.0/data/mem/2017B/Single_mu_2017B/'
 ###########################################################################################################################################################################################
-DYBBDir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYBB/'
-DY50Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50/'
-DY50_extDir_mmm = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M50_ext/'
-DY10Dir_mmm     = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/DYJetsToLL_M10to50/'
-TT_dir_mmm      = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/TTJets/'  
-W_dir_mmm       = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/WJetsToLNu/'
-W_ext_dir_mmm   = eos_david+'ntuples/HN3Lv2.0/background/montecarlo/production20190318/mmm/ntuples/WJetsToLNu_ext/'
-data_B_mmm      = 'root://cms-xrd-transit.cern.ch//store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/Single_mu_2017B/HNLTreeProducer/tree.root'
+DYBBDir_mmm     = '/work/dezhu/4_production/production_20190411_Bkg_mmm/DYBB_Chunk1/'
+DY50Dir_mmm     = '/work/dezhu/4_production/production_20190411_Bkg_mmm/DYJetsToLL_M50_Chunk1/'
+DY50_extDir_mmm = '/work/dezhu/4_production/production_20190411_Bkg_mmm/DYJetsToLL_M50_ext_Chunk1/'
+DY10Dir_mmm     = '/work/dezhu/4_production/production_20190411_Bkg_mmm/DYJetsToLL_M10to50_Chunk1/'
+TT_dir_mmm      = '/work/dezhu/4_production/production_20190411_Bkg_mmm/TTJets_Chunk1/'  
+W_dir_mmm       = '/work/dezhu/4_production/production_20190411_Bkg_mmm/WJetsToLNu_Chunk1/'
+W_ext_dir_mmm   = '/work/dezhu/4_production/production_20190411_Bkg_mmm/WJetsToLNu_ext_Chunk1/'
+data_B_mmm      = '/work/dezhu/4_production/production_20190412_Data_mmm/ntuples/Single_mu_2017B/Single_mu_2017B/HNLTreeProducer/tree.root'
 #######################################################################################################################################################################################################
 DYBBDir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYBB/'
 DY50Dir_eee     = eos+'ntuples/HN3Lv2.0/background/montecarlo/mc_eee/partial/DYJetsToLL_M50/'
@@ -155,35 +155,36 @@ l1_fake_e_dr = '( !' + l1_prompt_e_dr + ' )'
 l2_fake_e_dr = '( !' + l2_prompt_e_dr + ' )' 
 
 l1_fake_e_dr_noConv = '( !' + l1_prompt_e_dr_noConv + ' )' 
+charge_01 = ' && hnl_q_01 == 0'
 charge_02 = ' && hnl_q_02 == 0'
 ###########################################################################################################################################################################################
 ### FAKEABLE OBJECTS AND PROMPT LEPTON DEFINITIONS
 ###########################################################################################################################################################################################
 ### PROMPT LEPTONS
-l0_m = 'l0_pt > 25 && abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2 && l0_id_m == 1'                  # l0 genuine muon
-l1_m = 'l1_pt > 10 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2 && l1_id_m == 1'                  # l1 genuine muon 
-l2_m = 'l2_pt > 10 && abs(l2_eta) < 2.4 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2 && l2_id_m == 1'                  # l2 genuine muon 
+l0_m = 'l0_pt > 25 && abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2 && l0_id_m == 1'                  # l0 genuine muon
+l1_m = 'l1_pt > 10 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2 && l1_id_m == 1'                  # l1 genuine muon 
+l2_m = 'l2_pt > 10 && abs(l2_eta) < 2.4 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_03 < 0.2 && l2_id_m == 1'                  # l2 genuine muon 
 
-l0_e = 'l0_pt > 25 && abs(l0_eta) < 2.5 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_04 < 0.2 && l0_eid_mva_iso_wp90 == 1'      # l0 genuine electron
-l1_e = 'l1_pt > 10 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_04 < 0.2 && l1_eid_mva_iso_wp90 == 1'      # l1 genuine electron 
-l2_e = 'l2_pt > 10 && abs(l2_eta) < 2.5 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_04 < 0.2 && l2_eid_mva_iso_wp90 == 1'      # l2 genuine electron 
+l0_e = 'l0_pt > 25 && abs(l0_eta) < 2.5 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2 && l0_eid_mva_iso_wp90 == 1'      # l0 genuine electron
+l1_e = 'l1_pt > 10 && abs(l1_eta) < 2.5 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2 && l1_eid_mva_iso_wp90 == 1'      # l1 genuine electron 
+l2_e = 'l2_pt > 10 && abs(l2_eta) < 2.5 && abs(l2_dz) < 0.2 && abs(l2_dxy) < 0.05 && l2_reliso_rho_03 < 0.2 && l2_eid_mva_iso_wp90 == 1'      # l2 genuine electron 
 
 ### FAKEABLE OBJECTS
 l1_m_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.4 && abs(l1_dz) < 2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_m_tight  = l1_m_loose + ' &&  l1_Medium == 1 && l1_reliso_rho_04 < 0.2'
-l1_m_lnt    = l1_m_loose + ' && (l1_Medium == 0 || l1_reliso_rho_04 > 0.2)'
+l1_m_tight  = l1_m_loose + ' &&  l1_Medium == 1 && l1_reliso_rho_03 < 0.2'
+l1_m_lnt    = l1_m_loose + ' && (l1_Medium == 0 || l1_reliso_rho_03 > 0.2)'
 
 l2_m_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
-l2_m_tight  = l2_m_loose + ' &&  l2_Medium == 1 && l2_reliso_rho_04 < 0.2'
-l2_m_lnt    = l2_m_loose + ' && (l2_Medium == 0 || l2_reliso_rho_04 > 0.2)'
+l2_m_tight  = l2_m_loose + ' &&  l2_Medium == 1 && l2_reliso_rho_03 < 0.2'
+l2_m_lnt    = l2_m_loose + ' && (l2_Medium == 0 || l2_reliso_rho_03 > 0.2)'
 
 l1_e_loose  = 'l1_pt > 5 && abs(l1_eta) < 2.5 && abs(l1_dz) < 2 && abs(l1_dxy) > 0.05'                                              # l1 kinematics and impact parameter
-l1_e_tight  = l1_e_loose + ' &&  l1_MediumNoIso == 1 && l1_reliso_rho_04 < 0.2'
-l1_e_lnt    = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_04 > 0.2)'
+l1_e_tight  = l1_e_loose + ' &&  l1_MediumNoIso == 1 && l1_reliso_rho_03 < 0.2'
+l1_e_lnt    = l1_e_loose + ' && (l1_MediumNoIso == 0 || l1_reliso_rho_03 > 0.2)'
 
 l2_e_loose  = 'l2_pt > 5 && abs(l2_eta) < 2.5 && abs(l2_dz) < 2 && abs(l2_dxy) > 0.05'                                              # l2 kinematics and impact parameter
-l2_e_tight  = l2_e_loose + ' &&  l2_MediumNoIso == 1 && l2_reliso_rho_04 < 0.2'
-l2_e_lnt    = l2_e_loose + ' && (l2_MediumNoIso == 0 || l2_reliso_rho_04 > 0.2)'
+l2_e_tight  = l2_e_loose + ' &&  l2_MediumNoIso == 1 && l2_reliso_rho_03 < 0.2'
+l2_e_lnt    = l2_e_loose + ' && (l2_MediumNoIso == 0 || l2_reliso_rho_03 > 0.2)'
 ###########################################################################################################################################################################################
               ##                 DOUBLE FAKE RATE                   ##  
 ###########################################################################################################################################################################################
@@ -229,19 +230,26 @@ SFR_MMM_012_T   =  SFR_MMM_012_L + ' && ' + l2_m_tight
 ### SFR::MEM 
 SFR_MEM_021_L   =  l0_m + ' && ' + l2_m + ' && ' + l1_e_loose 
 SFR_MEM_021_L   += charge_02                                        # opposite charge 
-SFR_MEM_021_L   += SFR_MEM_L_CUT                                    # reliso bound for LOOSE cf. checkIso_mmm_220319 
+#SFR_MEM_021_L   += SFR_MEM_L_CUT                                    # reliso bound for LOOSE cf. checkIso_mmm_220319 
 SFR_MEM_021_LNT =  SFR_MEM_021_L + ' && ' + l1_e_lnt
 SFR_MEM_021_T   =  SFR_MEM_021_L + ' && ' + l1_e_tight 
 
+'''study TT'''
 ### TT - SELECTION
 ### SFR::MEM 
+SFR_MEM_012_L   =  l0_m + ' && ' + l1_e + ' && ' + l2_m_loose 
+SFR_MEM_012_L   += charge_01                                        # opposite charge 
+SFR_MEM_012_LNT =  SFR_MEM_012_L + ' && ' + l2_m_lnt
+SFR_MEM_012_T   =  SFR_MEM_012_L + ' && ' + l2_m_tight 
+
 SFR_MEM_021_L   += ' && nbj > 0 && abs(hnl_m_02 - 91.19) > 10'
+SFR_MEM_012_L   += ' && nbj > 0'#
 ###########################################################################################################################################################################################
 ### ENERGY-IN-CONE CORRECTED PT
 ###########################################################################################################################################################################################
-PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso04_rel_rhoArea<0.2) ) + ( (hnl_iso04_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso04_rel_rhoArea - 0.2) ) )  )'
-PTCONEL1 = '(  ( l1_pt         * (l1_reliso_rho_04<0.2) )      + ( (l1_reliso_rho_04>=0.2)      * ( l1_pt         * (1. + l1_reliso_rho_04 - 0.2) ) )  )'
-PTCONEL2 = '(  ( l2_pt         * (l2_reliso_rho_04<0.2) )      + ( (l2_reliso_rho_04>=0.2)      * ( l2_pt         * (1. + l2_reliso_rho_04 - 0.2) ) )  )'
+PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )'
+PTCONEL1 = '(  ( l1_pt         * (l1_reliso_rho_03<0.2) )      + ( (l1_reliso_rho_03>=0.2)      * ( l1_pt         * (1. + l1_reliso_rho_03 - 0.2) ) )  )'
+PTCONEL2 = '(  ( l2_pt         * (l2_reliso_rho_03<0.2) )      + ( (l2_reliso_rho_03>=0.2)      * ( l2_pt         * (1. + l2_reliso_rho_03 - 0.2) ) )  )'
 ###########################################################################################################################################################################################
 ### BINNING FOR CLOSURE TEST 
 ###########################################################################################################################################################################################
@@ -934,7 +942,7 @@ def checkTTLratio(ch='mmm',eta_split=True,mode='sfr',dbg=False):
 ###########################################################################################################################################################################################
 
 ###########################################################################################################################################################################################
-def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, verbose=True, output=False):
+def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, verbose=True, output=False, fr=False):
     
     sfr = False; dfr = False; print '\n\tmode: %s, \tch: %s, \tisData: %s, \tlabel: %s, \tsubtract: %s' %(mode, ch, isData, label, subtract)
     if mode == 'sfr': sfr = True
@@ -979,10 +987,14 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
         #### CHANNEL SPECIFIC
         if ch == 'mem':
-            mode021 = True
+            #mode021 = True
+            mode012 = True
             cuts_FR_021 = cuts_FR + ' && ' + SFR_MEM_021_L
+            cuts_FR_012 = cuts_FR + ' && ' + SFR_MEM_012_L
             lnt_021     = SFR_MEM_021_LNT
+            lnt_012     = SFR_MEM_012_LNT
             tight_021   = SFR_MEM_021_T
+            tight_012   = SFR_MEM_012_T
 
         if ch == 'eem':
             mode012 = True
@@ -1020,7 +1032,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 #    t.Add(DYBB_dir + suffix)
 #    t.Add(DY10_dir + suffix)
 #    t.Add(DY50_dir + suffix)
-    t.Add(DY50_ext_dir + suffix)
+    #t.Add(DY50_ext_dir + suffix)
     t.Add(TT_dir + suffix)
 ##    t.Add(W_dir + suffix)
 #    t.Add(W_ext_dir + suffix)
@@ -1030,7 +1042,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 #    t.Add(skim_mem); 
     t.Add(data_B_mem + suffix)
     t.AddFriend('ftdata = tree', oldPlotDir + 'data_B_mem_friend_tree_label_0.root')
-    t.AddFriend('ftdy = tree',   oldPlotDir + 'DY50_ext_mem_friend_tree_label_1.root')
+    #t.AddFriend('ftdy = tree',   oldPlotDir + 'DY50_ext_mem_friend_tree_label_1.root')
     t.AddFriend('fttt = tree',   oldPlotDir + 'TT_mem_friend_tree_label_2.root')
 #    t.AddFriend('ft = tree', plotDir+'label.root')
     df0 = rdf(t)
@@ -1056,8 +1068,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     counters_tt   = dict(pckobj_tt)
     sumweights_tt = counters_tt['Sum Norm Weights']
 
-    DY_SCALE = lumi * xsec_dy / sumweights_dy
-    print '\n\tlumi: %0.2f, DY: xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec_dy, sumweights_dy, DY_SCALE)
+    #DY_SCALE = lumi * xsec_dy / sumweights_dy
+    #print '\n\tlumi: %0.2f, DY: xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec_dy, sumweights_dy, DY_SCALE)
     TT_SCALE = lumi * xsec_tt / sumweights_tt
     print '\n\tlumi: %0.2f, TT: xsec: %0.2f, sumweights: %0.2f, SCALE: %0.2f' %(lumi, xsec_tt, sumweights_tt, TT_SCALE)
 
@@ -1093,7 +1105,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     if isData == True: 
         dfTdata_021 = dfT_021.Filter('ftdata.label == 0')
         if mode021 == True: print '\n\tdata 021 defined.'
-    if label == True: dfTConv_021 = dfT_021.Filter('ftdy.label == 1 && ( (abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1) ||  abs(l1_gen_match_pdgid) == 22 )') 
+    #if label == True: dfTConv_021 = dfT_021.Filter('ftdy.label == 1 && ( (abs(l1_gen_match_pdgid) != 22 && l1_gen_match_isPromptFinalState == 1) ||  abs(l1_gen_match_pdgid) == 22 )') 
     if mode021 == True: print '\n\ttight df 021 defined.'
 
     if mode021 == True: print '\n\ttight df 021 events:', dfT_021.Count().GetValue()
@@ -1121,6 +1133,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
     dfT0_012 = dfL_012.Filter(tight_012)
     dfT_012 = dfT0_012.Define('t_012_evt_wht', 'weight * lhe_weight')
+    dfTTT_012 = dfT_012.Filter('fttt.label == 2')
     if isData == True: 
         dfTdata_012 = dfT_012.Filter('run > 1')
         if mode012 == True: print '\n\tdata 012 defined.'
@@ -1184,17 +1197,17 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     if mode021 == True:
         VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone021'      , ';p_{T}^{cone} [GeV]; Counts']
 
-        dfLNT_021_L ['FR'] = dfLNT_021
+        if fr == True: dfLNT_021_L ['FR'] = dfLNT_021
         if subtract == True: dfLNT_021_L ['Conv'] = dfLNTConv_021
         if isData == True:  
-            dfT_021_L ['data']   = dfTdata_021
-            dfLNT_021_L ['FR']   = dfLNTdata_021
-        if label == True:    dfT_021_L['Conv'] = dfTConv_021
-        dfT_021_L ['TT']   = dfTTT_021
+            dfT_021_L ['data'] = dfTdata_021
+            if fr == True: dfLNT_021_L ['FR'] = dfLNTdata_021
+        if label == True:  dfT_021_L['Conv'] = dfTConv_021
+        dfT_021_L ['TT'] = dfTTT_021
         KEYS = dfT_021_L.keys(); keys = dfLNT_021_L.keys()
 
         for v in VARS.keys():
-            _H_WHD_021[v]['FR'] = dfLNT_021_L['FR'].Histo1D(('whd_021_%s_FR'%v,'whd_021_%s_FR'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_021_evt_wht')
+            if fr == True: _H_WHD_021[v]['FR'] = dfLNT_021_L['FR'].Histo1D(('whd_021_%s_FR'%v,'whd_021_%s_FR'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_021_evt_wht')
 
             if subtract == True: _H_WHD_021[v]['Conv'] = dfLNTConv_021.Histo1D(('whd_021_%s_Conv'%v,'whd_021_%s_Conv'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_021_evt_wht')
             if len(KEYS) == 1:   _H_OBS_021[v]         = dfT_021.Histo1D(('obs_021_%s'%v,'obs_021_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 't_021_evt_wht')
@@ -1206,16 +1219,17 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
     if mode012 == True:
         VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone012'      , ';p_{T}^{cone} [GeV]; Counts']
 
-        dfLNT_012_L ['FR'] = dfLNT_012
+        if fr == True: dfLNT_012_L ['FR'] = dfLNT_012
         if subtract == True: dfLNT_012_L ['Conv'] = dfLNTConv_012
         if isData == True:  
-            dfT_012_L ['data']   = dfTdata_012
-            dfLNT_012_L ['FR']   = dfLNTdata_012
-        if label == True:    dfT_012_L['Conv'] = dfTConv_012
+            dfT_012_L ['data'] = dfTdata_012
+            if fr == True: dfLNT_012_L ['FR'] = dfLNTdata_012
+        #if label == True:  dfT_012_L['Conv'] = dfTConv_012
+        dfT_012_L ['TT'] = dfTTT_012
         KEYS = dfT_012_L.keys(); keys = dfLNT_012_L.keys()
 
         for v in VARS.keys():
-            _H_WHD_012[v]['FR'] = dfLNT_012_L['FR'].Histo1D(('whd_012_%s_FR'%v,'whd_012_%s_FR'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_012_evt_wht')
+            if fr == True: _H_WHD_012[v]['FR'] = dfLNT_012_L['FR'].Histo1D(('whd_012_%s_FR'%v,'whd_012_%s_FR'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_012_evt_wht')
 
             if subtract == True: _H_WHD_021[v]['Conv'] = dfLNTConv_021.Histo1D(('whd_021_%s_Conv'%v,'whd_021_%s_Conv'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 'lnt_021_evt_wht')
             if len(KEYS) == 1: _H_OBS_012[v] = dfT_012.Histo1D(('obs_012_%s'%v,'obs_012_%s'%v, VARS[v][0], VARS[v][1]), VARS[v][2], 't_012_evt_wht')
@@ -1240,8 +1254,9 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
 
         if mode021 == True:
             VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone021'      , ';p_{T}^{cone} [GeV]; Counts']
-            print '\n\tDrawing:', v, 'weighed FR'
-            H_WHD_021[v]['FR']   = _H_WHD_021[v]['FR'].GetPtr()
+            if fr == True: 
+                print '\n\tDrawing:', v, 'weighed FR'
+                H_WHD_021[v]['FR']   = _H_WHD_021[v]['FR'].GetPtr()
             if len(keys) > 1:
                 print '\n\tDrawing:', v, 'weighed Conv'
                 H_WHD_021[v]['Conv'] = _H_WHD_021[v]['Conv'].GetPtr()
@@ -1256,8 +1271,9 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
         
         if mode012 == True:
             VARS ['pt'] = [len(b_pt)-1,     b_pt,     'ptcone012'      , ';p_{T}^{cone} [GeV]; Counts']
-            print '\n\tDrawing:', v, 'weighed FR'
-            H_WHD_012[v]['FR']   = _H_WHD_012[v]['FR'].GetPtr()
+            if fr == True: 
+                print '\n\tDrawing:', v, 'weighed FR'
+                H_WHD_012[v]['FR']   = _H_WHD_012[v]['FR'].GetPtr()
             if len(keys) > 1:
                 print '\n\tDrawing:', v, 'weighed Conv'
                 H_WHD_012[v]['Conv'] = _H_WHD_012[v]['Conv'].GetPtr()
@@ -1277,11 +1293,12 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
         col['DYbb']    = rt.kRed+1;        col['Conv']    = rt.kCyan+1
         col['DY50']    = rt.kYellow+1;     col['whd']     = rt.kGreen+1 
         
-        H_WHD_012[v]['FR'].Add(H_WHD_021[v]['FR'])
-        H_WHD_012[v]['FR'].SetFillColor(col['whd'])
-        H_WHD_012[v]['FR'].SetLineColor(rt.kBlack)
-        H_WHD_012[v]['FR'].SetMarkerSize(0)
-        H_WHD_012[v]['FR'].SetMarkerColor(rt.kBlack)
+        if fr == True:
+            H_WHD_012[v]['FR'].Add(H_WHD_021[v]['FR'])
+            H_WHD_012[v]['FR'].SetFillColor(col['whd'])
+            H_WHD_012[v]['FR'].SetLineColor(rt.kBlack)
+            H_WHD_012[v]['FR'].SetMarkerSize(0)
+            H_WHD_012[v]['FR'].SetMarkerColor(rt.kBlack)
 
         if isData == False: obs = H_OBS_012[v]['DY50'] 
         if isData == True:  obs = H_OBS_012[v]['data'] 
@@ -1309,11 +1326,12 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
                     H_OBS_012[v][DF].SetLineColor(rt.kBlack)
                     H_OBS_012[v][DF].SetMarkerSize(0)
                     H_OBS_012[v][DF].SetMarkerColor(rt.kBlack)
-            H_OBS_012[v]['Conv'].Scale(DY_SCALE)  ## SCALING MC
             H_OBS_012[v]['TT'].Scale(TT_SCALE)  ## SCALING MC
             whd.Add(H_OBS_012[v]['TT'])
-            whd.Add(H_OBS_012[v]['Conv'])
-            whd.Add(H_WHD_012[v]['FR'])
+            if fr == True:
+                H_OBS_012[v]['Conv'].Scale(DY_SCALE)  ## SCALING MC
+                whd.Add(H_OBS_012[v]['Conv'])
+                whd.Add(H_WHD_012[v]['FR'])
 
         if v == 'pt':
             if label == False: n_obs = obs.GetEntries(); n_whd = whd.GetEntries()
@@ -1351,7 +1369,8 @@ def closureTest(ch='mmm', mode='sfr', isData=True, label=True, subtract=True, ve
                     if DF == 'DY50': leg.AddEntry(H_OBS_012[v][DF], 'observed')
                 if isData == True:
                     if DF == 'data': leg.AddEntry(H_OBS_012[v][DF], 'observed')
-        leg.AddEntry(H_WHD_012[v]['FR'], 'expected SFR')
+        if fr == True: 
+            leg.AddEntry(H_WHD_012[v]['FR'], 'expected SFR')
         leg.Draw()
         pf.showlogoprelimsim('CMS')
         pf.showlumi('SFR_'+ch)
