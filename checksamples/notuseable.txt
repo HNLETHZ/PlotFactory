@@ -1,0 +1,10 @@
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.59587618054_mu_onshell_pre2017_NLO/heavyNeutrino_10.root 
+
+number of samples: 176
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.59587618054_e_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-1_V-0.59587618054_mu_onshell_pre2017_NLO/heavyNeutrino_10.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.00675244664_e_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.00675244664_e_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.00675244664_mu_onshell_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-6_V-0.00675244664_mu_pre2017_NLO/heavyNeutrino_1.root
+root://cms-xrd-global.cern.ch//store/user/tomc/heavyNeutrinoMiniAOD/Moriond17/displaced/HeavyNeutrino_trilepton_M-7_V-0.00459211224_e_onshell_pre2017_NLO/heavyNeutrino_1.root
