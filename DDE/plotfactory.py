@@ -10,76 +10,6 @@ import sys
 import ntup_dir as nt
 
 ########################## 
-# Prepare chain of trees
-##########################
-#This is the location where all ntuples are stored. Adapt the location to your path. 
-# ntup_dir = '/afs/cern.ch/user/d/dezhu/workspace/public/ntuples/'    
-ntup_dir = nt.getntupdir()
-# Returns a TChain object which either contains all samples (allsamples = True) or a selected sample (allsamples = False) with different displacements. 
-def makechain(allsamples):    
-
-    #access multiple trees by "chaining" them
-    chain = ROOT.TChain('tree')
-    # all_files = glob(ntup_dir + '*/HNLGenTreeProducer/tree.root')
-    all_files = glob(ntup_dir + '*/HNLTreeProducer/tree.root')
-
-    if allsamples == True:
-        for sample in all_files [:]: #for the first 10 files
-            chain.Add(sample)
-
-    if allsamples == False:
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00282842712475_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00316227766017_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_mu_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_e_onshell/HNLGenTreeProducer/tree.root')
-        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_mu_onshell/HNLGenTreeProducer/tree.root')
-
-#    if allsamples == False:
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00282842712475_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00316227766017_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p004472135955_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00547722557505_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00707106781187_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_1_V_0p00836660026534_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p00244948974278_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2_V_0p01_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00244948974278_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00282842712475_mu_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_e_onshell/HNLTreeProducer/tree.root')
-#        chain.Add(ntup_dir + 'HN3L_M_2p1_V_0p00316227766017_mu_onshell/HNLTreeProducer/tree.root')
-
-    nentries = chain.GetEntries()
-    print('Created a TChain object with %d events.'%(nentries))
-    return chain
-
-
-########################## 
-# Additional tools
-##########################
-
 # prints out a progressbar which will be flushed at the terminal
 def progressbar(count, total, status=''):
         sys.stdout.flush()
@@ -241,10 +171,16 @@ def setpfstyle():
     pfstyle.SetStatH(0.15)
     pfstyle.SetStatFont(font)
     pfstyle.SetStatFontSize(0.01)
+    
+    # for 'colztexte' restrict digits after comma
+    pfstyle.SetPaintTextFormat('4.2f')
 
     # When this static function is called with sumw2=kTRUE, all new histograms will automatically activate the storage of the sum of squares of errors
     ROOT.TH1.SetDefaultSumw2()
 
     ROOT.gROOT.SetStyle('pfstyle')
+
+
+
 
 
