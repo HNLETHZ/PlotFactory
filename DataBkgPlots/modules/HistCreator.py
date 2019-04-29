@@ -5,11 +5,10 @@ from multiprocessing import Pool, Process, cpu_count
 from array import array
 
 # Adds MultiDraw method to ROOT.TTree
-import CMGTools.HNL.plotter.MultiDraw
+import modules.MultiDraw
 
-from CMGTools.HNL.plotter.PlotConfigs import HistogramCfg
-from CMGTools.HNL.plotter.DataMCPlot import DataMCPlot
-
+from modules.PlotConfigs import HistogramCfg
+from modules.DataMCPlot import DataMCPlot
 from CMGTools.RootTools.DataMC.Histogram import Histogram
 from pdb import set_trace
 

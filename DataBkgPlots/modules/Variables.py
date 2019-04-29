@@ -1,8 +1,7 @@
 from math import pi
 
-from CMGTools.HNL.plotter.PlotConfigs import VariableCfg as VCfg
-
-from CMGTools.HNL.plotter.binning import binning_svfitMass_finer, binning_mttotal, binning_mttotal_fine
+from modules.PlotConfigs import VariableCfg as VCfg
+from modules.binning import binning_svfitMass_finer, binning_mttotal, binning_mttotal_fine
 
 generic_vars = [
     VCfg(name='_norm_', drawname='1.', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
