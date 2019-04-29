@@ -166,6 +166,9 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = True):
         if usr == 'dezhu':   plotDirBase = '/eos/user/d/dezhu/HNL/plots/FinalStates/'
         if usr == 'vstampf': plotDirBase = '/eos/user/v/vstampf/plots/'
 
+    if server == 'starseeker':
+        if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/'
+
     if promptLeptonType == "ele":
         channel_name = 'e'
         if L1L2LeptonType == "ee":
@@ -201,6 +204,9 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = True):
     if server == "t3":
         # analysis_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv1.0/' + channel + '/'
         analysis_dir = '/work/dezhu/4_production/'
+
+    if server == "starseeker":
+        analysis_dir = '/mnt/StorageElement1/4_production/'
 
     total_weight = 'weight * lhe_weight'
     # total_weight = '1'
@@ -239,6 +245,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = True):
         copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/modules/Selections.py', plotDir+i.name+'/Selections.py')
         print 'cfg file stored in "', plotDir + i.name + '/plot_cfg.py"'
         print 'cfg_base file stored in "', plotDir + i.name + '/plot_cfg_base.py"'
-        # copytree(plotDir+i.name,'/t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/mmm/'+i.name)
-        # os.system("cp -rf %s %s"%(plotDir+i.name,'/t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/mmm/'+i.name)) 
-        # print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/mmm!'%(i.name)
+        # os.system("cp -rf %s %s"%(plotDir+i.name,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/mmm/'+i.name)) 
+        if server == "starseeker":
+            os.system("cp -rf %s %s"%(plotDir+i.name,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/mmm/'))
+            print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/mmm!'%(i.name)

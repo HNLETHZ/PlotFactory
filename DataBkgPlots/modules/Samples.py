@@ -54,6 +54,12 @@ def createSampleLists(analysis_dir='',
             # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
             sig_dir = 'signal/ntuples'
             DY_dir = analysis_dir + bkg_dir
+        if server == 'starseeker':
+            data_dir = '/mnt/StorageElement1/4_production/production_20190411_Data_mmm/ntuples'
+            bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
+            # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
+            sig_dir = 'signal/ntuples'
+            DY_dir = analysis_dir + bkg_dir
         dataB = Single_mu_2017B; dataC = Single_mu_2017C; dataD = Single_mu_2017D; dataE = Single_mu_2017E; dataF = Single_mu_2017F; 
 
     if channel == 'mem':
@@ -298,8 +304,8 @@ def createSampleLists(analysis_dir='',
 
     # samples_mc = samples_TTJets + samples_WJets + samples_DY + samples_conversion  
     # samples_mc = samples_TTJets + samples_WJets + samples_DY 
-    samples_mc = samples_DY 
-    # samples_mc = samples_DY +samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop 
+    # samples_mc = samples_DY 
+    samples_mc = samples_DY +samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop 
     # samples_mc = samples_DY +samples_WJets + samples_TTJets + samples_conversion 
     samples_bkg = samples_mc 
     # samples_bkg = samples_dde
