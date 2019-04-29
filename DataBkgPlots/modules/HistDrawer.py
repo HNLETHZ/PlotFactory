@@ -7,10 +7,9 @@ from math import log10, floor
 from ROOT import TCanvas, TPaveText, TBox, gStyle
 from CMGTools.RootTools.DataMC.Stack import Stack
 
-from CMGTools.HNL.plotter.CMS_lumi import CMS_lumi
+from modules.CMS_lumi import CMS_lumi
+from modules.officialStyle import officialStyle
 from pdb import set_trace
-
-from CMGTools.HNL.plotter.officialStyle import officialStyle
 officialStyle(gStyle)
 
 def ensureDir(directory):

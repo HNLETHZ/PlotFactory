@@ -8,7 +8,7 @@ from CMGTools.RootTools.DataMC.Histogram import Histogram
 from CMGTools.RootTools.DataMC.Stack import Stack
 
 from ROOT import THStack, gPad, kGray
-from CMGTools.HNL.plotter.HNLStyle import histPref, Style
+from modules.HNLStyle import histPref, Style
 from pdb import set_trace
 
 def ymax(hists):
