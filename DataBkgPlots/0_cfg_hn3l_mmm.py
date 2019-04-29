@@ -3,8 +3,8 @@ from master.plot_cfg_hn3l import *
 
 promptLeptonType = "mu" # do "ele" or "mu"
 L1L2LeptonType   = "mm" # do "mm", "me", "ee"
-server           = "t3" # do "t3" or "lxplus"
-multiprocess     = True
+server           = "starseeker" # do "t3" or "lxplus" or "starseeker"
+multiprocess     = False
 
 # producePlots(promptLeptonType = promptLeptonType, L1L2LeptonType = L1L2LeptonType)
 producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess)
