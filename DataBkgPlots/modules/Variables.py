@@ -256,14 +256,15 @@ additional_extra_tau_vars = [
 ]
 
 hnl_vars = [
-    VCfg(name='CR_l0_pt_cone' , drawname='l0_pt * (1 + l0_reliso_rho_03)'  , binning={'nbinsx':16, 'xmin':0.  , 'xmax':200.}, unit='GeV', xtitle='p_{T}^{Cone} (leading)'),
-    VCfg(name='CR_l2_pt_cone' , drawname='l2_pt * (1 + l2_reliso_rho_03)'  , binning={'nbinsx':16, 'xmin':0.  , 'xmax':200.}, unit='GeV', xtitle='p_{T}^{Cone} (trailing)'),
+    VCfg(name='CR_l0_pt_cone' , drawname='l0_pt_cone'  , binning={'nbinsx':16, 'xmin':0.  , 'xmax':200.}, unit='GeV', xtitle='p_{T}^{Cone} (leading)'),
+    VCfg(name='CR_l1_pt_cone' , drawname='l1_pt_cone'  , binning={'nbinsx':16, 'xmin':0.  , 'xmax':200.}, unit='GeV', xtitle='p_{T}^{Cone} (subleading)'),
+    VCfg(name='CR_l2_pt_cone' , drawname='l2_pt_cone'  , binning={'nbinsx':16, 'xmin':0.  , 'xmax':200.}, unit='GeV', xtitle='p_{T}^{Cone} (trailing)'),
     VCfg(name='CR_hnl_mt_0'   , drawname='hnl_mt_0'   , binning={'nbinsx':16, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='M_{T} (leading)'),
     VCfg(name='hnl_w_vis_m', binning={'nbinsx':40, 'xmin':0   , 'xmax':250 }, unit='GeV', xtitle='3 lepton mass'),
     VCfg(name='CR_hnl_w_vis_m_wide', drawname='hnl_w_vis_m', binning={'nbinsx':24, 'xmin':0  , 'xmax':300 }, unit='GeV', xtitle='3 lepton mass'),
     VCfg(name='CR_hnl_w_vis_m_z', drawname='hnl_w_vis_m', binning={'nbinsx':40, 'xmin':70  , 'xmax':110 }, unit='GeV', xtitle='3 lepton mass'),
 
-    VCfg(name='_norm_'     , drawname='1.', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
+    VCfg(name='_norm_'     , drawname='norm_count', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
 
     VCfg(name='n_vtx', binning={'nbinsx':101, 'xmin':-0.5, 'xmax':100.5}, unit=None, xtitle='N_{vertices}'),
 
@@ -337,8 +338,8 @@ hnl_vars = [
     VCfg(name='nbj', binning={'nbinsx':12, 'xmin':-0.5, 'xmax':11.5}, unit=None, xtitle='N_{b-jets}'),
 
     VCfg(name='ptCone', drawname='hnl_w_vis_pt',      binning={'nbinsx':14, 'xmin':0, 'xmax':70},    unit='GeV', xtitle='p^{Cone}_{T}'),
-    VCfg(name='hnl_dphi_hnvis0_wide'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
-    VCfg(name='eta(di_L,l0)'   ,drawname='hnl_hn_eta - l0_eta', binning={'nbinsx':40, 'xmin':-2.5, 'xmax':2.5 }, unit=None , xtitle='Delta #eta (dimuon, l_{0})'),
+    VCfg(name='hnl_dphi_hnvis0_wide'  ,drawname='abs_dphi_hnvis0', binning={'nbinsx':40, 'xmin': 0, 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
+    VCfg(name='eta(di_L,l0)'   ,drawname='eta_hnl_l0', binning={'nbinsx':40, 'xmin':-2.5, 'xmax':2.5 }, unit=None , xtitle='Delta #eta (dimuon, l_{0})'),
 
     # VCfg(name='hnl_iso_rel', binning={'nbinsx':40, 'xmin':0., 'xmax':3.} , unit=None, xtitle='rel. dilepton isolation'),
     # VCfg(name='hnl_iso_abs', binning={'nbinsx':40, 'xmin':0., 'xmax':50.}, unit=None, xtitle='abs. dilepton isolation'),
@@ -346,33 +347,33 @@ hnl_vars = [
 ]
 
 test_vars = [
-            VCfg(name='_norm_'     , drawname='1.', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
-            VCfg(name='nbj', binning={'nbinsx':12, 'xmin':-0.5, 'xmax':11.5}, unit=None, xtitle='N_{b-jets}'),
-            VCfg(name='hnl_m_01', binning={'nbinsx':40, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='mass(l_{0},l_{1})'),
-            VCfg(name='hnl_m_02', binning={'nbinsx':40, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='mass(l_{0},l_{2})'),
-            VCfg(name='hnl_m_12', binning={'nbinsx':40, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='mass(l_{1},l_{2})'),
-            VCfg(name='l0_reliso_rho_03', binning={'nbinsx':20, 'xmin':0., 'xmax':0.0001}, unit=None, xtitle='prompt lepton relative isolation cone 0.3'),
-            VCfg(name='l1_reliso_rho_03', binning={'nbinsx':20, 'xmin':0., 'xmax':0.0001}, unit=None, xtitle='1st muon relative isolation cone 0.3'),
-            VCfg(name='l2_reliso_rho_03', binning={'nbinsx':20, 'xmin':0., 'xmax':0.0001}, unit=None, xtitle='2nd muon relative isolation cone 0.3'),
-            # VCfg(name='hnl_dphi_hnvis0_wide'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
-            # VCfg(name='hnl_dphi_hnvis0_small'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':1.}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
-            # VCfg(name='hnl_dphi_hnvis0_lare'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin':2.5 , 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
-            VCfg(name='hnl_2d_smaller_disp', drawname='hnl_2d_disp', binning={'nbinsx':10, 'xmin':0   , 'xmax':10 }, unit='cm' , xtitle='2D displacement'),
-            VCfg(name='hnl_w_vis_m', binning={'nbinsx':40, 'xmin':0   , 'xmax':250 }, unit='GeV', xtitle='3 lepton mass'),
-             # VCfg(name='hnl_m_12_low' , drawname='hnl_m_12', binning={'nbinsx':10, 'xmin':0   , 'xmax':10  }, unit='GeV', xtitle='dimuon mass'),
+            # VCfg(name='_norm_'     , drawname='norm_count', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
+            VCfg(name='hnl_m_01_Z', drawname = 'hnl_m_01', binning={'nbinsx':40, 'xmin':70.   , 'xmax':110 }, unit='GeV', xtitle='mass(l_{0},#mu_{1})'),
+            # VCfg(name='nbj', binning={'nbinsx':12, 'xmin':-0.5, 'xmax':11.5}, unit=None, xtitle='N_{b-jets}'),
+            # VCfg(name='hnl_m_01', binning={'nbinsx':40, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='mass(l_{0},l_{1})'),
+            # VCfg(name='hnl_m_02', binning={'nbinsx':40, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='mass(l_{0},l_{2})'),
+            # VCfg(name='hnl_m_12', binning={'nbinsx':40, 'xmin':0   , 'xmax':200 }, unit='GeV', xtitle='mass(l_{1},l_{2})'),
+            # VCfg(name='l0_reliso_rho_03', binning={'nbinsx':20, 'xmin':0., 'xmax':0.0001}, unit=None, xtitle='prompt lepton relative isolation cone 0.3'),
+            # VCfg(name='l1_reliso_rho_03', binning={'nbinsx':20, 'xmin':0., 'xmax':0.0001}, unit=None, xtitle='1st muon relative isolation cone 0.3'),
+            # VCfg(name='l2_reliso_rho_03', binning={'nbinsx':20, 'xmin':0., 'xmax':0.0001}, unit=None, xtitle='2nd muon relative isolation cone 0.3'),
+            # # VCfg(name='hnl_dphi_hnvis0_wide'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
+            # # VCfg(name='hnl_dphi_hnvis0_small'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':1.}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
+            # # VCfg(name='hnl_dphi_hnvis0_lare'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin':2.5 , 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
+            # VCfg(name='hnl_2d_smaller_disp', drawname='hnl_2d_disp', binning={'nbinsx':10, 'xmin':0   , 'xmax':10 }, unit='cm' , xtitle='2D displacement'),
+            # VCfg(name='hnl_w_vis_m', binning={'nbinsx':40, 'xmin':0   , 'xmax':250 }, unit='GeV', xtitle='3 lepton mass'),
+             # # VCfg(name='hnl_m_12_low' , drawname='hnl_m_12', binning={'nbinsx':10, 'xmin':0   , 'xmax':10  }, unit='GeV', xtitle='dimuon mass'),
             ]
 
-PTCONE = '(  ( hnl_hn_vis_pt * (hnl_iso04_rel_rhoArea<0.15) ) + ( (hnl_iso04_rel_rhoArea>=0.15) * ( hnl_hn_vis_pt * (1. + hnl_iso04_rel_rhoArea - 0.15) ) )  )'
+# PTCONE = '(  ( hnl_hn_vis_pt * (hnl_iso04_rel_rhoArea<0.15) ) + ( (hnl_iso04_rel_rhoArea>=0.15) * ( hnl_hn_vis_pt * (1. + hnl_iso04_rel_rhoArea - 0.15) ) )  )'
 
 dde_vars = [
-            VCfg(name='_norm_'     , drawname='1.', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
-            VCfg(name='hnl_m_01_Z', drawname = 'hnl_m_01', binning={'nbinsx':40, 'xmin':70.   , 'xmax':110 }, unit='GeV', xtitle='mass(l_{0},#mu_{1})'),
+            VCfg(name='_norm_'     , drawname='norm_count', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
+            # VCfg(name='hnl_m_01_Z', drawname = 'hnl_m_01', binning={'nbinsx':40, 'xmin':70.   , 'xmax':110 }, unit='GeV', xtitle='mass(l_{0},#mu_{1})'),
             VCfg(name='hnl_m_01_wide', drawname = 'hnl_m_01', binning={'nbinsx':80, 'xmin':0.   , 'xmax':110 }, unit='GeV', xtitle='mass(l_{0},#mu_{1})'),
-            VCfg(name='hnl_m_01_low', drawname = 'hnl_m_01', binning={'nbinsx':80, 'xmin':0.   , 'xmax':20 }, unit='GeV', xtitle='mass(l_{0},#mu_{1})'),
-            VCfg(name='m_triL', drawname='hnl_w_vis_m',       binning={'nbinsx':50, 'xmin':50., 'xmax':200}, unit='GeV', xtitle='Tri-Lepton Mass'),
+            # VCfg(name='m_triL', drawname='hnl_w_vis_m',       binning={'nbinsx':50, 'xmin':50., 'xmax':200}, unit='GeV', xtitle='Tri-Lepton Mass'),
             VCfg(name='m_triL_wide', drawname='hnl_w_vis_m',       binning={'nbinsx':40, 'xmin':0., 'xmax':250}, unit='GeV', xtitle='Tri-Lepton Mass'),
-            VCfg(name='hnl_dphi_hnvis0_wide'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
-            VCfg(name='eta(di_L,l0)'   ,drawname='hnl_hn_eta - l0_eta', binning={'nbinsx':40, 'xmin':-2.5, 'xmax':2.5 }, unit=None , xtitle='Delta #eta (dimuon, l_{0})'),
+            # VCfg(name='hnl_dphi_hnvis0_wide'  ,drawname='abs(hnl_dphi_hnvis0)', binning={'nbinsx':40, 'xmin': 0, 'xmax':pi}, unit=None, xtitle='|#Delta#phi (dimuon, l_{0})|'),
+            # VCfg(name='eta(di_L,l0)'   ,drawname='hnl_hn_eta - l0_eta', binning={'nbinsx':40, 'xmin':-2.5, 'xmax':2.5 }, unit=None , xtitle='Delta #eta (dimuon, l_{0})'),
            ]
 
 def getVars(names, channel='all'):
