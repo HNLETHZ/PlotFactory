@@ -107,7 +107,7 @@ class HistDrawer:
     @staticmethod
     def draw(plot, do_ratio=True, channel='e#mu#mu', plot_dir='/plots/', 
              plot_name=None, SetLogy=0, 
-             blindxmin=None, blindxmax=None, unit=None):
+             blindxmin=None, blindxmax=None, unit=None, server='starseeker', region = 'DY', channel_dir = 'mmm'):
         print plot
         Stack.STAT_ERRORS = True
 
@@ -205,6 +205,13 @@ class HistDrawer:
         can.SaveAs(plot_dir + '/root/linear/' + plotname  + '.root')
         can.SaveAs(plot_dir + '/png/linear/'  + plotname  + '.png')
 
+        if server == "starseeker":
+            t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
+            can.SaveAs(t3_dir + '/pdf/linear/'  + plotname  + '.pdf')
+            can.SaveAs(t3_dir + '/root/linear/' + plotname  + '.root')
+            can.SaveAs(t3_dir + '/png/linear/'  + plotname  + '.png')
+
+
         # Also save with log y
         h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 5.)
         pad.SetLogy(True)
@@ -212,7 +219,12 @@ class HistDrawer:
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
         pad.SetLogy(0)
+        if server == "starseeker":
+            can.SaveAs(t3_dir + '/pdf/log/'  + plotname  + '_log.pdf')
+            can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
+            can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
 #        return ratio
+
 
     drawRatio = draw
 

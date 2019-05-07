@@ -336,6 +336,7 @@ def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
     print '###########################################################'
     print '# setting sum weights for the samples...'
     print '###########################################################'
+    print ''
 
     
     for sample in samples:
