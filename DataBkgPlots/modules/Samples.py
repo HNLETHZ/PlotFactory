@@ -48,13 +48,12 @@ def createSampleLists(analysis_dir='',
         if server == 't3':
             # data_dir = analysis_dir + 'data/'
             # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
-            data_dir = '/work/dezhu/4_production/production_20190411_Data_mmm/ntuples'
+            data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
             bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
-            # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
             sig_dir = 'signal/ntuples'
             DY_dir = analysis_dir + bkg_dir
         if server == 'starseeker':
-            data_dir = '/mnt/StorageElement1/4_production/production_20190411_Data_mmm/ntuples'
+            data_dir = analysis_dir+'production_20190411_Data_mmm/ntuples'
             bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
             # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
             sig_dir = 'signal/ntuples'
@@ -322,11 +321,11 @@ def createSampleLists(analysis_dir='',
     # samples_mc = samples_TTJets + samples_WJets + samples_DY 
     # samples_mc = samples_DY 
     # samples_mc =  samples_QCD + samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
-    samples_mc = samples_DY +samples_WJets + samples_TTJets 
+    samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
     samples_bkg = samples_mc 
     # samples_bkg = samples_dde
-    # samples_all = samples_bkg + samples_data
-    samples_all = samples_DY 
+    samples_all = samples_bkg + samples_data
+    # samples_all = samples_DY + samples_TTJets 
 
 
     return samples_all
@@ -346,35 +345,49 @@ def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
         except:
             set_trace()
 
-        if sample.sumweights is not None:
-            print 'Set sum weights for sample', sample.name, ' (manually!) to', sample.sumweights
+        sumNormWeights_file_dir = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.txt'])
+        try:
+            sumNormWeights_file = open(sumNormWeights_file_dir,'rt')
+            if sumNormWeights_file.mode == 'rt':
+                f1 = sumNormWeights_file.readlines()
+                for i,l in enumerate(f1):
+                    if f1[i].find('Sum Norm Weights') != -1: 
+                        sample.sumweights = float(f1[i].split()[3])
+        except:
+            print 'Warning: could not find sum weights information or the following file does not even exist: %s'%(sumNormWeights_file_dir)
+            set_trace()
 
-        if sample.sumweights is None:
-#            pass # turn this off later, for NLO or higher order samples
-            # print 'Set sum weights for sample', sample.name, 'to', sample.sumweights
-            # setSumWeights(sample, 'SkimAnalyzerCount', False)
 
-            if sample.is_dde == False:
-                pckfile = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.pck'])
-                try:
-                    pckobj = pickle.load(open(pckfile, 'r'))
-                    counters = dict(pckobj)
-                    # set_trace()
-                    if norm:
-                        if 'Sum Norm Weights' in counters:
-                            sample.sumweights = counters['Sum Norm Weights']
-                    else:
-                        if 'Sum Weights' in counters:
-                            sample.sumweights = counters['Sum Weights']
-                except IOError:
-                    print 'Warning: could not find sum weights information for sample', sample.name
-                    pass
+
+        # if sample.sumweights is not None:
+            # print 'Set sum weights for sample', sample.name, ' (manually!) to', sample.sumweights
+
+        # if sample.sumweights is None:
+# #            pass # turn this off later, for NLO or higher order samples
+            # # print 'Set sum weights for sample', sample.name, 'to', sample.sumweights
+            # # setSumWeights(sample, 'SkimAnalyzerCount', False)
+
+            # if sample.is_dde == False:
+                # pckfile = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.pck'])
+                # try:
+                    # pckobj = pickle.load(open(pckfile, 'r'))
+                    # counters = dict(pckobj)
+                    # # set_trace()
+                    # if norm:
+                        # if 'Sum Norm Weights' in counters:
+                            # sample.sumweights = counters['Sum Norm Weights']
+                    # else:
+                        # if 'Sum Weights' in counters:
+                            # sample.sumweights = counters['Sum Weights']
+                # except IOError:
+                    # print 'Warning: could not find sum weights information for sample', sample.name
+                    # pass
 
             # if sample.is_dde == True:
                 # set_trace()
                 # sample.sumweights *=50000 
                 # print 'sample ' + sample.dir_name + 'has been set to ', sample.sumweights
 
-            print 'Sum weights from sample',sample.name, 'taken from pckl file. Setting it to', sample.sumweights
+        print 'Sum weights from sample',sample.name, 'taken from SkimReport.txt file. Setting it to', sample.sumweights
 
     return samples
