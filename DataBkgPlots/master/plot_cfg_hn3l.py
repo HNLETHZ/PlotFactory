@@ -15,7 +15,7 @@ from types    import MethodType   # to pickle methods for multiprocessing
 
 from modules.PlotConfigs import HistogramCfg, VariableCfg
 # from modules.HistCreator import CreateHists
-from modules.HistCreator_df import CreateHists
+from modules.HistCreator import CreateHists
 from modules.HistDrawer import HistDrawer
 from modules.Variables import hnl_vars, test_vars, getVars,dde_vars
 from modules.Selections import getSelection, Region

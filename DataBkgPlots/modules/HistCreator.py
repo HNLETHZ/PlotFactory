@@ -4,13 +4,8 @@ from multiprocessing import Pool, Process, cpu_count
 
 from array import array
 import time
-
-# Adds MultiDraw method to ROOT.TTree
-import modules.MultiDraw
-
-
 from modules.PlotConfigs import HistogramCfg
-from modules.DataMCPlot_df import DataMCPlot
+from modules.DataMCPlot import DataMCPlot
 # from CMGTools.RootTools.DataMC.Histogram import Histogram
 from pdb import set_trace
 
