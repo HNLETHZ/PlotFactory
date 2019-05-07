@@ -94,7 +94,7 @@ def createVariables(rebin=None):
     DoNotRebin = ['_norm_', 'n_vtx', 'nj', 'nbj',] 
     variables = hnl_vars
     # variables = dde_vars
-    variables = test_vars
+    # variables = test_vars
     if rebin>0:
         for ivar in hnl_vars:
             if ivar.name in DoNotRebin: continue
@@ -102,21 +102,10 @@ def createVariables(rebin=None):
 
     return variables
 
-def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, dataframe=True):
+def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm'):
     ams_dict = {}
     sample_names = set()
     for region in regions:
-        regionDir = plotDir+region.name
-        if not os.path.exists(regionDir):
-            os.mkdir(regionDir)
-            print "Output directory created. "
-            print "Output directory: %s"%(regionDir)
-        else:
-            # print "Output directory: ", regionDir, "already exists, overwriting it!"
-            print "Output directory already exists, overwriting it! "
-            print "Output directory: %s"%(regionDir)
-            os.system("rm -rf %s"%(regionDir))
-            os.system("mkdir %s"%(regionDir))
 
         cfg_main = HistogramCfg(name=region.name, var=None, cfgs=sample_dict['working_samples'], region=region, lumi=int_lumi, weight=total_weight)
 
@@ -143,7 +132,7 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             plot.Group('QCD',['QCD_pt_15to20_mu', 'QCD_pt_20to30_mu', 'QCD_pt_30to50_mu', 'QCD_pt_50to80_mu', 'QCD_pt_80to120_mu'])
             plot.Group('WJets', ['WJetsToLNu','WJetsToLNu_ext','W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu'])
             if make_plots:
-                HistDrawer.draw(plot, channel = channel_name, plot_dir = plotDir+region.name)
+                HistDrawer.draw(plot, channel = channel_name, plot_dir = plotDir+region.name, server = server, region = region, channel_dir = channel_dir)
             print'\tThis plot took %.1f s to compute.'%(time.time()-start_plot)
 
 
@@ -220,6 +209,46 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
     handle.close()
     cmsBaseDir = line.strip('\n')
 
+    for region in regions:
+        regionDir = plotDir+region.name
+        if not os.path.exists(regionDir):
+            os.mkdir(regionDir)
+            print "Output directory created. "
+            print "Output directory: %s"%(regionDir)
+        else:
+            # print "Output directory: ", regionDir, "already exists, overwriting it!"
+            print "Output directory already exists, overwriting it! "
+            print "Output directory: %s"%(regionDir)
+            os.system("rm -rf %s"%(regionDir))
+            os.system("mkdir %s"%(regionDir))
+        
+        if server == "starseeker":
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+        else:
+            copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
+            copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
+            copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+
+        print 'cfg files stored in "',plotDir + region.name + '/"'
+
+        if not os.path.exists(regionDir + '/pdf/'):
+            os.mkdir(regionDir + '/pdf/')
+            os.mkdir(regionDir + '/pdf/linear/')
+            os.mkdir(regionDir + '/pdf/log/')
+        if not os.path.exists(regionDir + '/root/'):
+            os.mkdir(regionDir + '/root/')
+            os.mkdir(regionDir + '/root/linear/')
+            os.mkdir(regionDir + '/root/log')
+        if not os.path.exists(regionDir + '/png/'):
+            os.mkdir(regionDir + '/png/')
+            os.mkdir(regionDir + '/png/linear/')
+            os.mkdir(regionDir + '/png/log/')
+
+        if server == "starseeker":
+            os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
+            print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(region.name,channel)
     
     makePlots(
         plotDir,
@@ -230,21 +259,12 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
         sample_dict, 
         make_plots=True,
         multiprocess=multiprocess,
-        dataframe=dataframe
+        dataframe=dataframe,
+        server=server,
+        channel_dir=channel
     )
 
 
-    for i in regions:
-        copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', plotDir+i.name+'/plot_cfg.py')
-        copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', plotDir+i.name+'/plot_cfg_base.py')
-        copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/modules/Selections.py', plotDir+i.name+'/Selections.py')
-        print '\ncfg file stored in "', plotDir + i.name + '/plot_cfg.py"'
-        print 'cfg_base file stored in "', plotDir + i.name + '/plot_cfg_base.py"'
-        # os.system("cp -rf %s %s"%(plotDir+i.name,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/mmm/'+i.name)) 
-        if server == "starseeker":
-            print 'copying the plots from starseeker to T3'
-            os.system("cp -rf %s %s"%(plotDir+i.name,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
-            print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(i.name,channel)
 
     end_time = time.time()
     print('This job took %.1f seconds to compute.'%(end_time-start_time))
