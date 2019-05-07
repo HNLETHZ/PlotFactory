@@ -5,7 +5,7 @@ import copy
 from math import log10, floor
 
 from ROOT import TCanvas, TPaveText, TBox, gStyle
-from CMGTools.RootTools.DataMC.Stack import Stack
+from modules.Stack import Stack
 
 from modules.CMS_lumi import CMS_lumi
 from modules.officialStyle import officialStyle
