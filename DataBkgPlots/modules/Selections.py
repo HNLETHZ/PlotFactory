@@ -63,30 +63,54 @@ def DY():
                 )
     return selection
 
-def baseline(channel):
+# # Old Version based on Martina's Selection
+# def baseline(channel): 
+    # if channel == 'mmm':
+            # selection = ('l0_id_t ' 
+                        # # '& l0_pt > 25 ' 
+                        # # '& l0_eta < 2.4 '
+                        # '& l0_reliso_rho_04 < 0.15 '
+                        # # '& l0_dxy < 0.05 '
+                        # # '& abs(l0_dz) < 0.1 '
+                        # # '& abs(l0_dxy) < 0.05 '
+                        # '& l1_id_l ' #TODO: use Martina's ID?
+                        # '& l2_id_l '
+                        # '& l1_pt > 5 ' #electron 10 GeV, muon 5 GeV
+                        # '& l2_pt > 5 '
+                        # # '& l1_eta < 2.4 ' #electron 2.5, muon 2.4 
+                        # # '& l2_eta < 2.4 '
+                        # # '& hnl_2d_disp > 0.5 ' #TODO: discuss whether we want this as baseline selection or SR?
+                        # '& hnl_2d_disp > 0.1 ' #TODO: discuss whether we want this as baseline selection or SR?
+                        # '& hnl_iso04_rel_rhoArea < 1 ' #loose definition
+                        # # '& l1_q != l2_q ' #opposite charge for the dilepton
+                        # # '& hnl_dr_01 > 0.05 ' #avoid mismatching
+                        # # '& hnl_dr_02 > 0.05 '
+                        # )
+            
+    # return selection
+
+def baseline(channel): 
     if channel == 'mmm':
-            selection = ('l0_id_t ' 
-                        # '& l0_pt > 25 ' 
-                        # '& l0_eta < 2.4 '
-                        '& l0_reliso_rho_04 < 0.15 '
-                        # '& l0_dxy < 0.05 '
-                        # '& abs(l0_dz) < 0.1 '
-                        # '& abs(l0_dxy) < 0.05 '
-                        '& l1_id_l ' #TODO: use Martina's ID?
-                        '& l2_id_l '
-                        '& l1_pt > 5 ' #electron 10 GeV, muon 5 GeV
-                        '& l2_pt > 5 '
-                        # '& l1_eta < 2.4 ' #electron 2.5, muon 2.4 
-                        # '& l2_eta < 2.4 '
-                        # '& hnl_2d_disp > 0.5 ' #TODO: discuss whether we want this as baseline selection or SR?
-                        '& hnl_2d_disp > 0.1 ' #TODO: discuss whether we want this as baseline selection or SR?
-                        '& hnl_iso04_rel_rhoArea < 1 ' #loose definition
-                        # '& l1_q != l2_q ' #opposite charge for the dilepton
-                        # '& hnl_dr_01 > 0.05 ' #avoid mismatching
-                        # '& hnl_dr_02 > 0.05 '
+            selection = (
+                        'l0_pt > 25'
+                        '& abs(l0_eta) < 2.4'
+                        '& abs(l0_dz) < 0.2'
+                        '& abs(l0_dxy) < 0.05'
+                        '& l0_reliso_rho_03 < 0.2'
+                        '& l0_id_m == 1'
+                        '& l1_pt > 5'
+                        '& abs(l1_eta) < 2.4'
+                        '& abs(l1_dz) < 2'
+                        '& abs(l1_dxy) > 0.05'
+                        '& l2_pt > 5'
+                        '& abs(l2_eta) < 2.4'
+                        '& abs(l2_dz) < 2'
+                        '& abs(l2_dxy) > 0.05'
+                        '& hnl_q_12 == 0'
                         )
             
     return selection
+
 
 
 def getSelection(channel, selection_name):
@@ -95,7 +119,7 @@ def getSelection(channel, selection_name):
         if selection_name == 'baseline':
             selection = baseline(channel)
             
-            selection = selection + Z_veto() 
+            # selection = selection + Z_veto() 
 
         if selection_name == 'CR_ttbar':
             selection = CR_ttbar()
@@ -107,29 +131,31 @@ def getSelection(channel, selection_name):
             selection = DY()
                         
         if selection_name == 'TT':
-            selection = ('l1_reliso_rho_04 < 0.15 ' 
-                        '& l2_reliso_rho_04 < 0.15 '
+            selection = ('l1_reliso_rho_03 < 0.2 ' 
+                        '& l2_reliso_rho_03 < 0.2 '
+                        '& l1_Medium == 1 '
+                        '& l2_Medium == 1 '
                         )
                         
         if selection_name == 'LT':
-            selection = ('l1_reliso_rho_04 > 0.15 ' 
-                        '& l2_reliso_rho_04 < 0.15 '
+            selection = ('l1_reliso_rho_03 > 0.2 ' 
+                        '& l2_reliso_rho_03 < 0.2 '
                         )
                         
         if selection_name == 'TL':
-            selection = ('l1_reliso_rho_04 < 0.15 ' 
-                        '& l2_reliso_rho_04 > 0.15 '
+            selection = ('l1_reliso_rho_03 < 0.2 ' 
+                        '& l2_reliso_rho_03 > 0.2 '
                         )
                         
         if selection_name == 'LL_uncorrelated':
-            selection = ('l1_reliso_rho_04 > 0.15 ' 
-                        '& l2_reliso_rho_04 > 0.15 '
+            selection = ('l1_reliso_rho_03 < 1. ' 
+                        '& l2_reliso_rho_03 < 1. '
                         )
                         
         if selection_name == 'LL_correlated':
             selection = ('abs(l1_jet_pt - l2_jet_pt) < 1 '
-                        '& l1_reliso_rho_04 > 0.15 ' 
-                        '& l2_reliso_rho_04 > 0.15 '
+                        '& hnl_dr_12 < 0.4 '
+                        '& hnl_iso04_rel_rhoArea < 2 '
                         )
     
         if selection_name == 'datacut':
