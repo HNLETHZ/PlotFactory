@@ -92,6 +92,10 @@ def createSampleLists(analysis_dir='',
         SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
     ]
 
+    samples_dataF = [
+        SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+    ]
+
     samples_TTJets = [
             SampleCfg(name='TTJets', 
                 dir_name='TTJets', 
@@ -305,30 +309,33 @@ def createSampleLists(analysis_dir='',
                 is_MC=True),
             ]
 
-    samples_dde = [
-        SampleCfg(name='DDE_data_2017B_singlefake', 
-            dir_name='dataB', 
-            ana_dir=data_dir, 
-            tree_prod_name=tree_prod_name, 
-            is_data=False,
-            is_singlefake=True,
-            is_dde = True,
-            fr_tree_path = '/work/dezhu/5_Miscellaneous/20190320_FRStudies/SFR/data/20190405_MakeSFRTree/fr_021_mmm_sfr_190403_17h_41m.root'),                                          
+    samples_singlefake = [
+        SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
+        # SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
+        # SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                           #nevents =  3829353
+        # SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
+        # SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+    ]
+
+    samples_doublefake = [
+        SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
+        SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
+        SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                           #nevents =  3829353
+        SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
+        SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
     ]
 
 
-    # samples_mc = samples_TTJets + samples_WJets + samples_DY + samples_conversion  
-    # samples_mc = samples_TTJets + samples_WJets + samples_DY 
-    # samples_mc = samples_DY 
-    # samples_mc =  samples_QCD + samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
+
     samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
+    # samples_bkg = samples_mc + samples_singlefake + samples_doublefake 
+    # samples_bkg = samples_doublefake
     samples_bkg = samples_mc 
-    # samples_bkg = samples_dde
     samples_all = samples_bkg + samples_data
+    # samples_all = samples_bkg
     # samples_all = samples_DY + samples_TTJets 
 
-
-    return samples_all
+    return samples_all, samples_singlefake, samples_doublefake
 
 
 

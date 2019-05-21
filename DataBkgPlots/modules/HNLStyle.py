@@ -1,4 +1,5 @@
 from ROOT import TColor, kViolet, kBlue, kRed, kCyan, kAzure, kGreen, kMagenta, kYellow, kOrange
+from pdb import set_trace
 
 class Style:
 
@@ -65,7 +66,8 @@ ttvcol = kCyan+2 #TColor.GetColor(222,90,106)
 zzcol = kGreen+2 #TColor.GetColor(222,90,106)
 singleTcol = kCyan 
 DDEcol_singlefake = kGreen-3 
-DDEcol_doublefake = kBlue-6 
+# DDEcol_doublefake = kBlue-6 
+DDEcol_doublefake = kAzure+2 
 ConversionCol = kMagenta-9
 
 # Backgrounds
@@ -176,3 +178,4 @@ histPref['SMS*'] = {'style':sHNL_HN, 'layer':1001, 'legend':None}
 # histPref['DDE*'] = {'style':sHNL_DDE, 'layer':1001, 'legend':'nonprompt'}
 histPref['*doublefake*'] = {'style':sHNL_DDE_doublefake, 'layer':900, 'legend':'DF'}
 histPref['*singlefake*'] = {'style':sHNL_DDE_singlefake, 'layer':900, 'legend':'SF'}
+histPref['doubleFake*'] = {'style':sData, 'layer':2999, 'legend':'doubleFakeRate'}

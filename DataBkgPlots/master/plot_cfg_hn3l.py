@@ -17,7 +17,7 @@ from modules.PlotConfigs import HistogramCfg, VariableCfg
 # from modules.HistCreator import CreateHists
 from modules.HistCreator import CreateHists
 from modules.HistDrawer import HistDrawer
-from modules.Variables import hnl_vars, test_vars, getVars,dde_vars
+from modules.Variables import full_vars, test_vars, getVars,essential_vars
 from modules.Selections import getSelection, Region
 from modules.Samples import createSampleLists, setSumWeights
 from pdb import set_trace
@@ -54,7 +54,7 @@ int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR','mmm','SR'))
-    regions.append(Region('DY','mmm','CR_DY'))
+    regions.append(Region('MR','mmm','MR'))
     # regions.append(Region('ttbar','mem','CR_ttbar'))
 
     print('###########################################################')
@@ -71,7 +71,7 @@ def prepareRegions(channel):
 def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None):
     sample_dict = {}
     # print "creating samples from %s"%(analysis_dir)
-    samples_all = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
+    samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
 
     #select here the samples you wish to use
     # working_samples = samples_data_dde
@@ -80,7 +80,6 @@ def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None
     sample_dict['working_samples'] = working_samples
     print ''
 
-    #TODO implement a code to print the samples
     print('###########################################################')
     print'# %d samples to be used:'%(len(working_samples))
     print('###########################################################')
@@ -92,8 +91,8 @@ def createVariables(rebin=None):
     # Taken from Variables.py; can get subset with e.g. getVars(['mt', 'mvis'])
 #    variables = CR_vars
     DoNotRebin = ['_norm_', 'n_vtx', 'nj', 'nbj',] 
-    variables = hnl_vars
-    # variables = dde_vars
+    variables = full_vars
+    variables = essential_vars
     # variables = test_vars
     if rebin>0:
         for ivar in hnl_vars:
@@ -102,7 +101,7 @@ def createVariables(rebin=None):
 
     return variables
 
-def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm'):
+def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm', analysis_dir='/home/dehuazhu/SESSD/4_production/'):
     ams_dict = {}
     sample_names = set()
     for region in regions:
@@ -113,7 +112,7 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
         print('# creating plots for %i sample(s) and %i variable(s)...'%(len(sample_dict['working_samples']),len(variables),))
         print('# using %d CPUs'%(cpu_count()))
         print('###########################################################')
-        
+
         i_var = 0
         start_plots = time.time()
         for var in variables:
@@ -121,10 +120,11 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             print '\nPlotting variable \'%s\' (%d of %d; total time passed: %.1f s)...'%(var.name,i_var,len(variables),time.time()-start_plots)
             start_plot = time.time()
             cfg_main.vars = [var]
-            HISTS = CreateHists(cfg_main)
+            HISTS = CreateHists(cfg_main, analysis_dir,channel_dir,server)
             plots = HISTS.createHistograms(cfg_main, verbose=False, multiprocess = multiprocess)
             plot = plots[var.name]
             plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
+            plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
             plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
             plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
             plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50'])
@@ -261,7 +261,8 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
         multiprocess=multiprocess,
         dataframe=dataframe,
         server=server,
-        channel_dir=channel
+        channel_dir=channel,
+        analysis_dir=analysis_dir
     )
 
 

@@ -176,6 +176,7 @@ def setpfstyle():
     pfstyle.SetStatFontSize(0.01)
 
     # When this static function is called with sumw2=kTRUE, all new histograms will automatically activate the storage of the sum of squares of errors
+    pfstyle.SetPaintTextFormat('4.2f')
     ROOT.TH1.SetDefaultSumw2()
 
     ROOT.gROOT.SetStyle('pfstyle')
