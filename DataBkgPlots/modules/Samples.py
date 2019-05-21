@@ -113,18 +113,15 @@ def createSampleLists(analysis_dir='',
                 ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=59850, 
-                # sumweights=WJetsToLNu.nGenEvents, 
-                # sumweights=76666716, 
                 sumweights=None, 
                 is_MC=True),
-            # SampleCfg(name='WJetsToLNu_ext', 
-                # dir_name='WJetsToLNu_ext', 
-                # ana_dir=analysis_dir+bkg_dir, 
-                # tree_prod_name=tree_prod_name, 
-                # xsec=59850, 
-                # # sumweights=WJetsToLNu_ext.nGenEvents, 
-                # sumweights=76666716, 
-                # is_MC=True),
+            SampleCfg(name='WJetsToLNu_ext', 
+                dir_name='WJetsToLNu_ext', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=59850, 
+                sumweights=76666716, 
+                is_MC=True),
             ]
 
     samples_DYBB = [
@@ -138,37 +135,27 @@ def createSampleLists(analysis_dir='',
             ]
 
     samples_DY = [
-            # SampleCfg(name='DYJetsToLL_M10to50',
-                # dir_name='DYJetsToLL_M10to50', 
-                # # ana_dir=analysis_dir+bkg_dir, 
-                # # ana_dir='/work/dezhu/4_production/production_20190411_Bkg_mmm/ntuples', 
-                # ana_dir=analysis_dir+bkg_dir, 
-                # # ana_dir='root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/background/montecarlo/production_20190318_BkgMC', 
-                # tree_prod_name=tree_prod_name, 
-                # xsec=18610.0, 
-                # sumweights=None, 
-                # # sumweights=1652621.0, 
-                # is_MC=True,
-                # is_DY=True),
-            # SampleCfg(name='DYJets_M50', 
-                # dir_name='DYJetsToLL_M50', 
-                # # ana_dir=analysis_dir+bkg_dir, 
-                # ana_dir='/work/dezhu/4_production/production_20190411_Bkg_mmm/ntuples', 
-                # tree_prod_name=tree_prod_name, 
-                # xsec=2075.14*3, 
-                # # sumweights=DYJetsToLL_M50.nGenEvents, 
-                # sumweights=133395135, 
-                # is_MC=True,
-                # is_DY=True),
+            SampleCfg(name='DYJetsToLL_M10to50',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_MC=True,
+                is_DY=True),
+            SampleCfg(name='DYJets_M50', 
+                dir_name='DYJetsToLL_M50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_MC=True,
+                is_DY=True),
             SampleCfg(name='DYJets_M50_ext', 
                 dir_name='DYJetsToLL_M50_ext', 
                 ana_dir=analysis_dir+bkg_dir, 
-                # ana_dir='/work/dezhu/4_production/production_20190411_Bkg_mmm/ntuples', 
-                # ana_dir='root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/background/montecarlo/production_20190318_BkgMC', 
                 tree_prod_name=tree_prod_name, 
                 xsec=2075.14*3, 
-                # sumweights=DYJetsToLL_M50_ext.nGenEvents, 
-                # sumweights=133395135, 
                 sumweights=None, 
                 is_MC=True,
                 is_DY=True),
@@ -180,7 +167,6 @@ def createSampleLists(analysis_dir='',
                 ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=12.14, 
-                # sumweights=ZZ.nGenEvents, 
                 sumweights=None, 
                 is_MC=True),
             SampleCfg(name='WZ', 
@@ -188,7 +174,6 @@ def createSampleLists(analysis_dir='',
                 ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=27.6, 
-                # sumweights=WZ.nGenEvents, 
                 sumweights=None, 
                 is_MC=True),
             SampleCfg(name='WW', 
@@ -196,7 +181,6 @@ def createSampleLists(analysis_dir='',
                 ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=75.88, 
-                # sumweights=WW.nGenEvents, 
                 sumweights=None, 
                 is_MC=True),
             ]
@@ -327,17 +311,30 @@ def createSampleLists(analysis_dir='',
 
 
 
+
     samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
     # samples_bkg = samples_mc + samples_singlefake + samples_doublefake 
     # samples_bkg = samples_doublefake
     samples_bkg = samples_mc 
     samples_all = samples_bkg + samples_data
-    # samples_all = samples_bkg
+    # samples_all = samples_TTJets
     # samples_all = samples_DY + samples_TTJets 
 
     return samples_all, samples_singlefake, samples_doublefake
 
 
+def getSumWeight(sample, weight_dir='SkimAnalyzerCount', norm=True):
+    sumNormWeights_file_dir = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.txt'])
+    try:
+        sumNormWeights_file = open(sumNormWeights_file_dir,'rt')
+        if sumNormWeights_file.mode == 'rt':
+            f1 = sumNormWeights_file.readlines()
+            for i,l in enumerate(f1):
+                if f1[i].find('Sum Norm Weights') != -1: 
+                    return float(f1[i].split()[3])
+    except:
+        print 'Warning: could not find sum weights information or the following file does not even exist: %s'%(sumNormWeights_file_dir)
+        set_trace()
 
 def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
     print '###########################################################'
@@ -353,48 +350,22 @@ def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
         except:
             set_trace()
 
-        sumNormWeights_file_dir = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.txt'])
-        try:
-            sumNormWeights_file = open(sumNormWeights_file_dir,'rt')
-            if sumNormWeights_file.mode == 'rt':
-                f1 = sumNormWeights_file.readlines()
-                for i,l in enumerate(f1):
-                    if f1[i].find('Sum Norm Weights') != -1: 
-                        sample.sumweights = float(f1[i].split()[3])
-        except:
-            print 'Warning: could not find sum weights information or the following file does not even exist: %s'%(sumNormWeights_file_dir)
-            set_trace()
+        if sample.name == 'DYJets_M50' or sample.name == 'DYJets_M50_ext':
+            sample_DYJets_M50        = [s for s in samples if s.name == 'DYJets_M50'    ][0]
+            sample_DYJets_M50_ext    = [s for s in samples if s.name == 'DYJets_M50_ext'][0]
+            sumweight_DYJets_M50     = getSumWeight(sample_DYJets_M50)
+            sumweight_DYJets_M50_ext = getSumWeight(sample_DYJets_M50_ext) 
+            sample.sumweights = sumweight_DYJets_M50 + sumweight_DYJets_M50_ext 
 
+        elif sample.name == 'WJetsToLNu' or sample.name == 'WJetsToLNu_ext':
+            sample_WJetsToLNu        = [s for s in samples if s.name == 'WJetsToLNu'    ][0]
+            sample_WJetsToLNu_ext    = [s for s in samples if s.name == 'WJetsToLNu_ext'][0]
+            sumweight_WJetsToLNu     = getSumWeight(sample_WJetsToLNu)
+            sumweight_WJetsToLNu_ext = getSumWeight(sample_WJetsToLNu_ext) 
+            sample.sumweights = sumweight_WJetsToLNu + sumweight_WJetsToLNu_ext 
 
-
-        # if sample.sumweights is not None:
-            # print 'Set sum weights for sample', sample.name, ' (manually!) to', sample.sumweights
-
-        # if sample.sumweights is None:
-# #            pass # turn this off later, for NLO or higher order samples
-            # # print 'Set sum weights for sample', sample.name, 'to', sample.sumweights
-            # # setSumWeights(sample, 'SkimAnalyzerCount', False)
-
-            # if sample.is_dde == False:
-                # pckfile = '/'.join([sample.ana_dir, sample.dir_name, weight_dir, 'SkimReport.pck'])
-                # try:
-                    # pckobj = pickle.load(open(pckfile, 'r'))
-                    # counters = dict(pckobj)
-                    # # set_trace()
-                    # if norm:
-                        # if 'Sum Norm Weights' in counters:
-                            # sample.sumweights = counters['Sum Norm Weights']
-                    # else:
-                        # if 'Sum Weights' in counters:
-                            # sample.sumweights = counters['Sum Weights']
-                # except IOError:
-                    # print 'Warning: could not find sum weights information for sample', sample.name
-                    # pass
-
-            # if sample.is_dde == True:
-                # set_trace()
-                # sample.sumweights *=50000 
-                # print 'sample ' + sample.dir_name + 'has been set to ', sample.sumweights
+        else:
+            sample.sumweights = getSumWeight(sample, weight_dir, norm)
 
         print 'Sum weights from sample',sample.name, 'taken from SkimReport.txt file. Setting it to', sample.sumweights
 

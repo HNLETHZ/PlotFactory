@@ -8,6 +8,7 @@ from multiprocessing import Pool, Process, cpu_count
 from shutil import copyfile, copytree
 from numpy import array
 from getpass import getuser
+from socket import gethostname
 import time
 
 from copy_reg import pickle       # to pickle methods for multiprocessing
@@ -54,8 +55,9 @@ int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR','mmm','SR'))
-    regions.append(Region('MR','mmm','MR'))
+    # regions.append(Region('MR','mmm','MR'))
     # regions.append(Region('ttbar','mem','CR_ttbar'))
+    regions.append(Region('DY','mmm','DY'))
 
     print('###########################################################')
     print('# setting analysis regions')
@@ -136,20 +138,21 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             print'\tThis plot took %.1f s to compute.'%(time.time()-start_plot)
 
 
-def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False, dataframe = True):
+def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, dataframe = True):
     start_time = time.time()
 
     usr = getuser()
+    hostname = gethostname()
 
-    if server == 't3':
+    if 't3ui02' in hostname:
         if usr == 'dezhu':   plotDirBase = '/work/dezhu/3_figures/1_DataMC/FinalStates/'
         if usr == 'vstampf': plotDirBase = '/t3home/vstampf/eos/plots/'
 
-    if server == 'lxplus':
+    if 'lxplus' in hostname:
         if usr == 'dezhu':   plotDirBase = '/eos/user/d/dezhu/HNL/plots/FinalStates/'
         if usr == 'vstampf': plotDirBase = '/eos/user/v/vstampf/plots/'
 
-    if server == 'starseeker':
+    if 'starseeker' in hostname:
         if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/'
 
     if promptLeptonType == "ele":
@@ -181,20 +184,17 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
             channel_name += '#mu#mu'
             channel = 'mmm'
     
-    if server == "lxplus":
+    if "lxplus" in hostname:
         analysis_dir = '/eos/user/v/vstampf/ntuples/'
    
-    if server == "t3":
-        # analysis_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv1.0/' + channel + '/'
+    if "t3ui02" in hostname:
         analysis_dir = '/work/dezhu/4_production/'
 
-    if server == "starseeker":
-        # analysis_dir = '/mnt/StorageElement1/4_production/'
+    if "starseeker" in hostname:
         analysis_dir = '/home/dehuazhu/SESSD/4_production/'
 
     total_weight = 'weight * lhe_weight'
     # total_weight = '1'
-
 
     regions = prepareRegions(channel)
     
@@ -202,7 +202,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
     # variables = createVariables(rebin = 2.5)
     variables = createVariables()
 
-    sample_dict = createSamples(channel,analysis_dir, total_weight, server=server)
+    sample_dict = createSamples(channel,analysis_dir, total_weight, server=hostname)
 
     handle = os.popen('echo $CMSSW_BASE')
     line = handle.read()
@@ -222,7 +222,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
             os.system("rm -rf %s"%(regionDir))
             os.system("mkdir %s"%(regionDir))
         
-        if server == "starseeker":
+        if "starseeker" in hostname:
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
@@ -246,7 +246,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
             os.mkdir(regionDir + '/png/linear/')
             os.mkdir(regionDir + '/png/log/')
 
-        if server == "starseeker":
+        if "starseeker" in hostname:
             os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
             print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(region.name,channel)
     
@@ -260,7 +260,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, server, multiprocess = False,
         make_plots=True,
         multiprocess=multiprocess,
         dataframe=dataframe,
-        server=server,
+        server=hostname,
         channel_dir=channel,
         analysis_dir=analysis_dir
     )

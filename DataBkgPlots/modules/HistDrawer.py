@@ -3,8 +3,7 @@ import os
 import copy
 
 from math import log10, floor
-
-from ROOT import TCanvas, TPaveText, TBox, gStyle
+from ROOT import TCanvas, TPaveText, TBox, gStyle, gROOT, kTRUE, kFALSE, gErrorIgnoreLevel, kWarning
 from modules.Stack import Stack
 
 from modules.CMS_lumi import CMS_lumi
@@ -188,6 +187,7 @@ class HistDrawer:
         HistDrawer.CMSPrelim(plot, pad, channel, legend=plot.legendPos)
         can.cd()
         
+        gErrorIgnoreLevel = kWarning
         if not os.path.exists(plot_dir + '/pdf/'):
             os.mkdir(plot_dir + '/pdf/')
             os.mkdir(plot_dir + '/pdf/linear/')
