@@ -14,7 +14,7 @@ from pdb import set_trace
 from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, gInterpreter, gROOT, gSystem
 
 # Enable ROOT's implicit multi-threading for all objects that provide an internal parallelisation mechanism
-ROOT.EnableImplicitMT()
+# ROOT.EnableImplicitMT()
 
 def initHist(hist, vcfg):
     hist.Sumw2()
@@ -46,10 +46,21 @@ class CreateHists(object):
             self.plots[vcfg.name] = plot
 
     def createHistograms(self, hist_cfg, all_stack=False, verbose=False,  vcfgs=None, multiprocess = True):
+        multiprocess = True
         if multiprocess == True:
             #using multiprocess to create the histograms
             pool = Pool(processes=len(self.hist_cfg.cfgs))
-            result = pool.map(self.makealltheplots, self.hist_cfg.cfgs) 
+            pool.map(self.makealltheplots, self.hist_cfg.cfgs) 
+            results = pool.map(self.makealltheplots, self.hist_cfg.cfgs) 
+            pool.terminate()
+
+            for vcfg in self.vcfgs:
+                for result in results: 
+                    self.plots[vcfg.name].AddHistogram(\
+                            result[vcfg.name].histos[0].name\
+                            ,result[vcfg.name].histos[0].obj\
+                            ,stack=result[vcfg.name].histos[0].stack)
+
        
         # DO NOT USE IT FOR PRODUCTION, ONLY FOR DEBUGGING: if we don't use multiprocess, we compute the histos one by one - good for debugging.
         if multiprocess == False:
@@ -59,6 +70,7 @@ class CreateHists(object):
                     result = self.makealltheplots(self.hist_cfg.cfgs[i]) 
                 except:
                     set_trace()
+
 
         procs = []
         for i, plot in enumerate(self.plots.itervalues()):
@@ -196,46 +208,46 @@ class CreateHists(object):
         # print 'adding %s with the cut: \t%s'%(cfg.name,norm_cut)
         if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake):
             weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
-        if cfg.is_doublefake:
-            
-            # Comment this section out if you want to remeasure the fakerates
-            dfr_TH2D_dir = "modules/DDE_doublefake.root"
-            dfr_hist = None
-            dfr_TH2D = TFile(dfr_TH2D_dir,"RECREATE")
-            doublefake = DDE(self.analysis_dir,self.server,self.channel) 
-            dfr_hist = doublefake.measureFR()
-            dfr_TH2D.Write()
-            dfr_namespace_dir = "modules/DDE_doublefake.h"
-            if not dfr_hist:
-                dfr_hist_file = TFile(dfr_TH2D_dir)
-                dfr_hist = dfr_hist_file.Get('h_TT_correlated')
-            with open(dfr_namespace_dir, "w") as dfr_namespace:
-                    dfr_namespace.write("// This namespace prepares the doublefakerate measured via DDE.py to be implementable in dataframe for the main plotting tool.\n")
-                    dfr_namespace.write("namespace dfr_namespace {\n")
-                    dfr_namespace.write("\tdouble getFakeRate(double ptCone, double eta){\n")
-                    for xbin_i in np.arange(dfr_hist.GetNbinsX()): 
-                        for ybin_i in np.arange(dfr_hist.GetNbinsY()): 
-                            xbin_low = dfr_hist.GetXaxis().GetXbins()[xbin_i]
-                            xbin_up  = dfr_hist.GetXaxis().GetXbins()[xbin_i+1]
-                            ybin_low = dfr_hist.GetYaxis().GetXbins()[ybin_i]
-                            ybin_up  = dfr_hist.GetYaxis().GetXbins()[ybin_i+1]
-                            result   = dfr_hist.GetBinContent(xbin_i+1, ybin_i+1)
-                            dfr_namespace.write("\t\tif (ptCone >= %f && ptCone < %f && eta >= %f && eta < %f) return %f;\n"%(xbin_low,xbin_up,ybin_low,ybin_up,result))
-                    dfr_namespace.write("\t\treturn 0.;\n")
-                    dfr_namespace.write("\t}\n")
-                    dfr_namespace.write("}\n")
-            print 'FakeRateMap saved in "%s"'%(dfr_TH2D_dir)
-            print 'FakeRateNamespace saved in "%s"'%(dfr_namespace_dir)
-            gROOT.ProcessLine(".L modules/DDE_doublefake.h+")
-            # End the comment here
 
-            gSystem.Load("modules/DDE_doublefake_h.so")
+        gSystem.Load("modules/DDE_doublefake_h.so")
+        if cfg.is_doublefake:
+            # # Comment this section out if you want to remeasure the fakerates
+            # dfr_TH2D_dir = "modules/DDE_doublefake.root"
+            # dfr_hist = None
+            # dfr_TH2D = TFile(dfr_TH2D_dir,"RECREATE")
+            # doublefake = DDE(self.analysis_dir,self.server,self.channel) 
+            # dfr_hist = doublefake.measureFR()
+            # dfr_TH2D.Write()
+            # dfr_namespace_dir = "modules/DDE_doublefake.h"
+            # if not dfr_hist:
+                # dfr_hist_file = TFile(dfr_TH2D_dir)
+                # dfr_hist = dfr_hist_file.Get('h_TT_correlated')
+            # with open(dfr_namespace_dir, "w") as dfr_namespace:
+                    # dfr_namespace.write("// This namespace prepares the doublefakerate measured via DDE.py to be implementable in dataframe for the main plotting tool.\n")
+                    # dfr_namespace.write("namespace dfr_namespace {\n")
+                    # dfr_namespace.write("\tdouble getFakeRate(double ptCone, double eta){\n")
+                    # for xbin_i in np.arange(dfr_hist.GetNbinsX()): 
+                        # for ybin_i in np.arange(dfr_hist.GetNbinsY()): 
+                            # xbin_low = dfr_hist.GetXaxis().GetXbins()[xbin_i]
+                            # xbin_up  = dfr_hist.GetXaxis().GetXbins()[xbin_i+1]
+                            # ybin_low = dfr_hist.GetYaxis().GetXbins()[ybin_i]
+                            # ybin_up  = dfr_hist.GetYaxis().GetXbins()[ybin_i+1]
+                            # result   = dfr_hist.GetBinContent(xbin_i+1, ybin_i+1)
+                            # dfr_namespace.write("\t\tif (ptCone >= %f && ptCone < %f && eta >= %f && eta < %f) return %f;\n"%(xbin_low,xbin_up,ybin_low,ybin_up,result))
+                    # dfr_namespace.write("\t\treturn 0.;\n")
+                    # dfr_namespace.write("\t}\n")
+                    # dfr_namespace.write("}\n")
+            # print 'FakeRateMap saved in "%s"'%(dfr_TH2D_dir)
+            # print 'FakeRateNamespace saved in "%s"'%(dfr_namespace_dir)
+            # gROOT.ProcessLine(".L modules/DDE_doublefake.h+")
+            # # End the comment here
+
             
             # weight = weight + ' * ' + str('(dfr_namespace::getFakeRate(pt_cone,hnl_hn_eta))/(1.-dfr_namespace::getFakeRate(pt_cone,hnl_hn_eta))')
             # weight = weight + ' * ' + 'doubleFakeWeight'
             # weight = weight + ' * ' + '0.8'
             weight = 'doubleFakeWeight'
-            weight = '1.'
+            # weight = '1.'
 
         hists[vcfg.name] =   dataframe.Filter(norm_cut)\
                                 .Define('norm_count','1.')\
@@ -246,10 +258,10 @@ class CreateHists(object):
                                 .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
                                 .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
+                                .Define('doubleFakeRate','dfr_namespace::getFakeRate(pt_cone, abs_hnl_hn_eta)')\
+                                .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')\
                                 .Define('w',weight)\
                                 .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'w')
-                                # .Define('doubleFakeRate','dfr_namespace::getFakeRate(pt_cone, abs_hnl_hn_eta)')\
-                                # .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')\
 
         # if cfg.name in plot:
             # print 'Histogram', cfg.name, 'already exists', cfg.dir_name

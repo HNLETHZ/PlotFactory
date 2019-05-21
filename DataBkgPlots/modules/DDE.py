@@ -2,7 +2,7 @@ from modules.officialStyle import officialStyle
 import plotfactory as pf
 from modules.Samples import createSampleLists, setSumWeights
 from modules.Selections import getSelection
-from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, TCanvas, TPaveText, TBox, gStyle,TChain
+from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, TCanvas, TPaveText, TBox, gStyle,TChain, gROOT, gSystem
 import numpy as np
 
 from pdb import set_trace
@@ -28,7 +28,7 @@ class DDE(object):
         return PTCONE
 
     # def measureFR(self, analysis_dir,server, channel):
-    def measureFR(self):
+    def measureFR(self, drawPlot = False):
         sample_dict = {}
         samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=self.analysis_dir, server = self.server, channel=self.channel)
         working_samples = samples_doublefake
@@ -56,10 +56,10 @@ class DDE(object):
                             .Define('abs_l1_jet_flavour_parton','abs(l1_jet_flavour_parton)')\
                             .Define('abs_l2_jet_flavour_parton','abs(l2_jet_flavour_parton)')\
 
-        # bins_ptCone = np.array([10., 15., 20., 30., 40.,50.,60.,70., 80., 90., 100., 1000.])
-        # bins_eta    = np.array([0., 0.2, 0.4, 0.6, 0.8, 1.0,  1.2, 2.4]) 
-        bins_ptCone   = np.arange(0.,70.,1)
-        bins_eta      = np.arange(0.,2.4,0.03)
+        bins_ptCone = np.array([10., 20., 30., 40.,70., 2000])
+        bins_eta    = np.array([0., 0.8, 1.2, 2.4]) 
+        # bins_ptCone   = np.arange(0.,70.,1)
+        # bins_eta      = np.arange(0.,2.4,0.03)
 
         selection_baseline      = getSelection(self.channel,'baseline')  
         selection_ttbar         = getSelection(self.channel,'CR_ttbar')  
@@ -90,13 +90,13 @@ class DDE(object):
         h_TT_correlated.SetTitle(';ptCone [GeV]; dimuon #eta')
 
         ########################################
-        # This section is for tinkering
+        # This section is for tinkering, comment everythig out if you want to do normal mode
         # h_baseline = dataframe\
                 # .Filter(selection_baseline)\
                 # .Histo2D(('h_baseline','h_baseline',20,10.,100.,20,0.,1.),'hnl_hn_vis_pt','hnl_dr_12')
                 # .Histo2D(('h_TT_correlated','h_TT_correlated',len(bins_ptCone)-1,bins_ptCone, len(bins_eta)-1, bins_eta),'l1_ptCone','l1_eta')
-        h_baseline = dataframe\
-                .Histo2D(('h_TT_correlated','h_TT_correlated',len(bins_ptCone)-1,bins_ptCone, len(bins_eta)-1, bins_eta),'ptCone','abs_hnl_hn_vis_eta')
+        # h_baseline = dataframe\
+                # .Histo2D(('h_TT_correlated','h_TT_correlated',len(bins_ptCone)-1,bins_ptCone, len(bins_eta)-1, bins_eta),'ptCone','abs_hnl_hn_vis_eta')
                 # .Histo2D(('h_baseline','h_baseline',20,10.,100.,20,0.01,.8),'hnl_hn_vis_pt','l1_reliso_rho_03')
                 # .Histo2D(('h_baseline','h_baseline',20,10.,100.,20,0.01,.8),'hnl_hn_vis_pt','hnl_dr_12')
         # h_baseline.SetTitle(';DiMuon p_T [GeV]; #DeltaR(#mu1, #mu2)')
@@ -104,9 +104,9 @@ class DDE(object):
         # h_baseline.SetTitle(';ptCone [GeV]; dimuon #eta')
 
 
-        h_LL_correlated = dataframe\
-                .Filter(selection_LL_correlated)\
-                .Histo1D(('h_LL_correlated','h_LL_correlated',10,0.,5.),'hnl_2d_disp','w')
+        # h_LL_correlated = dataframe\
+                # .Filter(selection_LL_correlated)\
+                # .Histo1D(('h_LL_correlated','h_LL_correlated',10,0.,5.),'hnl_2d_disp','w')
                 # .Histo1D(('h_LL_correlated','h_LL_correlated',10,0.,10.),'abs_l1_jet_flavour_parton','w')
                 # .Histo1D(('h_LL_correlated','h_LL_correlated',10,0.,10.),'nbj','w')
                 # .Histo1D(('h_LL_correlated','h_LL_correlated',10,-3.14,3.14),'hnl_hn_vis_phi','w')
@@ -156,37 +156,47 @@ class DDE(object):
         # h_TT_correlated.SetTitle(';hnl_2d_disp; ptCone')
         ########################################
 
-        # preparing the histo
-        # dfr_TH2D_dir = "modules/DDE_doublefake.root"
-        # dfr_TH2D = TFile(dfr_TH2D_dir,"RECREATE")
-        hist = h_TT_correlated.Clone()
+        # preparing the histo and save it into a .root file
+        dfr_TH2_dir = '/home/dehuazhu/HNL/CMSSW_9_4_6_patch1/src/PlotFactory/DataBkgPlots/modules/DDE_doublefake.root' 
+        dfr_hist = h_TT_correlated.Clone()
         # hist = h_LL_correlated.Clone()
         # hist = h_baseline.Clone()
-        hist.Divide(h_LL_correlated.Clone())
-        self.fr = hist
-        # dfr_TH2D.Write()
+        dfr_hist.Divide(h_LL_correlated.Clone())
+        dfr_hist.SaveAs(dfr_TH2_dir)
+
+        #prepare a .h file to implement the fakerates into the ROOT namespace
+        dfr_namespace_dir = "/home/dehuazhu/HNL/CMSSW_9_4_6_patch1/src/PlotFactory/DataBkgPlots/modules/DDE_doublefake.h"
+        with open(dfr_namespace_dir, "w") as dfr_namespace:
+                dfr_namespace.write("// This namespace prepares the doublefakerate measured via DDE.py to be implementable in dataframe for the main plotting tool.\n")
+                dfr_namespace.write("namespace dfr_namespace {\n")
+                dfr_namespace.write("\tdouble getFakeRate(double ptCone, double eta){\n")
+                for xbin_i in np.arange(dfr_hist.GetNbinsX()): 
+                    for ybin_i in np.arange(dfr_hist.GetNbinsY()): 
+                        xbin_low = dfr_hist.GetXaxis().GetXbins()[xbin_i]
+                        xbin_up  = dfr_hist.GetXaxis().GetXbins()[xbin_i+1]
+                        ybin_low = dfr_hist.GetYaxis().GetXbins()[ybin_i]
+                        ybin_up  = dfr_hist.GetYaxis().GetXbins()[ybin_i+1]
+                        result   = dfr_hist.GetBinContent(xbin_i+1, ybin_i+1)
+                        dfr_namespace.write("\t\tif (ptCone >= %f && ptCone < %f && eta >= %f && eta < %f) return %f;\n"%(xbin_low,xbin_up,ybin_low,ybin_up,result))
+                dfr_namespace.write("\t\treturn 0.;\n")
+                dfr_namespace.write("\t}\n")
+                dfr_namespace.write("}\n")
+        print 'FakeRateMap saved in "%s"'%(dfr_TH2_dir)
+        print 'FakeRateNamespace saved in "%s"'%(dfr_namespace_dir)
+        gROOT.ProcessLine(".L modules/DDE_doublefake.h+")
+
+        # draw the histo if required 
+        if drawPlot == True:
+            can = TCanvas('can', '')
+            # hist.Draw('colzTextE')
+            dfr_hist.Draw('colz')
+            # hist.Draw()
+            pf.showlumi('%d entries'%(dfr_hist.GetEntries()))
+            # pf.showlogopreliminary()
+            can.Update()
+            set_trace()
+
         return hist
-
-    def printFR(self, fr):
-        can = TCanvas('can', '')
-        fr.Draw('colzTextE')
-        # fr.Draw('colz')
-        # fr.Draw()
-        pf.showlumi('%d entries'%(fr.GetEntries()))
-        # pf.showlogopreliminary()
-        can.Update()
-        fr.SaveAs('/home/dehuazhu/HNL/CMSSW_9_4_6_patch1/src/PlotFactory/DataBkgPlots/test.root')
-        set_trace()
-
-    def getFakeRate(self, x_value,y_value):
-        fr = self.fr
-        return fr.GetBinContent(fr.GetXaxis().FindBin(x_value),fr.GetYaxis().FindBin(y_value))
-
-    def makeDataBkgPlot(self, fr):
-        fakerate = fr.GetBinContent(fr.GetXaxis().FindBin(12),fr.GetYaxis().FindBin(1.6))
-        fakerate = getFakeRate(fr,12.,1.6)
-        set_trace()
-        return 'dummy'
 
 
 def main():
@@ -196,18 +206,8 @@ def main():
     channel = 'mmm'
 
     # import ntuples and measure Fakerate, the output is a 2D histogram fakerate map
-    # fr = measureFR(analysis_dir,server,channel)
-    # fr = self.measureFR()
     doublefake = DDE(analysis_dir,server,channel) 
-    dfr_hist = doublefake.measureFR()
-
-    # print fr map as TH2D, comment out if silent
-    doublefake.printFR(dfr_hist)
-
-    # now implement the measured FR
-    # makeDataBkgPlot(fr)
-
-    
+    dfr_hist = doublefake.measureFR(drawPlot = False)
     
 
 if __name__ == '__main__':
