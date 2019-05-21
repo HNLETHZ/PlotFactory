@@ -4,6 +4,7 @@ from modules.Samples import createSampleLists, setSumWeights
 from modules.Selections import getSelection
 from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, TCanvas, TPaveText, TBox, gStyle,TChain, gROOT, gSystem
 import numpy as np
+from socket import gethostname
 
 from pdb import set_trace
 
@@ -201,12 +202,20 @@ class DDE(object):
 
 def main():
     # define basic config into
-    analysis_dir = '/home/dehuazhu/SESSD/4_production/'
-    server = 'starseeker'
+    hostname = gethostname()
+    if "lxplus" in hostname:
+        analysis_dir = '/eos/user/v/vstampf/ntuples/'
+   
+    if "t3ui02" in hostname:
+        analysis_dir = '/work/dezhu/4_production/'
+
+    if "starseeker" in hostname:
+        analysis_dir = '/home/dehuazhu/SESSD/4_production/'
+
     channel = 'mmm'
 
     # import ntuples and measure Fakerate, the output is a 2D histogram fakerate map
-    doublefake = DDE(analysis_dir,server,channel) 
+    doublefake = DDE(analysis_dir,hostname,channel) 
     dfr_hist = doublefake.measureFR(drawPlot = False)
     
 
