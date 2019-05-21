@@ -23,7 +23,6 @@ def createSampleLists(analysis_dir='',
                       tree_prod_name='HNLTreeProducer', 
                       add_data_cut=None,
                       add_mc_cut=None):
-    
     if channel == 'emm':
 #        data_dir = '/eos/user/m/manzoni/HNL/singleele_e_23_08_2018/'              # first version
         # data_dir = '/eos/user/v/vstampf/ntuples/data_2017_e_noskim/partial_hadd/'  # 9/13 production including met filters and masses between vetoing leps and 3l
@@ -40,19 +39,19 @@ def createSampleLists(analysis_dir='',
         dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
 
     if channel == 'mmm':
-        if server == 'lxplus':
+        if 'lxplus' in server:
             data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
             bkg_dir = 'bkg_mc_m/'
             sig_dir = 'sig_mc_m/ntuples/'
             DY_dir = analysis_dir + bkg_dir
-        if server == 't3':
+        if 't3' in server:
             # data_dir = analysis_dir + 'data/'
             # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
             data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
             bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
             sig_dir = 'signal/ntuples'
             DY_dir = analysis_dir + bkg_dir
-        if server == 'starseeker':
+        if 'starseeker' in server:
             data_dir = analysis_dir+'production_20190411_Data_mmm/ntuples'
             bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
             # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
@@ -61,12 +60,12 @@ def createSampleLists(analysis_dir='',
         dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
 
     if channel == 'mem':
-        if server == 'lxplus':
+        if 'lxplus' in server:
             data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
             bkg_dir = 'bkg_mc_m/'
             sig_dir = 'sig_mc_m/ntuples/'
             DY_dir = analysis_dir + bkg_dir
-        if server == 't3':
+        if 't3' in server:
             # data_dir = analysis_dir + 'data/'
             # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
             data_dir = '/work/dezhu/4_production/vinz'
@@ -74,7 +73,7 @@ def createSampleLists(analysis_dir='',
             # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
             sig_dir = 'signal/ntuples'
             DY_dir = analysis_dir + bkg_dir
-        if server == 'starseeker':
+        if 'starseeker' in server:
             # data_dir = '/mnt/StorageElement1/4_production/production_20190411_Data_mmm/ntuples'
             data_dir = '/mnt/StorageElement1/4_production/vinz/'
             bkg_dir = 'vinz/'
