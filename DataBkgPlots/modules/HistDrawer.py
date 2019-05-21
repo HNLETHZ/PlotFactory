@@ -218,11 +218,11 @@ class HistDrawer:
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
-        pad.SetLogy(0)
         if server == "starseeker":
             can.SaveAs(t3_dir + '/pdf/log/'  + plotname  + '_log.pdf')
             can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
             can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
+        pad.SetLogy(0)
 #        return ratio
 
 
