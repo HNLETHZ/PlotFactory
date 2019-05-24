@@ -567,7 +567,6 @@ class DataMCPlot(object):
     def _GetHistPref(self, name):
         '''Return the preference dictionary for a given component'''
         thePref = None
-        # set_trace()
         for prefpat, pref in self.histPref.iteritems():
             if fnmatch.fnmatch(name, prefpat):
                 if thePref is not None:

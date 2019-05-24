@@ -14,7 +14,7 @@ from pdb import set_trace
 from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, gInterpreter, gROOT, gSystem
 
 # Enable ROOT's implicit multi-threading for all objects that provide an internal parallelisation mechanism
-# ROOT.EnableImplicitMT()
+ROOT.EnableImplicitMT()
 
 def initHist(hist, vcfg):
     hist.Sumw2()
@@ -143,13 +143,21 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.DF
                 shape_cut = self.hist_cfg.region.DF
 
-            if  cfg.is_MC_Conversions == False:
+            if cfg.is_MC == True:
                 norm_cut  = self.hist_cfg.region.MC
                 shape_cut = self.hist_cfg.region.MC
 
-            if cfg.is_MC_Conversions == True:
-                norm_cut  = self.hist_cfg.region.MC_Conversions
-                shape_cut = self.hist_cfg.region.MC_Conversions
+            if cfg.is_SingleConversions == True:
+                norm_cut  = self.hist_cfg.region.MC_SingleConversions
+                shape_cut = self.hist_cfg.region.MC_SingleConversions
+
+            if cfg.is_DoubleConversions == True:
+                norm_cut  = self.hist_cfg.region.MC_DoubleConversions
+                shape_cut = self.hist_cfg.region.MC_DoubleConversions
+
+            if cfg.is_DY == True:
+                norm_cut  = self.hist_cfg.region.MC_DY
+                shape_cut = self.hist_cfg.region.MC_DY
 
             if cfg.is_data == True:
                 norm_cut  = self.hist_cfg.region.data
@@ -162,7 +170,6 @@ class CreateHists(object):
             weight = self.hist_cfg.weight
             if cfg.weight_expr:
                 weight = '*'.join([weight, cfg.weight_expr])
-
 
             # print '#### FULL CUT ####', norm_cut
 
@@ -205,51 +212,15 @@ class CreateHists(object):
 
     def makeDataFrameHistograms(self,vcfg,cfg,weight,dataframe,norm_cut,hists,stack):
         plot = self.plots[vcfg.name]
-        # print 'adding %s with the cut: \t%s'%(cfg.name,norm_cut)
+
         if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake):
             weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
 
         gSystem.Load("modules/DDE_doublefake_h.so")
         if cfg.is_doublefake:
-            # # Comment this section out if you want to remeasure the fakerates
-            # dfr_TH2D_dir = "modules/DDE_doublefake.root"
-            # dfr_hist = None
-            # dfr_TH2D = TFile(dfr_TH2D_dir,"RECREATE")
-            # doublefake = DDE(self.analysis_dir,self.server,self.channel) 
-            # dfr_hist = doublefake.measureFR()
-            # dfr_TH2D.Write()
-            # dfr_namespace_dir = "modules/DDE_doublefake.h"
-            # if not dfr_hist:
-                # dfr_hist_file = TFile(dfr_TH2D_dir)
-                # dfr_hist = dfr_hist_file.Get('h_TT_correlated')
-            # with open(dfr_namespace_dir, "w") as dfr_namespace:
-                    # dfr_namespace.write("// This namespace prepares the doublefakerate measured via DDE.py to be implementable in dataframe for the main plotting tool.\n")
-                    # dfr_namespace.write("namespace dfr_namespace {\n")
-                    # dfr_namespace.write("\tdouble getFakeRate(double ptCone, double eta){\n")
-                    # for xbin_i in np.arange(dfr_hist.GetNbinsX()): 
-                        # for ybin_i in np.arange(dfr_hist.GetNbinsY()): 
-                            # xbin_low = dfr_hist.GetXaxis().GetXbins()[xbin_i]
-                            # xbin_up  = dfr_hist.GetXaxis().GetXbins()[xbin_i+1]
-                            # ybin_low = dfr_hist.GetYaxis().GetXbins()[ybin_i]
-                            # ybin_up  = dfr_hist.GetYaxis().GetXbins()[ybin_i+1]
-                            # result   = dfr_hist.GetBinContent(xbin_i+1, ybin_i+1)
-                            # dfr_namespace.write("\t\tif (ptCone >= %f && ptCone < %f && eta >= %f && eta < %f) return %f;\n"%(xbin_low,xbin_up,ybin_low,ybin_up,result))
-                    # dfr_namespace.write("\t\treturn 0.;\n")
-                    # dfr_namespace.write("\t}\n")
-                    # dfr_namespace.write("}\n")
-            # print 'FakeRateMap saved in "%s"'%(dfr_TH2D_dir)
-            # print 'FakeRateNamespace saved in "%s"'%(dfr_namespace_dir)
-            # gROOT.ProcessLine(".L modules/DDE_doublefake.h+")
-            # # End the comment here
-
-            
-            # weight = weight + ' * ' + str('(dfr_namespace::getFakeRate(pt_cone,hnl_hn_eta))/(1.-dfr_namespace::getFakeRate(pt_cone,hnl_hn_eta))')
-            # weight = weight + ' * ' + 'doubleFakeWeight'
-            # weight = weight + ' * ' + '0.8'
             weight = 'doubleFakeWeight'
-            # weight = '1.'
 
-        hists[vcfg.name] =   dataframe.Filter(norm_cut)\
+        hists[vcfg.name] =   dataframe\
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
                                 .Define('l1_pt_cone','l0_pt * (1 + l1_reliso_rho_03)')\
@@ -258,17 +229,11 @@ class CreateHists(object):
                                 .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
                                 .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
+                                .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')\
                                 .Define('doubleFakeRate','dfr_namespace::getFakeRate(pt_cone, abs_hnl_hn_eta)')\
                                 .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')\
                                 .Define('w',weight)\
+                                .Filter(norm_cut)\
                                 .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'w')
-
-        # if cfg.name in plot:
-            # print 'Histogram', cfg.name, 'already exists', cfg.dir_name
-        # else:
-            # return hists[vcfg.name].Clone()
-            # # plot.AddHistogram(cfg.name, hists[vcfg.name].Clone(), stack=stack)
-            # print('added histo %s for %s'%(vcfg.name,cfg.name))
-        # return hists[vcfg.name].Clone()
         return hists[vcfg.name]
 

@@ -197,7 +197,7 @@ class DDE(object):
             can.Update()
             set_trace()
 
-        return hist
+        return dfr_hist
 
 
 def main():
