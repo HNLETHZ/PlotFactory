@@ -23,21 +23,7 @@ def createSampleLists(analysis_dir='',
                       tree_prod_name='HNLTreeProducer', 
                       add_data_cut=None,
                       add_mc_cut=None):
-    if channel == 'emm':
-#        data_dir = '/eos/user/m/manzoni/HNL/singleele_e_23_08_2018/'              # first version
-        # data_dir = '/eos/user/v/vstampf/ntuples/data_2017_e_noskim/partial_hadd/'  # 9/13 production including met filters and masses between vetoing leps and 3l
-        if server == 'lxplus':
-            data_dir = '/eos/user/v/vstampf/ntuples/data_2017_e_noskim/'
-            bkg_dir = 'bkg_mc_e/'
-            sig_dir = 'sig_mc_e/ntuples/'
-            DY_dir  = '/eos/user/v/vstampf/ntuples/DDE_v0/prompt_e/'
-        if server == 't3':
-            data_dir = analysis_dir + 'data/'
-            bkg_dir = 'background'
-            sig_dir = 'signal'
-            # DY_dir  = '/eos/user/v/vstampf/ntuples/DDE_v0/prompt_e/'
-        dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
-
+    
     if channel == 'mmm':
         if 'lxplus' in server:
             data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
@@ -55,7 +41,7 @@ def createSampleLists(analysis_dir='',
             data_dir = analysis_dir+'production_20190411_Data_mmm/ntuples'
             bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
             # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
-            sig_dir = 'signal/ntuples'
+            sig_dir = analysis_dir + 'production_20190411_Signal_mmm/ntuples'
             DY_dir = analysis_dir + bkg_dir
         dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
 
@@ -75,14 +61,13 @@ def createSampleLists(analysis_dir='',
             DY_dir = analysis_dir + bkg_dir
         if 'starseeker' in server:
             # data_dir = '/mnt/StorageElement1/4_production/production_20190411_Data_mmm/ntuples'
-            data_dir = '/mnt/StorageElement1/4_production/vinz/'
-            bkg_dir = 'vinz/'
-            sig_dir = 'signal/ntuples'
+            data_dir = '/mnt/StorageElement1/4_production/production_20190429_Data_mem/ntuples'
+            bkg_dir = 'production_20190429_Bkg_mem/ntuples'
+            sig_dir = 'production_20190420_Signal/ntuples'
             DY_dir = analysis_dir + bkg_dir
         dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
 
    
-    #Temporal data 
     samples_data = [
         SampleCfg(name='data_2017B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
         SampleCfg(name='data_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
@@ -140,7 +125,6 @@ def createSampleLists(analysis_dir='',
                 tree_prod_name=tree_prod_name, 
                 xsec=18610.0, 
                 sumweights=None, 
-                is_MC=True,
                 is_DY=True),
             SampleCfg(name='DYJets_M50', 
                 dir_name='DYJetsToLL_M50', 
@@ -148,7 +132,6 @@ def createSampleLists(analysis_dir='',
                 tree_prod_name=tree_prod_name, 
                 xsec=2075.14*3, 
                 sumweights=None, 
-                is_MC=True,
                 is_DY=True),
             SampleCfg(name='DYJets_M50_ext', 
                 dir_name='DYJetsToLL_M50_ext', 
@@ -156,7 +139,6 @@ def createSampleLists(analysis_dir='',
                 tree_prod_name=tree_prod_name, 
                 xsec=2075.14*3, 
                 sumweights=None, 
-                is_MC=True,
                 is_DY=True),
             ]
 
@@ -208,20 +190,54 @@ def createSampleLists(analysis_dir='',
                 is_MC=True),
             ]
 
-    samples_conversion = [
-            SampleCfg(name='Conversion_DYJets_M50_ext', 
-                dir_name='DYJetsToLL_M50_ext', 
+    samples_SingleConversions = [
+            SampleCfg(name='ConversionsSingle_DYJetsToLL_M10to50',
+                dir_name='DYJetsToLL_M10to50', 
                 ana_dir=analysis_dir+bkg_dir, 
-                # ana_dir='/work/dezhu/4_production/production_20190411_Bkg_mmm/ntuples', 
-                # ana_dir='root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/background/montecarlo/production_20190318_BkgMC', 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_SingleConversions=True),
+            SampleCfg(name='ConversionsSingle_DYJets_M50', 
+                dir_name='DYJetsToLL_M50', 
+                ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=2075.14*3, 
-                # sumweights=DYJetsToLL_M50_ext.nGenEvents, 
-                # sumweights=133395135, 
                 sumweights=None, 
-                is_MC=True,
-                is_MC_Conversions=True),
+                is_SingleConversions=True),
+            SampleCfg(name='ConversionsSingle_DYJets_M50_ext', 
+                dir_name='DYJetsToLL_M50_ext', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_SingleConversions=True),
             ]
+
+    samples_DoubleConversions = [
+            SampleCfg(name='ConversionsDouble_DYJetsToLL_M10to50',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_DoubleConversions=True),
+            SampleCfg(name='ConversionsDouble_DYJets_M50', 
+                dir_name='DYJetsToLL_M50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_DoubleConversions=True),
+            SampleCfg(name='ConversionsDouble_DYJets_M50_ext', 
+                dir_name='DYJetsToLL_M50_ext', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_DoubleConversions=True),
+            ]
+
 
     samples_Triboson = [
             SampleCfg(name='ZZZ', 
@@ -293,31 +309,37 @@ def createSampleLists(analysis_dir='',
             ]
 
     samples_singlefake = [
-        SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
-        # SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
-        # SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                           #nevents =  3829353
-        # SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
-        # SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+        SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
+        # SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
     ]
 
     samples_doublefake = [
-        SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
-        SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
-        SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                           #nevents =  3829353
-        SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
-        SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+        SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+    ]
+
+    samples_signal = [
+        SampleCfg(name='HN3L', dir_name='HN3L_M_2_V_0p022360679775_mu_massiveAndCKM_LO', ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),    
     ]
 
 
 
-
-    samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
+    # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
+    # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
+    # samples_mc =  samples_DY + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
+    # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson 
+    samples_mc =  samples_Diboson + samples_SingleConversions
     # samples_bkg = samples_mc + samples_singlefake + samples_doublefake 
-    # samples_bkg = samples_doublefake
-    samples_bkg = samples_mc 
+    samples_bkg = samples_doublefake + samples_mc
+    # samples_bkg = samples_mc 
     samples_all = samples_bkg + samples_data
-    # samples_all = samples_TTJets
-    # samples_all = samples_DY + samples_TTJets 
+    # samples_all = samples_signal
 
     return samples_all, samples_singlefake, samples_doublefake
 
@@ -349,14 +371,18 @@ def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
         except:
             set_trace()
 
-        if sample.name == 'DYJets_M50' or sample.name == 'DYJets_M50_ext':
-            sample_DYJets_M50        = [s for s in samples if s.name == 'DYJets_M50'    ][0]
-            sample_DYJets_M50_ext    = [s for s in samples if s.name == 'DYJets_M50_ext'][0]
+        if 'DYJets_M50' in sample.name or 'DYJets_M50_ext' in sample.name:
+            try:
+                sample_DYJets_M50        = [s for s in samples if s.name == 'DYJets_M50'    ][0]
+                sample_DYJets_M50_ext    = [s for s in samples if s.name == 'DYJets_M50_ext'][0]
+            except:
+                sample_DYJets_M50        = [s for s in samples if s.name == 'ConversionsSingle_DYJets_M50'    ][0]
+                sample_DYJets_M50_ext    = [s for s in samples if s.name == 'ConversionsSingle_DYJets_M50_ext'][0]
             sumweight_DYJets_M50     = getSumWeight(sample_DYJets_M50)
             sumweight_DYJets_M50_ext = getSumWeight(sample_DYJets_M50_ext) 
             sample.sumweights = sumweight_DYJets_M50 + sumweight_DYJets_M50_ext 
 
-        elif sample.name == 'WJetsToLNu' or sample.name == 'WJetsToLNu_ext':
+        elif 'WJetsToLNu' in sample.name or 'WJetsToLNu_ext' in sample.name:
             sample_WJetsToLNu        = [s for s in samples if s.name == 'WJetsToLNu'    ][0]
             sample_WJetsToLNu_ext    = [s for s in samples if s.name == 'WJetsToLNu_ext'][0]
             sumweight_WJetsToLNu     = getSumWeight(sample_WJetsToLNu)
