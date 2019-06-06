@@ -54,8 +54,9 @@ int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki
 
 def prepareRegions(channel):
     regions = []
-    regions.append(Region('SR',channel,'SR'))
-    # regions.append(Region('MR',channel,'MR'))
+    # regions.append(Region('SR',channel,'SR'))
+    # regions.append(Region('SR_orth',channel,'SR'))
+    regions.append(Region('MR',channel,'MR'))
     # regions.append(Region('Conversion',channel,'Conversion'))
     # regions.append(Region('TTbar',channel,'ttbar'))
     # regions.append(Region('DY',channel,'DY'))
@@ -111,9 +112,14 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
 
         cfg_main = HistogramCfg(name=region.name, var=None, cfgs=sample_dict['working_samples'], region=region, lumi=int_lumi, weight=total_weight)
 
+        if multiprocess: 
+            multiprocess_status = 'ON'
+        else:
+            multiprocess_status = 'OFF'
+
         print('\n###########################################################')
         print('# creating plots for %i sample(s) and %i variable(s)...'%(len(sample_dict['working_samples']),len(variables),))
-        print('# using %d CPUs'%(cpu_count()))
+        print('# using %d CPUs'%(cpu_count())), 'with multiprocess %s'%(multiprocess_status)
         print('###########################################################')
 
         i_var = 0
@@ -128,6 +134,7 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             plot = plots[var.name]
             plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
             plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
+            plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
             plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
             plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
             plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50'])
@@ -261,7 +268,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
         total_weight, 
         sample_dict, 
         make_plots=True,
-        multiprocess=multiprocess,
+        multiprocess=True,
         dataframe=dataframe,
         server=hostname,
         channel_dir=channel,
