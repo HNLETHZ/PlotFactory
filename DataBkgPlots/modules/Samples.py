@@ -310,10 +310,10 @@ def createSampleLists(analysis_dir='',
 
     samples_singlefake = [
         SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
-        # SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        # SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        # SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        # SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
     ]
 
     samples_doublefake = [
@@ -336,10 +336,10 @@ def createSampleLists(analysis_dir='',
     # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson 
     samples_mc =  samples_Diboson + samples_SingleConversions
     # samples_bkg = samples_mc + samples_singlefake + samples_doublefake 
-    samples_bkg = samples_doublefake + samples_mc
+    samples_bkg = samples_singlefake + samples_doublefake + samples_mc
     # samples_bkg = samples_mc 
     samples_all = samples_bkg + samples_data
-    # samples_all = samples_signal
+    # samples_all = samples_singlefake
 
     return samples_all, samples_singlefake, samples_doublefake
 
