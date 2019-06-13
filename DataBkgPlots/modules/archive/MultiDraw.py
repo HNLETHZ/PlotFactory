@@ -49,10 +49,9 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
         either be specified with just a string containing the formula to be 
         drawn, the histogram name and bin configuration. 
 
-        Alternatively it can be a tuple, with  said string, and an additional
+        Alternatively it can be a tuple, with said string, and an additional
         string specifying the weight to be applied to that histogram only.
     """
-
     if type(CommonWeight) == tuple:
         Formulae = (CommonWeight, ) + Formulae
         CommonWeight = "1"
@@ -66,7 +65,6 @@ def MultiDraw(self, Formulae, CommonWeight="1"):
     CommonWeightFormula.SetQuickLoad(True)
     if not CommonWeightFormula.GetTree():
         raise RuntimeError("TTreeFormula didn't compile: " + CommonWeight)
-
     hists = {}
 
     for i, origFormula in enumerate(Formulae):
