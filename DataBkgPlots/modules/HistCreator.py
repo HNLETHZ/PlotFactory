@@ -259,6 +259,10 @@ class CreateHists(object):
                             .Filter(self.norm_cut_TL)\
                             .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'weight_TL')
             hist_sf_TL = hist_sf_TL.Clone() # convert the ROOT.ROOT::RDF::RResultPtr<TH1D> object into a ROOT.TH1D object
+
+            hist_sf_TL.Add(hist_sf_LT)       
+            hist_sf_TL.Add(hist_sf_LL,-1)       
+            hists[vcfg.name] = hist_sf_TL      
             
             
         
