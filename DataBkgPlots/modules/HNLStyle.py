@@ -66,7 +66,8 @@ ttvcol = kCyan+2 #TColor.GetColor(222,90,106)
 zzcol = kGreen+2 #TColor.GetColor(222,90,106)
 singleTcol = kMagenta-9 
 DDEcol_doublefake = kGreen-6 
-DDEcol_singlefake = kRed-6 
+# DDEcol_singlefake = kRed-6 
+DDEcol_singlefake = dycol 
 ConversionCol = kMagenta-9
 ConversionsDoubleCol = kMagenta-9
 ConversionsSingleCol = kCyan-9
@@ -114,8 +115,8 @@ def nextStyle():
 
 histPref = {}
 histPref['HN*'] = {'style':sHNL_HN, 'layer':2999, 'legend':'#splitline{M = 3GeV, #sigma = 90fb}{c#tau = 14.6cm}'}#times 300}{c#tau = 14.6cm}'}
-histPref['Data*'] = {'style':sData, 'layer':2999, 'legend':'Observed'}
-histPref['data_*'] = {'style':sData, 'layer':2999, 'legend':'Observed'}
+histPref['Data*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
+histPref['data_*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
 histPref['ZTT*'] = {'style':sHNL_DYJets, 'layer':4, 'legend':'Z#rightarrow#tau#tau'}
 histPref['DY*'] = {'style':sHNL_DYJets, 'layer':4, 'legend':'DY'}
 # histPref['DYJets'] = {'style':sHNL_DYJets, 'layer':4, 'legend':'DYM50'}

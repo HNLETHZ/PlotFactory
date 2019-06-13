@@ -76,6 +76,14 @@ def createSampleLists(analysis_dir='',
         SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
     ]
 
+    samples_data_LNT = [
+        SampleCfg(name='data_LNT_2017B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
+        SampleCfg(name='data_LNT_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
+        SampleCfg(name='data_LNT_2017D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                           #nevents =  3829353
+        SampleCfg(name='data_LNT_2017E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
+        SampleCfg(name='data_LNT_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+    ]
+
     samples_dataF = [
         SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
     ]
@@ -331,13 +339,13 @@ def createSampleLists(analysis_dir='',
 
 
     # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleTop
-    # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
+    samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
     # samples_mc =  samples_DY + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
     # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson 
-    samples_mc =  samples_Diboson + samples_SingleConversions
+    # samples_mc =  samples_Diboson + samples_SingleConversions
     # samples_bkg = samples_mc + samples_singlefake + samples_doublefake 
-    samples_bkg = samples_singlefake + samples_doublefake + samples_mc
-    # samples_bkg = samples_mc 
+    # samples_bkg = samples_singlefake + samples_doublefake + samples_mc
+    samples_bkg = samples_mc 
     samples_all = samples_bkg + samples_data
     # samples_all = samples_singlefake
 
