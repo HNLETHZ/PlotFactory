@@ -31,7 +31,7 @@ class SampleCfg(object):
     def __init__(self, name='Default', dir_name=None, ana_dir='', 
         tree_prod_name='HNLTreeProducer', tree_name=None,
         scale=1., weight_expr=None, norm_cut=None, shape_cut=None, 
-        xsec=1., sumweights=1., is_signal=False, is_MC=False, is_DY=False, is_MC_Conversions=False , is_data=False, is_dde=False,
+        xsec=1., sumweights=1., is_signal=False, is_MC=False, is_DY=False, is_SingleConversions=False , is_DoubleConversions=False, is_data=False, is_dde=False,
         is_doublefake=False, is_singlefake=False,
         cut_replace_func=None,fr_tree_path=''):
         self.name = name
@@ -53,7 +53,8 @@ class SampleCfg(object):
         self.is_signal = is_signal # To e.g. draw as separate curve (not stack)
         self.is_MC = is_MC 
         self.is_DY = is_DY 
-        self.is_MC_Conversions = is_MC_Conversions 
+        self.is_SingleConversions = is_SingleConversions 
+        self.is_DoubleConversions = is_DoubleConversions 
         self.is_data = is_data # Will be drawn as data
         self.is_dde = is_dde # Will be drawn as dde
         self.is_doublefake = is_doublefake

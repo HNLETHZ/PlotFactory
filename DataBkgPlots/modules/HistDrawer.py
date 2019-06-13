@@ -3,9 +3,8 @@ import os
 import copy
 
 from math import log10, floor
-
-from ROOT import TCanvas, TPaveText, TBox, gStyle
-from CMGTools.RootTools.DataMC.Stack import Stack
+from ROOT import TCanvas, TPaveText, TBox, gStyle, gROOT, kTRUE, kFALSE, gErrorIgnoreLevel, kWarning
+from modules.Stack import Stack
 
 from modules.CMS_lumi import CMS_lumi
 from modules.officialStyle import officialStyle
@@ -107,7 +106,7 @@ class HistDrawer:
     @staticmethod
     def draw(plot, do_ratio=True, channel='e#mu#mu', plot_dir='/plots/', 
              plot_name=None, SetLogy=0, 
-             blindxmin=None, blindxmax=None, unit=None):
+             blindxmin=None, blindxmax=None, unit=None, server='starseeker', region = 'DY', channel_dir = 'mmm'):
         print plot
         Stack.STAT_ERRORS = True
 
@@ -188,6 +187,7 @@ class HistDrawer:
         HistDrawer.CMSPrelim(plot, pad, channel, legend=plot.legendPos)
         can.cd()
         
+        gErrorIgnoreLevel = kWarning
         if not os.path.exists(plot_dir + '/pdf/'):
             os.mkdir(plot_dir + '/pdf/')
             os.mkdir(plot_dir + '/pdf/linear/')
@@ -205,14 +205,26 @@ class HistDrawer:
         can.SaveAs(plot_dir + '/root/linear/' + plotname  + '.root')
         can.SaveAs(plot_dir + '/png/linear/'  + plotname  + '.png')
 
+        if server == "starseeker":
+            t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
+            can.SaveAs(t3_dir + '/pdf/linear/'  + plotname  + '.pdf')
+            can.SaveAs(t3_dir + '/root/linear/' + plotname  + '.root')
+            can.SaveAs(t3_dir + '/png/linear/'  + plotname  + '.png')
+
+
         # Also save with log y
         h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 5.)
         pad.SetLogy(True)
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
+        if server == "starseeker":
+            can.SaveAs(t3_dir + '/pdf/log/'  + plotname  + '_log.pdf')
+            can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
+            can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
         pad.SetLogy(0)
 #        return ratio
+
 
     drawRatio = draw
 

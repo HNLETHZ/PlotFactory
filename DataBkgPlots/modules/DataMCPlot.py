@@ -2,10 +2,10 @@ from operator import attrgetter
 import copy
 import fnmatch
 
-from ROOT import TLegend, TLine, TPad, TFile, gROOT
+from ROOT import RDataFrame, TLegend, TLine, TPad, TFile, gROOT
 
-from CMGTools.RootTools.DataMC.Histogram import Histogram
-from CMGTools.RootTools.DataMC.Stack import Stack
+from modules.Histogram import Histogram
+from modules.Stack import Stack
 
 from ROOT import THStack, gPad, kGray
 from modules.HNLStyle import histPref, Style
@@ -32,7 +32,7 @@ class DataMCPlot(object):
     _f_keeper = {}
     _t_keeper = {}
 
-    def __init__(self, name):
+    def __init__(self, name,xtitle):
         self.histosDict = {}
         self.histos = []
         self.supportHist = None
@@ -52,6 +52,7 @@ class DataMCPlot(object):
         self.groups = {}
         self.axisWasSet = False
         self.histPref = histPref
+        self.xtitle = xtitle
 
     def __contains__(self, name):
         return name in self.histosDict
@@ -79,6 +80,22 @@ class DataMCPlot(object):
         gROOT.cd()
 
         return ttree
+
+    def makeRootDataFrameFromTree(self, file_name, tree_name='tree', verbose=False, friend_func=None):
+        '''Cache files/trees'''
+
+        dataframe = RDataFrame(tree_name,file_name)
+        if verbose:
+            print 'read dataframe', dataframe, 'from file', file_name
+
+        if friend_func:
+            file_name = friend_func(file_name)
+            friend_tree = self.readTree(file_name, tree_name, verbose)
+            ttree.AddFriend(friend_tree)
+
+        gROOT.cd()
+
+        return dataframe
 
     def Blind(self, minx, maxx, blindStack):
         self.blindminx = minx
@@ -112,8 +129,6 @@ class DataMCPlot(object):
         for name in namesToGroup:
             hist = self.histosDict.get(name, None)
             if hist is None:
-                if not silent:
-                    print 'warning, no histo with name', name
                 continue
             if groupHist is None:
                 groupHist = hist.Clone(groupName)
@@ -200,7 +215,6 @@ class DataMCPlot(object):
             hist.Draw(same + opt)
             if same == '':
                 same = 'same'
-#        set_trace()
         yaxis = self.supportHist.GetYaxis()
         yaxis.SetRangeUser(0.01, 1.5*ymax(self._SortedHistograms()))
         self.DrawLegend()
@@ -297,6 +311,7 @@ class DataMCPlot(object):
         yaxis.SetTitleSize(0.1)
         yaxis.SetTitleOffset(0.7)
         xaxis = self.mcHist_err.GetXaxis()
+        xaxis.SetTitle(self.xtitle)
         xaxis.SetLabelSize(0.1)
         xaxis.SetTitleSize(0.1)
         fraclines = 0.2
@@ -552,7 +567,6 @@ class DataMCPlot(object):
     def _GetHistPref(self, name):
         '''Return the preference dictionary for a given component'''
         thePref = None
-        # set_trace()
         for prefpat, pref in self.histPref.iteritems():
             if fnmatch.fnmatch(name, prefpat):
                 if thePref is not None:
@@ -573,11 +587,11 @@ class DataMCPlot(object):
     def __str__(self):
         if self.stack is None:
             self._BuildStack(self._SortedHistograms(), ytitle='Events')
-        tmp = [' '.join(['DataMCPlot: ', self.name])]
-        tmp.append('Histograms:')
+        tmp = ['\t'+' '.join(['DataMCPlot: ', self.name])]
+        tmp.append('\tHistograms:')
         for hist in self._SortedHistograms(reverse=True):
-            tmp.append(' '.join(['\t', str(hist)]))
-        tmp.append('Stack yield = {integ:7.1f}'.format(integ=self.stack.integral))
+            tmp.append('\t'+' '.join(['\t', str(hist)]))
+        tmp.append('\tStack yield = {integ:7.1f}'.format(integ=self.stack.integral))
         return '\n'.join(tmp)
 
 
