@@ -210,7 +210,7 @@ class CreateHists(object):
         gSystem.Load("modules/DDE_doublefake_h.so")
         gSystem.Load("modules/DDE_singlefake_h.so")
 
-        # define some extra branches for custom calculations
+        # define some extra columns for custom calculations
         dataframe =   dataframe\
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
@@ -225,6 +225,33 @@ class CreateHists(object):
                                 .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')\
                                 .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
                                 .Define('singleFakeWeight','singleFakeRate/(1.0-doubleFakeRate)')
+
+        # define additional columns for the ptcone correction
+        gSystem.Load("modules/pt_ConeCorrection_h.so")
+        dataframe =   dataframe\
+                                .Define('l0_pt_ConeCorrected_x','pt_ConeCorrection::pCone(l0_px, l0_reliso_rho_03)')\
+                                .Define('l0_pt_ConeCorrected_y','pt_ConeCorrection::pCone(l0_py, l0_reliso_rho_03)')\
+                                .Define('l0_pt_ConeCorrected_z','pt_ConeCorrection::pCone(l0_pz, l0_reliso_rho_03)')\
+                                .Define('l0_pt_ConeCorrected_e','pt_ConeCorrection::pCone(l0_e , l0_reliso_rho_03)')\
+                                .Define('l1_pt_ConeCorrected_x','pt_ConeCorrection::pCone(l1_px, l1_reliso_rho_03)')\
+                                .Define('l1_pt_ConeCorrected_y','pt_ConeCorrection::pCone(l1_py, l1_reliso_rho_03)')\
+                                .Define('l1_pt_ConeCorrected_z','pt_ConeCorrection::pCone(l1_pz, l1_reliso_rho_03)')\
+                                .Define('l1_pt_ConeCorrected_e','pt_ConeCorrection::pCone(l1_e , l1_reliso_rho_03)')\
+                                .Define('l2_pt_ConeCorrected_x','pt_ConeCorrection::pCone(l2_px, l2_reliso_rho_03)')\
+                                .Define('l2_pt_ConeCorrected_y','pt_ConeCorrection::pCone(l2_py, l2_reliso_rho_03)')\
+                                .Define('l2_pt_ConeCorrected_z','pt_ConeCorrection::pCone(l2_pz, l2_reliso_rho_03)')\
+                                .Define('l2_pt_ConeCorrected_e','pt_ConeCorrection::pCone(l2_e , l2_reliso_rho_03)')\
+                                .Define('hnl_m_12_ConeCorrected','pt_ConeCorrection::dimass(\
+                                        l1_pt_ConeCorrected_x,\
+                                        l1_pt_ConeCorrected_y,\
+                                        l1_pt_ConeCorrected_z,\
+                                        l1_pt_ConeCorrected_e,\
+                                        l2_pt_ConeCorrected_x,\
+                                        l2_pt_ConeCorrected_y,\
+                                        l2_pt_ConeCorrected_z,\
+                                        l2_pt_ConeCorrected_e\
+                                        )')\
+                                
 
         if cfg.is_singlefake:
             '''
