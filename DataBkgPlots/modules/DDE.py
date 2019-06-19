@@ -59,6 +59,83 @@ class DDE(object):
 
 
     # def measureFR(self, analysis_dir,server, channel):
+    def measureSFR(self, drawPlot = False):
+        sample_dict = {}
+        samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=self.analysis_dir, server = self.server, channel=self.channel)
+        working_samples = samples_singlefake
+        working_samples = setSumWeights(working_samples)
+        print('###########################################################')
+        print'# measuring singlefakerake...'
+        print'# %d samples to be used:'%(len(working_samples))
+        print('###########################################################')
+        for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
+        chain = TChain('tree') #TChain'ing all data samples together
+        for i,s in enumerate(working_samples):
+            sample = working_samples[0]
+            file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+            chain.Add(file_name)
+            
+        dataframe = RDataFrame(chain)
+        weight = 'weight * lhe_weight'
+        dataframe = dataframe.Define('w',weight)\
+                            .Define('ptCone',self.ptCone())\
+                            .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')\
+                            .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
+                            .Define('abs_l1_eta','abs(l1_eta)')\
+                            .Define('abs_l2_eta','abs(l2_eta)')\
+                            .Define('abs_l1_jet_flavour_parton','abs(l1_jet_flavour_parton)')\
+                            .Define('abs_l2_jet_flavour_parton','abs(l2_jet_flavour_parton)')\
+
+        # bins_ptCone = np.array([5.,10., 20., 30., 40.,70., 2000])
+        # bins_eta    = np.array([0., 0.8, 1.2, 2.4]) 
+        bins_ptCone = np.array([5.,10., 20., 30., 40.,70.])
+        bins_eta    = np.array([0., 0.8, 1.2, 2.4]) 
+
+        selection_baseline      = getSelection(self.channel,'MR_SF')  
+
+        selection_LL_uncorrelated = '(' + ' & '\
+                                    .join([\
+                                    selection_baseline,\
+                                    getSelection(self.channel,'L_L_uncorrelated')\
+                                    ]) + ')' 
+        selection_TT_uncorrelated = '(' + ' & '\
+                                    .join([\
+                                    selection_baseline,\
+                                    getSelection(self.channel,'L_L_uncorrelated'),\
+                                    getSelection(self.channel,'T_T')\
+                                    ]) + ')' 
+
+        h_LL_uncorrelated = dataframe\
+                .Filter(selection_LL_uncorrelated)\
+                .Histo2D(('h_LL_uncorrelated','h_LL_uncorrelated',len(bins_ptCone)-1,bins_ptCone, len(bins_eta)-1, bins_eta),'ptCone','abs_hnl_hn_vis_eta','w')
+        #name the axis, also initiate the dataframe call
+        h_LL_uncorrelated.SetTitle(';ptCone [GeV]; dimuon #eta')
+
+        h_TT_uncorrelated = dataframe\
+                .Filter(selection_TT_uncorrelated)\
+                .Histo2D(('h_TT_uncorrelated','h_TT_uncorrelated',len(bins_ptCone)-1,bins_ptCone, len(bins_eta)-1, bins_eta),'ptCone','abs_hnl_hn_vis_eta','w')
+        #name the axis, also initiate the dataframe call
+        h_TT_uncorrelated.SetTitle(';ptCone [GeV]; dimuon #eta')
+
+        # preparing the histo and save it into a .root file
+        sfr_TH2_dir = '/home/dehuazhu/HNL/CMSSW_9_4_6_patch1/src/PlotFactory/DataBkgPlots/modules/DDE_doublefake.root' 
+        sfr_hist = h_TT_uncorrelated.Clone()
+        # sfr_hist = h_LL_uncorrelated.Clone()
+        # sfrhist = h_baseline.Clone()
+        # sfr_hist.Divide(h_LL_uncorrelated.Clone())
+        # dfr_hist.SaveAs(dfr_TH2_dir) #uncomment this to save the TH2
+
+        # draw the histo if required 
+        if drawPlot == True:
+            can = TCanvas('can', '')
+            # sfr_hist.Draw('colzTextE')
+            # sfr_hist.Draw('colz')
+            sfr_hist.Draw()
+            pf.showlumi('%d entries'%(sfr_hist.GetEntries()))
+            # pf.showlogopreliminary()
+            can.Update()
+            set_trace()
+
     def measureDFR(self, drawPlot = False):
         sample_dict = {}
         samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=self.analysis_dir, server = self.server, channel=self.channel)
@@ -92,8 +169,6 @@ class DDE(object):
         # bins_eta      = np.arange(0.,2.4,0.03)
 
         selection_baseline      = getSelection(self.channel,'MR_DF')  
-        selection_ttbar         = getSelection(self.channel,'CR_ttbar')  
-        selection_DY            = getSelection(self.channel,'CR_DY')  
 
         selection_LL_correlated = '(' + ' & '\
                                     .join([\
@@ -178,8 +253,6 @@ class DDE(object):
         bins_x      = np.logspace(-1.5,-0.4,8)
 
         selection_baseline      = getSelection(self.channel,'MR_DF')  
-        selection_ttbar         = getSelection(self.channel,'CR_ttbar')  
-        selection_DY            = getSelection(self.channel,'CR_DY')  
 
         selection_LL_correlated = '(' + ' & '\
                                     .join([\
@@ -192,6 +265,7 @@ class DDE(object):
                                     getSelection(self.channel,'L_L_correlated'),\
                                     getSelection(self.channel,'T_T')\
                                     ]) + ')' 
+        set_trace()
 
         h_LL_correlated = dataframe\
                 .Filter(selection_LL_correlated)\
@@ -303,9 +377,10 @@ def main():
     # # import ntuples and measure Fakerate, the output is a 2D histogram fakerate map
     fakes = DDE(analysis_dir,hostname,channel) 
     # dfr   = fakes.makeDataFrame()
-    dfr_hist = fakes.measureDFR(drawPlot = True)
+    # dfr_hist = fakes.measureDFR(drawPlot = True)
+    # dfr_hist = fakes.measureSFR(drawPlot = True)
     # dfr_hist = fakes.testbench(drawPlot = True)
-    fakes.makeNameSpaceDoubleFakes()
+    # fakes.makeNameSpaceDoubleFakes()
     fakes.makeNameSpaceSingleFakes()
     
 

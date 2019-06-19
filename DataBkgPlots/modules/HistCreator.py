@@ -229,29 +229,40 @@ class CreateHists(object):
         # define additional columns for the ptcone correction
         gSystem.Load("modules/pt_ConeCorrection_h.so")
         dataframe =   dataframe\
-                                .Define('l0_pt_ConeCorrected_x','pt_ConeCorrection::pCone(l0_px, l0_reliso_rho_03)')\
-                                .Define('l0_pt_ConeCorrected_y','pt_ConeCorrection::pCone(l0_py, l0_reliso_rho_03)')\
-                                .Define('l0_pt_ConeCorrected_z','pt_ConeCorrection::pCone(l0_pz, l0_reliso_rho_03)')\
-                                .Define('l0_pt_ConeCorrected_e','pt_ConeCorrection::pCone(l0_e , l0_reliso_rho_03)')\
-                                .Define('l1_pt_ConeCorrected_x','pt_ConeCorrection::pCone(l1_px, l1_reliso_rho_03)')\
-                                .Define('l1_pt_ConeCorrected_y','pt_ConeCorrection::pCone(l1_py, l1_reliso_rho_03)')\
-                                .Define('l1_pt_ConeCorrected_z','pt_ConeCorrection::pCone(l1_pz, l1_reliso_rho_03)')\
-                                .Define('l1_pt_ConeCorrected_e','pt_ConeCorrection::pCone(l1_e , l1_reliso_rho_03)')\
-                                .Define('l2_pt_ConeCorrected_x','pt_ConeCorrection::pCone(l2_px, l2_reliso_rho_03)')\
-                                .Define('l2_pt_ConeCorrected_y','pt_ConeCorrection::pCone(l2_py, l2_reliso_rho_03)')\
-                                .Define('l2_pt_ConeCorrected_z','pt_ConeCorrection::pCone(l2_pz, l2_reliso_rho_03)')\
-                                .Define('l2_pt_ConeCorrected_e','pt_ConeCorrection::pCone(l2_e , l2_reliso_rho_03)')\
+                                .Define('l0_px_ConeCorrected','pt_ConeCorrection::pCone(l0_px, l0_reliso_rho_03)')\
+                                .Define('l0_py_ConeCorrected','pt_ConeCorrection::pCone(l0_py, l0_reliso_rho_03)')\
+                                .Define('l0_pz_ConeCorrected','pt_ConeCorrection::pCone(l0_pz, l0_reliso_rho_03)')\
+                                .Define('l0_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l0_e , l0_reliso_rho_03)')\
+                                .Define('l1_px_ConeCorrected','pt_ConeCorrection::pCone(l1_px, l1_reliso_rho_03)')\
+                                .Define('l1_py_ConeCorrected','pt_ConeCorrection::pCone(l1_py, l1_reliso_rho_03)')\
+                                .Define('l1_pz_ConeCorrected','pt_ConeCorrection::pCone(l1_pz, l1_reliso_rho_03)')\
+                                .Define('l1_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l1_e , l1_reliso_rho_03)')\
+                                .Define('l2_px_ConeCorrected','pt_ConeCorrection::pCone(l2_px, l2_reliso_rho_03)')\
+                                .Define('l2_py_ConeCorrected','pt_ConeCorrection::pCone(l2_py, l2_reliso_rho_03)')\
+                                .Define('l2_pz_ConeCorrected','pt_ConeCorrection::pCone(l2_pz, l2_reliso_rho_03)')\
+                                .Define('l2_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l2_e , l2_reliso_rho_03)')\
                                 .Define('hnl_m_12_ConeCorrected','pt_ConeCorrection::dimass(\
-                                        l1_pt_ConeCorrected_x,\
-                                        l1_pt_ConeCorrected_y,\
-                                        l1_pt_ConeCorrected_z,\
-                                        l1_pt_ConeCorrected_e,\
-                                        l2_pt_ConeCorrected_x,\
-                                        l2_pt_ConeCorrected_y,\
-                                        l2_pt_ConeCorrected_z,\
-                                        l2_pt_ConeCorrected_e\
+                                        l1_px_ConeCorrected,\
+                                        l1_py_ConeCorrected,\
+                                        l1_pz_ConeCorrected,\
+                                        l1_e_ConeCorrected,\
+                                        l2_px_ConeCorrected,\
+                                        l2_py_ConeCorrected,\
+                                        l2_pz_ConeCorrected,\
+                                        l2_e_ConeCorrected\
                                         )')\
+                                .Define('hnl_m_12_ConeCorrected_test','pt_ConeCorrection::dimass(\
+                                        l1_px,\
+                                        l1_py,\
+                                        l1_pz,\
+                                        l1_e,\
+                                        l2_px,\
+                                        l2_py,\
+                                        l2_pz,\
+                                        l2_e\
+                                        )')
                                 
+
 
         if cfg.is_singlefake:
             '''
