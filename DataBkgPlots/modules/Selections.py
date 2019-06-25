@@ -114,30 +114,68 @@ def MR_DF(channel):
                     '&& abs(l2_dz) < 2 '#Martina uses 10
                     # '&& abs(l2_dxy) > 0.05 '
                     '&& hnl_q_12 == 0 '
-                    '&& hnl_2d_disp > 0.05 ' # included by default, can be removed for more statistics
+                    # '&& hnl_2d_disp > 0.05 ' # included by default, can be removed for more statistics
+                    '&& hnl_2d_disp > 0.1 ' # included by default, can be removed for more statistics
                     # '&& nbj > 0 ' # measure DFs
                     '&& hnl_w_vis_m > 20. '
                     '&& (hnl_w_vis_m < 50. || hnl_w_vis_m > 80.) '
                     # '&& (hnl_dr_12 < 0.05)' # just for some debugging, not included by default
                     '&& (hnl_dr_12 > 0.05)' # just for some debugging, not included by default
+                    # '&& (hnl_dr_12 > 0.02)'
                     )
         return selection
 
 def MR_SF(channel): 
     if channel is 'mmm':
-        selection = (
-                'abs(hnl_m_02 - 91.19) < 10 '
-                '&& hnl_dr_12 > 0.3 '
-                '&& abs(hnl_m_01 - 91.19) < 10 '
-                '&& hnl_dr_02 > 0.3 && hnl_dr_12 > 0.3 '
-                '&& l0_pt > 25 '
-                '&& abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2 && l0_id_m == 1 '
-                '&& l1_pt > 10 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2 && l1_id_m == 1 '
-                '&& l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 2 && abs(l2_dxy) > 0.05 '
-                '&& hnl_q_01 == 0 '
-                '&& ( (l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.19 && abs(l2_eta) > 2.1) )')
+        # selection = (
+                # 'abs(hnl_m_02 - 91.19) < 10 '
+                # '&& hnl_dr_12 > 0.3 '
+                # '&& abs(hnl_m_01 - 91.19) < 10 '
+                # '&& hnl_dr_02 > 0.3 && hnl_dr_12 > 0.3 '
+                # '&& l0_pt > 25 '
+                # '&& abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2 && l0_id_m == 1 '
+                # '&& l1_pt > 10 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2 && l1_id_m == 1 '
+                # '&& l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 2 && abs(l2_dxy) > 0.05 '
+                # '&& hnl_q_01 == 0 '
+                # '&& ( (l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.19 && abs(l2_eta) > 2.1) )'
+                # )
+    selection = (
+                'l0_pt > 25 && abs(l0_eta) < 2.4 '
+                '&& l1_pt > 15 && abs(l1_eta) < 2.4 '
+                '&& (l0_q != l1_q) '
+                '&& abs(l0_dxy) < 0.05 && abs(l0_dz) < 0.2 '
+                '&& abs(l1_dxy) < 0.05 && abs(l1_dz) < 0.2 '
+                '&& nbj == 0 '
+                '&& l0_id_t ==1'
+                '&& l1_id_t ==1'
+                # '&& l1_eid_mva_iso_wp90'
+                '&& l2_id_m ==1'
+                '&& l0_reliso_rho_03 < 0.20 '
+                '&& l1_reliso_rho_03 < 0.20 '
+                # '&& l2_reliso_rho_03 < 0.20 '
+                '&& abs(hnl_m_01 - 91.2) < 15 '
+                # '&& abs(hnl_dphi_hnvis0) > 2.0 '
+                # '&& abs(hnl_dphi_hnvis0) < 3.0 '
+                )
         return selection
 
+    selection = (
+                'l0_pt>25 && abs(l0_eta)<2.4 && (l0_q != l1_q) '
+                '&& l1_pt > 15 && abs(l1_eta) < 2.4 '
+                '&& abs(l0_dxy) < 0.05 && abs(l0_dz) < 0.2 '
+                '&& abs(l1_dxy) < 0.05 && abs(l1_dz) < 0.2 '
+                '&& nbj == 0 '
+                '&& l0_id_t ==1'
+                '&& l1_id_t ==1'
+                # '&& l1_eid_mva_iso_wp90'
+                '&& l2_id_m ==1'
+                '&& l0_reliso_rho_03 < 0.20 '
+                # '&& l1_reliso_rho_03 < 0.20 '
+                # '&& l2_reliso_rho_03 < 0.20 '
+                # '&& abs(hnl_m_01 - 91.2) < 15 '
+                '&& abs(hnl_dphi_hnvis0) > 2.0 '
+                '&& abs(hnl_dphi_hnvis0) < 3.0 '
+                )
 
 
 def getSelection(channel, selection_name):
