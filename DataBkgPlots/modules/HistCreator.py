@@ -210,7 +210,7 @@ class CreateHists(object):
         gSystem.Load("modules/DDE_doublefake_h.so")
         gSystem.Load("modules/DDE_singlefake_h.so")
 
-        # define some extra branches for custom calculations
+        # define some extra columns for custom calculations
         dataframe =   dataframe\
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
@@ -221,10 +221,50 @@ class CreateHists(object):
                                 .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
                                 .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')\
-                                .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta)')\
+                                .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
                                 .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')\
                                 .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
                                 .Define('singleFakeWeight','singleFakeRate/(1.0-doubleFakeRate)')
+                                # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta)')\
+                                # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
+
+        # define additional columns for the ptcone correction
+        gSystem.Load("modules/pt_ConeCorrection_h.so")
+        dataframe =   dataframe\
+                                .Define('l0_px_ConeCorrected','pt_ConeCorrection::pCone(l0_px, l0_reliso_rho_03)')\
+                                .Define('l0_py_ConeCorrected','pt_ConeCorrection::pCone(l0_py, l0_reliso_rho_03)')\
+                                .Define('l0_pz_ConeCorrected','pt_ConeCorrection::pCone(l0_pz, l0_reliso_rho_03)')\
+                                .Define('l0_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l0_e , l0_reliso_rho_03)')\
+                                .Define('l1_px_ConeCorrected','pt_ConeCorrection::pCone(l1_px, l1_reliso_rho_03)')\
+                                .Define('l1_py_ConeCorrected','pt_ConeCorrection::pCone(l1_py, l1_reliso_rho_03)')\
+                                .Define('l1_pz_ConeCorrected','pt_ConeCorrection::pCone(l1_pz, l1_reliso_rho_03)')\
+                                .Define('l1_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l1_e , l1_reliso_rho_03)')\
+                                .Define('l2_px_ConeCorrected','pt_ConeCorrection::pCone(l2_px, l2_reliso_rho_03)')\
+                                .Define('l2_py_ConeCorrected','pt_ConeCorrection::pCone(l2_py, l2_reliso_rho_03)')\
+                                .Define('l2_pz_ConeCorrected','pt_ConeCorrection::pCone(l2_pz, l2_reliso_rho_03)')\
+                                .Define('l2_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l2_e , l2_reliso_rho_03)')\
+                                .Define('hnl_m_12_ConeCorrected','pt_ConeCorrection::dimass(\
+                                        l1_px_ConeCorrected,\
+                                        l1_py_ConeCorrected,\
+                                        l1_pz_ConeCorrected,\
+                                        l1_e_ConeCorrected,\
+                                        l2_px_ConeCorrected,\
+                                        l2_py_ConeCorrected,\
+                                        l2_pz_ConeCorrected,\
+                                        l2_e_ConeCorrected\
+                                        )')\
+                                .Define('hnl_m_12_ConeCorrected_test','pt_ConeCorrection::dimass(\
+                                        l1_px,\
+                                        l1_py,\
+                                        l1_pz,\
+                                        l1_e,\
+                                        l2_px,\
+                                        l2_py,\
+                                        l2_pz,\
+                                        l2_e\
+                                        )')
+                                
+
 
         if cfg.is_singlefake:
             '''
@@ -244,6 +284,10 @@ class CreateHists(object):
                             .Define('weight_LT','singleFakeWeight')\
                             .Define('weight_TL','singleFakeWeight')
 
+            # implement ptCone correction to the single fakes
+            if 'hnl_m_12' in vcfg.drawname:
+                vcfg.drawname = 'hnl_m_12_ConeCorrected'
+
 
             hist_sf_LL = dataframe\
                             .Filter(norm_cut)\
@@ -259,7 +303,10 @@ class CreateHists(object):
                             .Filter(self.norm_cut_TL)\
                             .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'weight_TL')
             hist_sf_TL = hist_sf_TL.Clone() # convert the ROOT.ROOT::RDF::RResultPtr<TH1D> object into a ROOT.TH1D object
-            
+
+            hist_sf_TL.Add(hist_sf_LT)       
+            hist_sf_TL.Add(hist_sf_LL,-1)       
+            hists[vcfg.name] = hist_sf_TL      
             
         
         if cfg.is_doublefake:
@@ -271,7 +318,6 @@ class CreateHists(object):
             where DFR is picked up as a function of a dilepton properties (pt-corr, eta, flavor).
             '''
             weight = 'doubleFakeWeight'
-
         
         if not cfg.is_singlefake:
             hists[vcfg.name] =   dataframe\
