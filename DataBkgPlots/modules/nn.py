@@ -121,7 +121,6 @@ def run_nn(tree_file_name):
     df['l2_abs_dxy'] = np.abs(df.l2_dxy)
     df['l2_abs_eta'] = np.abs(df.l2_eta)
     df['l2_ptcone']  = df.l2_pt * (1 + np.maximum(0, df.l2_reliso_rho_03 - 0.2) )
-    set_trace()
 
     X = pd.DataFrame(df, columns=features)
 
