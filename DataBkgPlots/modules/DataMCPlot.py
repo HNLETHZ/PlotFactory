@@ -81,19 +81,20 @@ class DataMCPlot(object):
 
         return ttree
 
-    def makeRootDataFrameFromTree(self, file_name, tree_name='tree', verbose=False, friend_func=None):
+    def makeRootDataFrameFromTree(self, tree_file_name, tree_name='tree', verbose=False, friend_name='ML', friend_file_name=None):
         '''Cache files/trees'''
 
-        dataframe = RDataFrame(tree_name,file_name)
-        if verbose:
-            print 'read dataframe', dataframe, 'from file', file_name
+        ttree = self.readTree(tree_file_name, tree_name, verbose)
 
-        if friend_func:
-            file_name = friend_func(file_name)
-            friend_tree = self.readTree(file_name, tree_name, verbose)
-            ttree.AddFriend(friend_tree)
+        if verbose:
+            print 'read dataframe', dataframe, 'from file', tree_file_name
+
+        if friend_file_name:
+            ttree.AddFriend(friend_name + '=tree',friend_file_name)
 
         gROOT.cd()
+        # dataframe = RDataFrame(tree_name,tree_file_name)
+        dataframe = RDataFrame(ttree)
 
         return dataframe
 

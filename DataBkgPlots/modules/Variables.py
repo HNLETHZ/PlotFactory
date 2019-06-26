@@ -385,9 +385,11 @@ essential_vars = [
             # VCfg(name='hnl_m_02_wide', drawname = 'hnl_m_02', binning={'nbinsx':40, 'xmin':0.   , 'xmax':110 }, unit='GeV', xtitle='mass(l_{0},#mu_{2})'),
 
             VCfg(name='l2_ptCone', drawname='l2_pt_cone',      binning={'nbinsx':10, 'xmin':0, 'xmax':70},    unit='GeV', xtitle='p^{Cone}_{T}'),
-            # VCfg(name='hnl_2d_disp', binning={'nbinsx':20, 'xmin':0   , 'xmax':.4 }, unit='cm' , xtitle='2D displacement'),
-            # VCfg(name='l2_pt'      , binning={'nbinsx':6, 'xmin':0.  , 'xmax':60.}, unit='GeV', xtitle='2nd muon p_{T}'),
-            # VCfg(name='abs_l2_eta'      , drawname='abs_l2_eta',binning={'nbinsx':6, 'xmin':0.  , 'xmax':2.5}, unit='GeV', xtitle='2nd muon p_{T}'),
+            VCfg(name='hnl_2d_disp', binning={'nbinsx':20, 'xmin':0   , 'xmax':.1 }, unit='cm' , xtitle='2D displacement'),
+            VCfg(name='l2_pt'      , binning={'nbinsx':20, 'xmin':0.  , 'xmax':50.}, unit='GeV', xtitle='2nd muon p_{T}'),
+            VCfg(name='abs_l2_eta'      , drawname='abs_l2_eta',binning={'nbinsx':20, 'xmin':0.  , 'xmax':2.5}, unit='GeV', xtitle='2nd muon |#eta|'),
+            VCfg(name='abs_l2_dz'      , binning={'nbinsx':20, 'xmin':-200.  , 'xmax':200.}, unit='GeV', xtitle='2nd muon p_{T}'),
+            VCfg(name='abs_l2_dxy'      , binning={'nbinsx':20, 'xmin':-0.1  , 'xmax':.1}, unit='GeV', xtitle='2nd muon p_{T}'),
 
             # VCfg(name='hnl_dr_12_low', drawname='hnl_dr_12', binning={'nbinsx':30, 'xmin':0   , 'xmax':0.1 }, unit=None, xtitle='#DeltaR (#mu_{1}, #mu_{2})'),
             # VCfg(name='hnl_m_12_corrected' , drawname='hnl_m_12_ConeCorrected', binning={'nbinsx':20, 'xmin':0   , 'xmax':10  }, unit='GeV', xtitle='dimuon mass'),
