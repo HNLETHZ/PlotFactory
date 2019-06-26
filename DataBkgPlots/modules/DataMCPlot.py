@@ -92,6 +92,12 @@ class DataMCPlot(object):
         if friend_file_name:
             ttree.AddFriend(friend_name + '=tree',friend_file_name)
 
+        #VALIDATE#
+        n = ttree.GetEntries('l2_pt - ML.l2_pt')
+        m = ttree.GetEntries('event - ML.event')
+
+        if not n+m == 0: print '\n\tERROR: FRIEND TREE NOT ALIGNED, FAKERATE USELESS', m, n
+
         gROOT.cd()
         # dataframe = RDataFrame(tree_name,tree_file_name)
         dataframe = RDataFrame(ttree)
