@@ -9,6 +9,7 @@ from modules.PlotConfigs import HistogramCfg
 from modules.DataMCPlot import DataMCPlot
 from modules.DDE import DDE
 from modules.binning import binning_dimuonmass
+from modules.nn import run_nn 
 # from CMGTools.RootTools.DataMC.Histogram import Histogram
 from pdb import set_trace
 
@@ -114,17 +115,23 @@ class CreateHists(object):
             # It's a sample cfg
 
             # Now read the tree
-            file_name = '/'.join([cfg.ana_dir, cfg.dir_name, cfg.tree_prod_name, 'tree.root'])
+            tree_file_name = '/'.join([cfg.ana_dir, cfg.dir_name, cfg.tree_prod_name, 'tree.root'])
 
             # attach the trees to the first DataMCPlot
             plot = self.plots[self.vcfgs[0].name]
             try:
-                dataframe = plot.makeRootDataFrameFromTree(file_name, cfg.tree_name, verbose=verbose)
+                if cfg.is_singlefake:
+                    friend_file_name = run_nn(tree_file_name)
+                    dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='ML', friend_file_name=friend_file_name)
+                else:
+                    dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
             except:
                 set_trace()
 
-            if cfg.is_dde == True:
-                ttree.AddFriend('tree',cfg.fr_tree_path)
+            
+
+            # if cfg.is_dde == True:
+                # ttree.AddFriend('tree',cfg.fr_tree_path)
                 #to test the friendtree, you can set trace here and do ttree.GetEntries('tree.fover1minusf021 > 0.01')
 
             #define the cuts for different stackplots
@@ -210,23 +217,39 @@ class CreateHists(object):
         gSystem.Load("modules/DDE_doublefake_h.so")
         gSystem.Load("modules/DDE_singlefake_h.so")
 
-        # define some extra columns for custom calculations
+                                
         dataframe =   dataframe\
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
-                                .Define('l1_pt_cone','l0_pt * (1 + l1_reliso_rho_03)')\
-                                .Define('l2_pt_cone','l0_pt * (1 + l2_reliso_rho_03)')\
+                                .Define('l1_pt_cone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
+                                .Define('l2_pt_cone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
+                                .Define('abs_l1_eta','abs(l1_eta)')\
+                                .Define('abs_l2_eta','abs(l2_eta)')\
+                                .Define('abs_l2_dxy','abs(l2_dxy)')\
+                                .Define('abs_l2_dz','abs(l2_dz)')\
                                 .Define('pt_cone','(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )')\
                                 .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
                                 .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
-                                .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')\
-                                .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
-                                .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')\
-                                .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
-                                .Define('singleFakeWeight','singleFakeRate/(1.0-doubleFakeRate)')
+                                .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
                                 # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta)')\
                                 # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
+                                # .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
+        
+        # define some extra columns for custom calculations
+        if cfg.is_singlefake:     
+            dataframe =   dataframe\
+                                    .Define('singleFakeRate','ML.ml_fr_weight')\
+                                    .Define('singleFakeWeight','singleFakeRate/(1.0-singleFakeRate)')\
+                                    .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
+                                    .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
+        #FIXME: it's not abs_hnl_hn_eta, but a single lepton eta, same with pt_cone
+        else:
+            dataframe =   dataframe\
+                                    .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
+                                    .Define('singleFakeWeight','singleFakeRate/(1.0-singleFakeRate)')\
+                                    .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
+                                    .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
 
         # define additional columns for the ptcone correction
         gSystem.Load("modules/pt_ConeCorrection_h.so")
