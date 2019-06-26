@@ -121,7 +121,7 @@ class CreateHists(object):
             plot = self.plots[self.vcfgs[0].name]
             try:
                 if cfg.is_singlefake:
-                    friend_file_name = run_nn(tree_file_name)
+                    friend_file_name = run_nn(tree_file_name,cfg.name)
                     dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='ML', friend_file_name=friend_file_name)
                 else:
                     dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
@@ -239,7 +239,7 @@ class CreateHists(object):
         # define some extra columns for custom calculations
         if cfg.is_singlefake:     
             dataframe =   dataframe\
-                                    .Define('singleFakeRate','ML.ml_fr_weight')\
+                                    .Define('singleFakeRate','ML.ml_fr')\
                                     .Define('singleFakeWeight','singleFakeRate/(1.0-singleFakeRate)')\
                                     .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
                                     .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
