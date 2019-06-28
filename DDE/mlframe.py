@@ -61,7 +61,7 @@ gr.SetBatch(True)
 
 pi = rt.TMath.Pi()
 ###########################################################################################################################################################################################
-saveDir = eos+'ML_FR/repr_6_19/'
+saveDir = eos+'ML_FR/from_R/'
 skimDir = eos+'ntuples/skimmed_trees/'
 plotDir = eos+'plots/DDE/'
 suffix  = 'HNLTreeProducer/tree.root'
@@ -536,7 +536,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, CONV=True, subtract=True, ver
     dfL_021   = f1_021#.Define('abs_l1_eta', 'abs(l1_eta)')
 
     dfLNT0_021 = dfL_021.Filter(lnt_021)
-    dfLNT1_021 = dfLNT0_021.Define('fover1minusf021', 'ML.ml_fr/(1-ML.ml_fr)')
+    dfLNT1_021 = dfLNT0_021.Define('fover1minusf021', '2.32 * ML.ml_fr/(1-ML.ml_fr)')
     dfLNT2_021 = dfLNT1_021.Define('lnt_021_evt_wht', 'fover1minusf021 * weight * lhe_weight')
     if isData == False: 
         dfLNT_021 = dfLNT2_021 
@@ -578,7 +578,7 @@ def closureTest(ch='mmm', mode='sfr', isData=True, CONV=True, subtract=True, ver
     #print '\t: ML.ptcone - ptcone != 0: %d events :'%vld_ptc
 
     dfLNT0_012 = dfL_012.Filter(lnt_012)
-    dfLNT1_012 = dfLNT0_012.Define('fover1minusf012', 'ML.ml_fr/(1-ML.ml_fr)')
+    dfLNT1_012 = dfLNT0_012.Define('fover1minusf012', '2.32 * ML.ml_fr/(1-ML.ml_fr)')
     dfLNT2_012 = dfLNT1_012.Define('lnt_012_evt_wht', 'fover1minusf012 * weight * lhe_weight')
     if isData == False: 
         dfLNT_012 = dfLNT2_012 

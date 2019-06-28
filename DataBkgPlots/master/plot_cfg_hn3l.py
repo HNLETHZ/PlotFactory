@@ -158,6 +158,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
     if 't3ui0' in hostname:
         if usr == 'dezhu':   plotDirBase = '/work/dezhu/3_figures/1_DataMC/FinalStates/'
         if usr == 'vstampf': plotDirBase = '/t3home/vstampf/eos/plots/'
+        if usr == 'manzoni': plotDirBase = '/t3home/manzoni/eos/'
 
     if 'lxplus' in hostname:
         if usr == 'dezhu':   plotDirBase = '/eos/user/d/dezhu/HNL/plots/FinalStates/'
@@ -220,6 +221,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
     handle.close()
     cmsBaseDir = line.strip('\n')
     if len(cmsBaseDir) < 2: cmsBaseDir = '/t3home/vstampf/CMSSW_9_4_6_patch1/'
+    if usr == 'manzoni': cmsBaseDir = '/t3home/manzoni/'
 
     for region in regions:
         regionDir = plotDir+region.name
@@ -239,9 +241,14 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
         else:
-            copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
-            copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
-            copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+            if usr == 'manzoni': 
+                copyfile(cmsBaseDir+'PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
+                copyfile(cmsBaseDir+'PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
+                copyfile(cmsBaseDir+'PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+            else:
+                copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
+                copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
+                copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
 
         print 'cfg files stored in "',plotDir + region.name + '/"'
 
