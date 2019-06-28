@@ -4,7 +4,7 @@ Import plotfactory.py into your python module to use it.
 In plotfactory.py adapt the location you are collecting your Ntuples. 
 Don't forget 'HNLGenTreeProducer' & 'HNLTreeProducer'
 
-setting up the plotting tool
+## setting up the plotting tool
 
 log on the new CentOS 7  machine on the T3
 `ssh -XY <USER>@t3ui07.psi.ch`
