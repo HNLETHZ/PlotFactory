@@ -407,7 +407,7 @@ def main():
     if "lxplus" in hostname:
         analysis_dir = '/eos/user/v/vstampf/ntuples/'
    
-    if "t3ui02" in hostname:
+    if "t3ui0" in hostname:
         analysis_dir = '/work/dezhu/4_production/'
 
     if "starseeker" in hostname:
