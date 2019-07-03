@@ -15,7 +15,7 @@ better write this in your bashscript, WARNING, ONLY WORKS ON CentOS (ie. t3ui07)
 
 mount your eos drive from LXplus
 `mkdir ~/eos`
-`fusermount -u ~/eos; sshfs -o allow_other,reconnect <USER>@lxplus.cern.ch:/eos/user/v/<USER>/`
+`fusermount -u ~/eos; sshfs -o allow_other,reconnect <USER>@lxplus.cern.ch:/eos/user/<U>/<USER>/ /eos`
 DON’T FORGET ANY slashes at the beginning or end!
 
 (if working on t3ui2, use 
