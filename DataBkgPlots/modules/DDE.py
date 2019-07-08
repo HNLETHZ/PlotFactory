@@ -402,7 +402,7 @@ class DDE(object):
             gROOT.ProcessLine(".L modules/DDE_singlefake.h+")
 
 def main():
-    # define basic config into
+    # define basic config info
     hostname = gethostname()
     if "lxplus" in hostname:
         analysis_dir = '/eos/user/v/vstampf/ntuples/'

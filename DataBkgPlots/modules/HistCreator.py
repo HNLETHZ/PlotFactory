@@ -10,6 +10,7 @@ from modules.DataMCPlot import DataMCPlot
 from modules.DDE import DDE
 from modules.binning import binning_dimuonmass
 from modules.nn import run_nn 
+import modules.fr_net as fr_net
 # from CMGTools.RootTools.DataMC.Histogram import Histogram
 from pdb import set_trace
 
@@ -27,11 +28,12 @@ def initHist(hist, vcfg):
     hist.SetStats(False)
 
 class CreateHists(object):
-    def __init__(self, hist_cfg, analysis_dir = '/home/dehuazhu/SESSD/4_production/', channel = 'mmm', server = 'starseeker' ):
+    def __init__(self, hist_cfg, analysis_dir = '/home/dehuazhu/SESSD/4_production/', channel = 'mmm', server = 'starseeker', useNeuralNetwork=False):
         self.analysis_dir = analysis_dir
         self.channel = channel
         self.server = server
         self.hist_cfg = hist_cfg
+        self.useNeuralNetwork = useNeuralNetwork
         if self.hist_cfg.vars:
             self.vcfgs = hist_cfg.vars
 
@@ -47,7 +49,7 @@ class CreateHists(object):
                 print 'Adding variable with same name twice', vcfg.name, 'not yet foreseen; taking the last'
             self.plots[vcfg.name] = plot
 
-    def createHistograms(self, hist_cfg, all_stack=False, verbose=False,  vcfgs=None, multiprocess = True):
+    def createHistograms(self, hist_cfg, all_stack=False, verbose=False,  vcfgs=None, multiprocess = True, useNeuralNetwork = False):
         if multiprocess == True:
             #using multiprocess to create the histograms
             pool = Pool(processes=len(self.hist_cfg.cfgs))
@@ -70,7 +72,6 @@ class CreateHists(object):
                     result = self.makealltheplots(self.hist_cfg.cfgs[i]) 
                 except:
                     set_trace()
-
 
         procs = []
         for i, plot in enumerate(self.plots.itervalues()):
@@ -120,11 +121,26 @@ class CreateHists(object):
             # attach the trees to the first DataMCPlot
             plot = self.plots[self.vcfgs[0].name]
             try:
-                if cfg.is_singlefake:
-                    friend_file_name = run_nn(tree_file_name,cfg.name)
-                    dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='ML', friend_file_name=friend_file_name)
+                if self.useNeuralNetwork:
+                    # if cfg.is_singlefake:
+                        # friend_file_name = run_nn(tree_file_name,cfg.name,'modules/net.h5',fakeType='SF')
+                        # dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF', friend_file_name=friend_file_name)
+                    if cfg.is_doublefake:
+                        friend_file_name = fr_net.makeFriendtree(
+                                            tree_file_name = tree_file_name,
+                                            sample_name = cfg.name,
+                                            net_name = fr_net.path_to_NeuralNet() + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet(),
+                                            branches = fr_net.branches(fr_net.features()),
+                                            features = fr_net.features(),
+                                            overwrite = False,
+                                            )
+                        dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='DF', friend_file_name=friend_file_name)
+                    else:
+                        dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
                 else:
                     dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
+
             except:
                 set_trace()
 
@@ -201,14 +217,14 @@ class CreateHists(object):
 
             for vcfg in self.vcfgs:
                 # self.makeDataFrameHistograms(vcfg,cfg,weight,dataframe,norm_cut,hists,stack)
-                hist = self.makeDataFrameHistograms(vcfg,cfg,weight,dataframe,norm_cut,hists,stack)
+                hist = self.makeDataFrameHistograms(vcfg,cfg,weight,dataframe,norm_cut,hists,stack,self.useNeuralNetwork)
                 self.plots[vcfg.name].AddHistogram(cfg.name, hist.Clone(), stack=stack)
 
             # print('Added histograms for %s. It took %.1f secods'%(cfg.name,time.time()-start))
             PLOTS = self.plots
         return PLOTS
 
-    def makeDataFrameHistograms(self,vcfg,cfg,weight,dataframe,norm_cut,hists,stack):
+    def makeDataFrameHistograms(self,vcfg,cfg,weight,dataframe,norm_cut,hists,stack,useNeuralNetwork):
         plot = self.plots[vcfg.name]
 
         if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake):
@@ -237,12 +253,17 @@ class CreateHists(object):
                                 # .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
         
         # define some extra columns for custom calculations
-        if cfg.is_singlefake:     
-            dataframe =   dataframe\
-                                    .Define('singleFakeRate','ML.ml_fr')\
-                                    .Define('singleFakeWeight','singleFakeRate/(1.0-singleFakeRate)')\
-                                    .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
-                                    .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
+        if useNeuralNetwork == True:     
+            if cfg.is_singlefake:
+                dataframe =   dataframe\
+                                        .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
+                                        .Define('singleFakeWeight','singleFakeRate/(1.0-singleFakeRate)')
+                                        # .Define('singleFakeRate','SF.ml_fr')\
+            if cfg.is_doublefake:
+                dataframe =   dataframe\
+                                        .Define('doubleFakeRate','DF.ml_fr')\
+                                        .Filter('doubleFakeRate != 1')\
+                                        .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
         #FIXME: it's not abs_hnl_hn_eta, but a single lepton eta, same with pt_cone
         else:
             dataframe =   dataframe\
@@ -307,6 +328,7 @@ class CreateHists(object):
                             .Define('weight_LT','singleFakeWeight')\
                             .Define('weight_TL','singleFakeWeight')
 
+
             # implement ptCone correction to the single fakes
             if 'hnl_m_12' in vcfg.drawname:
                 vcfg.drawname = 'hnl_m_12_ConeCorrected'
@@ -341,6 +363,13 @@ class CreateHists(object):
             where DFR is picked up as a function of a dilepton properties (pt-corr, eta, flavor).
             '''
             weight = 'doubleFakeWeight'
+
+            is_corrupt = dataframe.Define('is_same','DF.hnl_hn_vis_pt - hnl_hn_vis_pt').Filter('is_same != 0').Count().GetValue()
+            if is_corrupt > 0:
+                print '%s: main tree and friend tree do not match'%(cfg.name)
+                set_trace()
+
+
         
         if not cfg.is_singlefake:
             hists[vcfg.name] =   dataframe\
