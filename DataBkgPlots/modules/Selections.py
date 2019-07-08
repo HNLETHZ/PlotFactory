@@ -107,20 +107,20 @@ def MR_DF(channel):
                     '&& l0_id_m == 1 '
                     '&& l1_pt > 5 '
                     '&& abs(l1_eta) < 2.4 '
-                    '&& abs(l1_dz) < 2 '#Martina uses 10
+                    # '&& abs(l1_dz) < 2 '#Martina uses 10
                     # '&& abs(l1_dxy) > 0.05 '
                     '&& l2_pt > 5 '
                     '&& abs(l2_eta) < 2.4 '
-                    '&& abs(l2_dz) < 2 '#Martina uses 10
+                    # '&& abs(l2_dz) < 2 '#Martina uses 10
                     # '&& abs(l2_dxy) > 0.05 '
                     '&& hnl_q_12 == 0 '
                     # '&& hnl_2d_disp > 0.05 ' # included by default, can be removed for more statistics
-                    '&& hnl_2d_disp > 0.1 ' # included by default, can be removed for more statistics
+                    # '&& hnl_2d_disp > 0.1 ' # included by default, can be removed for more statistics
                     # '&& nbj > 0 ' # measure DFs
-                    '&& hnl_w_vis_m > 20. '
+                    # '&& hnl_w_vis_m > 20. '
                     '&& (hnl_w_vis_m < 50. || hnl_w_vis_m > 80.) '
                     # '&& (hnl_dr_12 < 0.05)' # just for some debugging, not included by default
-                    '&& (hnl_dr_12 > 0.05)' # just for some debugging, not included by default
+                    # '&& (hnl_dr_12 > 0.05)' # just for some debugging, not included by default
                     # '&& (hnl_dr_12 > 0.02)'
                     )
         return selection
@@ -340,7 +340,7 @@ class Region(object):
         #options: MR_DF, MR_SF, SR, DY, Conversions 
         self.baseline                   = '(' + ' && '\
                                           .join([\
-                                          getSelection(channel,'MR_SF'),\
+                                          getSelection(channel,self.CR),\
                                           getSelection(channel,'L_L_correlated'),\
                                           ]) + ')' 
         self.data                       = '(' + ' && '\
