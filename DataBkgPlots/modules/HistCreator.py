@@ -262,8 +262,8 @@ class CreateHists(object):
             if cfg.is_doublefake:
                 dataframe =   dataframe\
                                         .Define('doubleFakeRate','DF.ml_fr')\
-                                        .Filter('doubleFakeRate != 1')\
                                         .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
+                                        # .Filter('doubleFakeRate != 1')\
         #FIXME: it's not abs_hnl_hn_eta, but a single lepton eta, same with pt_cone
         else:
             dataframe =   dataframe\
