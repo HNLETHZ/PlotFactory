@@ -15,6 +15,7 @@ from shutil import copyfile
 import uproot as ur
 from modules.DataMCPlot import DataMCPlot 
 import plotfactory as pf
+import pickle
 
 import root_pandas
 
@@ -162,8 +163,16 @@ def train(features,branches,path_to_NeuralNet,newArrays = False):
     # normalize inputs FIXME! do it, but do it wisely
     # https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html#sphx-glr-auto-examples-preprocessing-plot-all-scaling-py
     from sklearn.preprocessing import QuantileTransformer
-    xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
-    xx = X[features]
+
+    # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
+
+    #improved version of the quantile transformer, saving the parameters later for the evaluation
+    qt = QuantileTransformer(output_distribution='normal', random_state=1986)
+    qt.fit(X[features])
+    xx = qt.transform(X[features])
+    pickle.dump( qt, open( path_to_NeuralNet + 'quantile_tranformation.pck', 'w' ) )
+    
+    # xx = X[features] # use this to bypass the quantile transformer
     # alternative way to scale the inputs
     # https://datascienceplus.com/keras-regression-based-neural-networks/
 
@@ -188,7 +197,12 @@ def train(features,branches,path_to_NeuralNet,newArrays = False):
     x = pd.DataFrame(data, columns=features)
     # y = model.predict(x)
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(x[features])
-    xx = x[features]
+    # xx = x[features]# use this to bypass the quantile transformer
+
+    # apply the Quantile Transformer also for the evaluation process
+    qt = pickle.load(open( path_to_NeuralNet + 'quantile_tranformation.pck', 'r' ))
+    xx = qt.transform(x[features])
+
     y = model.predict(xx)
 
     # impose norm conservation if you want probabilities
@@ -238,11 +252,14 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
             ]
 
     df = t.pandas.df(branches)
-    X = pd.DataFrame(df, columns=features)
+    x = pd.DataFrame(df, columns=features)
 
     from sklearn.preprocessing import QuantileTransformer
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
-    xx = X[features]
+    qt = pickle.load(open( path_to_NeuralNet + 'quantile_tranformation.pck', 'r' ))
+    xx = qt.transform(x[features])
+    # xx = X[features] # use this to bypass the quantile transformer
+
     classifier = load_model(net_name)
     print 'predicting on' + tree_file_name
     Y = classifier.predict(xx)
@@ -424,11 +441,19 @@ def check(path_to_NeuralNet,newFriendtrees,branches,features):
 
 def features():
     features = [
-        'hnl_hn_vis_eta',
+        'l1_eta',
+        'l1_phi',
+        'l1_pt',
+        'l1_reliso_rho_03',
+        'l2_eta',
+        'l2_phi',
+        'l2_pt',
+        'l2_reliso_rho_03',
+        # 'hnl_hn_vis_eta',
+        # 'hnl_hn_vis_pt',
+        # 'hnl_iso03_rel_rhoArea',
         'hnl_2d_disp',
         'hnl_dr_12',
-        'hnl_iso03_rel_rhoArea',
-        'hnl_hn_vis_pt',
         'hnl_m_12',
     ]
     return features
@@ -444,28 +469,29 @@ def branches(features):
         'l0_dxy',
         'l0_reliso_rho_03',
         'l0_id_m',
-        'l1_pt',
-        'l1_eta',
-        'l2_pt',
-        'l2_eta',
+        # 'l1_pt',
+        # 'l1_eta',
+        # 'l2_pt',
+        # 'l2_eta',
         'hnl_q_12',
         'hnl_w_vis_m',
-        'l1_reliso_rho_03',
-        'l2_reliso_rho_03',
+        # 'l1_reliso_rho_03',
+        # 'l2_reliso_rho_03',
         'l1_Medium',
         'l2_Medium',
         'l1_jet_pt',
         'l2_jet_pt',
-        # 'hnl_hn_vis_eta',
+        'hnl_hn_vis_eta',
         # 'hnl_dr_12',
         # 'hnl_m_12',
-        # 'hnl_iso03_rel_rhoArea',
-        # 'hnl_hn_vis_pt',
+        'hnl_iso03_rel_rhoArea',
+        'hnl_hn_vis_pt',
     ]
     return branches
 
 def path_to_NeuralNet():
-    return 'NN/mmm_DF_v4/'
+    path_to_NeuralNet = 'NN/mmm_DF_v5_etaTraining/'
+    return path_to_NeuralNet 
 #################################################################################
 
 if __name__ == '__main__':
