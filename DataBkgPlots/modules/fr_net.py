@@ -41,7 +41,7 @@ ROOT.EnableImplicitMT()
 # fix random seed for reproducibility (FIXME! not really used by Keras)
 np.random.seed(1986)
 
-def createArrays(features, branches, path_to_NeuralNet):
+def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake'):
     #define basic environmental parameters
     hostname        = gethostname()
     analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
@@ -50,7 +50,11 @@ def createArrays(features, branches, path_to_NeuralNet):
 
 # call samples
     samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
-    working_samples = samples_doublefake
+    if faketype == 'SingleFake':
+        working_samples = samples_singlefake
+    else:
+        working_samples = samples_doublefake
+    
 
 # necessary if you want to compare data with MC
     working_samples = setSumWeights(working_samples)
@@ -63,14 +67,20 @@ def createArrays(features, branches, path_to_NeuralNet):
     for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
     chain = TChain('tree') #TChain'ing all data samples together
     for i,s in enumerate(working_samples):
-        sample = working_samples[0]
+        # sample = working_samples[0] #super stupid mistake, I'm keeping it here as a painful reminder
+        sample = working_samples[i]
         file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
         chain.Add(file_name)
 
 # define the selections
-    region = Selections.Region('MR_DF','mmm','MR_DF')
-    selection_passing = region.data
-    selection_failing = region.DF
+    if faketype == 'SingleFake':
+        region = Selections.Region('MR_SF','mmm','MR_SF')
+        selection_passing = region.data
+        selection_failing = region.SF_TL
+    else:
+        region = Selections.Region('MR_DF','mmm','MR_DF')
+        selection_passing = region.data
+        selection_failing = region.DF
 
 # convert TChain object into numpy arrays for the training
     print 'converting .root ntuples to numpy arrays... (passed events)'
@@ -79,6 +89,8 @@ def createArrays(features, branches, path_to_NeuralNet):
                     branches = branches,
                     selection = selection_passing
                     )
+    print 'nevents from array_pass: '+ str(array_pass.size)
+
 
     print 'converting .root ntuples to numpy arrays... (failed events)'
     array_fail = tree2array(
@@ -86,6 +98,7 @@ def createArrays(features, branches, path_to_NeuralNet):
                     branches = branches,
                     selection = selection_failing
                     )
+    print 'nevents from array_fail: '+ str(array_fail.size)
 
     df_pass = pd.DataFrame(array_pass)
     df_fail = pd.DataFrame(array_fail)
@@ -93,7 +106,7 @@ def createArrays(features, branches, path_to_NeuralNet):
     df_pass.to_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
     df_fail.to_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
 
-def train(features,branches,path_to_NeuralNet,newArrays = False):
+def train(features,branches,features_SF2,branches_SF2,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake'):
     hostname        = gethostname()
     if not os.path.exists(path_to_NeuralNet):
         os.mkdir(path_to_NeuralNet)
@@ -112,8 +125,13 @@ def train(features,branches,path_to_NeuralNet,newArrays = False):
 
     print 'cfg files stored in ' + path_to_NeuralNet
     
+    if faketype == 'SingleFake':
+        features = features_SF2
+        branches = branches_SF2
+
+
     if newArrays == True:
-        createArrays(features, branches, path_to_NeuralNet)
+        createArrays(features, branches, path_to_NeuralNet, faketype)
 
     passing = pd.read_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
     failing = pd.read_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
@@ -124,7 +142,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False):
 
     # concatenate the events and shuffle
     data = pd.concat([passing, failing])
-    data = data.sample(frac=1, replace=True, random_state=1986) # shuffle
+    data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
 
     # #define ptcone
     data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
@@ -183,6 +201,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False):
     # train only the classifier. beta is set at 0 and the discriminator is not trained
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
     # history = model.fit(xx, Y, epochs=1000, validation_split=0.5, callbacks=[es])  
+    data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
     history = model.fit(xx, Y, batch_size = 1000, epochs=1000, validation_split=0.5, callbacks=[es])  
 
     # plot loss function trends for train and validation sample
@@ -242,14 +261,8 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
         else:
             print 'making friendtree for %s'%sample_name
 
-
     f = ur.open(tree_file_name)
     t = f['tree']
-
-
-    branches += [
-                'hnl_iso04_rel_rhoArea',
-            ]
 
     df = t.pandas.df(branches)
     x = pd.DataFrame(df, columns=features)
@@ -316,7 +329,6 @@ def check(path_to_NeuralNet,newFriendtrees,branches,features):
         # sample = working_samples[0]
         # tree_dir = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
         # friendtree_dir = path_to_NeuralNet + 'friendtree_fr_%s.root'%sample.name
-        # set_trace()
         # dmc = DataMCPlot('name','title')
         # ttree = dmc.readTree(tree_dir)
         # ttree.AddFriend('ML' + '=tree',friendtree_dir)
@@ -436,7 +448,6 @@ def check(path_to_NeuralNet,newFriendtrees,branches,features):
     pf.showlumi('%d entries'%(dfr_hist_LL.GetEntries()))
     # pf.showlogopreliminary()
     can.Update()
-    set_trace()
     # chain.Draw("abs(hnl_hn_vis_eta):%s"%ptCone(),selection_TT_correlated)
 
 def features():
@@ -449,12 +460,12 @@ def features():
         'l2_phi',
         'l2_pt',
         'l2_reliso_rho_03',
-        # 'hnl_hn_vis_eta',
-        # 'hnl_hn_vis_pt',
-        # 'hnl_iso03_rel_rhoArea',
         'hnl_2d_disp',
         'hnl_dr_12',
         'hnl_m_12',
+        # 'hnl_hn_vis_eta',
+        'hnl_hn_vis_pt',
+        'hnl_iso03_rel_rhoArea',
     ]
     return features
 
@@ -463,6 +474,7 @@ def branches(features):
         'run',
         'lumi',
         'event',
+        'hnl_iso04_rel_rhoArea',
         'l0_pt',
         'l0_eta',
         'l0_dz',
@@ -473,24 +485,72 @@ def branches(features):
         # 'l1_eta',
         # 'l2_pt',
         # 'l2_eta',
-        'hnl_q_12',
-        'hnl_w_vis_m',
         # 'l1_reliso_rho_03',
         # 'l2_reliso_rho_03',
+        'hnl_q_12',
+        'hnl_w_vis_m',
         'l1_Medium',
         'l2_Medium',
         'l1_jet_pt',
         'l2_jet_pt',
-        'hnl_hn_vis_eta',
         # 'hnl_dr_12',
         # 'hnl_m_12',
-        'hnl_iso03_rel_rhoArea',
-        'hnl_hn_vis_pt',
+        'hnl_hn_vis_eta',
+        # 'hnl_iso03_rel_rhoArea',
+        # 'hnl_hn_vis_pt',
     ]
     return branches
 
-def path_to_NeuralNet():
-    path_to_NeuralNet = 'NN/mmm_DF_v5_etaTraining/'
+def features_SF2():
+    features = [
+        'l2_eta',
+        'l2_phi',
+        'l2_pt',
+        'l2_dxy',
+        'l2_dz',
+        'l2_reliso_rho_03',
+    ]
+    return features
+
+def branches_SF2(features):
+    branches = features + [
+        'run',
+        'lumi',
+        'event',
+        'l0_pt',
+        'l0_eta',
+        'l0_dz',
+        'l0_dxy',
+        'l0_reliso_rho_03',
+        'l0_id_m',
+        'l1_pt',
+        'l1_eta',
+        'l1_Medium',
+        'l1_jet_pt',
+        'l1_reliso_rho_03',
+        'l2_Medium',
+        'l2_jet_pt',
+        'hnl_q_12',
+        'hnl_w_vis_m',
+        'hnl_dr_12',
+        'hnl_m_12',
+        'hnl_hn_vis_eta',
+        'hnl_hn_vis_pt',
+        'hnl_iso03_rel_rhoArea',
+        'hnl_iso04_rel_rhoArea',
+    ]
+    return branches
+
+def path_to_NeuralNet(faketype ='DoubleFake'):
+    if faketype == 'SingleFake':
+        # path_to_NeuralNet = 'NN/mmm_SF2_v1/'
+        # path_to_NeuralNet = 'NN/mmm_SF2_v2_SingleVariable/'
+        path_to_NeuralNet = 'NN/mmm_SF2_v3_AllVariable/'
+
+    else:
+        # path_to_NeuralNet = 'NN/mmm_DF_v4/'
+        path_to_NeuralNet = 'NN/mmm_DF_v5_etaTraining/'
+        # path_to_NeuralNet = 'NN/mmm_DF_v6_CheckNormalization/'
     return path_to_NeuralNet 
 #################################################################################
 
@@ -498,20 +558,28 @@ if __name__ == '__main__':
     pf.setpfstyle()
 # define input parameters
     #The features are the variable the out should depend on
-    features = features()
+    features     = features()
+    features_SF2 = features_SF2()
 
 #The branches are the variables you want to write in your trees
-    branches = branches(features)
+    branches     = branches(features)
+    branches_SF2 = branches_SF2(features_SF2)
 
     # run train() if you want to train the NeuralNet
-    path_to_NeuralNet = path_to_NeuralNet() 
+    faketype = 'SingleFake'
+    # faketype = 'DoubleFake'
+    path_to_NeuralNet = path_to_NeuralNet(faketype) 
 
     train(
             features,
             branches,
+            features_SF2,
+            branches_SF2,
             path_to_NeuralNet,
-            newArrays = True
+            newArrays = True,
+            faketype = faketype
             )
+
 
     # # run check() to analyse the quality of the NN
     # check(

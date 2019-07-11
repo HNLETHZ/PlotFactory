@@ -333,11 +333,12 @@ def createSampleLists(analysis_dir='',
     # samples_bkg = samples_mc 
 
     samples_mc =  samples_Diboson + samples_SingleConversions 
-    samples_bkg =  samples_doublefake + samples_singlefake  + samples_mc
+    samples_bkg =  samples_singlefake + samples_doublefake + samples_mc
     
     # samples_all = samples_bkg + samples_data
-    samples_all = samples_doublefake + samples_data
-    # samples_all = samples_doublefake
+    samples_all = samples_singlefake + samples_doublefake + samples_data
+    # samples_all = samples_singlefake + samples_data
+    # samples_all = samples_singlefake
 
     return samples_all, samples_singlefake, samples_doublefake
 
