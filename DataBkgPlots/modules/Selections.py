@@ -66,6 +66,29 @@ def SR(channel):
                  )
     return selection
 
+def SR_orth(channel): #A region orthogonal to the signal region dedicated for closure tests
+    selection = (
+                 'l0_pt > 25 && abs(l0_eta) < 2.4' 
+                 '&& l0_id_m ==1'
+                 '&& l0_reliso_rho_03 < 0.10 '
+                 '&& abs(l0_dxy) < 0.05 && abs(l0_dz) < 0.2 '
+                 '&& l1_Medium == 1 '
+                 '&& l2_Medium == 1 '
+                 '&& l1_pt > 5 && abs(l1_eta) < 2.4 '
+                 '&& l2_pt > 5 && abs(l2_eta) < 2.4 '
+                 # '&& hnl_2d_disp > 0.5'#removed for higher stat
+                 # '&& abs(l1_dxy) > 0.01'
+                 # '&& abs(l2_dxy) > 0.01'
+                 '&& (l1_q != l2_q) '
+                 # '&& nbj == 0 ' 
+                 '&& nbj > 0 ' #activate for orthogonal SR
+                 # '&& 50 < hnl_w_vis_m && hnl_w_vis_m < 85'
+                 '&& 85 < hnl_w_vis_m' #activate for orthogal SR
+                 # '&& abs(hnl_dphi_hnvis0) > 1.0 '
+                 # '&& sv_prob > 0.05 ' 
+                 )
+    return selection
+
 
 def DY():
     selection = ('l0_pt>25 && abs(l0_eta)<2.4 && (l0_q != l1_q) '
@@ -125,6 +148,35 @@ def MR_DF(channel):
                     )
         return selection
 
+def MR_DF_closure(channel): 
+    if channel is 'mmm':
+        selection = (
+                    'l0_pt > 25 '
+                    '&& abs(l0_eta) < 2.4 '
+                    '&& abs(l0_dz) < 0.2 '
+                    '&& abs(l0_dxy) < 0.05 '
+                    '&& l0_reliso_rho_03 < 0.2 '
+                    '&& l0_id_m == 1 '
+                    '&& l1_pt > 5 '
+                    '&& abs(l1_eta) < 2.4 '
+                    # '&& abs(l1_dz) < 2 '#Martina uses 10
+                    # '&& abs(l1_dxy) > 0.05 '
+                    '&& l2_pt > 5 '
+                    '&& abs(l2_eta) < 2.4 '
+                    # '&& abs(l2_dz) < 2 '#Martina uses 10
+                    # '&& abs(l2_dxy) > 0.05 '
+                    '&& hnl_q_12 == 0 '
+                    # '&& hnl_2d_disp > 0.05 ' # included by default, can be removed for more statistics
+                    # '&& hnl_2d_disp > 0.1 ' # included by default, can be removed for more statistics
+                    '&& nbj > 0 ' # measure DFs
+                    # '&& hnl_w_vis_m > 20. '
+                    # '&& (hnl_w_vis_m < 50. || hnl_w_vis_m > 80.) '
+                    # '&& (hnl_dr_12 < 0.05)' # just for some debugging, not included by default
+                    # '&& (hnl_dr_12 > 0.05)' # just for some debugging, not included by default
+                    # '&& (hnl_dr_12 > 0.02)'
+                    )
+        return selection
+
 def MR_SF(channel): 
     if channel is 'mmm':
         #based on Vinz's original measurement 
@@ -161,11 +213,16 @@ def MR_SF(channel):
                     # )
         #based of the ML cut
         selection = (
-                    'l0_pt > 25 && abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2 && l0_id_m == 1 '
-                    '&& l1_pt > 10 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2 && l1_id_m == 1 '
+                    '    l0_pt > 25 && abs(l0_eta) < 2.4 && abs(l0_dz) < 0.2 && abs(l0_dxy) < 0.05 && l0_reliso_rho_03 < 0.2 && l0_id_m == 1 '
+                    ' && l1_pt > 10 && abs(l1_eta) < 2.4 && abs(l1_dz) < 0.2 && abs(l1_dxy) < 0.05 && l1_reliso_rho_03 < 0.2 && l1_id_m == 1 '
                     # '&& l2_pt > 5 && abs(l2_eta) < 2.4 && abs(l2_dz) < 2 && abs(l2_dxy) > 0.01'
+                    ' && l2_pt > 5 && abs(l2_eta)'
                     ' && hnl_q_01 == 0'
-                    ' && ( (l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.19 && abs(l1_eta) > 2.1) )'
+                    ' && ( (l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.19 && abs(l2_eta) > 2.1) )'
+                    # ' && hnl_dr_02 > 0.1'
+                    # ' && hnl_dr_12 > 0.1'
+                    # ' && (abs(hnl_m_02 - 91) > 10 && hnl_q_02 == 0) '
+                    # ' && (abs(hnl_m_12 - 91) > 10 && hnl_q_12 == 0) '
                     )
     return selection
 
@@ -188,11 +245,17 @@ def getSelection(channel, selection_name):
         if selection_name == 'MR_DF':
             selection = MR_DF(channel)
                         
+        if selection_name == 'MR_DF_closure':
+            selection = MR_DF_closure(channel)
+                        
         if selection_name == 'MR_SF':
             selection = MR_SF(channel)
         
         if selection_name == 'SR':
             selection = SR(channel)
+                        
+        if selection_name == 'SR_orth':
+            selection = SR_orth(channel)
                         
         if selection_name == 'Conversions':
             selection = Conversions(channel)
@@ -341,22 +404,27 @@ class Region(object):
         self.baseline                   = '(' + ' && '\
                                           .join([\
                                           getSelection(channel,self.CR),\
-                                          getSelection(channel,'L_L_correlated'),\
+                                          # getSelection(channel,'L_L_uncorrelated'),\
+                                          # getSelection(channel,'L_L_correlated'),\
                                           ]) + ')' 
         self.data                       = '(' + ' && '\
                                           .join([\
                                           self.baseline,\
+                                          # getSelection(channel,'L_L_uncorrelated'),\
+                                          # getSelection(channel,'T_LNT'),\
                                           getSelection(channel,'T_T'),\
                                           ]) + ')' 
         self.MC                         = self.data 
         self.SF_LT                      = '(' + ' && '\
                                           .join([\
                                           self.baseline,\
+                                          getSelection(channel,'L_L_uncorrelated'),\
                                           getSelection(channel,'LNT_T'),\
                                           ]) + ')' 
         self.SF_TL                      = '(' + ' && '\
                                           .join([\
                                           self.baseline,\
+                                          getSelection(channel,'L_L_uncorrelated'),\
                                           getSelection(channel,'T_LNT'),\
                                           ]) + ')' 
         self.SF_LL                      = '(' + ' && '\
@@ -369,6 +437,7 @@ class Region(object):
                                           self.baseline,\
                                           getSelection(channel,'LNT_LNT_correlated'),\
                                           ]) + ')' 
+
         self.MC_DY                      = self.data + '&& (!(l1_gen_match_pdgid == 22) && !(l2_gen_match_pdgid == 22))'
         self.MC_SingleConversions       = self.data + '&& ((l1_gen_match_pdgid == 22 && l2_gen_match_pdgid != 22) || (l2_gen_match_pdgid == 22 && l1_gen_match_pdgid != 22))'
         self.MC_DoubleConversions       = self.data + '&& ((l1_gen_match_pdgid == 22) && (l2_gen_match_pdgid == 22))'

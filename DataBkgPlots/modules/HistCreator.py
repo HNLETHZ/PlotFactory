@@ -122,15 +122,23 @@ class CreateHists(object):
             plot = self.plots[self.vcfgs[0].name]
             try:
                 if self.useNeuralNetwork:
-                    # if cfg.is_singlefake:
-                        # friend_file_name = run_nn(tree_file_name,cfg.name,'modules/net.h5',fakeType='SF')
-                        # dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF', friend_file_name=friend_file_name)
+                    if cfg.is_singlefake:
+                        friend_file_name = fr_net.makeFriendtree(
+                                            tree_file_name = tree_file_name,
+                                            sample_name = cfg.name,
+                                            net_name = fr_net.path_to_NeuralNet('SingleFake') + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('SingleFake'),
+                                            branches = fr_net.branches_SF2(fr_net.features_SF2()),
+                                            features = fr_net.features_SF2(),
+                                            overwrite = False,
+                                            )
+                        dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF', friend_file_name=friend_file_name)
                     if cfg.is_doublefake:
                         friend_file_name = fr_net.makeFriendtree(
                                             tree_file_name = tree_file_name,
                                             sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet() + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet(),
+                                            net_name = fr_net.path_to_NeuralNet('DoubleFake') + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('DoubleFake'),
                                             branches = fr_net.branches(fr_net.features()),
                                             features = fr_net.features(),
                                             overwrite = False,
@@ -142,21 +150,12 @@ class CreateHists(object):
                     dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
 
             except:
+                #This is for debugging
                 set_trace()
-
-            
-
-            # if cfg.is_dde == True:
-                # ttree.AddFriend('tree',cfg.fr_tree_path)
-                #to test the friendtree, you can set trace here and do ttree.GetEntries('tree.fover1minusf021 > 0.01')
-
-            #define the cuts for different stackplots
-            # if cfg.is_dde == True and cfg.is_singlefake == True:
-                # norm_cut  = self.hist_cfg.region.SF
-                # norm_cut = '({c}) * {we}'.format(c=norm_cut, we='tree.fover1minusf021')
 
             if cfg.is_singlefake == True:
                 norm_cut  = self.hist_cfg.region.SF_LL
+                self.norm_cut_LL  = self.hist_cfg.region.SF_LL
                 self.norm_cut_LT  = self.hist_cfg.region.SF_LT
                 self.norm_cut_TL  = self.hist_cfg.region.SF_TL
 
@@ -256,9 +255,8 @@ class CreateHists(object):
         if useNeuralNetwork == True:     
             if cfg.is_singlefake:
                 dataframe =   dataframe\
-                                        .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
+                                        .Define('singleFakeRate','SF.ml_fr')\
                                         .Define('singleFakeWeight','singleFakeRate/(1.0-singleFakeRate)')
-                                        # .Define('singleFakeRate','SF.ml_fr')\
             if cfg.is_doublefake:
                 dataframe =   dataframe\
                                         .Define('doubleFakeRate','DF.ml_fr')\
@@ -328,14 +326,18 @@ class CreateHists(object):
                             .Define('weight_LT','singleFakeWeight')\
                             .Define('weight_TL','singleFakeWeight')
 
+            # dataframe =   dataframe\
+                            # .Define('weight_LL','1')\
+                            # .Define('weight_LT','1')\
+                            # .Define('weight_TL','1')
 
-            # implement ptCone correction to the single fakes
-            if 'hnl_m_12' in vcfg.drawname:
-                vcfg.drawname = 'hnl_m_12_ConeCorrected'
+            # # implement ptCone correction to the single fakes
+            # if 'hnl_m_12' in vcfg.drawname:
+                # vcfg.drawname = 'hnl_m_12_ConeCorrected'
 
 
             hist_sf_LL = dataframe\
-                            .Filter(norm_cut)\
+                            .Filter(self.norm_cut_LL)\
                             .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'weight_LL')
             hist_sf_LL = hist_sf_LL.Clone() # convert the ROOT.ROOT::RDF::RResultPtr<TH1D> object into a ROOT.TH1D object
 
@@ -349,9 +351,12 @@ class CreateHists(object):
                             .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'weight_TL')
             hist_sf_TL = hist_sf_TL.Clone() # convert the ROOT.ROOT::RDF::RResultPtr<TH1D> object into a ROOT.TH1D object
 
+
             hist_sf_TL.Add(hist_sf_LT)       
             hist_sf_TL.Add(hist_sf_LL,-1)       
             hists[vcfg.name] = hist_sf_TL      
+
+            set_trace()
             
         
         if cfg.is_doublefake:
