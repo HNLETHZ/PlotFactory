@@ -184,4 +184,5 @@ histPref['SMS*'] = {'style':sHNL_HN, 'layer':1001, 'legend':None}
 # histPref['DDE*'] = {'style':sHNL_DDE, 'layer':1001, 'legend':'nonprompt'}
 histPref['*doublefake*'] = {'style':sHNL_DDE_doublefake, 'layer':900, 'legend':'DF'}
 histPref['*singlefake*'] = {'style':sHNL_DDE_singlefake, 'layer':901, 'legend':'SF'}
+histPref['*nonprompt*'] = {'style':sHNL_TTJets, 'layer':902, 'legend':'nonprompt'}
 histPref['doubleFake*'] = {'style':sData, 'layer':2999, 'legend':'doubleFakeRate'}
