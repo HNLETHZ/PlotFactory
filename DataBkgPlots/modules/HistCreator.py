@@ -166,6 +166,17 @@ class CreateHists(object):
                                             overwrite = False,
                                             )
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='nonprompt', friend_file_name=friend_file_name)
+                    if cfg.is_contamination:
+                        friend_file_name = fr_net.makeFriendtree(
+                                            tree_file_name = tree_file_name,
+                                            sample_name = cfg.name,
+                                            net_name = fr_net.path_to_NeuralNet('nonprompt') + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt'),
+                                            branches = fr_net.branches_nonprompt(fr_net.features_nonprompt()),
+                                            features = fr_net.features_nonprompt(),
+                                            overwrite = False,
+                                            )
+                        dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='contamination', friend_file_name=friend_file_name)
                     else:
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
                 else:
@@ -197,6 +208,9 @@ class CreateHists(object):
             if cfg.is_DoubleConversions == True:
                 norm_cut  = self.hist_cfg.region.MC_DoubleConversions
 
+            if cfg.is_Conversions == True:
+                norm_cut  = self.hist_cfg.region.MC_Conversions
+
             if cfg.is_DY == True:
                 norm_cut  = self.hist_cfg.region.MC_DY
 
@@ -205,6 +219,11 @@ class CreateHists(object):
 
             if cfg.is_signal == True:
                 norm_cut  = self.hist_cfg.region.signal
+
+            if cfg.is_contamination == True:
+                # norm_cut = self.hist_cfg.region.nonprompt + " && (l1_gen_match_isPromptFinalState==1 && l2_gen_match_isPromptFinalState==1)"
+                # norm_cut = self.hist_cfg.region.nonprompt
+                norm_cut  = self.hist_cfg.region.MC
             
             weight = self.hist_cfg.weight
             if cfg.weight_expr:
@@ -262,10 +281,10 @@ class CreateHists(object):
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
                                 .Define('pt_cone','(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )')\
-                                .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
-                                .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
-                                .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
-                                .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
+                                # .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
+                                # .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
+                                # .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
+                                # .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
                                 # .Define('abs_l1_eta','abs(l1_eta)')\
                                 # .Define('abs_l2_eta','abs(l2_eta)')\
                                 # .Define('l1_pt_cone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
@@ -294,6 +313,7 @@ class CreateHists(object):
                 dataframe =   dataframe\
                                         .Define('nonprompt_FakeRate','nonprompt.ml_fr')\
                                         .Define('nonprompt_FakeWeight','nonprompt_FakeRate/(1.0-nonprompt_FakeRate)')
+            
         else:
             dataframe =   dataframe\
                                     .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
@@ -415,7 +435,33 @@ class CreateHists(object):
             # if is_corrupt > 0:
                 # print '%s: main tree and friend tree do not match'%(cfg.name)
                 # set_trace()
+    
+        if cfg.is_contamination:
+            '''
+            Eventually, the very same procedure of DDE should be applied to the MC samples,
+            in order to remove prompt contamination from the application region. 
+            In events taken from MC samples MC-truth matching should be always on
+            (we need to pick up only prompt leptons from MC), and there the very
+            same algorithm applies, but the sign of the contribution will be inverted:
 
+            event weight for single FR: -SFR/(1-SFR)
+            event weight for single FR with two fakes: SFR1/(1-SFR1)*SFR2/(1-SFR2)
+            event weight for double FR: -DFR/(1-DFR)
+            
+            This signs inversion corresponds to the fact that we subtract from the data
+            application region the prompt contamination (with MC truth matching and
+            all the data/MC scale-factors applied).
+            '''
+
+            weight = weight + ' * (-1)'
+            # weight = weight 
+            # weight = '(-1)'
+            # weight = 'contamination_FakeWeight'
+            # dataframe =   dataframe\
+                                    # .Define('contamination_FakeRate','-1')\
+                                    # # .Define('contamination_FakeRate','contamination.ml_fr')\
+                                    # # .Define('contamination_FakeWeight','(contamination_FakeRate/(1.0-contamination_FakeRate))')
+                                    # # .Define('contamination_FakeWeight','-(contamination_FakeRate/(1.0-contamination_FakeRate))')
 
         
         if not cfg.is_singlefake:
@@ -423,5 +469,6 @@ class CreateHists(object):
                                     .Define('w',weight)\
                                     .Filter(norm_cut)\
                                     .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'w')
+            histo = hists[vcfg.name]
         return hists[vcfg.name]
 

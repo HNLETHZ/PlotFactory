@@ -44,30 +44,6 @@ def CR_ttbar():
     return selection
 
 def SR(channel):
-    selection = (
-                 'l0_pt > 25 && abs(l0_eta) < 2.4' 
-                 '&& l0_id_m ==1'
-                 '&& l0_reliso_rho_03 < 0.10 '
-                 '&& abs(l0_dxy) < 0.05 && abs(l0_dz) < 0.2 '
-                 # '&& l1_Medium == 1 '
-                 # '&& l2_Medium == 1 '
-                 '&& l1_pt > 5 && abs(l1_eta) < 2.4 '
-                 '&& l2_pt > 5 && abs(l2_eta) < 2.4 '
-                 # '&& hnl_2d_disp > 0.5'#removed for higher stat
-                 # '&& abs(l1_dxy) > 0.01'
-                 # '&& abs(l2_dxy) > 0.01'
-                 '&& (l1_q != l2_q) '
-                 # '&& nbj == 0 ' 
-                 # '&& nbj > 0 ' #activate for orthogonal SR
-                 '&& 50 < hnl_w_vis_m && hnl_w_vis_m < 85'
-                 # '&& 85 < hnl_w_vis_m' #activate for orthogal SR
-                 '&& abs(hnl_dphi_hnvis0) > 1.0 '
-                 '&& sv_prob > 0.05 ' 
-                 )
-    return selection
-
-
-def SR_orth(channel): 
     if channel is 'mmm':
         selection = '&'.join([
         'l0_pt > 25 '              , 
@@ -79,21 +55,43 @@ def SR_orth(channel):
 
         'l1_pt > 5 '              ,
         'abs(l1_eta) < 2.4 '       ,
-        # 'abs(l1_dxy) > 0.01 '      ,
+        # 'abs(l1_dxy) > 0.002 '      ,
+        'abs(l1_dz) < 5',
 
         'l2_pt > 5 '               ,
+        # 'l2_pt > 10 '               ,
         'abs(l2_eta) < 2.4 '       ,
-        # 'abs(l2_dxy) > 0.01 '       ,
+        # 'abs(l2_dxy) > 0.002 '       ,
+        'abs(l2_dz) < 5',
 
         'hnl_q_12 == 0 '           ,
-        'hnl_dr_02 > 0.3',
-        'hnl_dr_01 > 0.3',
+        'hnl_2d_disp > 0.0005',
+        # 'hnl_dr_02 > 0.2',
+        # 'hnl_dr_01 > 0.2',
         'abs(hnl_dphi_hnvis0) > 1.0 ',
+        '(abs(hnl_m_12 - 3.1) > 0.05)', # avoid JPsi
+
+        # '!(hnl_m_01 > 87.5 && hnl_m_01 < 95.) ', # get rid of Z peak
+        # '!(hnl_w_vis_m > 80. && hnl_w_vis_m < 94.) ', # get rid of Z peak
+        'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
+        'hnl_dr_12 > 0.025',
         
-        # 'nbj > 0'                 ,
-        '(hnl_w_vis_m < 50. || hnl_w_vis_m > 80.) ' # activate for orthogonal SR
+        '(nbj == 0)',
+        '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', 
+        
+        # '!(nbj == 0)', # activate for SR orthogonal
+        # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal
+        
+        ##manual changes
+        # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
         ])
+
+        selection_ignoreEverything = 'l1_pt > 0'
+
+    # return selection_ignoreEverything
     return selection
+
+
 
 def DY():
     selection = ('l0_pt>25 && abs(l0_eta)<2.4 && (l0_q != l1_q) '
@@ -136,12 +134,12 @@ def MR_nonprompt(channel):
 
         'l1_pt > 5 '              ,
         'abs(l1_eta) < 2.4 '       ,
-        # 'abs(l1_dxy) > 0.01 '      ,
+        # 'abs(l1_dxy) > 0.002 '      ,
         'abs(l1_dz) < 5',
 
         'l2_pt > 5 '               ,
         'abs(l2_eta) < 2.4 '       ,
-        # 'abs(l2_dxy) > 0.01 '       ,
+        # 'abs(l2_dxy) > 0.002 '       ,
         'abs(l2_dz) < 5',
 
         'hnl_q_12 == 0 '           ,
@@ -150,8 +148,12 @@ def MR_nonprompt(channel):
         'abs(hnl_dphi_hnvis0) > 1.0 ',
         '(abs(hnl_m_12 - 3.1) > 0.05)', # avoid JPsi
         
-        # 'nbj > 0'                 ,
-        '(hnl_w_vis_m < 50. || hnl_w_vis_m > 80.) ' # activate for orthogonal SR
+        '(nbj == 0)',
+        # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', 
+        
+        # '!(nbj == 0)', # activate for SR orthogonal
+        '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal
+        
         ])
 
         selection_ignoreEverything = 'l1_pt > 0'
@@ -349,7 +351,8 @@ def getSelection(channel, selection_name):
             selection = SR_orth(channel)
                         
         if selection_name == 'MR_nonprompt':
-            selection = MR_nonprompt(channel)
+            # selection = MR_nonprompt(channel)
+            selection = SR(channel)
 
         if selection_name == 'Conversions':
             selection = Conversions(channel)
@@ -440,6 +443,7 @@ def getSelection(channel, selection_name):
 #################################################################3
 class Region(object):
     def __init__(self,name,channel,CR):
+        Prompt_extension                = ' && (l1_gen_match_isPromptFinalState == 1 && l2_gen_match_isPromptFinalState == 1)'
         self.name                       = name
         self.channel                    = channel
         self.CR                         = CR
@@ -458,7 +462,7 @@ class Region(object):
                                           # getSelection(channel,'T_LNT'),\
                                           getSelection(channel,'T_T'),\
                                           ]) + ')' 
-        self.MC                         = self.data 
+        self.MC                         = self.data + Prompt_extension
         self.SF_LT                      = '(' + ' && '\
                                           .join([\
                                           self.baseline,\
@@ -485,9 +489,15 @@ class Region(object):
                                           .join([\
                                           self.baseline,\
                                           getSelection(channel,'LNT_LNT'),\
+                                          'nonprompt.ml_fr < 0.8',\
                                           ]) + ')' 
 
-        self.MC_DY                      = self.data + '&& (!(l1_gen_match_pdgid == 22) && !(l2_gen_match_pdgid == 22))'
-        self.MC_SingleConversions       = self.data + '&& ((l1_gen_match_pdgid == 22 && l2_gen_match_pdgid != 22) || (l2_gen_match_pdgid == 22 && l1_gen_match_pdgid != 22))'
-        self.MC_DoubleConversions       = self.data + '&& ((l1_gen_match_pdgid == 22) && (l2_gen_match_pdgid == 22))'
+
+        self.MC_DY                      = self.MC + '&& (!(l1_gen_match_pdgid == 22) && !(l2_gen_match_pdgid == 22))'
+        self.MC_Conversions             = self.MC + Prompt_extension
+        self.MC_SingleConversions       = self.MC + '&& ((l1_gen_match_pdgid == 22 && l2_gen_match_pdgid != 22) || (l2_gen_match_pdgid == 22 && l1_gen_match_pdgid != 22))'
+        self.MC_DoubleConversions       = self.MC + '&& ((l1_gen_match_pdgid == 22) && (l2_gen_match_pdgid == 22))'
+
+        self.MC_contamination_pass      = self.MC        + Prompt_extension
+        self.MC_contamination_fail      = self.nonprompt + Prompt_extension
 

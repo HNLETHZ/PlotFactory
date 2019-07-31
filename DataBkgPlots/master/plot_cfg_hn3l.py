@@ -56,7 +56,8 @@ int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki
 
 def prepareRegions(channel):
     regions = []
-    # regions.append(Region('SR',channel,'SR'))
+    regions.append(Region('SR',channel,'SR'))
+    # regions.append(Region('SR_orth',channel,'SR'))
     # regions.append(Region('SR_orth',channel,'SR_orth'))
     # regions.append(Region('MR_DF_closure',channel,'MR_DF_closure'))
     # regions.append(Region('MR_DF',channel,'MR_DF'))
@@ -64,7 +65,7 @@ def prepareRegions(channel):
     # regions.append(Region('MR_SF1',channel,'MR_SF1'))
     # regions.append(Region('MR_SF2',channel,'MR_SF2'))
     # regions.append(Region('MR_SF2_closure',channel,'MR_SF2_closure'))
-    regions.append(Region('MR_nonprompt',channel,'MR_nonprompt'))
+    # regions.append(Region('MR_nonprompt',channel,'MR_nonprompt'))
     # regions.append(Region('Conversion',channel,'Conversion'))
     # regions.append(Region('TTbar',channel,'ttbar'))
     # regions.append(Region('DY',channel,'DY'))
@@ -83,7 +84,7 @@ def prepareRegions(channel):
 def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None):
     sample_dict = {}
     # print "creating samples from %s"%(analysis_dir)
-    samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
 
     #select here the samples you wish to use
     # working_samples = samples_data_dde
@@ -154,12 +155,15 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
             plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
             plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
+            # plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F', 'conversionsSingle_DYJets_M50_contamination', 'conversionsSingle_DYJets_M50_ext_contamination', 'conversionsSingle_DYJetsToLL_M10to50_contamination','WW_contamination','WZ_contamination','ZZ_contamination'])
             plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F'])
+            plot.Group('contamination', ['conversionsSingle_DYJets_M50_contamination', 'conversionsSingle_DYJets_M50_ext_contamination', 'conversionsSingle_DYJetsToLL_M10to50_contamination','WW_contamination','WZ_contamination','ZZ_contamination'])
             plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
             plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
             plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50'])
             plot.Group('QCD',['QCD_pt_15to20_mu', 'QCD_pt_20to30_mu', 'QCD_pt_30to50_mu', 'QCD_pt_50to80_mu', 'QCD_pt_80to120_mu'])
             plot.Group('WJets', ['WJetsToLNu','WJetsToLNu_ext','W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu'])
+            plot.Group('Conversions', ['Conversions_DYJetsToLL_M10to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext'])
             plot.Group('ConversionsSingle', ['ConversionsSingle_DYJetsToLL_M10to50','ConversionsSingle_DYJets_M50','ConversionsSingle_DYJets_M50_ext'])
             plot.Group('ConversionsDouble', ['ConversionsDouble_DYJetsToLL_M10to50','ConversionsDouble_DYJets_M50','ConversionsDouble_DYJets_M50_ext'])
             plot.Group('HNL', ['HN3L'])
