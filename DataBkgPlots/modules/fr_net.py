@@ -49,12 +49,13 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
     sample_dict     = {}
 
 # call samples
-    samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
-    working_samples = samples_singlefake
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
+    working_samples = samples_nonprompt
     
 
 # necessary if you want to compare data with MC
     working_samples = setSumWeights(working_samples)
+    samples_mc      = setSumWeights(samples_mc)
 
 # make a TChain object by combining all necessary data samples
     print('###########################################################')
@@ -64,6 +65,8 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
     print'# %d samples to be used:'%(len(working_samples))
     print('###########################################################')
     for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
+
+
     chain = TChain('tree') #TChain'ing all data samples together
     for i,s in enumerate(working_samples):
         # sample = working_samples[0] #super stupid mistake, I'm keeping it here as a painful reminder
@@ -71,7 +74,8 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
         file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
         chain.Add(file_name)
 
-# define the selections
+    
+    # define the selections
     if faketype == 'SingleFake1':
         region = Selections.Region('MR_SF1','mmm','MR_SF1')
         selection_passing = region.data
@@ -89,8 +93,10 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
 
     if faketype == 'nonprompt':
         region = Selections.Region('MR_nonprompt','mmm','MR_nonprompt')
-        selection_passing = region.data
-        selection_failing = region.nonprompt
+        selection_passing    = region.data
+        selection_failing    = region.nonprompt
+        selection_passing_MC = region.MC_contamination_pass
+        selection_failing_MC = region.MC_contamination_fail
 
 # convert TChain object into numpy arrays for the training
     print 'converting .root ntuples to numpy arrays... (passed events)'
@@ -101,7 +107,6 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
                     )
     print 'nevents from array_pass: '+ str(array_pass.size)
 
-
     print 'converting .root ntuples to numpy arrays... (failed events)'
     array_fail = tree2array(
                     chain,
@@ -110,11 +115,49 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
                     )
     print 'nevents from array_fail: '+ str(array_fail.size)
 
-    df_pass = pd.DataFrame(array_pass)
-    df_fail = pd.DataFrame(array_fail)
+    df_pass    = pd.DataFrame(array_pass)
+    df_fail    = pd.DataFrame(array_fail)
+    
+    #giving data the contamination weight '1' (i.e. ignore it)
+    for array in [df_pass, df_fail]:
+        array['contamination_weight'] = array.weight * array.lhe_weight 
 
-    df_pass.to_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
-    df_fail.to_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
+    # adding MC prompt contamination
+    for i,s in enumerate(samples_mc):
+        sample = samples_mc[i]
+        file_in = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+
+        selection_pass = selection_passing_MC
+        selection_fail = selection_failing_MC
+
+        passing = pd.DataFrame( root2array(file_in, 'tree', branches=branches, selection = selection_passing_MC) )
+        failing = pd.DataFrame( root2array(file_in, 'tree', branches=branches, selection = selection_failing_MC) )
+
+        lumi = 41530 # all eras
+        # lumi = 4792 # only era B
+        for array in [passing, failing]:
+            # array['contamination_weight'] = array.weight * array.lhe_weight * lumi * (-1) *  sample.xsec / sample.sumweights 
+            array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  sample.xsec / sample.sumweights 
+        # df_pass = pd.concat([df_pass,passing])
+        # df_fail = pd.concat([df_fail,failing])
+        df_fail = pd.concat([df_fail,passing])
+        df_fail = pd.concat([df_fail,failing])
+
+    print 'array size after including MC: %d(pass); %d(fail)'%(df_pass.size,df_fail.size)  
+
+    # add the target column
+    df_pass['target'] = np.ones (df_pass.shape[0]).astype(np.int)
+    df_fail['target'] = np.zeros(df_fail.shape[0]).astype(np.int)
+
+    # concatenate the events and shuffle
+    data = pd.concat([df_pass, df_fail])
+    data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
+
+    data.to_pickle(path_to_NeuralNet + 'training_data.pkl')
+
+
+    # df_pass.to_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
+    # df_fail.to_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
 
 def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake'):
     hostname        = gethostname()
@@ -141,66 +184,21 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     if newArrays == True:
         createArrays(features, branches, path_to_NeuralNet, faketype)
 
-    passing = pd.read_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
-    failing = pd.read_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
+    # passing    = pd.read_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
+    # failing    = pd.read_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
 
-    # add the target column
-    passing['target'] = np.ones (passing.shape[0]).astype(np.int)
-    failing['target'] = np.zeros(failing.shape[0]).astype(np.int)
+    # # add the target column
+    # passing['target'] = np.ones (passing.shape[0]).astype(np.int)
+    # failing['target'] = np.zeros(failing.shape[0]).astype(np.int)
 
-    # concatenate the events and shuffle
-    data = pd.concat([passing, failing])
-    data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
+    # # concatenate the events and shuffle
+    # data = pd.concat([passing, failing])
+    # data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
+
+    data = pd.read_pickle(path_to_NeuralNet + 'training_data.pkl')
 
     # #define indirect training variables
-    data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
-    # features += ['ptcone']
-    branches += ['ptcone']
-
-    data['abs_eta'] = abs(data.hnl_hn_vis_eta)
-    # features += ['abs_eta']
-    branches += ['abs_eta']
-
-    data['ptcone_l1'] = (( data.l1_pt * (data.l1_reliso_rho_03 < 0.2) ) + ( (data.l1_reliso_rho_03 >= 0.2) * ( data.l1_pt * (1. + data.l1_reliso_rho_03 - 0.2))))
-    features += ['ptcone_l1']
-    branches += ['ptcone_l1']
-    
-    data['ptcone_l2'] = (( data.l2_pt * (data.l2_reliso_rho_03 < 0.2) ) + ( (data.l2_reliso_rho_03 >= 0.2) * ( data.l2_pt * (1. + data.l2_reliso_rho_03 - 0.2))))
-    features += ['ptcone_l2']
-    branches += ['ptcone_l2']
-
-    data['abs_l1_dxy'] = abs(data.l1_dxy)
-    features += ['abs_l1_dxy']
-    branches += ['abs_l1_dxy']
-
-    data['abs_l2_dxy'] = abs(data.l2_dxy)
-    features += ['abs_l2_dxy']
-    branches += ['abs_l2_dxy']
-
-    data['abs_l1_dz'] = abs(data.l1_dz)
-    # features += ['abs_l1_dz']
-    branches += ['abs_l1_dz']
-
-    data['abs_l2_dz'] = abs(data.l2_dz)
-    # features += ['abs_l2_dz']
-    branches += ['abs_l2_dz']
-
-    data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
-    # features += ['abs_dzDiff_12']
-    branches += ['abs_dzDiff_12']
-
-    data['abs_l1_eta'] = abs(data.l1_eta)
-    features += ['abs_l1_eta']
-    branches += ['abs_l1_eta']
-
-    data['abs_l2_eta'] = abs(data.l2_eta)
-    features += ['abs_l2_eta']
-    branches += ['abs_l2_eta']
-
-    data['equalJets_12'] = ((data.l1_jet_pt > 0) & (data.l1_jet_pt == data.l2_jet_pt)).astype(np.int)
-    # features += ['equalJets_12']
-    branches += ['equalJets_12']
-
+    data, features, branches =  add_branches(data,features,branches)
    
     # define X and Y
     X = pd.DataFrame(data, columns=branches)
@@ -209,8 +207,8 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # define the net
     input  = Input((len(features),))
     # dense1 = Dense(64, activation='tanh'   , name='dense1')(input )
-    dense1 = Dense(64, activation='relu'   , name='dense1')(input )
-    # dense1 = Dense(128, activation='relu'   , name='dense1')(input )
+    # dense1 = Dense(64, activation='relu'   , name='dense1')(input )
+    dense1 = Dense(128, activation='relu'   , name='dense1')(input )
     output = Dense( 1, activation='sigmoid', name='output')(dense1)
     # output = Dense( 1, activation='softmax', name='output')(dense1)
 
@@ -251,8 +249,9 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
     # history = model.fit(xx, Y, epochs=1000, validation_split=0.5, callbacks=[es])  
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
-    set_trace()
-    history = model.fit(xx, Y, batch_size = 1000, epochs=1000, validation_split=0.5, callbacks=[es])  
+
+    history = model.fit(xx, Y, batch_size = 1000, epochs=2000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
+    # history = model.fit(xx, Y, batch_size = 1000, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es])
     # history = model.fit(xx, Y, batch_size = 1000, epochs=100, validation_split=0.5, callbacks=[es])  
 
     # plot loss function trends for train and validation sample
@@ -281,10 +280,10 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # scale = np.sum(passing['target']) / np.sum(y)
 
     # add the score to the data sample
-    data.insert(len(data.columns), 'weight', scale * y)
+    data.insert(len(data.columns), 'ml_fr', scale * y)
 
     # let sklearn do the heavy lifting and compute the ROC curves for you
-    fpr, tpr, wps = roc_curve(data.target, data.weight) 
+    fpr, tpr, wps = roc_curve(data.target, data.ml_fr) 
     plt.plot(fpr, tpr)
     plt.savefig(path_to_NeuralNet + 'roc.pdf')
 
@@ -303,6 +302,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # save ntuple
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
+
 def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branches,features,overwrite):
     path_to_tree = path_to_NeuralNet + 'friendtree_fr_%s.root'%sample_name
     if not overwrite:
@@ -312,60 +312,14 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
         else:
             print 'making friendtree for %s'%sample_name
 
+
     f = ur.open(tree_file_name)
     t = f['tree']
 
     data = t.pandas.df(branches)
 
     # #define indirect training variables
-    data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
-    # features += ['ptcone']
-    branches += ['ptcone']
-
-    data['abs_eta'] = abs(data.hnl_hn_vis_eta)
-    # features += ['abs_eta']
-    branches += ['abs_eta']
-
-    data['ptcone_l1'] = (( data.l1_pt * (data.l1_reliso_rho_03 < 0.2) ) + ( (data.l1_reliso_rho_03 >= 0.2) * ( data.l1_pt * (1. + data.l1_reliso_rho_03 - 0.2))))
-    features += ['ptcone_l1']
-    branches += ['ptcone_l1']
-    
-    data['ptcone_l2'] = (( data.l2_pt * (data.l2_reliso_rho_03 < 0.2) ) + ( (data.l2_reliso_rho_03 >= 0.2) * ( data.l2_pt * (1. + data.l2_reliso_rho_03 - 0.2))))
-    features += ['ptcone_l2']
-    branches += ['ptcone_l2']
-
-    data['abs_l1_dxy'] = abs(data.l1_dxy)
-    features += ['abs_l1_dxy']
-    branches += ['abs_l1_dxy']
-
-    data['abs_l2_dxy'] = abs(data.l2_dxy)
-    features += ['abs_l2_dxy']
-    branches += ['abs_l2_dxy']
-
-    data['abs_l1_dz'] = abs(data.l1_dz)
-    # features += ['abs_l1_dz']
-    branches += ['abs_l1_dz']
-
-    data['abs_l2_dz'] = abs(data.l2_dz)
-    # features += ['abs_l2_dz']
-    branches += ['abs_l2_dz']
-
-    data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
-    # features += ['abs_dzDiff_12']
-    branches += ['abs_dzDiff_12']
-
-    data['abs_l1_eta'] = abs(data.l1_eta)
-    features += ['abs_l1_eta']
-    branches += ['abs_l1_eta']
-
-    data['abs_l2_eta'] = abs(data.l2_eta)
-    features += ['abs_l2_eta']
-    branches += ['abs_l2_eta']
-
-    data['equalJets_12'] = ((data.l1_jet_pt > 0) & (data.l1_jet_pt == data.l2_jet_pt)).astype(np.int)
-    # features += ['equalJets_12']
-    branches += ['equalJets_12']
-
+    data, features, branches = add_branches(data,features,branches)
     x = pd.DataFrame(data, columns=features)
 
     from sklearn.preprocessing import QuantileTransformer
@@ -383,6 +337,63 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
     data.to_root(path_to_tree, key = 'tree')
     print 'friend tree stored in %s'%path_to_tree
     return path_to_tree
+
+def add_branches(data,features,branches):
+    # #define indirect training variables
+    data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
+    # features += ['ptcone']
+    branches += ['ptcone']
+
+    data['abs_eta'] = abs(data.hnl_hn_vis_eta)
+    # features += ['abs_eta']
+    branches += ['abs_eta']
+
+    data['ptcone_l1'] = (( data.l1_pt * (data.l1_reliso_rho_03 < 0.2) ) + ( (data.l1_reliso_rho_03 >= 0.2) * ( data.l1_pt * (1. + data.l1_reliso_rho_03 - 0.2))))
+    # features += ['ptcone_l1']
+    branches += ['ptcone_l1']
+    
+    data['ptcone_l2'] = (( data.l2_pt * (data.l2_reliso_rho_03 < 0.2) ) + ( (data.l2_reliso_rho_03 >= 0.2) * ( data.l2_pt * (1. + data.l2_reliso_rho_03 - 0.2))))
+    # features += ['ptcone_l2']
+    branches += ['ptcone_l2']
+
+    data['abs_l1_dxy'] = abs(data.l1_dxy)
+    # features += ['abs_l1_dxy']
+    branches += ['abs_l1_dxy']
+
+    data['abs_l2_dxy'] = abs(data.l2_dxy)
+    # features += ['abs_l2_dxy']
+    branches += ['abs_l2_dxy']
+
+    data['abs_l1_dz'] = abs(data.l1_dz)
+    # features += ['abs_l1_dz']
+    branches += ['abs_l1_dz']
+
+    data['abs_l2_dz'] = abs(data.l2_dz)
+    # features += ['abs_l2_dz']
+    branches += ['abs_l2_dz']
+
+    data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
+    features += ['abs_dzDiff_12']
+    branches += ['abs_dzDiff_12']
+
+    data['abs_l1_eta'] = abs(data.l1_eta)
+    # features += ['abs_l1_eta']
+    branches += ['abs_l1_eta']
+
+    data['abs_l2_eta'] = abs(data.l2_eta)
+    # features += ['abs_l2_eta']
+    branches += ['abs_l2_eta']
+
+    data['equalJets_12'] = ((data.l1_jet_pt > 0) & (data.l1_jet_pt == data.l2_jet_pt)).astype(np.int)
+    features += ['equalJets_12']
+    branches += ['equalJets_12']
+
+    data['eta_hnl_l0'] = abs(data.hnl_hn_vis_eta - data.l0_eta)
+    features += ['eta_hnl_l0']
+    branches += ['eta_hnl_l0']
+
+    return data, features, branches
+
 
 def ptCone():
     PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )'
@@ -523,30 +534,34 @@ def branches_SF2(features):
 
 def features_nonprompt():
     features = [
-        # 'l1_eta',
+        'l1_eta',
         # 'l1_phi',
-        # 'l1_pt',
+        'l1_pt',
         # 'l1_jet_pt',
-        # 'l1_dxy',
-        # 'l1_dz',
+        'l1_dxy',
+        'l1_dz',
 
-        # 'l2_eta',
+        'l2_eta',
         # 'l2_phi',
-        # 'l2_pt',
+        'l2_pt',
         # 'l2_jet_pt',
-        # 'l2_dxy',
-        # 'l2_dz',
+        'l2_dxy',
+        'l2_dz',
 
         'hnl_2d_disp',
         'hnl_dr_12',
 
-        # 'hnl_dr_01',
-        # 'hnl_dr_02',
+        'hnl_dr_01',
+        'hnl_dr_02',
+        'hnl_m_01',
+        'hnl_m_02',
         # 'hnl_m_12',
-        # 'hnl_m_01',
-        # 'hnl_m_02',
-        # 'hnl_w_vis_m',
-        # 'hnl_dphi_hnvis0',
+        'hnl_w_vis_m',
+        'hnl_dphi_hnvis0',
+
+        'n_vtx',
+        'pfmet_pt',
+        # 'sv_prob',
     ]
     return features
 
@@ -555,22 +570,25 @@ def branches_nonprompt(features):
         'run',
         'lumi',
         'event',
+        'weight',
+        'lhe_weight',
+        'l0_eta',
         'l1_reliso_rho_03',
         'l2_reliso_rho_03',
         'hnl_iso03_rel_rhoArea',
         'hnl_hn_vis_eta',
         'hnl_hn_vis_pt',
         'hnl_m_12',
-        'l1_dxy',
-        'l2_dxy',
-        'l1_dz',
-        'l2_dz',
+        # 'l1_dxy',
+        # 'l2_dxy',
+        # 'l1_dz',
+        # 'l2_dz',
         'l1_jet_pt',
         'l2_jet_pt',
-        'l1_pt',
-        'l2_pt',
-        'l1_eta',
-        'l2_eta',
+        # 'l1_pt',
+        # 'l2_pt',
+        # 'l1_eta',
+        # 'l2_eta',
     ]
     return branches
 
@@ -599,7 +617,11 @@ def path_to_NeuralNet(faketype ='DoubleFake'):
         # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
         # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
         # path_to_NeuralNet = 'NN/mmm_nonprompt_v4_newNetParameteres/'
-        path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
+        # path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
+        # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
+        # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
+        path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
+        # path_to_NeuralNet = 'NN/mmm_nonprompt_v9_128Nodes/'
     return path_to_NeuralNet 
 #################################################################################
 

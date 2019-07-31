@@ -156,6 +156,36 @@ def createSampleLists(analysis_dir='',
                 is_MC=True),
             ]
 
+    samples_Diboson_contamination = [
+            SampleCfg(name='ZZ_contamination', 
+                dir_name='ZZ', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=12.14, 
+                sumweights=None, 
+                # is_MC=True,
+                is_contamination=True),
+                # is_contamination=False),
+            SampleCfg(name='WZ_contamination', 
+                dir_name='WZ', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=27.6, 
+                sumweights=None, 
+                # is_MC=True,
+                is_contamination=True),
+                # is_contamination=False),
+            SampleCfg(name='WW_contamination', 
+                dir_name='WW', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=75.88, 
+                sumweights=None, 
+                # is_MC=True,
+                is_contamination=True),
+                # is_contamination=False),
+            ]
+
     samples_SingleTop = [
             SampleCfg(name='ST_sch_lep', 
                 dir_name='ST_sch_lep', 
@@ -225,6 +255,84 @@ def createSampleLists(analysis_dir='',
                 tree_prod_name=tree_prod_name, 
                 xsec=2075.14*3, 
                 sumweights=None, 
+                is_DoubleConversions=True),
+            ]
+
+    samples_Conversions = [
+            SampleCfg(name='Conversions_DYJetsToLL_M10to50',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_Conversions=True),
+            SampleCfg(name='Conversions_DYJets_M50', 
+                dir_name='DYJetsToLL_M50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_Conversions=True),
+            SampleCfg(name='Conversions_DYJets_M50_ext', 
+                dir_name='DYJetsToLL_M50_ext', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_Conversions=True),
+            ]
+
+    samples_SingleConversions_contamination = [
+            SampleCfg(name='conversionsSingle_DYJetsToLL_M10to50_contamination',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_contamination=True,
+                is_SingleConversions=True),
+            SampleCfg(name='conversionsSingle_DYJets_M50_contamination', 
+                dir_name='DYJetsToLL_M50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_contamination=True,
+                is_SingleConversions=True),
+            SampleCfg(name='conversionsSingle_DYJets_M50_ext_contamination', 
+                dir_name='DYJetsToLL_M50_ext', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_contamination=True,
+                is_SingleConversions=True),
+            ]
+
+    samples_DoubleConversions_contamination = [
+            SampleCfg(name='ConversionsDouble_DYJetsToLL_M10to50_contamination',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_contamination=True,
+                is_DoubleConversions=True),
+            SampleCfg(name='ConversionsDouble_DYJets_M50_contamination', 
+                dir_name='DYJetsToLL_M50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_contamination=True,
+                is_DoubleConversions=True),
+            SampleCfg(name='ConversionsDouble_DYJets_M50_ext_contamination', 
+                dir_name='DYJetsToLL_M50_ext', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=2075.14*3, 
+                sumweights=None, 
+                is_contamination=True,
                 is_DoubleConversions=True),
             ]
 
@@ -335,28 +443,37 @@ def createSampleLists(analysis_dir='',
     ]
 
 
-
     # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
     # samples_mc =  samples_DY + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
     # samples_bkg = samples_mc 
 
-    samples_mc =  samples_Diboson + samples_SingleConversions 
-    samples_bkg =  samples_singlefake + samples_doublefake + samples_mc
+    # samples_mc =  samples_Diboson + samples_SingleConversions 
+    # samples_bkg =  samples_singlefake + samples_doublefake + samples_mc
     
-    samples_mc =  samples_Diboson + samples_SingleConversions 
+    # samples_mc =  samples_Diboson + samples_SingleConversions 
+    # samples_bkg =  samples_nonprompt + samples_mc
+
+    samples_mc =  samples_Diboson + samples_Conversions 
+    # samples_mc =  samples_Diboson 
+    # samples_bkg =  samples_nonprompt_promptRemoved + samples_mc
     samples_bkg =  samples_nonprompt + samples_mc
+
 
     samples_all = samples_bkg + samples_data
     # samples_all = samples_singlefake + samples_doublefake +tttmples_data
     # samples_all = samples_singlefake + samples_data
     # samples_all = samples_singlefake
     # samples_all = samples_doublefake
-    # samples_all = samples_data
-    # samples_all = samples_nonprompt
+    # samples_all = samples_data + samples_Diboson
     # samples_all = samples_nonprompt + samples_data
+    # samples_all = samples_nonprompt_promptRemoved + samples_data
+    # samples_all = samples_Diboson_contamination + samples_Diboson
+    # samples_all = samples_Diboson
+    # samples_all = samples_data + samples_Conversions
+    # samples_all = samples_nonprompt
 
 
-    return samples_all, samples_singlefake, samples_doublefake
+    return samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc
 
 
 def getSumWeight(sample, weight_dir='SkimAnalyzerCount', norm=True):
@@ -387,12 +504,22 @@ def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
             set_trace()
 
         if 'DYJets_M50' in sample.name or 'DYJets_M50_ext' in sample.name:
-            try:
+            if sample.name == 'DYJets_M50' or sample.name == 'DYJets_M50_ext':
                 sample_DYJets_M50        = [s for s in samples if s.name == 'DYJets_M50'    ][0]
                 sample_DYJets_M50_ext    = [s for s in samples if s.name == 'DYJets_M50_ext'][0]
-            except:
+
+            if sample.name == 'ConversionSingle_DYJets_M50' or sample.name == 'ConversionsSingle_DYJets_M50_ext':
                 sample_DYJets_M50        = [s for s in samples if s.name == 'ConversionsSingle_DYJets_M50'    ][0]
                 sample_DYJets_M50_ext    = [s for s in samples if s.name == 'ConversionsSingle_DYJets_M50_ext'][0]
+
+            if sample.name == 'Conversions_DYJets_M50' or sample.name == 'Conversions_DYJets_M50_ext':
+                sample_DYJets_M50        = [s for s in samples if s.name == 'Conversions_DYJets_M50'    ][0]
+                sample_DYJets_M50_ext    = [s for s in samples if s.name == 'Conversions_DYJets_M50_ext'][0]
+
+            if sample.name == 'conversionsSingle_DYJets_M50_contamination' or sample.name == 'conversionsSingle_DYJets_M50_ext_contamination':
+                sample_DYJets_M50        = [s for s in samples if s.name == 'conversionsSingle_DYJets_M50_contamination'    ][0]
+                sample_DYJets_M50_ext    = [s for s in samples if s.name == 'conversionsSingle_DYJets_M50_ext_contamination'][0]
+
             sumweight_DYJets_M50     = getSumWeight(sample_DYJets_M50)
             sumweight_DYJets_M50_ext = getSumWeight(sample_DYJets_M50_ext) 
             sample.sumweights = sumweight_DYJets_M50 + sumweight_DYJets_M50_ext 
