@@ -55,17 +55,18 @@ def SR(channel):
 
         'l1_pt > 5 '              ,
         'abs(l1_eta) < 2.4 '       ,
-        # 'abs(l1_dxy) > 0.002 '      ,
-        'abs(l1_dz) < 5',
+	# 'abs(l1_dxy) > 0.002 '      ,
+	# 'abs(l1_dxy) > 0.01 '      ,
+	# 'abs(l1_dz) < 5',
 
         'l2_pt > 5 '               ,
-        # 'l2_pt > 10 '               ,
         'abs(l2_eta) < 2.4 '       ,
-        # 'abs(l2_dxy) > 0.002 '       ,
-        'abs(l2_dz) < 5',
+	# 'abs(l2_dxy) > 0.002 '       ,
+	# 'abs(l2_dxy) > 0.01 '       ,
+	# 'abs(l2_dz) < 5',
 
         'hnl_q_12 == 0 '           ,
-        'hnl_2d_disp > 0.0005',
+        # 'hnl_2d_disp > 0.0005',
         # 'hnl_dr_02 > 0.2',
         # 'hnl_dr_01 > 0.2',
         'abs(hnl_dphi_hnvis0) > 1.0 ',
@@ -74,13 +75,15 @@ def SR(channel):
         # '!(hnl_m_01 > 87.5 && hnl_m_01 < 95.) ', # get rid of Z peak
         # '!(hnl_w_vis_m > 80. && hnl_w_vis_m < 94.) ', # get rid of Z peak
         'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
-        'hnl_dr_12 > 0.025',
+
+	#Throw it on only for plotting
+	'hnl_dr_12 > 0.025',
         
-        '(nbj == 0)',
-        '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', 
+	'(nbj == 0)',
+	'(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', 
         
         # '!(nbj == 0)', # activate for SR orthogonal
-        # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal
+	# '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
         
         ##manual changes
         # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
@@ -462,6 +465,7 @@ class Region(object):
                                           # getSelection(channel,'T_LNT'),\
                                           getSelection(channel,'T_T'),\
                                           ]) + ')' 
+	self.signal 			= self.data
         self.MC                         = self.data + Prompt_extension
         self.SF_LT                      = '(' + ' && '\
                                           .join([\
@@ -489,7 +493,7 @@ class Region(object):
                                           .join([\
                                           self.baseline,\
                                           getSelection(channel,'LNT_LNT'),\
-                                          'nonprompt.ml_fr < 0.8',\
+					  # 'nonprompt.ml_fr < 0.8',\
                                           ]) + ')' 
 
 

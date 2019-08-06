@@ -339,7 +339,6 @@ class DataMCPlot(object):
 
         The stack is considered as a single histogram.'''
         denom = None
-        # import pdb; pdb.set_trace()
         histForRatios = []
         denom = None
         for hist in self._SortedHistograms():
@@ -444,6 +443,7 @@ class DataMCPlot(object):
             same = ''
         self.supportHist = None
         for hist in self.nostack:
+            if not hist.style: self._ApplyPrefs()
             if hist.style.drawAsData:
                 hist.Draw('SAME' if self.supportHist else '')
             else:

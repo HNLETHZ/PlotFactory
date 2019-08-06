@@ -35,17 +35,34 @@ from keras.activations import softmax
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, roc_auc_score
+
+import time
+import os
+import multiprocessing
+
        
 
 ROOT.EnableImplicitMT()
 # fix random seed for reproducibility (FIXME! not really used by Keras)
 np.random.seed(1986)
 
-def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake'):
+def cube(x):
+    return x**3
+
+def f(q):
+    q.put(p[42, None, 'hello'])
+
+def getEntries(chain, selection):
+    return chain.GetEntries(selection)
+
+def getSelection(selection):
+    return selection
+
+def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm'):
     #define basic environmental parameters
     hostname        = gethostname()
     analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
-    channel         = 'mmm'
+    channel         = channel
     sample_dict     = {}
 
 # call samples
@@ -77,28 +94,28 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
     
     # define the selections
     if faketype == 'SingleFake1':
-        region = Selections.Region('MR_SF1','mmm','MR_SF1')
+        region = Selections.Region('MR_SF1',channel,'MR_SF1')
         selection_passing = region.data
         selection_failing = region.SF_LT
 
     if faketype == 'SingleFake2':
-        region = Selections.Region('MR_SF2','mmm','MR_SF2')
+        region = Selections.Region('MR_SF2',channel,'MR_SF2')
         selection_passing = region.data
         selection_failing = region.SF_TL
 
     if faketype == 'DoubleFake':
-        region = Selections.Region('MR_DF','mmm','MR_DF')
+        region = Selections.Region('MR_DF',channel,'MR_DF')
         selection_passing = region.data
         selection_failing = region.DF
 
     if faketype == 'nonprompt':
-        region = Selections.Region('MR_nonprompt','mmm','MR_nonprompt')
+        region = Selections.Region('MR_nonprompt',channel,'MR_nonprompt')
         selection_passing    = region.data
         selection_failing    = region.nonprompt
         selection_passing_MC = region.MC_contamination_pass
         selection_failing_MC = region.MC_contamination_fail
 
-# convert TChain object into numpy arrays for the training
+    # convert TChain object into numpy arrays for the training
     print 'converting .root ntuples to numpy arrays... (passed events)'
     array_pass = tree2array(
                     chain,
@@ -159,8 +176,9 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake')
     # df_pass.to_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
     # df_fail.to_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
 
-def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake'):
-    hostname        = gethostname()
+def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake', channel = 'mmm'):
+
+    hostname = gethostname()
     if not os.path.exists(path_to_NeuralNet):
         os.mkdir(path_to_NeuralNet)
         print "Output directory created. "
@@ -182,18 +200,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     print 'cfg files stored in ' + path_to_NeuralNet
 
     if newArrays == True:
-        createArrays(features, branches, path_to_NeuralNet, faketype)
-
-    # passing    = pd.read_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
-    # failing    = pd.read_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
-
-    # # add the target column
-    # passing['target'] = np.ones (passing.shape[0]).astype(np.int)
-    # failing['target'] = np.zeros(failing.shape[0]).astype(np.int)
-
-    # # concatenate the events and shuffle
-    # data = pd.concat([passing, failing])
-    # data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
+        createArrays(features, branches, path_to_NeuralNet, faketype, channel)
 
     data = pd.read_pickle(path_to_NeuralNet + 'training_data.pkl')
 
@@ -235,7 +242,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     qt = QuantileTransformer(output_distribution='normal', random_state=1986)
     qt.fit(X[features])
     xx = qt.transform(X[features])
-    pickle.dump( qt, open( path_to_NeuralNet + 'quantile_tranformation.pck', 'w' ) )
+    pickle.dump( qt, open( path_to_NeuralNet + 'quantile_transformation.pck', 'w' ) )
     
     # xx = X[features] # use this to bypass the quantile transformer
     # alternative way to scale the inputs
@@ -269,7 +276,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # xx = x[features]# use this to bypass the quantile transformer
 
     # apply the Quantile Transformer also for the evaluation process
-    qt = pickle.load(open( path_to_NeuralNet + 'quantile_tranformation.pck', 'r' ))
+    qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'r' ))
     xx = qt.transform(x[features])
 
     y = model.predict(xx)
@@ -324,7 +331,7 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
 
     from sklearn.preprocessing import QuantileTransformer
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
-    qt = pickle.load(open( path_to_NeuralNet + 'quantile_tranformation.pck', 'r' ))
+    qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'r' ))
     xx = qt.transform(x[features])
     # xx = X[features] # use this to bypass the quantile transformer
 
@@ -539,14 +546,14 @@ def features_nonprompt():
         'l1_pt',
         # 'l1_jet_pt',
         'l1_dxy',
-        'l1_dz',
+	'l1_dz',
 
         'l2_eta',
         # 'l2_phi',
         'l2_pt',
         # 'l2_jet_pt',
         'l2_dxy',
-        'l2_dz',
+	'l2_dz',
 
         'hnl_2d_disp',
         'hnl_dr_12',
@@ -555,7 +562,7 @@ def features_nonprompt():
         'hnl_dr_02',
         'hnl_m_01',
         'hnl_m_02',
-        # 'hnl_m_12',
+	'hnl_m_12',
         'hnl_w_vis_m',
         'hnl_dphi_hnvis0',
 
@@ -578,7 +585,7 @@ def branches_nonprompt(features):
         'hnl_iso03_rel_rhoArea',
         'hnl_hn_vis_eta',
         'hnl_hn_vis_pt',
-        'hnl_m_12',
+        # 'hnl_m_12',
         # 'l1_dxy',
         # 'l2_dxy',
         # 'l1_dz',
@@ -592,7 +599,7 @@ def branches_nonprompt(features):
     ]
     return branches
 
-def path_to_NeuralNet(faketype ='DoubleFake'):
+def path_to_NeuralNet(faketype ='DoubleFake',channel = 'mmm'):
     if faketype == 'SingleFake1':
         # path_to_NeuralNet = 'NN/dump'
         # path_to_NeuralNet = 'NN/mmm_SF1_v1/'
@@ -613,15 +620,21 @@ def path_to_NeuralNet(faketype ='DoubleFake'):
         path_to_NeuralNet = 'NN/mmm_DF_v6_CheckNormalization/'
 
     if faketype == 'nonprompt':
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v1/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v4_newNetParameteres/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
-        path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
-        # path_to_NeuralNet = 'NN/mmm_nonprompt_v9_128Nodes/'
+	if channel == 'mmm':
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v1/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v4_newNetParameteres/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v10_TrainWithM12/'
+	    path_to_NeuralNet = 'NN/mmm_nonprompt_v11_OnlyForTesting/'
+        
+        if channel == 'eee':
+            path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
+
     return path_to_NeuralNet 
 #################################################################################
 
@@ -645,6 +658,8 @@ if __name__ == '__main__':
     # faketype = 'SingleFake2'
     # faketype = 'DoubleFake'
     faketype = 'nonprompt'
+    
+    channel = 'mmm'    
 
 
     if faketype == 'SingleFake1':
@@ -660,13 +675,14 @@ if __name__ == '__main__':
         features = features_nonprompt
         branches = branches_nonprompt
 
-    path_to_NeuralNet = path_to_NeuralNet(faketype) 
+    path_to_NeuralNet = path_to_NeuralNet(faketype, channel) 
 
     train(
             features,
             branches,
             path_to_NeuralNet,
             newArrays = True,
-            faketype = faketype
+            faketype = faketype,
+            channel = channel,	
             )
 
