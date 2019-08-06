@@ -40,7 +40,6 @@ def createSampleLists(analysis_dir='',
         if 'starseeker' in server:
             data_dir = analysis_dir+'production_20190411_Data_mmm/ntuples'
             bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
-            # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
             sig_dir = analysis_dir + 'production_20190411_Signal_mmm/ntuples'
             DY_dir = analysis_dir + bkg_dir
         dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
@@ -406,40 +405,80 @@ def createSampleLists(analysis_dir='',
                 is_MC=True),
             ]
 
+    CH = None #TODO check if the exact same couplings are used for e** and m** samples
+    if channel[0] == 'm': CH = 'mu'
+    if channel[0] == 'e': CH = 'e'
+    assert CH != None
+
+    samples_signal_essential = [
+        SampleCfg(name='M2_V.002', dir_name='HN3L_M_2_V_0p00244948974278_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+        SampleCfg(name='M2_V.022', dir_name='HN3L_M_2_V_0p022360679775_%s_massiveAndCKM_LO' %CH  , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),    
+        SampleCfg(name='M5_V.002', dir_name='HN3L_M_5_V_0p00244948974278_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+        SampleCfg(name='M5_V.002', dir_name='HN3L_M_5_V_0p00282842712475_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+        SampleCfg(name='M5_V.010', dir_name='HN3L_M_5_V_0p01_%s_massiveAndCKM_LO' %CH            , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+        SampleCfg(name='M8_V.002', dir_name='HN3L_M_8_V_0p00244948974278_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+        SampleCfg(name='M8_V.005', dir_name='HN3L_M_8_V_0p00547722557505_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),
+    ]
+
+    samples_signal = [
+        SampleCfg(name='HNL_M2_V.002', dir_name='HN3L_M_2_V_0p00244948974278_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+	SampleCfg(name='HNL_M2_V.002', dir_name='HN3L_M_2_V_0p00282842712475_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+	SampleCfg(name='HNL_M2_V.003', dir_name='HN3L_M_2_V_0p00316227766017_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+	SampleCfg(name='HNL_M2_V.004', dir_name='HN3L_M_2_V_0p004472135955_%s_massiveAndCKM_LO' %CH  , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),     
+	SampleCfg(name='HNL_M2_V.005', dir_name='HN3L_M_2_V_0p00547722557505_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+	SampleCfg(name='HNL_M2_V.007', dir_name='HN3L_M_2_V_0p00707106781187_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+	SampleCfg(name='HNL_M2_V.008', dir_name='HN3L_M_2_V_0p00836660026534_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+	SampleCfg(name='HNL_M2_V.010', dir_name='HN3L_M_2_V_0p01_%s_massiveAndCKM_LO' %CH            , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),             
+	SampleCfg(name='HNL_M2_V.014', dir_name='HN3L_M_2_V_0p0141421356237_%s_massiveAndCKM_LO' %CH , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+	SampleCfg(name='HNL_M2_V.017', dir_name='HN3L_M_2_V_0p0173205080757_%s_massiveAndCKM_LO' %CH , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+        SampleCfg(name='HNL_M2_V.022', dir_name='HN3L_M_2_V_0p022360679775_%s_massiveAndCKM_LO' %CH  , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),    
+        SampleCfg(name='HNL_M5_V.002', dir_name='HN3L_M_5_V_0p00244948974278_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+	SampleCfg(name='HNL_M5_V.002', dir_name='HN3L_M_5_V_0p00282842712475_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+	SampleCfg(name='HNL_M5_V.003', dir_name='HN3L_M_5_V_0p00316227766017_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+	SampleCfg(name='HNL_M5_V.004', dir_name='HN3L_M_5_V_0p004472135955_%s_massiveAndCKM_LO' %CH  , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),    
+	SampleCfg(name='HNL_M5_V.005', dir_name='HN3L_M_5_V_0p00547722557505_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+	SampleCfg(name='HNL_M5_V.007', dir_name='HN3L_M_5_V_0p00707106781187_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),  
+	SampleCfg(name='HNL_M5_V.008', dir_name='HN3L_M_5_V_0p00836660026534_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),   
+        SampleCfg(name='HNL_M5_V.010', dir_name='HN3L_M_5_V_0p01_%s_massiveAndCKM_LO' %CH            , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+        SampleCfg(name='HNL_M8_V.002', dir_name='HN3L_M_8_V_0p00244948974278_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+	SampleCfg(name='HNL_M8_V.002', dir_name='HN3L_M_8_V_0p00282842712475_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ), 
+	SampleCfg(name='HNL_M8_V.003', dir_name='HN3L_M_8_V_0p00316227766017_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),
+	SampleCfg(name='HNL_M8_V.004', dir_name='HN3L_M_8_V_0p004472135955_%s_massiveAndCKM_LO' %CH  , ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),
+        SampleCfg(name='HNL_M8_V.005', dir_name='HN3L_M_8_V_0p00547722557505_%s_massiveAndCKM_LO' %CH, ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),
+    ]
+
+
+
     samples_singlefake = [
-        SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
-        SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
+        # SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        # SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
     ]
 
     samples_doublefake = [
-        SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
     ]
 
     samples_data = [
         SampleCfg(name='data_2017B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
-        SampleCfg(name='data_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
-        SampleCfg(name='data_2017D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                           #nevents =  3829353
-        SampleCfg(name='data_2017E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
-        SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+        # SampleCfg(name='data_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
+        # SampleCfg(name='data_2017D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                           #nevents =  3829353
+        # SampleCfg(name='data_2017E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
+        # SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
     ]
 
     samples_nonprompt = [
         SampleCfg(name='nonprompt_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-    ]
-
-    samples_signal = [
-        SampleCfg(name='HN3L', dir_name='HN3L_M_2_V_0p022360679775_mu_massiveAndCKM_LO', ana_dir=sig_dir, tree_prod_name=tree_prod_name, is_signal = True ),    
+        # SampleCfg(name='nonprompt_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='nonprompt_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='nonprompt_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+        # SampleCfg(name='nonprompt_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
     ]
 
 
@@ -459,7 +498,7 @@ def createSampleLists(analysis_dir='',
     samples_bkg =  samples_nonprompt + samples_mc
 
 
-    samples_all = samples_bkg + samples_data
+    samples_all = samples_bkg + samples_data + samples_signal
     # samples_all = samples_singlefake + samples_doublefake +tttmples_data
     # samples_all = samples_singlefake + samples_data
     # samples_all = samples_singlefake
@@ -471,6 +510,7 @@ def createSampleLists(analysis_dir='',
     # samples_all = samples_Diboson
     # samples_all = samples_data + samples_Conversions
     # samples_all = samples_nonprompt
+    # samples_all = samples_signal
 
 
     return samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc
