@@ -37,8 +37,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, roc_auc_score
 
 import time
-import os
 import multiprocessing
+
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2' #used to deactivate Tensorflow minor warnings
 
        
 
@@ -46,35 +48,82 @@ ROOT.EnableImplicitMT()
 # fix random seed for reproducibility (FIXME! not really used by Keras)
 np.random.seed(1986)
 
-def cube(x):
-    return x**3
+def f(q,key):
+    q.put([key, None, 'hello'])
+    print 'done doing ' + key
 
-def f(q):
-    q.put(p[42, None, 'hello'])
+def tree2array_process(queue, chain, branches, selection, key):
+    print 'converting .root ntuples to numpy arrays... (%s events)'%key
+    array = tree2array(
+                    chain,
+                    branches = branches,
+                    selection = selection
+                    )
+    print 'nevents from array (%s): '%key+ str(len(array))
+    queue.put([key,array])
 
-def getEntries(chain, selection):
-    return chain.GetEntries(selection)
 
-def getSelection(selection):
-    return selection
+def ex():
+    q = multiprocessing.Queue()
+    result = []
+    processes = [multiprocessing.Process(target=f, args=(q,x)) for x in ['pass','fail']]
+    for p in processes: p.start()
+    for p in processes: 
+        result.append(q.get())
+    p.join()
 
-def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm'):
+def root2array_process(queue, file_in, branches, selection, sample_name, key):
+    print 'computing %s events for %s'%(key,sample_name)
+    array = pd.DataFrame(
+                root2array(
+                    file_in,
+                    'tree',
+                    branches,
+                    selection
+                )
+            )
+    print 'nevents %s (%s): %d'%(sample_name,key,len(array))
+    queue.put([key,sample_name,array])
+
+
+def root2array_PoolProcess(input_array):
+    file_in     = input_array[0]
+    branches    = input_array[1]
+    selection   = input_array[2]
+    sample_name = input_array[3]
+    key         = input_array[4]
+    xsec        = input_array[5]
+    sumweights  = input_array[6]
+
+    print 'computing %s events for %s'%(key,sample_name)
+    array = pd.DataFrame(
+                root2array(
+                    file_in,
+                    'tree',
+                    branches,
+                    selection
+                )
+            )
+    print 'nevents %s (%s): %d'%(sample_name,key,len(array))
+    return [key,array,xsec,sumweights]
+
+
+def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True):
     #define basic environmental parameters
     hostname        = gethostname()
     analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
     channel         = channel
     sample_dict     = {}
 
-# call samples
+    # call samples
     samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
     working_samples = samples_nonprompt
-    
 
-# necessary if you want to compare data with MC
+    # necessary if you want to compare data with MC
     working_samples = setSumWeights(working_samples)
     samples_mc      = setSumWeights(samples_mc)
 
-# make a TChain object by combining all necessary data samples
+    # make a TChain object by combining all necessary data samples
     print('###########################################################')
     if faketype == 'DoubleFake': print'# measuring doublefakerate...'
     if faketype == 'SingleFake1': print'# measuring singlefakerate for lepton 1...'
@@ -116,21 +165,49 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         selection_failing_MC = region.MC_contamination_fail
 
     # convert TChain object into numpy arrays for the training
-    print 'converting .root ntuples to numpy arrays... (passed events)'
-    array_pass = tree2array(
-                    chain,
-                    branches = branches,
-                    selection = selection_passing
-                    )
-    print 'nevents from array_pass: '+ str(array_pass.size)
+    start = time.time()
+    if multiprocess == True:
+        queue = multiprocessing.Queue()
+        result = []
+        processes =[]
 
-    print 'converting .root ntuples to numpy arrays... (failed events)'
-    array_fail = tree2array(
-                    chain,
-                    branches = branches,
-                    selection = selection_failing
-                    )
-    print 'nevents from array_fail: '+ str(array_fail.size)
+        for key in ['pass','fail']:
+            if key == 'pass': selection = selection_passing
+            if key == 'fail': selection = selection_failing
+            processes.append(multiprocessing.Process(target=tree2array_process, args=(queue, chain, branches, selection, key)))
+
+        for p in processes: 
+            p.start()
+
+        for p in processes: 
+            result.append(queue.get())
+            p.join()
+
+        for r in result:
+            if r[0] == 'pass':
+                array_pass = r[1]
+            if r[0] == 'fail':
+                array_fail = r[1]
+
+    if multiprocess == False:
+        print 'converting .root ntuples to numpy arrays... (passed events)'
+        array_pass = tree2array(
+                        chain,
+                        branches = branches,
+                        selection = selection_passing
+                        )
+        print 'nevents from array_pass: '+ str(array_pass.size)
+
+        print 'converting .root ntuples to numpy arrays... (failed events)'
+        array_fail = tree2array(
+                        chain,
+                        branches = branches,
+                        selection = selection_failing
+                        )
+        print 'nevents from array_fail: '+ str(array_fail.size)
+    
+    delta = time.time() - start
+    print 'It took %.2f seconds to create the arrays'%delta
 
     df_pass    = pd.DataFrame(array_pass)
     df_fail    = pd.DataFrame(array_fail)
@@ -140,27 +217,72 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         array['contamination_weight'] = array.weight * array.lhe_weight 
 
     # adding MC prompt contamination
-    for i,s in enumerate(samples_mc):
-        sample = samples_mc[i]
-        file_in = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+    print 'now adding MC prompt contamination to the training'
+    lumi = 41530 # all eras
+    # lumi = 4792 # only era B
 
-        selection_pass = selection_passing_MC
-        selection_fail = selection_failing_MC
+    if multiprocess == True:
+        pool = multiprocessing.Pool(len(samples_mc))
+        input_array = []
 
-        passing = pd.DataFrame( root2array(file_in, 'tree', branches=branches, selection = selection_passing_MC) )
-        failing = pd.DataFrame( root2array(file_in, 'tree', branches=branches, selection = selection_failing_MC) )
+        for i, sample in enumerate(samples_mc):
+            for key in ['pass','fail']:
+                file_in = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+                if key == 'pass': selection = selection_passing_MC
+                if key == 'fail': selection = selection_failing_MC
+                entry = [file_in,branches,selection,sample.name,key,sample.xsec,sample.sumweights]
+                input_array.append(entry)
 
-        lumi = 41530 # all eras
-        # lumi = 4792 # only era B
-        for array in [passing, failing]:
-            # array['contamination_weight'] = array.weight * array.lhe_weight * lumi * (-1) *  sample.xsec / sample.sumweights 
-            array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  sample.xsec / sample.sumweights 
-        # df_pass = pd.concat([df_pass,passing])
-        # df_fail = pd.concat([df_fail,failing])
-        df_fail = pd.concat([df_fail,passing])
-        df_fail = pd.concat([df_fail,failing])
+        result = pool.map(root2array_PoolProcess,input_array)
 
-    print 'array size after including MC: %d(pass); %d(fail)'%(df_pass.size,df_fail.size)  
+
+        for i, sample in enumerate(result): 
+            print 'doing ' + str(i)
+            array       = sample[1]
+            xsec        = sample[2]
+            sumweights  = sample[3]
+            try:
+                array['contamination_weight'] = array.weight * array.lhe_weight * lumi * (-1) *  xsec / sumweights
+                # array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  xsec /sumweights 
+            except:
+                set_trace()
+
+            
+            if sample[0] == 'pass':
+                df_pass = pd.concat([df_pass,array]) 
+                # df_fail = pd.concat([df_fail,array])
+                print 'added pass events to df_pass: %d'%len(array)
+
+            if sample[0] == 'fail':
+                df_pass = pd.concat([df_pass,array]) 
+                # df_fail = pd.concat([df_fail,array])
+                print 'added fail events to df_pass: %d'%len(array)
+
+
+
+
+    if multiprocess == False:
+        for i,s in enumerate(samples_mc):
+            sample = samples_mc[i]
+            print 'computing %s'%sample.name
+            file_in = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+
+            selection_pass = selection_passing_MC
+            selection_fail = selection_failing_MC
+
+            passing = pd.DataFrame( root2array(file_in, 'tree', branches=branches, selection = selection_passing_MC) )
+            failing = pd.DataFrame( root2array(file_in, 'tree', branches=branches, selection = selection_failing_MC) )
+
+            for array in [passing, failing]:
+                array['contamination_weight'] = array.weight * array.lhe_weight * lumi * (-1) *  sample.xsec / sample.sumweights 
+                # array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  sample.xsec / sample.sumweights 
+            df_pass = pd.concat([df_pass,passing])
+            df_pass = pd.concat([df_fail,failing])
+            # df_fail = pd.concat([df_fail,passing])
+            # df_fail = pd.concat([df_fail,failing])
+
+    print 'array size after including MC: %d(pass); %d(fail)'%(len(df_pass),len(df_fail))  
+
 
     # add the target column
     df_pass['target'] = np.ones (df_pass.shape[0]).astype(np.int)
@@ -172,12 +294,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
 
     data.to_pickle(path_to_NeuralNet + 'training_data.pkl')
 
-
-    # df_pass.to_pickle(path_to_NeuralNet + 'training_data_pass.pkl')
-    # df_fail.to_pickle(path_to_NeuralNet + 'training_data_fail.pkl')
-
-def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake', channel = 'mmm'):
-
+def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True):
     hostname = gethostname()
     if not os.path.exists(path_to_NeuralNet):
         os.mkdir(path_to_NeuralNet)
@@ -200,12 +317,12 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     print 'cfg files stored in ' + path_to_NeuralNet
 
     if newArrays == True:
-        createArrays(features, branches, path_to_NeuralNet, faketype, channel)
+        createArrays(features, branches, path_to_NeuralNet, faketype, channel, multiprocess)
 
     data = pd.read_pickle(path_to_NeuralNet + 'training_data.pkl')
 
     # #define indirect training variables
-    data, features, branches =  add_branches(data,features,branches)
+    # data, features, branches =  add_branches(data,features,branches)
    
     # define X and Y
     X = pd.DataFrame(data, columns=branches)
@@ -269,7 +386,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     plt.clf()
 
     # calculate predictions on the data sample
-    print 'predicting on', data.shape[0], 'events'
+    print 'predicting on ', data.shape[0], 'events'
     x = pd.DataFrame(data, columns=features)
     # y = model.predict(x)
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(x[features])
@@ -309,6 +426,62 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # save ntuple
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
+def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_NeuralNet,overwrite):
+    print 'making friendtrees for all datasamples'
+    start = time.time()
+    # call samples
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
+    working_samples = samples_nonprompt
+    for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
+
+    if multiprocess == True:
+        pool = multiprocessing.Pool(len(working_samples))
+        input_array = []
+
+        for i, sample in enumerate(working_samples):
+            sample = working_samples[i]
+            file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+            input_array.append([
+                        file_name,
+                        sample.name,
+                        path_to_NeuralNet + 'net.h5',
+                        path_to_NeuralNet,
+                        get_branches_nonprompt(get_features_nonprompt()),
+                        get_features_nonprompt(),
+                        overwrite,
+                        ])
+        result = pool.map(makeFriendtree_Process,input_array)
+
+    if multiprocess == False:
+        for i,s in enumerate(working_samples):
+            sample = working_samples[i]
+            file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
+            friend_file_name = makeFriendtree(
+                                tree_file_name = file_name,
+                                sample_name = sample.name,
+                                net_name = path_to_NeuralNet + 'net.h5',
+                                path_to_NeuralNet = path_to_NeuralNet,
+                                branches = get_branches_nonprompt(get_features_nonprompt()),
+                                features = get_features_nonprompt(),
+                                overwrite = overwrite,
+                                )
+    duration = time.time() - start
+    print 'It took %.2f seconds to make all friendtrees.'%duration
+
+
+        
+def makeFriendtree_Process(input_array):
+
+    tree_file_name      = input_array[0]
+    sample_name         = input_array[1]
+    net_name            = input_array[2]
+    path_to_NeuralNet   = input_array[3]
+    branches            = input_array[4]
+    features            = input_array[5]
+    overwrite           = input_array[6]
+    
+    path = makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branches,features,overwrite)
+
 
 def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branches,features,overwrite):
     path_to_tree = path_to_NeuralNet + 'friendtree_fr_%s.root'%sample_name
@@ -316,6 +489,12 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
         if os.path.isfile(path_to_tree): 
             print 'Using existing friendtree at %s'%path_to_tree
             return path_to_tree
+        else:
+            print 'making friendtree for %s'%sample_name
+    else:
+        if os.path.isfile(path_to_tree):
+            os.system("rm %s"%(path_to_tree))
+            print 'remaking friendtree for %s'%sample_name
         else:
             print 'making friendtree for %s'%sample_name
 
@@ -326,8 +505,11 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
     data = t.pandas.df(branches)
 
     # #define indirect training variables
-    data, features, branches = add_branches(data,features,branches)
-    x = pd.DataFrame(data, columns=features)
+    # data, features, branches = add_branches(data,features,branches)
+    try:
+        x = pd.DataFrame(data, columns=features)
+    except:
+        set_trace()
 
     from sklearn.preprocessing import QuantileTransformer
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
@@ -336,7 +518,7 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
     # xx = X[features] # use this to bypass the quantile transformer
 
     classifier = load_model(net_name)
-    print 'predicting on' + tree_file_name
+    print 'predicting on ' + tree_file_name
     Y = classifier.predict(xx)
     scale = 1.0
     # add the score to the data_train_l sample
@@ -379,10 +561,6 @@ def add_branches(data,features,branches):
     # features += ['abs_l2_dz']
     branches += ['abs_l2_dz']
 
-    data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
-    features += ['abs_dzDiff_12']
-    branches += ['abs_dzDiff_12']
-
     data['abs_l1_eta'] = abs(data.l1_eta)
     # features += ['abs_l1_eta']
     branches += ['abs_l1_eta']
@@ -391,23 +569,25 @@ def add_branches(data,features,branches):
     # features += ['abs_l2_eta']
     branches += ['abs_l2_eta']
 
+    data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
+    # features += ['abs_dzDiff_12']
+    branches += ['abs_dzDiff_12']
+
     data['equalJets_12'] = ((data.l1_jet_pt > 0) & (data.l1_jet_pt == data.l2_jet_pt)).astype(np.int)
     features += ['equalJets_12']
     branches += ['equalJets_12']
 
     data['eta_hnl_l0'] = abs(data.hnl_hn_vis_eta - data.l0_eta)
-    features += ['eta_hnl_l0']
+    # features += ['eta_hnl_l0']
     branches += ['eta_hnl_l0']
 
     return data, features, branches
 
-
-def ptCone():
+def get_ptCone():
     PTCONE   = '(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )'
     return PTCONE
 
-
-def features_DF():
+def get_features_DF():
     features = [
         'l1_eta',
         'l1_phi',
@@ -426,7 +606,7 @@ def features_DF():
     ]
     return features
 
-def branches_DF(features):
+def get_branches_DF(features):
     branches = features + [
         'run',
         'lumi',
@@ -458,7 +638,7 @@ def branches_DF(features):
     ]
     return branches
 
-def features_SF1():
+def get_features_SF1():
     features = [
         'l1_eta',
         'l1_phi',
@@ -468,7 +648,7 @@ def features_SF1():
     ]
     return features
 
-def features_SF2():
+def get_features_SF2():
     features = [
         'l2_eta',
         # 'l2_phi',
@@ -479,7 +659,7 @@ def features_SF2():
     ]
     return features
 
-def branches_SF1(features):
+def get_branches_SF1(features):
     branches = features + [
         'run',
         'lumi',
@@ -508,7 +688,7 @@ def branches_SF1(features):
     ]
     return branches
 
-def branches_SF2(features):
+def get_branches_SF2(features):
     branches = features + [
         'run',
         'lumi',
@@ -539,40 +719,40 @@ def branches_SF2(features):
     ]
     return branches
 
-def features_nonprompt():
+def get_features_nonprompt():
     features = [
         'l1_eta',
-        # 'l1_phi',
+        # # 'l1_phi',
         'l1_pt',
-        # 'l1_jet_pt',
-        'l1_dxy',
-	'l1_dz',
+        # # 'l1_jet_pt',
+        # 'l1_dxy',
+	# 'l1_dz',
 
         'l2_eta',
-        # 'l2_phi',
+        # # 'l2_phi',
         'l2_pt',
-        # 'l2_jet_pt',
-        'l2_dxy',
-	'l2_dz',
+        # # 'l2_jet_pt',
+        # 'l2_dxy',
+	# 'l2_dz',
 
         'hnl_2d_disp',
         'hnl_dr_12',
 
-        'hnl_dr_01',
-        'hnl_dr_02',
-        'hnl_m_01',
-        'hnl_m_02',
+        # 'hnl_dr_01',
+        # 'hnl_dr_02',
+        # 'hnl_m_01',
+        # 'hnl_m_02',
 	'hnl_m_12',
-        'hnl_w_vis_m',
-        'hnl_dphi_hnvis0',
+        # 'hnl_w_vis_m',
+        # 'hnl_dphi_hnvis0',
 
-        'n_vtx',
-        'pfmet_pt',
-        # 'sv_prob',
+        # 'n_vtx',
+        # 'pfmet_pt',
+        'sv_prob',
     ]
     return features
 
-def branches_nonprompt(features):
+def get_branches_nonprompt(features):
     branches = features + [
         'run',
         'lumi',
@@ -599,7 +779,7 @@ def branches_nonprompt(features):
     ]
     return branches
 
-def path_to_NeuralNet(faketype ='DoubleFake',channel = 'mmm'):
+def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
     if faketype == 'SingleFake1':
         # path_to_NeuralNet = 'NN/dump'
         # path_to_NeuralNet = 'NN/mmm_SF1_v1/'
@@ -629,8 +809,14 @@ def path_to_NeuralNet(faketype ='DoubleFake',channel = 'mmm'):
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v10_TrainWithM12/'
-	    path_to_NeuralNet = 'NN/mmm_nonprompt_v11_OnlyForTesting/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v10_TrainWithM12/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v11_OnlyForTesting/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v12_CorrectSubtraction/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v13_OneVariable/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v14_TrainWithM12DispOnly/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithM12Only/'
+            path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithSmallSetVariables/'
+
         
         if channel == 'eee':
             path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
@@ -639,19 +825,22 @@ def path_to_NeuralNet(faketype ='DoubleFake',channel = 'mmm'):
 #################################################################################
 
 if __name__ == '__main__':
+    hostname        = gethostname()
+    analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
+
     pf.setpfstyle()
 # define input parameters
     #The features are the variable the out should depend on
-    features_DF  = features_DF()
-    features_SF1 = features_SF1()
-    features_SF2 = features_SF2()
-    features_nonprompt = features_nonprompt()
+    features_DF  = get_features_DF()
+    features_SF1 = get_features_SF1()
+    features_SF2 = get_features_SF2()
+    features_nonprompt = get_features_nonprompt()
 
 #The branches are the variables you want to write in your trees
-    branches_DF  = branches_DF(features_DF)
-    branches_SF1 = branches_SF1(features_SF1)
-    branches_SF2 = branches_SF2(features_SF2)
-    branches_nonprompt = branches_nonprompt(features_nonprompt)
+    branches_DF  = get_branches_DF(get_features_DF())
+    branches_SF1 = get_branches_SF1(get_features_SF1())
+    branches_SF2 = get_branches_SF2(get_features_SF2())
+    branches_nonprompt = get_branches_nonprompt(get_features_nonprompt())
 
     # run train() if you want to train the NeuralNet
     # faketype = 'SingleFake1'
@@ -677,12 +866,23 @@ if __name__ == '__main__':
 
     path_to_NeuralNet = path_to_NeuralNet(faketype, channel) 
 
-    train(
-            features,
-            branches,
-            path_to_NeuralNet,
-            newArrays = True,
-            faketype = faketype,
-            channel = channel,	
-            )
 
+
+    # train(
+            # features,
+            # branches,
+            # path_to_NeuralNet,
+            # newArrays = True,
+            # faketype = faketype,
+            # channel = channel,	
+            # multiprocess = True,
+            # )
+
+    make_all_friendtrees(
+            multiprocess = True,
+            server = hostname,
+            analysis_dir = analysis_dir,
+            channel=channel,
+            path_to_NeuralNet = path_to_NeuralNet,
+            overwrite = False,
+            )

@@ -138,8 +138,8 @@ class CreateHists(object):
                                             sample_name = cfg.name,
                                             net_name = fr_net.path_to_NeuralNet('SingleFake2') + 'net.h5',
                                             path_to_NeuralNet = fr_net.path_to_NeuralNet('SingleFake2'),
-                                            branches = fr_net.branches_SF2(fr_net.features_SF2()),
-                                            features = fr_net.features_SF2(),
+                                            branches = fr_net.get_branches_SF2(fr_net.get_features_SF2()),
+                                            features = fr_net.get_features_SF2(),
                                             overwrite = False,
                                             )
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF2', friend_file_name=friend_file_name)
@@ -150,8 +150,8 @@ class CreateHists(object):
                                             sample_name = cfg.name,
                                             net_name = fr_net.path_to_NeuralNet('DoubleFake') + 'net.h5',
                                             path_to_NeuralNet = fr_net.path_to_NeuralNet('DoubleFake'),
-                                            branches = fr_net.branches_DF(fr_net.features_DF()),
-                                            features = fr_net.features_DF(),
+                                            branches = fr_net.get_branches_DF(fr_net.get_features_DF()),
+                                            features = fr_net.get_features_DF(),
                                             overwrite = False,
                                             )
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='DF', friend_file_name=friend_file_name)
@@ -161,8 +161,8 @@ class CreateHists(object):
                                             sample_name = cfg.name,
                                             net_name = fr_net.path_to_NeuralNet('nonprompt') + 'net.h5',
                                             path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt'),
-                                            branches = fr_net.branches_nonprompt(fr_net.features_nonprompt()),
-                                            features = fr_net.features_nonprompt(),
+                                            branches = fr_net.get_branches_nonprompt(fr_net.get_features_nonprompt()),
+                                            features = fr_net.get_features_nonprompt(),
                                             overwrite = False,
                                             )
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='nonprompt', friend_file_name=friend_file_name)
@@ -172,8 +172,8 @@ class CreateHists(object):
                                             sample_name = cfg.name,
                                             net_name = fr_net.path_to_NeuralNet('nonprompt') + 'net.h5',
                                             path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt'),
-                                            branches = fr_net.branches_nonprompt(fr_net.features_nonprompt()),
-                                            features = fr_net.features_nonprompt(),
+                                            branches = fr_net.get_branches_nonprompt(fr_net.get_features_nonprompt()),
+                                            features = fr_net.get_features_nonprompt(),
                                             overwrite = False,
                                             )
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='contamination', friend_file_name=friend_file_name)
@@ -200,19 +200,24 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.nonprompt
 
             if cfg.is_MC == True:
-                norm_cut  = self.hist_cfg.region.MC
+                # norm_cut  = self.hist_cfg.region.MC
+                norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_SingleConversions == True:
-                norm_cut  = self.hist_cfg.region.MC_SingleConversions
+                # norm_cut  = self.hist_cfg.region.MC_SingleConversions
+                norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DoubleConversions == True:
-                norm_cut  = self.hist_cfg.region.MC_DoubleConversions
+                # norm_cut  = self.hist_cfg.region.MC_DoubleConversions
+                norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_Conversions == True:
-                norm_cut  = self.hist_cfg.region.MC_Conversions
+                # norm_cut  = self.hist_cfg.region.MC_Conversions
+                norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DY == True:
-                norm_cut  = self.hist_cfg.region.MC_DY
+                # norm_cut  = self.hist_cfg.region.MC_DY
+                norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_data == True:
                 norm_cut  = self.hist_cfg.region.data
@@ -223,7 +228,8 @@ class CreateHists(object):
             if cfg.is_contamination == True:
                 # norm_cut = self.hist_cfg.region.nonprompt + " && (l1_gen_match_isPromptFinalState==1 && l2_gen_match_isPromptFinalState==1)"
                 # norm_cut = self.hist_cfg.region.nonprompt
-                norm_cut  = self.hist_cfg.region.MC
+                # norm_cut  = self.hist_cfg.region.MC
+                norm_cut  = self.hist_cfg.region.MC_contamination_pass
             
             weight = self.hist_cfg.weight
             if cfg.weight_expr:
@@ -241,7 +247,7 @@ class CreateHists(object):
                     hist = TH1F(hname, '', vcfg.binning['nbinsx'],
                                 vcfg.binning['xmin'], vcfg.binning['xmax'])
                 else:
-                    hist = TH1F(hname, '', len(vcfg.binning)-1, vcfg.binning)
+                    hist = TH1F(hname, '', len(vcfg.binning['bins'])-1, vcfg.binning['bins'])
 
                 initHist(hist, vcfg)
                 hists[vcfg.name] = hist
@@ -465,10 +471,17 @@ class CreateHists(object):
 
         
         if not cfg.is_singlefake:
-            hists[vcfg.name] =   dataframe\
-                                    .Define('w',weight)\
-                                    .Filter(norm_cut)\
-                                    .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'w')
+            if 'nbinsx' in vcfg.binning.keys():
+                hists[vcfg.name] =   dataframe\
+                                        .Define('w',weight)\
+                                        .Filter(norm_cut)\
+                                        .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'w')
+            else: 
+                hists[vcfg.name] =   dataframe\
+                                        .Define('w',weight)\
+                                        .Filter(norm_cut)\
+                                        .Histo1D((hists[vcfg.name].GetName(),'',len(vcfg.binning['bins'])-1,vcfg.binning['bins']),vcfg.drawname,'w')
+
             histo = hists[vcfg.name]
         return hists[vcfg.name]
 

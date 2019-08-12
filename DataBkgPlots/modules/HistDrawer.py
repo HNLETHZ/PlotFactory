@@ -215,6 +215,7 @@ class HistDrawer:
         # Also save with log y
         h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 5.)
         pad.SetLogy(True)
+        # pad.SetLogx(True)
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
