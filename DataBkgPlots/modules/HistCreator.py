@@ -296,7 +296,6 @@ class CreateHists(object):
                                 # .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
                                 # .Define('abs_l1_eta','abs(l1_eta)')\
                                 # .Define('abs_l2_eta','abs(l2_eta)')\
-
                                 # .Define('abs_l2_dxy','abs(l2_dxy)')\
                                 # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta)')\
                                 # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
