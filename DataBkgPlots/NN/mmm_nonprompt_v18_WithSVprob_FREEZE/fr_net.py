@@ -724,14 +724,14 @@ def get_branches_SF2(features):
 def get_features_nonprompt():
     features = [
 	'l1_eta',
-	'l1_phi',
+        # # 'l1_phi',
 	'l1_pt',
         # # 'l1_jet_pt',
 	'l1_dxy',
 	# 'l1_dz',
 
 	'l2_eta',
-	'l2_phi',
+        # # 'l2_phi',
 	'l2_pt',
         # # 'l2_jet_pt',
 	'l2_dxy',
@@ -820,8 +820,7 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithSmallSetVariables/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v16_SingleDoubleFakes/'
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v17_IncludingDZ/'
-	    path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v19_WithPhi/'
+	    path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob/'
 
         
         if channel == 'eee':
@@ -874,21 +873,21 @@ if __name__ == '__main__':
 
 
 
-    # train(
-	    # features,
-	    # branches,
-	    # path_to_NeuralNet,
-	    # newArrays = True,
-	    # faketype = faketype,
-	    # channel = channel,	
-	    # multiprocess = True,
-	    # )
-
-    make_all_friendtrees(
+    train(
+	    features,
+	    branches,
+	    path_to_NeuralNet,
+	    newArrays = True,
+	    faketype = faketype,
+	    channel = channel,	
 	    multiprocess = True,
-	    server = hostname,
-	    analysis_dir = analysis_dir,
-	    channel=channel,
-	    path_to_NeuralNet = path_to_NeuralNet,
-	    overwrite = False,
 	    )
+
+    # make_all_friendtrees(
+	    # multiprocess = True,
+	    # server = hostname,
+	    # analysis_dir = analysis_dir,
+	    # channel=channel,
+	    # path_to_NeuralNet = path_to_NeuralNet,
+	    # overwrite = False,
+	    # )

@@ -176,7 +176,7 @@ class CreateHists(object):
                                             features = fr_net.get_features_nonprompt(),
                                             overwrite = False,
                                             )
-                        dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='contamination', friend_file_name=friend_file_name)
+                        dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='nonprompt', friend_file_name=friend_file_name)
                     else:
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
                 else:
@@ -226,10 +226,7 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.signal
 
             if cfg.is_contamination == True:
-                # norm_cut = self.hist_cfg.region.nonprompt + " && (l1_gen_match_isPromptFinalState==1 && l2_gen_match_isPromptFinalState==1)"
-                # norm_cut = self.hist_cfg.region.nonprompt
-                # norm_cut  = self.hist_cfg.region.MC
-                norm_cut  = self.hist_cfg.region.MC_contamination_pass
+                norm_cut  = self.hist_cfg.region.MC_contamination_fail
             
             weight = self.hist_cfg.weight
             if cfg.weight_expr:
@@ -287,16 +284,20 @@ class CreateHists(object):
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
                                 .Define('pt_cone','(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )')\
+				.Define('l1_ptcone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
+				.Define('l2_ptcone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
+				.Define('l1_ptcone_alt','(l1_pt * (1+l1_reliso_rho_03))')\
+				.Define('l2_ptcone_alt','(l2_pt * (1+l2_reliso_rho_03))')\
+				# .Define('abs_l1_dz','abs(l1_dz)')\
+				# .Define('abs_l2_dz','abs(l2_dz)')\
                                 # .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 # .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
                                 # .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
                                 # .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
                                 # .Define('abs_l1_eta','abs(l1_eta)')\
                                 # .Define('abs_l2_eta','abs(l2_eta)')\
-                                # .Define('l1_pt_cone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
-                                # .Define('l2_pt_cone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
+
                                 # .Define('abs_l2_dxy','abs(l2_dxy)')\
-                                # .Define('abs_l2_dz','abs(l2_dz)')\
                                 # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta)')\
                                 # .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
                                 # .Define('singleFakeRate','sfr_namespace::getSingleFakeRate(pt_cone, abs_hnl_hn_eta)')\
@@ -315,7 +316,7 @@ class CreateHists(object):
                                         .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
                                         # .Filter('doubleFakeRate != 1')\
 
-            if cfg.is_nonprompt:
+            if cfg.is_nonprompt or cfg.is_contamination:
                 dataframe =   dataframe\
                                         .Define('nonprompt_FakeRate','nonprompt.ml_fr')\
                                         .Define('nonprompt_FakeWeight','nonprompt_FakeRate/(1.0-nonprompt_FakeRate)')
@@ -342,7 +343,7 @@ class CreateHists(object):
                                 .Define('l2_py_ConeCorrected','pt_ConeCorrection::pCone(l2_py, l2_reliso_rho_03)')\
                                 .Define('l2_pz_ConeCorrected','pt_ConeCorrection::pCone(l2_pz, l2_reliso_rho_03)')\
                                 .Define('l2_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l2_e , l2_reliso_rho_03)')\
-                                .Define('hnl_m_12_ConeCorrected','pt_ConeCorrection::dimass(\
+                                .Define('hnl_m_12_ConeCorrected1','pt_ConeCorrection::dimass(\
                                         l1_px_ConeCorrected,\
                                         l1_py_ConeCorrected,\
                                         l1_pz_ConeCorrected,\
@@ -352,17 +353,20 @@ class CreateHists(object):
                                         l2_pz_ConeCorrected,\
                                         l2_e_ConeCorrected\
                                         )')\
-                                .Define('hnl_m_12_ConeCorrected_test','pt_ConeCorrection::dimass(\
-                                        l1_px,\
-                                        l1_py,\
-                                        l1_pz,\
-                                        l1_e,\
-                                        l2_px,\
-                                        l2_py,\
-                                        l2_pz,\
-                                        l2_e\
+                                .Define('hnl_m_12_ConeCorrected2','pt_ConeCorrection::dimass_conecorrected(\
+                                        l1_ptcone,\
+                                        l1_eta,\
+                                        l1_phi,\
+                                        l1_mass,\
+                                        l2_ptcone,\
+                                        l2_eta,\
+                                        l2_phi,\
+                                        l2_mass\
                                         )')
-                                
+	dataframe = dataframe\
+			.Define('l1_ptcone_vs_pt','(l1_ptcone)/l1_pt')\
+			.Define('l2_ptcone_vs_pt','(l2_ptcone)/l2_pt')\
+			.Define('m12Cone_vs_m12','(hnl_m_12_ConeCorrected2)/(hnl_m_12)')
 
 
         if cfg.is_singlefake:
@@ -459,15 +463,8 @@ class CreateHists(object):
             all the data/MC scale-factors applied).
             '''
 
-            weight = weight + ' * (-1)'
-            # weight = weight 
-            # weight = '(-1)'
-            # weight = 'contamination_FakeWeight'
-            # dataframe =   dataframe\
-                                    # .Define('contamination_FakeRate','-1')\
-                                    # # .Define('contamination_FakeRate','contamination.ml_fr')\
-                                    # # .Define('contamination_FakeWeight','(contamination_FakeRate/(1.0-contamination_FakeRate))')
-                                    # # .Define('contamination_FakeWeight','-(contamination_FakeRate/(1.0-contamination_FakeRate))')
+            weight += '* (-1)'
+            weight += '* nonprompt_FakeWeight'
 
         
         if not cfg.is_singlefake:
@@ -476,7 +473,7 @@ class CreateHists(object):
                                         .Define('w',weight)\
                                         .Filter(norm_cut)\
                                         .Histo1D((hists[vcfg.name].GetName(),'',vcfg.binning['nbinsx'],vcfg.binning['xmin'], vcfg.binning['xmax']),vcfg.drawname,'w')
-            else: 
+            else: #if custom bins are give (e.g. log bins)
                 hists[vcfg.name] =   dataframe\
                                         .Define('w',weight)\
                                         .Filter(norm_cut)\

@@ -84,7 +84,7 @@ def prepareRegions(channel):
 def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None):
     sample_dict = {}
     # print "creating samples from %s"%(analysis_dir)
-    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
 
     #select here the samples you wish to use
     # working_samples = samples_data_dde
@@ -153,9 +153,9 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             plots = HISTS.createHistograms(cfg_main, verbose=False, multiprocess = multiprocess)
             plot = plots[var.name]
             plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
-            plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
-            plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
-            plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F'])
+            # plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
+            # plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
+            plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F','Conversions_DYJetsToLL_M10to50_contamination','Conversions_DYJets_M50_contamination','Conversions_DYJets_M50_ext_contamination','WZTo3LNu_contamination','ZZTo4L_contamination','WW_contamination','WZ_contamination','ZZ_contamination','TTJets_contamination'])
             plot.Group('prompt',['Conversions_DYJetsToLL_M10to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext','WZTo3LNu','ZZTo4L','WW','WZ','ZZ','TTJets'])
             # plot.Group('contamination', ['conversionsSingle_DYJets_M50_contamination', 'conversionsSingle_DYJets_M50_ext_contamination', 'conversionsSingle_DYJetsToLL_M10to50_contamination','WW_contamination','WZ_contamination','ZZ_contamination'])
             # plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])

@@ -19,5 +19,14 @@ namespace pt_ConeCorrection{
         v3=v1+v2;
         return  v3.M();
     }
+    double dimass_conecorrected(double l1_ptcone, double l1_eta, double l1_phi, double l1_m, double l2_ptcone, double l2_eta, double l2_phi, double l2_m){
+        TLorentzVector v1;
+        TLorentzVector v2;
+        v1.SetPtEtaPhiM(l1_ptcone, l1_eta, l1_phi, l1_m);
+        v2.SetPtEtaPhiM(l2_ptcone, l2_eta, l2_phi, l2_m);
+        TLorentzVector v3;
+        v3=v1+v2;
+        return  v3.M();
+    }
 }
 
