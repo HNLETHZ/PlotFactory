@@ -288,10 +288,13 @@ class CreateHists(object):
 				.Define('l2_ptcone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
 				.Define('l1_ptcone_alt','(l1_pt * (1+l1_reliso_rho_03))')\
 				.Define('l2_ptcone_alt','(l2_pt * (1+l2_reliso_rho_03))')\
+                                .Define('abs_dphi_01','abs(l1_phi-l0_phi)')\
+                                .Define('abs_dphi_02','abs(l0_phi-l2_phi)')\
+                                # .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
+                                # .Define('abs_dphi_12','abs(l1_phi-l2_phi)')\
 				# .Define('abs_l1_dz','abs(l1_dz)')\
 				# .Define('abs_l2_dz','abs(l2_dz)')\
                                 # .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
-                                # .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
                                 # .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
                                 # .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
                                 # .Define('abs_l1_eta','abs(l1_eta)')\

@@ -42,15 +42,13 @@ import multiprocessing
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2' #used to deactivate Tensorflow minor warnings
 
+import sys
+
        
 
 ROOT.EnableImplicitMT()
 # fix random seed for reproducibility (FIXME! not really used by Keras)
-np.random.seed(1986)
-
-def f(q,key):
-    q.put([key, None, 'hello'])
-    print 'done doing ' + key
+# np.random.seed(1986)
 
 def tree2array_process(queue, chain, branches, selection, key):
     print 'converting .root ntuples to numpy arrays... (%s events)'%key
@@ -61,7 +59,6 @@ def tree2array_process(queue, chain, branches, selection, key):
                     )
     print 'nevents from array (%s): '%key+ str(len(array))
     queue.put([key,array])
-
 
 def ex():
     q = multiprocessing.Queue()
@@ -85,7 +82,6 @@ def root2array_process(queue, file_in, branches, selection, sample_name, key):
     print 'nevents %s (%s): %d'%(sample_name,key,len(array))
     queue.put([key,sample_name,array])
 
-
 def root2array_PoolProcess(input_array):
     file_in     = input_array[0]
     branches    = input_array[1]
@@ -106,7 +102,6 @@ def root2array_PoolProcess(input_array):
             )
     print 'nevents %s (%s): %d'%(sample_name,key,len(array))
     return [key,array,xsec,sumweights]
-
 
 def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True):
     #define basic environmental parameters
@@ -237,7 +232,6 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
 
 
         for i, sample in enumerate(result): 
-            print 'doing ' + str(i)
             array       = sample[1]
             xsec        = sample[2]
             sumweights  = sample[3]
@@ -251,12 +245,12 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
             if sample[0] == 'pass':
                 df_pass = pd.concat([df_pass,array]) 
                 # df_fail = pd.concat([df_fail,array])
-                print 'added pass events to df_pass: %d'%len(array)
+                # print 'added pass events to df_pass: %d'%len(array)
 
             if sample[0] == 'fail':
                 # df_pass = pd.concat([df_pass,array]) 
                 df_fail = pd.concat([df_fail,array])
-                print 'added fail events to df_pass: %d'%len(array)
+                # print 'added fail events to df_pass: %d'%len(array)
 
 
 
@@ -349,7 +343,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # https://keras.io/visualization/
     plot_model(model, show_shapes=True, show_layer_names=True, to_file=path_to_NeuralNet + 'model.png')
 
-    # normalize inputs FIXME! do it, but do it wisely
+    # normalize inputs FIXME! do it, but do it wisely # try also standard scaler!
     # https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html#sphx-glr-auto-examples-preprocessing-plot-all-scaling-py
     from sklearn.preprocessing import QuantileTransformer
 
@@ -467,11 +461,8 @@ def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_Neural
                                 )
     duration = time.time() - start
     print 'It took %.2f seconds to make all friendtrees.'%duration
-
-
         
 def makeFriendtree_Process(input_array):
-
     tree_file_name      = input_array[0]
     sample_name         = input_array[1]
     net_name            = input_array[2]
@@ -479,9 +470,7 @@ def makeFriendtree_Process(input_array):
     branches            = input_array[4]
     features            = input_array[5]
     overwrite           = input_array[6]
-    
     path = makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branches,features,overwrite)
-
 
 def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branches,features,overwrite):
     path_to_tree = path_to_NeuralNet + 'friendtree_fr_%s.root'%sample_name
@@ -572,15 +561,19 @@ def add_branches(data,features,branches):
     branches += ['abs_l2_eta']
 
     data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
-    # features += ['abs_dzDiff_12']
+    features += ['abs_dzDiff_12']
     branches += ['abs_dzDiff_12']
 
+    data['abs_dphi_12'] = abs(data.l1_phi - data.l2_phi)
+    features += ['abs_dphi_12']
+    branches += ['abs_dphi_12']
+
     data['equalJets_12'] = ((data.l1_jet_pt > 0) & (data.l1_jet_pt == data.l2_jet_pt)).astype(np.int)
-    # features += ['equalJets_12']
+    features += ['equalJets_12']
     branches += ['equalJets_12']
 
     data['eta_hnl_l0'] = abs(data.hnl_hn_vis_eta - data.l0_eta)
-    # features += ['eta_hnl_l0']
+    features += ['eta_hnl_l0']
     branches += ['eta_hnl_l0']
 
     return data, features, branches
@@ -724,18 +717,18 @@ def get_branches_SF2(features):
 def get_features_nonprompt():
     features = [
 	'l1_eta',
-	'l1_phi',
+        'l1_phi',
 	'l1_pt',
         # # 'l1_jet_pt',
 	'l1_dxy',
-	# 'l1_dz',
+        'l1_dz',
 
 	'l2_eta',
-	'l2_phi',
+        'l2_phi',
 	'l2_pt',
         # # 'l2_jet_pt',
 	'l2_dxy',
-	# 'l2_dz',
+        'l2_dz',
 
 	'hnl_2d_disp',
 	'hnl_dr_12',
@@ -746,7 +739,8 @@ def get_features_nonprompt():
         # 'hnl_m_01',
         # 'hnl_m_02',
         # 'hnl_w_vis_m',
-        # 'hnl_dphi_hnvis0',
+        'hnl_dphi_hnvis0',
+        'hnl_2d_disp_sig',
 
         # 'n_vtx',
         # 'pfmet_pt',
@@ -771,8 +765,8 @@ def get_branches_nonprompt(features):
         'l2_jet_pt',
 	# 'l1_pt',
 	# 'l2_pt',
-	'l1_dz',
-	'l2_dz',
+	# 'l1_dz',
+	# 'l2_dz',
         # 'hnl_m_12',
 	# 'l1_dxy',
 	# 'l2_dxy',
@@ -820,8 +814,11 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithSmallSetVariables/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v16_SingleDoubleFakes/'
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v17_IncludingDZ/'
-	    path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
+	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v19_WithPhi/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
+            path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
+
 
         
         if channel == 'eee':
@@ -872,23 +869,22 @@ if __name__ == '__main__':
 
     path_to_NeuralNet = path_to_NeuralNet(faketype, channel) 
 
+    train(
+            features,
+            branches,
+            path_to_NeuralNet,
+            newArrays = True,
+            faketype = faketype,
+            channel = channel,	
+            multiprocess = True,
+            )
 
 
-    # train(
-	    # features,
-	    # branches,
-	    # path_to_NeuralNet,
-	    # newArrays = True,
-	    # faketype = faketype,
-	    # channel = channel,	
-	    # multiprocess = True,
-	    # )
-
-    make_all_friendtrees(
-	    multiprocess = True,
-	    server = hostname,
-	    analysis_dir = analysis_dir,
-	    channel=channel,
-	    path_to_NeuralNet = path_to_NeuralNet,
-	    overwrite = False,
-	    )
+    # make_all_friendtrees(
+            # multiprocess = True,
+            # server = hostname,
+            # analysis_dir = analysis_dir,
+            # channel=channel,
+            # path_to_NeuralNet = path_to_NeuralNet,
+            # overwrite = False,
+            # )

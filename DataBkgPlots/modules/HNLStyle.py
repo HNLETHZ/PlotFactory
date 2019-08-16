@@ -121,14 +121,18 @@ def nextStyle():
 
 histPref = {}
 
-histPref['M2_V.002'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = ?}'}
-histPref['M2_V.022'] = {'style':sHNL_M2_Vp022, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.022}{c#tau = ?}'}
-histPref['M5_V.002'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'#splitline{M = 5GeV, V=.002}{c#tau = ?}'}
-histPref['M5_V.010'] = {'style':sHNL_M5_Vp010, 'layer':2999, 'legend':'#splitline{M = 5GeV, V=.010}{c#tau = ?}'}
-histPref['M8_V.002'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.002}{c#tau = ?}'}
-histPref['M8_V.005'] = {'style':sHNL_M8_Vp005, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.005}{c#tau = ?}'}
+# histPref['M2_V.002'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = ?}'}
+# histPref['M2_V.022'] = {'style':sHNL_M2_Vp022, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.022}{c#tau = ?}'}
+# histPref['M5_V.002'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'#splitline{M = 5GeV, V=.002}{c#tau = ?}'}
+# histPref['M5_V.010'] = {'style':sHNL_M5_Vp010, 'layer':2999, 'legend':'#splitline{M = 5GeV, V=.010}{c#tau = ?}'}
+# histPref['M8_V.002'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.002}{c#tau = ?}'}
+# histPref['M8_V.005'] = {'style':sHNL_M8_Vp005, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.005}{c#tau = ?}'}
 
-histPref['HNL*'] = {'style':sHNL_HN, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = 14.6cm}'}#times 300}{c#tau = 14.6cm}'}
+histPref['HNL_M2_*'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'M = 2GeV'}
+histPref['HNL_M5_*'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'M = 5GeV'}
+histPref['HNL_M8_*'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'M = 8GeV'}
+
+# histPref['HNL*'] = {'style':sHNL_HN, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = 14.6cm}'}#times 300}{c#tau = 14.6cm}'}
 histPref['Data*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
 histPref['data_*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
 histPref['ZTT*'] = {'style':sHNL_DYJets, 'layer':4, 'legend':'Z#rightarrow#tau#tau'}

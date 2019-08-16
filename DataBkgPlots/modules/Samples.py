@@ -480,6 +480,7 @@ def createSampleLists(analysis_dir='',
 
 
     samples_all = samples_bkg + samples_data 
+    # samples_all = samples_bkg + samples_signal 
     # samples_all = samples_bkg + samples_data + samples_signal
     # samples_all = samples_singlefake + samples_doublefake +tttmples_data
     # samples_all = samples_singlefake + samples_data

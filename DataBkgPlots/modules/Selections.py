@@ -72,15 +72,22 @@ def SR(channel):
         'abs(hnl_dphi_hnvis0) > 0.9 ',
         '(abs(hnl_m_12 - 3.1) > 0.05)', # avoid JPsi
 
+        #displacement bins
+        # 'hnl_2d_disp < 0.5',
+        # '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
+        # 'hnl_2d_disp > 10',
 
-        '(nbj == 0)',
-	# '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', 
+
+        '(nbj == 0)',# true SR
+        # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
         
         # '!(nbj == 0)', # activate for SR orthogonal
         '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
         # '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
         
         ## auxiliary selections
+        # 'abs(l1_dz) < .2 ',
+        # 'abs(l2_dz) < .2 ',
         # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
         # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
 	# 'hnl_dr_12 > 0.025', # the trick to make plots look nicer
