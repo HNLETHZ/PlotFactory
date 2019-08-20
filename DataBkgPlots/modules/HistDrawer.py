@@ -34,17 +34,17 @@ class HistDrawer:
             padr = cls.padr = can.GetPad(2) if not padr else padr
 
             # Set Pad sizes
-            pad.SetPad(0.0, 0.32, 1., 1.0)
-            padr.SetPad(0.0, 0.00, 1., 0.34)
+            pad.SetPad(0.0, 0.32, 1.0, 1.0)
+            padr.SetPad(0.0, 0.00,1.0, 0.34)
 
             pad.SetTopMargin(0.08)
             pad.SetLeftMargin(0.16)
             pad.SetBottomMargin(0.03)
-            pad.SetRightMargin(0.05)
+            pad.SetRightMargin(0.10)
 
             padr.SetBottomMargin(0.35)
             padr.SetLeftMargin(0.16)
-            padr.SetRightMargin(0.05)
+            padr.SetRightMargin(0.10)
 
         can.cd()
         can.Draw()

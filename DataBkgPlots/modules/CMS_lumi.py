@@ -5,6 +5,7 @@
 #
 
 import ROOT
+from pdb import set_trace
 
 cmsText = "CMS"
 cmsTextFont = 61
@@ -68,12 +69,14 @@ def CMS_lumi(pad, lumiText, iPosX):
     latex.SetTextSize(lumiTextSize*t)
 
     latex.DrawLatex(1-r, 1-t+lumiTextOffset*t, lumiText)
+    # latex.DrawLatex(1-(1.4*r), 1-(2.3*t)+lumiTextOffset*t, lumiText)
 
     if(outOfFrame):
         latex.SetTextFont(cmsTextFont)
         latex.SetTextAlign(11)
         latex.SetTextSize(cmsTextSize*t)
-        latex.DrawLatex(l, 1-t+lumiTextOffset*t, cmsText)
+        # latex.DrawLatex(l, 1-t+lumiTextOffset*t, cmsText)
+        latex.DrawLatex(1.3*l, 1 - (2.3 * t) + (lumiTextOffset * t), cmsText)
 
     pad.cd()
 
@@ -114,12 +117,15 @@ def CMS_lumi(pad, lumiText, iPosX):
                 latex.DrawLatex(posX_, posY_ - relExtraDY*cmsTextSize*t, extraText)
     elif(writeExtraText):
         if(iPosX == 0):
-            posX_ = l + relPosX*(1-l-r)
-            posY_ = 1-t+lumiTextOffset*t
+            # posX_ = l + relPosX*(1-l-r)
+            posX_ = 1.3*l + relPosX*(1-l-r)#zhud
+            # posY_ = 1-t+lumiTextOffset*t
+            posY_ = 1-2.3*t+lumiTextOffset*t#zhud
 
         latex.SetTextFont(extraTextFont)
         latex.SetTextSize(extraTextSize*t)
         latex.SetTextAlign(align_)
+        # latex.DrawLatex(posX_+0.05, posY_, extraText)
         latex.DrawLatex(posX_+0.05, posY_, extraText)
 
     pad.Update()
