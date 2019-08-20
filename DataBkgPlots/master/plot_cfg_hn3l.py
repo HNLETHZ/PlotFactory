@@ -57,7 +57,10 @@ int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR',channel,'SR'))
-    regions.append(Region('MR_nonprompt',channel,'SR'))
+    # regions.append(Region('MR_nonprompt',channel,'SR'))
+    # regions.append(Region('MR_nonprompt_disp2',channel,'SR'))
+    # regions.append(Region('MR_RightBand',channel,'SR'))
+    regions.append(Region('MR_LeftBand',channel,'SR'))
     # regions.append(Region('SR_orth',channel,'SR_orth'))
     # regions.append(Region('MR_DF_closure',channel,'MR_DF_closure'))
     # regions.append(Region('MR_DF',channel,'MR_DF'))
@@ -136,10 +139,10 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
         print('# using %d CPUs'%(cpu_count())), 'with multiprocess %s'%(multiprocess_status) 
         print('# Method used to estimate Lepton Fake Rate: %s'%(fr_method))
         if useNeuralNetwork:
-            print '# Path to Neural Network for SingleFakes1:\t' + fr_net.path_to_NeuralNet('SingleFake1')
-            print '# Path to Neural Network for SingleFakes2:\t' + fr_net.path_to_NeuralNet('SingleFake2')
-            print '# Path to Neural Network for DoubleFakes:\t' + fr_net.path_to_NeuralNet('DoubleFake')
-            print '# Path to Neural Network for nonprompt:\t\t' + fr_net.path_to_NeuralNet('nonprompt')
+            # print '# Path to Neural Network for SingleFakes1:\t' + fr_net.path_to_NeuralNet('SingleFake1',channel_dir)
+            # print '# Path to Neural Network for SingleFakes2:\t' + fr_net.path_to_NeuralNet('SingleFake2',channel_dir)
+            # print '# Path to Neural Network for DoubleFakes:\t' + fr_net.path_to_NeuralNet('DoubleFake',channel_dir)
+            print '# Path to Neural Network for nonprompt:\t\t' + fr_net.path_to_NeuralNet('nonprompt',channel_dir)
         print('#############################################################################')
 
         i_var = 0

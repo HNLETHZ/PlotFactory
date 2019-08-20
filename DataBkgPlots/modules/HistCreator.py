@@ -136,8 +136,8 @@ class CreateHists(object):
                         friend_file_name = fr_net.makeFriendtree(
                                             tree_file_name = tree_file_name,
                                             sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('SingleFake2') + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('SingleFake2'),
+                                            net_name = fr_net.path_to_NeuralNet('SingleFake2',self.channel) + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('SingleFake2',self.channel),
                                             branches = fr_net.get_branches_SF2(fr_net.get_features_SF2()),
                                             features = fr_net.get_features_SF2(),
                                             overwrite = False,
@@ -148,8 +148,8 @@ class CreateHists(object):
                         friend_file_name = fr_net.makeFriendtree(
                                             tree_file_name = tree_file_name,
                                             sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('DoubleFake') + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('DoubleFake'),
+                                            net_name = fr_net.path_to_NeuralNet('DoubleFake',self.channel) + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('DoubleFake',self.channel),
                                             branches = fr_net.get_branches_DF(fr_net.get_features_DF()),
                                             features = fr_net.get_features_DF(),
                                             overwrite = False,
@@ -159,8 +159,8 @@ class CreateHists(object):
                         friend_file_name = fr_net.makeFriendtree(
                                             tree_file_name = tree_file_name,
                                             sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('nonprompt') + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt'),
+                                            net_name = fr_net.path_to_NeuralNet('nonprompt',self.channel) + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt',self.channel),
                                             branches = fr_net.get_branches_nonprompt(fr_net.get_features_nonprompt()),
                                             features = fr_net.get_features_nonprompt(),
                                             overwrite = False,
@@ -170,8 +170,8 @@ class CreateHists(object):
                         friend_file_name = fr_net.makeFriendtree(
                                             tree_file_name = tree_file_name,
                                             sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('nonprompt') + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt'),
+                                            net_name = fr_net.path_to_NeuralNet('nonprompt',self.channel) + 'net.h5',
+                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt',self.channel),
                                             branches = fr_net.get_branches_nonprompt(fr_net.get_features_nonprompt()),
                                             features = fr_net.get_features_nonprompt(),
                                             overwrite = False,
@@ -291,7 +291,6 @@ class CreateHists(object):
                                 .Define('abs_dphi_01','abs(l1_phi-l0_phi)')\
                                 .Define('abs_dphi_02','abs(l0_phi-l2_phi)')\
                                 # .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
-                                # .Define('abs_dphi_12','abs(l1_phi-l2_phi)')\
 				# .Define('abs_l1_dz','abs(l1_dz)')\
 				# .Define('abs_l2_dz','abs(l2_dz)')\
                                 # .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\

@@ -2,7 +2,7 @@ from ROOT import kBlack, TPaveText
 
 def officialStyle(style):
     style.SetCanvasColor     (0)
-    style.SetCanvasBorderSize(10)
+    style.SetCanvasBorderSize(20)
     style.SetCanvasBorderMode(0)
     style.SetCanvasDefH      (700)
     style.SetCanvasDefW      (700)

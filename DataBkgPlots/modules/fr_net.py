@@ -186,19 +186,11 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
 
     if multiprocess == False:
         print 'converting .root ntuples to numpy arrays... (passed events)'
-        array_pass = tree2array(
-                        chain,
-                        branches = branches,
-                        selection = selection_passing
-                        )
+        array_pass = tree2array(chain, branches = branches, selection = selection_passing)
         print 'nevents from array_pass: '+ str(array_pass.size)
 
         print 'converting .root ntuples to numpy arrays... (failed events)'
-        array_fail = tree2array(
-                        chain,
-                        branches = branches,
-                        selection = selection_failing
-                        )
+        array_fail = tree2array(chain, branches = branches, selection = selection_failing)
         print 'nevents from array_fail: '+ str(array_fail.size)
     
     delta = time.time() - start
@@ -285,6 +277,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
     # concatenate the events and shuffle
     data = pd.concat([df_pass, df_fail])
     data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
+    data.index = np.array(xrange(len(data)))
 
     data.to_pickle(path_to_NeuralNet + 'training_data.pkl')
 
@@ -368,7 +361,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # history = model.fit(xx, Y, epochs=1000, validation_split=0.5, callbacks=[es])  
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
-    history = model.fit(xx, Y, batch_size = 1000, epochs=2000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
+    history = model.fit(xx, Y, batch_size = 512, epochs=2000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
     # history = model.fit(xx, Y, batch_size = 1000, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es])
     # history = model.fit(xx, Y, batch_size = 1000, epochs=100, validation_split=0.5, callbacks=[es])  
 
@@ -518,9 +511,9 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
 
 def add_branches(data,features,branches):
     # #define indirect training variables
-    data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
+    # data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
     # features += ['ptcone']
-    branches += ['ptcone']
+    # branches += ['ptcone']
 
     data['abs_eta'] = abs(data.hnl_hn_vis_eta)
     # features += ['abs_eta']
@@ -561,19 +554,19 @@ def add_branches(data,features,branches):
     branches += ['abs_l2_eta']
 
     data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
-    features += ['abs_dzDiff_12']
+    # features += ['abs_dzDiff_12']
     branches += ['abs_dzDiff_12']
 
     data['abs_dphi_12'] = abs(data.l1_phi - data.l2_phi)
-    features += ['abs_dphi_12']
+    # features += ['abs_dphi_12']
     branches += ['abs_dphi_12']
 
     data['equalJets_12'] = ((data.l1_jet_pt > 0) & (data.l1_jet_pt == data.l2_jet_pt)).astype(np.int)
-    features += ['equalJets_12']
+    # features += ['equalJets_12']
     branches += ['equalJets_12']
 
     data['eta_hnl_l0'] = abs(data.hnl_hn_vis_eta - data.l0_eta)
-    features += ['eta_hnl_l0']
+    # features += ['eta_hnl_l0']
     branches += ['eta_hnl_l0']
 
     return data, features, branches
@@ -717,30 +710,31 @@ def get_branches_SF2(features):
 def get_features_nonprompt():
     features = [
 	'l1_eta',
-        'l1_phi',
+        # 'l1_phi',
 	'l1_pt',
         # # 'l1_jet_pt',
 	'l1_dxy',
-        'l1_dz',
+        # 'l1_dz',
 
 	'l2_eta',
-        'l2_phi',
+        # 'l2_phi',
 	'l2_pt',
         # # 'l2_jet_pt',
 	'l2_dxy',
-        'l2_dz',
+        # 'l2_dz',
 
 	'hnl_2d_disp',
 	'hnl_dr_12',
 	'hnl_m_12',
+	# 'hnl_dphi_12',
 
         # 'hnl_dr_01',
         # 'hnl_dr_02',
         # 'hnl_m_01',
         # 'hnl_m_02',
         # 'hnl_w_vis_m',
-        'hnl_dphi_hnvis0',
-        'hnl_2d_disp_sig',
+        # 'hnl_dphi_hnvis0',
+        # 'hnl_2d_disp_sig',
 
         # 'n_vtx',
         # 'pfmet_pt',
@@ -758,15 +752,17 @@ def get_branches_nonprompt(features):
         'l0_eta',
         'l1_reliso_rho_03',
         'l2_reliso_rho_03',
-        'hnl_iso03_rel_rhoArea',
+        # 'hnl_iso03_rel_rhoArea',
         'hnl_hn_vis_eta',
         'hnl_hn_vis_pt',
         'l1_jet_pt',
         'l2_jet_pt',
 	# 'l1_pt',
 	# 'l2_pt',
-	# 'l1_dz',
-	# 'l2_dz',
+        'l1_dz',
+        'l2_dz',
+        'l1_phi',
+        'l2_phi',
         # 'hnl_m_12',
 	# 'l1_dxy',
 	# 'l2_dxy',
@@ -817,12 +813,22 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
 	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v19_WithPhi/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
-            path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
-
-
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
+            path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
         
         if channel == 'eee':
-            path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
+
+        if channel == 'eem':
+            # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
+
+        if channel == 'mem':
+            # path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
 
     return path_to_NeuralNet 
 #################################################################################
@@ -851,7 +857,11 @@ if __name__ == '__main__':
     # faketype = 'DoubleFake'
     faketype = 'nonprompt'
     
-    channel = 'mmm'    
+    ## select here the channel you want to analyze
+    # channel = 'mmm'    
+    channel = 'eee'    
+    # channel = 'eem'
+    # channel = 'mem'
 
 
     if faketype == 'SingleFake1':
@@ -869,22 +879,21 @@ if __name__ == '__main__':
 
     path_to_NeuralNet = path_to_NeuralNet(faketype, channel) 
 
-    train(
-            features,
-            branches,
-            path_to_NeuralNet,
-            newArrays = True,
-            faketype = faketype,
-            channel = channel,	
-            multiprocess = True,
-            )
-
-
-    # make_all_friendtrees(
+    # train(
+            # features,
+            # branches,
+            # path_to_NeuralNet,
+            # newArrays = True,
+            # faketype = faketype,
+            # channel = channel,	
             # multiprocess = True,
-            # server = hostname,
-            # analysis_dir = analysis_dir,
-            # channel=channel,
-            # path_to_NeuralNet = path_to_NeuralNet,
-            # overwrite = False,
             # )
+
+    make_all_friendtrees(
+            multiprocess = True,
+            server = hostname,
+            analysis_dir = analysis_dir,
+            channel=channel,
+            path_to_NeuralNet = path_to_NeuralNet,
+            overwrite = False,
+            )

@@ -42,7 +42,8 @@ class DataMCPlot(object):
         self.legend = None
 #        self.legendBorders = 0.20, 0.46, 0.44, 0.89
 #        self.legendPos = 'left'
-        self.legendBorders = 0.20, 0.78, 0.80, 0.88
+        # self.legendBorders = 0.20, 0.78, 0.80, 0.88
+        self.legendBorders = 0.20, 0.73, 0.80, 0.80
         self.legendPos = 'top'
         # self.lastDraw = None
         # self.lastDrawArgs = None
@@ -306,7 +307,7 @@ class DataMCPlot(object):
         self.dataOverMCHist.Draw('same')
         yaxis = self.mcHist_err.GetYaxis()
         yaxis.SetRangeUser(ymin + 1., ymax + 1.)
-        yaxis.SetTitle('Data/MC')
+        yaxis.SetTitle('Data/Bkg')
         yaxis.SetNdivisions(5)
         yaxis.SetLabelSize(0.1)
         yaxis.SetTitleSize(0.1)
@@ -347,7 +348,7 @@ class DataMCPlot(object):
                 denom = hist
                 continue
             histForRatios.append(hist)
-        self._BuildStack(histForRatios, ytitle='MC/Data')
+        self._BuildStack(histForRatios, ytitle='Bkg/Data')
         self.stack.Divide(denom.obj)
         if self.blindminx and self.blindmaxx:
             self.stack.Blind(self.blindminx, self.blindmaxx)
@@ -384,7 +385,7 @@ class DataMCPlot(object):
                 continue
             # other histograms will be divided by the denominator
             histForRatios.append(hist)
-        self._BuildStack(histForRatios, ytitle='MC p.d.f. / Data p.d.f.')
+        self._BuildStack(histForRatios, ytitle='Bkg p.d.f. / Data p.d.f.')
         self.stack.Normalize()
         denom.Normalize()
         self.stack.Divide(denom.weighted)
@@ -488,8 +489,9 @@ class DataMCPlot(object):
 
         if self.supportHist.weighted.GetMaximumBin() < self.supportHist.weighted.GetNbinsX()/2:
 #            self.legendBorders = 0.62, 0.46, 0.88, 0.89
-            self.legendBorders = 0.20, 0.78, 0.80, 0.88
-#            self.legendPos = 'right'
+            # self.legendBorders = 0.20, 0.78, 0.80, 0.88
+            self.legendBorders = 0.20, 0.73, 0.80, 0.80
+            # self.legendPos = 'right'
             self.legendPos = 'top'
         
         self.DrawLegend(print_norm=print_norm)
