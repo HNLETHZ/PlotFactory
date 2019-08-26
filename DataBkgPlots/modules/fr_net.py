@@ -79,7 +79,7 @@ def root2array_process(queue, file_in, branches, selection, sample_name, key):
                     selection
                 )
             )
-    print 'nevents %s (%s): %d'%(sample_name,key,len(array))
+    # print 'nevents %s (%s): %d'%(sample_name,key,len(array))
     queue.put([key,sample_name,array])
 
 def root2array_PoolProcess(input_array):
@@ -113,6 +113,8 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
     # call samples
     samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
     working_samples = samples_data
+    # working_samples = samples_nonprompt
+    # working_samples = samples_mc
 
     # necessary if you want to compare data with MC
     working_samples = setSumWeights(working_samples)
@@ -159,6 +161,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         selection_passing_MC = region.MC_contamination_pass
         selection_failing_MC = region.MC_contamination_fail
 
+
     # convert TChain object into numpy arrays for the training
     start = time.time()
     if multiprocess == True:
@@ -202,6 +205,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
     #giving data the contamination weight '1' (i.e. ignore it)
     for array in [df_pass, df_fail]:
         array['contamination_weight'] = array.weight * array.lhe_weight 
+        # array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  xsec / sumweights
 
     # adding MC prompt contamination
     print 'now adding MC prompt contamination to the training'
@@ -230,6 +234,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
             try:
                 array['contamination_weight'] = array.weight * array.lhe_weight * lumi * (-1) *  xsec / sumweights
                 # array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  xsec /sumweights 
+                # array['contamination_weight'] = array.weight * array.lhe_weight 
             except:
                 set_trace()
 
@@ -317,11 +322,15 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # define the net
     input  = Input((len(features),))
-    # dense1 = Dense(64, activation='tanh'   , name='dense1')(input )
+
     dense1 = Dense(64, activation='relu'   , name='dense1')(input )
-    # dense1 = Dense(128, activation='relu'   , name='dense1')(input )
     output = Dense( 1, activation='sigmoid', name='output')(dense1)
-    # output = Dense( 1, activation='softmax', name='output')(dense1)
+
+    # dense1 = Dense(128, activation='relu'   , name='dense1')(input )
+    # dense2 = Dense(128, activation='relu'   , name='dense2')(dense1 )
+    # output = Dense( 1, activation='sigmoid', name='output')(dense2)
+
+
 
     # Define outputs of your model
     model = Model(input, output)
@@ -358,7 +367,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # train only the classifier. beta is set at 0 and the discriminator is not trained
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
-    # history = model.fit(xx, Y, epochs=1000, validation_split=0.5, callbacks=[es])  
+    # history
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
     history = model.fit(xx, Y, batch_size = 512, epochs=2000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
@@ -417,7 +426,7 @@ def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_Neural
     print 'making friendtrees for all datasamples'
     start = time.time()
     # call samples
-    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel)
     working_samples = samples_nonprompt
     for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
 
@@ -709,25 +718,27 @@ def get_branches_SF2(features):
 
 def get_features_nonprompt():
     features = [
-	'l1_eta',
-        # 'l1_phi',
-	'l1_pt',
-        # # 'l1_jet_pt',
-	'l1_dxy',
-        # 'l1_dz',
+        'l1_eta',
+        'l1_pt',
+        'l1_dxy',
 
-	'l2_eta',
+        'l2_eta',
+        'l2_pt',
+        'l2_dxy',
+
+        'hnl_2d_disp',
+        'hnl_dr_12',
+	'hnl_m_12',
+        'sv_prob',
+
+        # 'l1_phi',
+        # # 'l1_jet_pt',
+        # 'l1_dz',
         # 'l2_phi',
-	'l2_pt',
         # # 'l2_jet_pt',
-	'l2_dxy',
         # 'l2_dz',
 
-	'hnl_2d_disp',
-	'hnl_dr_12',
-	'hnl_m_12',
 	# 'hnl_dphi_12',
-
         # 'hnl_dr_01',
         # 'hnl_dr_02',
         # 'hnl_m_01',
@@ -738,7 +749,6 @@ def get_features_nonprompt():
 
         # 'n_vtx',
         # 'pfmet_pt',
-	'sv_prob',
     ]
     return features
 
@@ -757,17 +767,17 @@ def get_branches_nonprompt(features):
         'hnl_hn_vis_pt',
         'l1_jet_pt',
         'l2_jet_pt',
-	# 'l1_pt',
-	# 'l2_pt',
+        # 'l1_pt',
+        # 'l2_pt',
         'l1_dz',
         'l2_dz',
         'l1_phi',
         'l2_phi',
         # 'hnl_m_12',
-	# 'l1_dxy',
-	# 'l2_dxy',
-	# 'l1_eta',
-	# 'l2_eta',
+        # 'l1_dxy',
+        # 'l2_dxy',
+        # 'l1_eta',
+        # 'l2_eta',
     ]
     return branches
 
@@ -816,19 +826,25 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
-            path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
+            path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
         
         if channel == 'eee':
             # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
-            path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
+            # path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
+            path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
 
         if channel == 'eem':
             # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
             path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
 
         if channel == 'mem':
-            # path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
-            path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
+    
 
     return path_to_NeuralNet 
 #################################################################################
@@ -858,8 +874,8 @@ if __name__ == '__main__':
     faketype = 'nonprompt'
     
     ## select here the channel you want to analyze
-    # channel = 'mmm'    
-    channel = 'eee'    
+    channel = 'mmm'    
+    # channel = 'eee'    
     # channel = 'eem'
     # channel = 'mem'
 
@@ -879,21 +895,21 @@ if __name__ == '__main__':
 
     path_to_NeuralNet = path_to_NeuralNet(faketype, channel) 
 
-    # train(
-            # features,
-            # branches,
-            # path_to_NeuralNet,
-            # newArrays = True,
-            # faketype = faketype,
-            # channel = channel,	
-            # multiprocess = True,
-            # )
-
-    make_all_friendtrees(
+    train(
+            features,
+            branches,
+            path_to_NeuralNet,
+            newArrays = True,
+            faketype = faketype,
+            channel = channel,	
             multiprocess = True,
-            server = hostname,
-            analysis_dir = analysis_dir,
-            channel=channel,
-            path_to_NeuralNet = path_to_NeuralNet,
-            overwrite = False,
             )
+
+    # make_all_friendtrees(
+            # multiprocess = True,
+            # server = hostname,
+            # analysis_dir = analysis_dir,
+            # channel=channel,
+            # path_to_NeuralNet = path_to_NeuralNet,
+            # overwrite = False,
+            # )

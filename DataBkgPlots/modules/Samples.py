@@ -501,6 +501,7 @@ def createSampleLists(analysis_dir='',
     samples_mc_contamination = samples_Conversions_contamination + samples_TTJets_contamination + samples_Diboson_contamination
     samples_nonprompt = samples_nonprompt + samples_mc_contamination 
     samples_bkg = samples_nonprompt + samples_mc
+    # samples_bkg = samples_mc
 
 
     samples_all = samples_bkg + samples_data #for the closureplots

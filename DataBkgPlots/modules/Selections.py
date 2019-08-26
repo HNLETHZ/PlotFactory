@@ -44,7 +44,7 @@ def CR_ttbar():
     return selection
 
 def SR(channel):
-    selection = '&'.join([
+    selection = ' & '.join([
     'l0_pt > 25 '              , 
     'abs(l0_eta) < 2.4 '       ,
     'abs(l0_dz) < 0.2 '        ,
@@ -85,12 +85,14 @@ def SR(channel):
     # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
     
     # '!(nbj == 0)', # activate for SR orthogonal
-    # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
+    '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
     # '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m > 110) ', # activate for right sideband (train)
-    '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
+    # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
     ## auxiliary selections
+    # 'hnl_m_12 < 5',
+    # 'hnl_2d_disp > 0.5',
     # 'abs(l1_dz) < .2 ',
     # 'abs(l2_dz) < .2 ',
     # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
@@ -360,7 +362,10 @@ def MR_SF2_closure(channel):
 
 
 def getSelection(channel, selection_name):
-    capping_value = '0.8';
+    # capping_value = '0.8';
+    # capping_value = '100.0';
+    capping_value = '2.0';
+
     #testing the old version
     if selection_name == 'baseline':
         selection = baseline(channel)
@@ -574,4 +579,5 @@ class Region(object):
         self.MC_Conversions             = self.MC        + Prompt_extension
         self.MC_contamination_pass      = self.MC        + Prompt_extension
         self.MC_contamination_fail      = self.nonprompt + Prompt_extension
+
 

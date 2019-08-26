@@ -58,9 +58,10 @@ def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR',channel,'SR'))
     # regions.append(Region('MR_nonprompt',channel,'SR'))
+    regions.append(Region('Z_reproducibility_2',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp2',channel,'SR'))
     # regions.append(Region('MR_RightBand',channel,'SR'))
-    regions.append(Region('MR_LeftBand',channel,'SR'))
+    # regions.append(Region('MR_LeftBand',channel,'SR'))
     # regions.append(Region('SR_orth',channel,'SR_orth'))
     # regions.append(Region('MR_DF_closure',channel,'MR_DF_closure'))
     # regions.append(Region('MR_DF',channel,'MR_DF'))
@@ -267,6 +268,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/fr_net.py', regionDir+'/fr_net.py')
         else:
             copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
             copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
