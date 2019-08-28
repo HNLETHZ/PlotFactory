@@ -125,8 +125,7 @@ def fixOverlay(): gPad.RedrawAxis()
 
 def setTDRStyle():
   tdrStyle =  rt.TStyle("tdrStyle","Style for P-TDR")
-
-   #for the canvas:
+  #for the canvas:
   tdrStyle.SetCanvasBorderMode(0)
   tdrStyle.SetCanvasColor(rt.kWhite)
   tdrStyle.SetCanvasDefH(600) #Height of canvas

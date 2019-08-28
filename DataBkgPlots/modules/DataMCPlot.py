@@ -40,10 +40,8 @@ class DataMCPlot(object):
         self.stack = None
         self.legendOn = True
         self.legend = None
-#        self.legendBorders = 0.20, 0.46, 0.44, 0.89
-#        self.legendPos = 'left'
-        # self.legendBorders = 0.20, 0.78, 0.80, 0.88
-        self.legendBorders = 0.20, 0.73, 0.80, 0.80
+        # self.legendBorders = 0.20, 0.73, 0.80, 0.80
+        self.legendBorders = 0.20, 0.60, 0.80, 0.80
         self.legendPos = 'top'
         # self.lastDraw = None
         # self.lastDrawArgs = None
@@ -232,7 +230,7 @@ class DataMCPlot(object):
             self.legend.SetFillStyle(0)
             self.legend.SetLineColor(0)
             self.legend.SetLineWidth(1)
-            self.legend.SetNColumns(5) # number of comps / 2 (or 3) + 1
+            self.legend.SetNColumns(3) # number of comps / 2 (or 3) + 1
             self.legend.SetEntrySeparation(0.2) 
             self.legend.SetColumnSeparation(0.2) 
             self.legend.SetBorderSize(0)
@@ -488,10 +486,7 @@ class DataMCPlot(object):
                 hist.Draw('SAME HIST')
 
         if self.supportHist.weighted.GetMaximumBin() < self.supportHist.weighted.GetNbinsX()/2:
-#            self.legendBorders = 0.62, 0.46, 0.88, 0.89
-            # self.legendBorders = 0.20, 0.78, 0.80, 0.88
-            self.legendBorders = 0.20, 0.73, 0.80, 0.80
-            # self.legendPos = 'right'
+            self.legendBorders = 0.20, 0.60, 0.80, 0.80
             self.legendPos = 'top'
         
         self.DrawLegend(print_norm=print_norm)

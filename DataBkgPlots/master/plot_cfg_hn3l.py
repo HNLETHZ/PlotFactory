@@ -58,8 +58,14 @@ def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR',channel,'SR'))
     # regions.append(Region('MR_nonprompt',channel,'SR'))
-    regions.append(Region('Z_reproducibility_2',channel,'SR'))
-    # regions.append(Region('MR_nonprompt_disp2',channel,'SR'))
+    # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
+    regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
+    # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
+    # regions.append(Region('SR',channel,'SR'))
+    # regions.append(Region('SR_disp1',channel,'SR_disp1'))
+    # regions.append(Region('SR_disp2',channel,'SR_disp2'))
+    # regions.append(Region('SR_disp3',channel,'SR_disp3'))
+    # regions.append(Region('MR_nonprompt_v40_DropoutM12_80',channel,'SR'))
     # regions.append(Region('MR_RightBand',channel,'SR'))
     # regions.append(Region('MR_LeftBand',channel,'SR'))
     # regions.append(Region('SR_orth',channel,'SR_orth'))
@@ -70,6 +76,7 @@ def prepareRegions(channel):
     # regions.append(Region('MR_SF2',channel,'MR_SF2'))
     # regions.append(Region('MR_SF2_closure',channel,'MR_SF2_closure'))
     # regions.append(Region('MR_nonprompt',channel,'MR_nonprompt'))
+    # regions.append(Region('Z_reproducibility_v3',channel,'SR'))
     # regions.append(Region('Conversion',channel,'Conversion'))
     # regions.append(Region('TTbar',channel,'ttbar'))
     # regions.append(Region('DY',channel,'DY'))
@@ -176,7 +183,7 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             print'\tThis plot took %.1f s to compute.'%(time.time()-start_plot)
 
 
-def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, dataframe = True):
+def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess = False, dataframe = True):
     start_time = time.time()
 
     usr = getuser()
@@ -193,6 +200,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
     if 'starseeker' in hostname:
         if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/'
 
+
     if promptLeptonType == "ele":
         channel_name = 'e'
         if L1L2LeptonType == "ee":
@@ -200,9 +208,18 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             channel_name += 'ee'
             channel = 'eee'
         if L1L2LeptonType == "em":
-            plotDir = plotDirBase + 'eem/'
-            channel_name += 'e#mu'
-            channel = 'eem'
+            if option == 'OS':
+                plotDir = plotDirBase + 'eem_OS/'
+                channel_name += 'e#mu OS'
+                channel = 'eem_OS'
+            elif option == 'SS':
+                plotDir = plotDirBase + 'eem_SS/'
+                channel_name += 'e#mu SS'
+                channel = 'eem_SS'
+            else:
+                plotDir = plotDirBase + 'eem/'
+                channel_name += 'e#mu'
+                channel = 'eem'
         if L1L2LeptonType == "mm":
             plotDir = plotDirBase + 'emm/'
             channel_name += '#mu#mu'
@@ -214,9 +231,18 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             channel_name += 'ee'
             channel = 'mee'
         if L1L2LeptonType == "em":
-            plotDir = plotDirBase + 'mem/'
-            channel_name += 'e#mu'
-            channel = 'mem'
+            if option == 'OS':
+                plotDir = plotDirBase + 'mem_OS/'
+                channel_name += 'e#mu OS'
+                channel = 'mem_OS'
+            elif option == 'SS':
+                plotDir = plotDirBase + 'mem_SS/'
+                channel_name += 'e#mu SS'
+                channel = 'mem_SS'
+            else:
+                plotDir = plotDirBase + 'eem/'
+                channel_name += 'e#mu'
+                channel = 'eem'
         if L1L2LeptonType == "mm":
             plotDir = plotDirBase + 'mmm/'
             channel_name += '#mu#mu'
@@ -268,6 +294,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Samples.py', regionDir+'/Samples.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/fr_net.py', regionDir+'/fr_net.py')
         else:
             copyfile(cmsBaseDir+'/src/CMGTools/HNL/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')

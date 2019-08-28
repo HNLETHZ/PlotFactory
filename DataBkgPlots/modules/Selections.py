@@ -70,12 +70,6 @@ def SR(channel):
     'abs(hnl_dphi_hnvis0) > 0.9 ',
     '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
 
-    #switch between (sub) final states in eem and mem
-    # 'hnl_q_01 == 0',  
-    # 'hnl_q_01 != 0', 
-    # 'hnl_q_02 == 0',
-    # 'hnl_q_02 != 0',
-
     #displacement bins
     # 'hnl_2d_disp < 0.5',
     # '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
@@ -91,8 +85,8 @@ def SR(channel):
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
     ## auxiliary selections
-    # 'hnl_m_12 < 5',
-    # 'hnl_2d_disp > 0.5',
+    # 'hnl_m_12 < 12',
+    # 'hnl_2d_disp > 1.5',
     # 'abs(l1_dz) < .2 ',
     # 'abs(l2_dz) < .2 ',
     # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
@@ -124,9 +118,41 @@ def SR(channel):
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
         ])
+    if channel is 'eem_OS':    
+        selection = '&'.join([
+            selection,
+            'hnl_q_01 == 0',  #OS eem
+            'l0_eid_mva_iso_wp90 == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+        ])
+    if channel is 'eem_SS':    
+        selection = '&'.join([
+            selection,
+            'hnl_q_01 != 0',  #SS eem 
+            'l0_eid_mva_iso_wp90 == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+        ])
     if channel is 'mem':
         selection = '&'.join([
             selection,
+            'l0_id_m == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+        ])
+    if channel is 'mem_OS':
+        selection = '&'.join([
+            selection,
+            'hnl_q_02 == 0',  #OS mem
+            'l0_id_m == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+        ])
+    if channel is 'mem_SS':
+        selection = '&'.join([
+            selection,
+            'hnl_q_02 != 0',  #SS eem
             'l0_id_m == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
@@ -138,6 +164,26 @@ def SR(channel):
     # return selection_ignoreEverything
     return selection
 
+def SR_disp1(channel):
+    selection = '&'.join([
+            SR(channel),
+            'hnl_2d_disp < 0.5',
+        ])
+    return selection
+
+def SR_disp2(channel):
+    selection = '&'.join([
+            SR(channel),
+            '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
+        ])
+    return selection
+
+def SR_disp3(channel):
+    selection = '&'.join([
+            SR(channel),
+            'hnl_2d_disp > 10',
+        ])
+    return selection
 
 
 def DY():
@@ -362,9 +408,9 @@ def MR_SF2_closure(channel):
 
 
 def getSelection(channel, selection_name):
-    # capping_value = '0.8';
+    capping_value = '0.8';
     # capping_value = '100.0';
-    capping_value = '2.0';
+    # capping_value = '2.0';
 
     #testing the old version
     if selection_name == 'baseline':
@@ -395,6 +441,15 @@ def getSelection(channel, selection_name):
     
     if selection_name == 'SR':
         selection = SR(channel)
+                    
+    if selection_name == 'SR_disp1':
+        selection = SR_disp1(channel)
+                    
+    if selection_name == 'SR_disp2':
+        selection = SR_disp2(channel)
+                    
+    if selection_name == 'SR_disp3':
+        selection = SR_disp3(channel)
                     
     if selection_name == 'SR_orth':
         selection = SR_orth(channel)

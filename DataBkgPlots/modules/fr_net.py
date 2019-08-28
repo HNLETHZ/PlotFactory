@@ -27,7 +27,7 @@ from itertools import product
 
 from root_numpy import root2array, tree2array
 from keras.models import Sequential, Model, load_model
-from keras.layers import Dense, Input
+from keras.layers import Dense, Input, Dropout
 from keras.utils import plot_model
 from keras.callbacks import EarlyStopping, Callback
 from keras import backend as K
@@ -47,8 +47,8 @@ import sys
        
 
 ROOT.EnableImplicitMT()
-# fix random seed for reproducibility (FIXME! not really used by Keras)
-# np.random.seed(1986)
+# fix random seed for reproducibility (TODO! check the reproducibility)
+np.random.seed(1986)
 
 def tree2array_process(queue, chain, branches, selection, key):
     print 'converting .root ntuples to numpy arrays... (%s events)'%key
@@ -70,7 +70,7 @@ def ex():
     p.join()
 
 def root2array_process(queue, file_in, branches, selection, sample_name, key):
-    print 'computing %s events for %s'%(key,sample_name)
+    # print 'computing %s events for %s'%(key,sample_name)
     array = pd.DataFrame(
                 root2array(
                     file_in,
@@ -91,7 +91,7 @@ def root2array_PoolProcess(input_array):
     xsec        = input_array[5]
     sumweights  = input_array[6]
 
-    print 'computing %s events for %s'%(key,sample_name)
+    # print 'computing %s events for %s'%(key,sample_name)
     array = pd.DataFrame(
                 root2array(
                     file_in,
@@ -324,12 +324,14 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     input  = Input((len(features),))
 
     dense1 = Dense(64, activation='relu'   , name='dense1')(input )
+    dropout1 = Dropout(0.5, seed = 123456)(dense1)
     output = Dense( 1, activation='sigmoid', name='output')(dense1)
 
     # dense1 = Dense(128, activation='relu'   , name='dense1')(input )
-    # dense2 = Dense(128, activation='relu'   , name='dense2')(dense1 )
-    # output = Dense( 1, activation='sigmoid', name='output')(dense2)
-
+    # dropout1 = Dropout(0.5, seed = 123456)(dense1)
+    # dense2 = Dense(64, activation='relu'   , name='dense2')(dropout1)
+    # dropout2 = Dropout(0.5, seed = 123456)(dense2)
+    # output = Dense( 1, activation='sigmoid', name='output')(dropout2)
 
 
     # Define outputs of your model
@@ -363,7 +365,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # train, give the classifier a head start
     # early stopping
-    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=20, restore_best_weights=True)
+    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50, restore_best_weights=True)
 
     # train only the classifier. beta is set at 0 and the discriminator is not trained
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
@@ -831,19 +833,28 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
             path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
         
         if channel == 'eee':
-            # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
             # path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
-            path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
+            # path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
+            # path_to_NeuralNet = 'NN/eee_nonprompt_v4_relasRelIso2/'
 
-        if channel == 'eem':
-            # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
+        if channel == 'eem_OS':
             path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
 
-        if channel == 'mem':
+        if channel == 'eem_SS':
+            path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
+
+        if channel == 'mem_OS':
             path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
-            # path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
+    
+        if channel == 'mem_SS':
+            path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
     
 
     return path_to_NeuralNet 
@@ -902,7 +913,7 @@ if __name__ == '__main__':
             newArrays = True,
             faketype = faketype,
             channel = channel,	
-            multiprocess = True,
+            multiprocess = False,
             )
 
     # make_all_friendtrees(

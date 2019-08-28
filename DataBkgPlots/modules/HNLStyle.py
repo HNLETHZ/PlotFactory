@@ -107,14 +107,14 @@ sHNL_DDE_singlefake = Style(lineColor = DDEcol_singlefake, markerColor = DDEcol_
 sHNL_nonprompt = Style(lineColor = nonpromptcol, markerColor = nonpromptcol, fillColor = nonpromptcol)
 
 # Signals
-sHNL_HN  = Style(lineColor=kBlue   , markerColor=0, lineStyle=2, fillColor=0, lineWidth=3)
-sHNL_HN2 = Style(lineColor=kAzure+8, markerColor=0, lineStyle=3, fillColor=0, lineWidth=3)
-sHNL_M2_Vp002  = Style(lineColor=kBlue   , markerColor=0, lineStyle=2, fillColor=0, lineWidth=3)
-sHNL_M2_Vp022  = Style(lineColor=kMagenta+2 , markerColor=0, lineStyle=2, fillColor=0, lineWidth=3)
-sHNL_M5_Vp002  = Style(lineColor=kRed       , markerColor=0, lineStyle=2, fillColor=0, lineWidth=3)
-sHNL_M5_Vp010  = Style(lineColor=kRed+2     , markerColor=0, lineStyle=3, fillColor=0, lineWidth=3)
-sHNL_M8_Vp002  = Style(lineColor=kGreen     , markerColor=0, lineStyle=3, fillColor=0, lineWidth=3)
-sHNL_M8_Vp005  = Style(lineColor=kGreen+2   , markerColor=0, lineStyle=3, fillColor=0, lineWidth=3)
+sHNL_HN        = Style(lineColor=kBlue      , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_HN2       = Style(lineColor=kAzure+8   , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M2_Vp002  = Style(lineColor=kBlue      , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M2_Vp022  = Style(lineColor=kMagenta+2 , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M5_Vp002  = Style(lineColor=kRed       , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M5_Vp010  = Style(lineColor=kRed+2     , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M8_Vp002  = Style(lineColor=kGreen     , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M8_Vp005  = Style(lineColor=kGreen+2   , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
 
 
 sBlackSquares = Style(markerStyle=21)
@@ -144,9 +144,9 @@ histPref = {}
 # histPref['M8_V.002'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.002}{c#tau = ?}'}
 # histPref['M8_V.005'] = {'style':sHNL_M8_Vp005, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.005}{c#tau = ?}'}
 
-histPref['HNL_M2_*'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'M = 2GeV'}
-histPref['HNL_M5_*'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'M = 5GeV'}
-histPref['HNL_M8_*'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'M = 8GeV'}
+histPref['HNL_M2_*'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'M = 2 GeV'}
+histPref['HNL_M5_*'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'M = 5 GeV'}
+histPref['HNL_M8_*'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'M = 8 GeV'}
 
 # histPref['HNL*'] = {'style':sHNL_HN, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = 14.6cm}'}#times 300}{c#tau = 14.6cm}'}
 histPref['Data*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
