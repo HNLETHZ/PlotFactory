@@ -40,9 +40,8 @@ class DataMCPlot(object):
         self.stack = None
         self.legendOn = True
         self.legend = None
-#        self.legendBorders = 0.20, 0.46, 0.44, 0.89
-#        self.legendPos = 'left'
-        self.legendBorders = 0.20, 0.78, 0.80, 0.88
+        # self.legendBorders = 0.20, 0.73, 0.80, 0.80
+        self.legendBorders = 0.20, 0.60, 0.80, 0.80
         self.legendPos = 'top'
         # self.lastDraw = None
         # self.lastDrawArgs = None
@@ -236,7 +235,7 @@ class DataMCPlot(object):
             self.legend.SetFillStyle(0)
             self.legend.SetLineColor(0)
             self.legend.SetLineWidth(1)
-            self.legend.SetNColumns(5) # number of comps / 2 (or 3) + 1
+            self.legend.SetNColumns(3) # number of comps / 2 (or 3) + 1
             self.legend.SetEntrySeparation(0.2) 
             self.legend.SetColumnSeparation(0.2) 
             self.legend.SetBorderSize(0)
@@ -311,7 +310,7 @@ class DataMCPlot(object):
         self.dataOverMCHist.Draw('same')
         yaxis = self.mcHist_err.GetYaxis()
         yaxis.SetRangeUser(ymin + 1., ymax + 1.)
-        yaxis.SetTitle('Data/MC')
+        yaxis.SetTitle('Data/Bkg')
         yaxis.SetNdivisions(5)
         yaxis.SetLabelSize(0.1)
         yaxis.SetTitleSize(0.1)
@@ -344,7 +343,6 @@ class DataMCPlot(object):
 
         The stack is considered as a single histogram.'''
         denom = None
-        # import pdb; pdb.set_trace()
         histForRatios = []
         denom = None
         for hist in self._SortedHistograms():
@@ -353,7 +351,7 @@ class DataMCPlot(object):
                 denom = hist
                 continue
             histForRatios.append(hist)
-        self._BuildStack(histForRatios, ytitle='MC/Data')
+        self._BuildStack(histForRatios, ytitle='Bkg/Data')
         self.stack.Divide(denom.obj)
         if self.blindminx and self.blindmaxx:
             self.stack.Blind(self.blindminx, self.blindmaxx)
@@ -390,7 +388,7 @@ class DataMCPlot(object):
                 continue
             # other histograms will be divided by the denominator
             histForRatios.append(hist)
-        self._BuildStack(histForRatios, ytitle='MC p.d.f. / Data p.d.f.')
+        self._BuildStack(histForRatios, ytitle='Bkg p.d.f. / Data p.d.f.')
         self.stack.Normalize()
         denom.Normalize()
         self.stack.Divide(denom.weighted)
@@ -449,6 +447,7 @@ class DataMCPlot(object):
             same = ''
         self.supportHist = None
         for hist in self.nostack:
+            if not hist.style: self._ApplyPrefs()
             if hist.style.drawAsData:
                 hist.Draw('SAME' if self.supportHist else '')
             else:
@@ -492,9 +491,7 @@ class DataMCPlot(object):
                 hist.Draw('SAME HIST')
 
         if self.supportHist.weighted.GetMaximumBin() < self.supportHist.weighted.GetNbinsX()/2:
-#            self.legendBorders = 0.62, 0.46, 0.88, 0.89
-            self.legendBorders = 0.20, 0.78, 0.80, 0.88
-#            self.legendPos = 'right'
+            self.legendBorders = 0.20, 0.60, 0.80, 0.80
             self.legendPos = 'top'
         
         self.DrawLegend(print_norm=print_norm)

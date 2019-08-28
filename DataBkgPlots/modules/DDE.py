@@ -402,7 +402,7 @@ class DDE(object):
             gROOT.ProcessLine(".L modules/DDE_singlefake.h+")
 
 def main():
-    # define basic config into
+    # define basic config info
     hostname = gethostname()
     if "lxplus" in hostname:
         analysis_dir = '/eos/user/v/vstampf/ntuples/'
@@ -419,13 +419,13 @@ def main():
     fakes = DDE(analysis_dir,hostname,channel) 
     # dfr   = fakes.makeDataFrame()
     # dfr_hist = fakes.measureDFR()
-    dfr_hist = fakes.measureDFR_4D(0.0,0.3)
-    dfr_hist = fakes.measureDFR_4D(0.3,10.0)
+    # dfr_hist = fakes.measureDFR_4D(0.0,0.3)
+    # dfr_hist = fakes.measureDFR_4D(0.3,10.0)
     # dfr_hist = fakes.measureSFR()
     # dfr_hist = fakes.testbench()
-    fakes.makeNameSpaceDoubleFakes_4D()
+    # fakes.makeNameSpaceDoubleFakes_4D()
     # fakes.makeNameSpaceDoubleFakes()
-    # fakes.makeNameSpaceSingleFakes()
+    fakes.makeNameSpaceSingleFakes()
     
 
 if __name__ == '__main__':

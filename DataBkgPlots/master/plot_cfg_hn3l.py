@@ -4,12 +4,14 @@ from collections import namedtuple
 from operator import itemgetter
 from ROOT import gROOT as gr
 from multiprocessing import Pool, Process, cpu_count
+import modules.fr_net as fr_net
 
 from shutil import copyfile, copytree
 from numpy import array
 from getpass import getuser
 from socket import gethostname
 import time
+import sys
 
 from copy_reg import pickle       # to pickle methods for multiprocessing
 from types    import MethodType   # to pickle methods for multiprocessing
@@ -55,9 +57,26 @@ int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR',channel,'SR'))
-    # regions.append(Region('SR_orth',channel,'SR'))
-    # regions.append(Region('MR_DF',channel,'MR'))
-    regions.append(Region('MR_SF',channel,'MR'))
+    # regions.append(Region('MR_nonprompt',channel,'SR'))
+    # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
+    regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
+    # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
+    # regions.append(Region('SR',channel,'SR'))
+    # regions.append(Region('SR_disp1',channel,'SR_disp1'))
+    # regions.append(Region('SR_disp2',channel,'SR_disp2'))
+    # regions.append(Region('SR_disp3',channel,'SR_disp3'))
+    # regions.append(Region('MR_nonprompt_v40_DropoutM12_80',channel,'SR'))
+    # regions.append(Region('MR_RightBand',channel,'SR'))
+    # regions.append(Region('MR_LeftBand',channel,'SR'))
+    # regions.append(Region('SR_orth',channel,'SR_orth'))
+    # regions.append(Region('MR_DF_closure',channel,'MR_DF_closure'))
+    # regions.append(Region('MR_DF',channel,'MR_DF'))
+    # regions.append(Region('MR_DF_closure',channel,'MR_DF_closure'))
+    # regions.append(Region('MR_SF1',channel,'MR_SF1'))
+    # regions.append(Region('MR_SF2',channel,'MR_SF2'))
+    # regions.append(Region('MR_SF2_closure',channel,'MR_SF2_closure'))
+    # regions.append(Region('MR_nonprompt',channel,'MR_nonprompt'))
+    # regions.append(Region('Z_reproducibility_v3',channel,'SR'))
     # regions.append(Region('Conversion',channel,'Conversion'))
     # regions.append(Region('TTbar',channel,'ttbar'))
     # regions.append(Region('DY',channel,'DY'))
@@ -76,7 +95,7 @@ def prepareRegions(channel):
 def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None):
     sample_dict = {}
     # print "creating samples from %s"%(analysis_dir)
-    samples_all, samples_singlefake, samples_doublefake = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
 
     #select here the samples you wish to use
     # working_samples = samples_data_dde
@@ -106,7 +125,7 @@ def createVariables(rebin=None):
 
     return variables
 
-def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm', analysis_dir='/home/dehuazhu/SESSD/4_production/'):
+def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, useNeuralNetwork=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm', analysis_dir='/home/dehuazhu/SESSD/4_production/'):
     ams_dict = {}
     sample_names = set()
     for region in regions:
@@ -118,10 +137,21 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
         else:
             multiprocess_status = 'OFF'
 
-        print('\n###########################################################')
+        if useNeuralNetwork:
+            fr_method = 'Neural Network'
+        else:
+            fr_method = 'Tight to Loose'
+
+        print('\n#############################################################################')
         print('# creating plots for %i sample(s) and %i variable(s)...'%(len(sample_dict['working_samples']),len(variables),))
-        print('# using %d CPUs'%(cpu_count())), 'with multiprocess %s'%(multiprocess_status)
-        print('###########################################################')
+        print('# using %d CPUs'%(cpu_count())), 'with multiprocess %s'%(multiprocess_status) 
+        print('# Method used to estimate Lepton Fake Rate: %s'%(fr_method))
+        if useNeuralNetwork:
+            # print '# Path to Neural Network for SingleFakes1:\t' + fr_net.path_to_NeuralNet('SingleFake1',channel_dir)
+            # print '# Path to Neural Network for SingleFakes2:\t' + fr_net.path_to_NeuralNet('SingleFake2',channel_dir)
+            # print '# Path to Neural Network for DoubleFakes:\t' + fr_net.path_to_NeuralNet('DoubleFake',channel_dir)
+            print '# Path to Neural Network for nonprompt:\t\t' + fr_net.path_to_NeuralNet('nonprompt',channel_dir)
+        print('#############################################################################')
 
         i_var = 0
         start_plots = time.time()
@@ -130,26 +160,30 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             print '\nPlotting variable \'%s\' (%d of %d; total time passed: %.1f s)...'%(var.name,i_var,len(variables),time.time()-start_plots)
             start_plot = time.time()
             cfg_main.vars = [var]
-            HISTS = CreateHists(cfg_main, analysis_dir,channel_dir,server)
+            HISTS = CreateHists(cfg_main, analysis_dir,channel_dir,server,useNeuralNetwork)
             plots = HISTS.createHistograms(cfg_main, verbose=False, multiprocess = multiprocess)
             plot = plots[var.name]
             plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
-            plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
-            plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
-            plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
-            plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
-            plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50'])
-            plot.Group('QCD',['QCD_pt_15to20_mu', 'QCD_pt_20to30_mu', 'QCD_pt_30to50_mu', 'QCD_pt_50to80_mu', 'QCD_pt_80to120_mu'])
-            plot.Group('WJets', ['WJetsToLNu','WJetsToLNu_ext','W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu'])
-            plot.Group('ConversionsSingle', ['ConversionsSingle_DYJetsToLL_M10to50','ConversionsSingle_DYJets_M50','ConversionsSingle_DYJets_M50_ext'])
-            plot.Group('ConversionsDouble', ['ConversionsDouble_DYJetsToLL_M10to50','ConversionsDouble_DYJets_M50','ConversionsDouble_DYJets_M50_ext'])
+            # plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
+            # plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
+            plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F','Conversions_DYJetsToLL_M10to50_contamination','Conversions_DYJets_M50_contamination','Conversions_DYJets_M50_ext_contamination','WZTo3LNu_contamination','ZZTo4L_contamination','WW_contamination','WZ_contamination','ZZ_contamination','TTJets_contamination'])
+            plot.Group('prompt',['Conversions_DYJetsToLL_M10to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext','WZTo3LNu','ZZTo4L','WW','WZ','ZZ','TTJets'])
+            # plot.Group('contamination', ['conversionsSingle_DYJets_M50_contamination', 'conversionsSingle_DYJets_M50_ext_contamination', 'conversionsSingle_DYJetsToLL_M10to50_contamination','WW_contamination','WZ_contamination','ZZ_contamination'])
+            # plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
+            # plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
+            # plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50'])
+            # plot.Group('QCD',['QCD_pt_15to20_mu', 'QCD_pt_20to30_mu', 'QCD_pt_30to50_mu', 'QCD_pt_50to80_mu', 'QCD_pt_80to120_mu'])
+            # plot.Group('WJets', ['WJetsToLNu','WJetsToLNu_ext','W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu'])
+            # plot.Group('Conversions', ['Conversions_DYJetsToLL_M10to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext'])
+            # plot.Group('ConversionsSingle', ['ConversionsSingle_DYJetsToLL_M10to50','ConversionsSingle_DYJets_M50','ConversionsSingle_DYJets_M50_ext'])
+            # plot.Group('ConversionsDouble', ['ConversionsDouble_DYJetsToLL_M10to50','ConversionsDouble_DYJets_M50','ConversionsDouble_DYJets_M50_ext'])
             plot.Group('HNL', ['HN3L'])
             if make_plots:
                 HistDrawer.draw(plot, channel = channel_name, plot_dir = plotDir+region.name, server = server, region = region, channel_dir = channel_dir)
             print'\tThis plot took %.1f s to compute.'%(time.time()-start_plot)
 
 
-def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, dataframe = True):
+def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess = False, dataframe = True):
     start_time = time.time()
 
     usr = getuser()
@@ -167,6 +201,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
     if 'starseeker' in hostname:
         if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/'
 
+
     if promptLeptonType == "ele":
         channel_name = 'e'
         if L1L2LeptonType == "ee":
@@ -174,9 +209,18 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             channel_name += 'ee'
             channel = 'eee'
         if L1L2LeptonType == "em":
-            plotDir = plotDirBase + 'eem/'
-            channel_name += 'e#mu'
-            channel = 'eem'
+            if option == 'OS':
+                plotDir = plotDirBase + 'eem_OS/'
+                channel_name += 'e#mu OS'
+                channel = 'eem_OS'
+            elif option == 'SS':
+                plotDir = plotDirBase + 'eem_SS/'
+                channel_name += 'e#mu SS'
+                channel = 'eem_SS'
+            else:
+                plotDir = plotDirBase + 'eem/'
+                channel_name += 'e#mu'
+                channel = 'eem'
         if L1L2LeptonType == "mm":
             plotDir = plotDirBase + 'emm/'
             channel_name += '#mu#mu'
@@ -188,9 +232,18 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             channel_name += 'ee'
             channel = 'mee'
         if L1L2LeptonType == "em":
-            plotDir = plotDirBase + 'mem/'
-            channel_name += 'e#mu'
-            channel = 'mem'
+            if option == 'OS':
+                plotDir = plotDirBase + 'mem_OS/'
+                channel_name += 'e#mu OS'
+                channel = 'mem_OS'
+            elif option == 'SS':
+                plotDir = plotDirBase + 'mem_SS/'
+                channel_name += 'e#mu SS'
+                channel = 'mem_SS'
+            else:
+                plotDir = plotDirBase + 'eem/'
+                channel_name += 'e#mu'
+                channel = 'eem'
         if L1L2LeptonType == "mm":
             plotDir = plotDirBase + 'mmm/'
             channel_name += '#mu#mu'
@@ -225,6 +278,10 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
 
     for region in regions:
         regionDir = plotDir+region.name
+        # old_stdout = sys.stdout
+        # log_file = open(regionDir+'/output.log','w')
+        # sys.stdout=log_file
+    
         if not os.path.exists(regionDir):
             os.mkdir(regionDir)
             print "Output directory created. "
@@ -240,6 +297,8 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
             copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Selections.py', regionDir+'/Selections.py')
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/Samples.py', regionDir+'/Samples.py')
+            copyfile(cmsBaseDir+'/src/PlotFactory/DataBkgPlots/modules/fr_net.py', regionDir+'/fr_net.py')
         else:
             if usr == 'manzoni': 
                 copyfile(cmsBaseDir+'PlotFactory/DataBkgPlots/0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
@@ -278,13 +337,14 @@ def producePlots(promptLeptonType, L1L2LeptonType, multiprocess = False, datafra
         sample_dict, 
         make_plots=True,
         multiprocess=True,
+        useNeuralNetwork=True,
         dataframe=dataframe,
         server=hostname,
         channel_dir=channel,
         analysis_dir=analysis_dir
     )
 
-
-
     end_time = time.time()
     print('This job took %.1f seconds to compute.'%(end_time-start_time))
+    # sys.stdout = old_stdout
+    # log_file.close()

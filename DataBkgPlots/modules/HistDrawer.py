@@ -34,17 +34,17 @@ class HistDrawer:
             padr = cls.padr = can.GetPad(2) if not padr else padr
 
             # Set Pad sizes
-            pad.SetPad(0.0, 0.32, 1., 1.0)
-            padr.SetPad(0.0, 0.00, 1., 0.34)
+            pad.SetPad(0.0, 0.32, 1.0, 1.0)
+            padr.SetPad(0.0, 0.00,1.0, 0.34)
 
             pad.SetTopMargin(0.08)
             pad.SetLeftMargin(0.16)
             pad.SetBottomMargin(0.03)
-            pad.SetRightMargin(0.05)
+            pad.SetRightMargin(0.10)
 
             padr.SetBottomMargin(0.35)
             padr.SetLeftMargin(0.16)
-            padr.SetRightMargin(0.05)
+            padr.SetRightMargin(0.10)
 
         can.cd()
         can.Draw()
@@ -55,7 +55,7 @@ class HistDrawer:
 
     @classmethod
     def buildCanvasSingle(cls):
-        ocan = TCanvas('ocan', '', 600, 600)
+        ocan = TCanvas('ocan', '', 800, 800)
         ocan.cd()
         ocan.Draw()
         return ocan
@@ -84,10 +84,10 @@ class HistDrawer:
         posXhigh = 0.25
 
 #        if legend == 'left':
-        posX = 1. - r - 0.09
-#            posX = 1. - l - 0.08
-        posXhigh = 1. - r - 0.03
-#            posXhigh = 1. - l - 0.02
+        # posX = 1. - r - 0.09
+        posX = 1. - r - 0.15
+        # posXhigh = 1. - r - 0.03
+        posXhigh = 1. - r - 0.09
 
         plot.chan = TPaveText(posX, lowY, posXhigh, lowY+0.15, "NDC")
         plot.chan.SetBorderSize(0)
@@ -114,11 +114,14 @@ class HistDrawer:
 
         if do_ratio:
             can, pad, padr = HistDrawer.buildCanvas()
+            pad.cd()
+            pad.SetLogy(SetLogy)
         else:
             can = HistDrawer.buildCanvasSingle()
+            pad = can
+            pad.cd()
+            pad.SetLogy(SetLogy)
 
-        pad.cd()
-        pad.SetLogy(SetLogy)
 
         plot.DrawStack('HIST', print_norm=plot.name=='_norm_', ymin=0.1) # magic word to print integrals in legend
 
@@ -188,6 +191,8 @@ class HistDrawer:
         can.cd()
         
         gErrorIgnoreLevel = kWarning
+        h.GetYaxis().SetRangeUser(0, pad.GetUymax() * 1.)
+
         if not os.path.exists(plot_dir + '/pdf/'):
             os.mkdir(plot_dir + '/pdf/')
             os.mkdir(plot_dir + '/pdf/linear/')
@@ -213,8 +218,9 @@ class HistDrawer:
 
 
         # Also save with log y
-        h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 5.)
+        h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 1000.)
         pad.SetLogy(True)
+        # pad.SetLogx(True)
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')

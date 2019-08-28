@@ -102,13 +102,15 @@ def split(file_name): #without.root
     df2.Snapshot('tree', '%s_untouched_half.root'%file_name)
 
 
-def run_nn(tree_file_name):
+def run_nn(tree_file_name,sample_name):
     # calculate predictions on sample
-    print 'Engaging Neural Network'
+    print 'Engaging Neural Network for %s'%sample_name
     # tree_file_name='/home/dehuazhu/SESSD/4_production/production_20190411_Data_mmm/ntuples/Single_mu_2017B/HNLTreeProducer/tree.root'
     # path_to_tree = file_name + 'sfr_weights.root'
-    path_to_tree = 'sfr_weights.root'
-    if os.path.isfile(path_to_tree): return path_to_tree
+    path_to_tree = 'modules/%s_sfr_weights.root'%sample_name
+    if os.path.isfile(path_to_tree): 
+        print 'Using existing friendtree at %s'%path_to_tree
+        return path_to_tree
 
     features = ['l2_abs_dxy', 'l2_abs_eta', 'l2_ptcone']
     branches = ['event', 'lumi', 'l2_pt', 'l2_dxy', 'l2_eta', 'l2_dz', 'l2_reliso_rho_03'] 
@@ -125,7 +127,7 @@ def run_nn(tree_file_name):
     X = pd.DataFrame(df, columns=features)
 
     classifier = load_model('modules/net.h5')
-    print ('predicting on', tree_file_name)
+    print 'predicting on' + tree_file_name
     Y = classifier.predict(X)
 
    #self.data_train.insert(len(self.data_train.columns), 'score', self.y1)

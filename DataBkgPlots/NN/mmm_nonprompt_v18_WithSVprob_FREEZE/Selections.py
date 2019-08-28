@@ -29,7 +29,7 @@ def Z_veto():
     Z_veto_01_02_12 = '( (l0_q + l1_q == 0) && (abs(hnl_m_01 - 91.2) > 15) )  &&  ( (l0_q + l2_q == 0) && (abs(hnl_m_02 - 91.2) > 15) )  &&  ( (l1_q + l2_q == 0) && (abs(hnl_m_12 - 91.2) > 15) )'
 
     single_Z_veto = '(  ' + Z_veto_01 + '   ||   ' + Z_veto_02 + '   ||   ' + Z_veto_12 + '  )'
-    double_Z_veto = '(  ' + Z_veto_01_02 + '   ||   ' + Z_veto_01_12 + '   ||   ' + Z_veto_02_12 + '  )'
+    ouble_Z_veto = '(  ' + Z_veto_01_02 + '   ||   ' + Z_veto_01_12 + '   ||   ' + Z_veto_02_12 + '  )'
 
     Z_veto = ' && (   ' + single_Z_veto + '    ||    ' + double_Z_veto + '    ||    ' + Z_veto_01_02_12 + '   )' 
     return Z_veto
@@ -44,146 +44,56 @@ def CR_ttbar():
     return selection
 
 def SR(channel):
-    selection = ' & '.join([
-    'l0_pt > 25 '              , 
-    'abs(l0_eta) < 2.4 '       ,
-    'abs(l0_dz) < 0.2 '        ,
-    'abs(l0_dxy) < 0.05 '      ,
-    'l0_reliso_rho_03 < 0.2 '  ,
-
-    'l1_pt > 5 '              ,
-    'abs(l1_eta) < 2.4 '       ,
-    # 'abs(l1_dxy) > 0.002 '      ,
-    # 'abs(l1_dxy) > 0.01 '      ,
-    # 'abs(l1_dz) < 5',
-
-    'l2_pt > 5 '               ,
-    'abs(l2_eta) < 2.4 '       ,
-    # 'abs(l2_dxy) > 0.002 '       ,
-    # 'abs(l2_dxy) > 0.01 '       ,
-    # 'abs(l2_dz) < 5',
-
-    'hnl_q_12 == 0 '           ,
-    # 'hnl_2d_disp > 0.0005',
-    # 'hnl_dr_02 > 0.2',
-    # 'hnl_dr_01 > 0.2',
-    'abs(hnl_dphi_hnvis0) > 0.9 ',
-    '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
-
-    #displacement bins
-    # 'hnl_2d_disp < 0.5',
-    # '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
-    # 'hnl_2d_disp > 10',
-
-    '(nbj == 0)',# true SR
-    # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
-    
-    # '!(nbj == 0)', # activate for SR orthogonal
-    '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
-    # '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
-    # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m > 110) ', # activate for right sideband (train)
-    # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
-    
-    ## auxiliary selections
-    # 'hnl_m_12 < 12',
-    # 'hnl_2d_disp > 1.5',
-    # 'abs(l1_dz) < .2 ',
-    # 'abs(l2_dz) < .2 ',
-    # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
-    # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
-    # 'hnl_dr_12 > 0.025', # the trick to make plots look nicer
-    # '!(hnl_m_01 > 82.0 && hnl_m_01 < 95.) ', # get rid of Z peak
-    # '!(hnl_w_vis_m > 80. && hnl_w_vis_m < 94.) ', # get rid of Z peak
-    # 'sv_prob > 0.01', #get rid of bad vertex fit events
-    ])
     if channel is 'mmm':
         selection = '&'.join([
-            selection,
-            'l0_id_m == 1',
-            'l1_Medium == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-        
-    if channel is 'eee':
-        selection = '&'.join([
-            selection,
-            'l0_eid_mva_iso_wp90 == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_MediumNoIso == 1 ', 
-        ])
-    if channel is 'eem':    
-        selection = '&'.join([
-            selection,
-            'l0_eid_mva_iso_wp90 == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'eem_OS':    
-        selection = '&'.join([
-            selection,
-            'hnl_q_01 == 0',  #OS eem
-            'l0_eid_mva_iso_wp90 == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'eem_SS':    
-        selection = '&'.join([
-            selection,
-            'hnl_q_01 != 0',  #SS eem 
-            'l0_eid_mva_iso_wp90 == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'mem':
-        selection = '&'.join([
-            selection,
-            'l0_id_m == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'mem_OS':
-        selection = '&'.join([
-            selection,
-            'hnl_q_02 == 0',  #OS mem
-            'l0_id_m == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'mem_SS':
-        selection = '&'.join([
-            selection,
-            'hnl_q_02 != 0',  #SS eem
-            'l0_id_m == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-        
+        'l0_pt > 25 '              , 
+        'abs(l0_eta) < 2.4 '       ,
+        'abs(l0_dz) < 0.2 '        ,
+        'abs(l0_dxy) < 0.05 '      ,
+        'l0_reliso_rho_03 < 0.2 '  ,
+        'l0_id_m == 1  '           ,
 
-    selection_ignoreEverything = 'l1_pt > 0'
+        'l1_pt > 5 '              ,
+        'abs(l1_eta) < 2.4 '       ,
+        # 'abs(l1_dxy) > 0.002 '      ,
+	# 'abs(l1_dxy) > 0.01 '      ,
+	# 'abs(l1_dz) < 5',
+
+        'l2_pt > 5 '               ,
+        'abs(l2_eta) < 2.4 '       ,
+        # 'abs(l2_dxy) > 0.002 '       ,
+	# 'abs(l2_dxy) > 0.01 '       ,
+	# 'abs(l2_dz) < 5',
+
+        'hnl_q_12 == 0 '           ,
+        # 'hnl_2d_disp > 0.0005',
+        # 'hnl_dr_02 > 0.2',
+        # 'hnl_dr_01 > 0.2',
+        'abs(hnl_dphi_hnvis0) > 0.9 ',
+        '(abs(hnl_m_12 - 3.1) > 0.05)', # avoid JPsi
+
+
+        '(nbj == 0)',
+	# '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', 
+        
+        # '!(nbj == 0)', # activate for SR orthogonal
+        '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
+        # '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
+        
+        ## auxiliary selections
+        # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
+        # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
+	# 'hnl_dr_12 > 0.025', # the trick to make plots look nicer
+        # '!(hnl_m_01 > 82.0 && hnl_m_01 < 95.) ', # get rid of Z peak
+        # '!(hnl_w_vis_m > 80. && hnl_w_vis_m < 94.) ', # get rid of Z peak
+        # 'sv_prob > 0.01', #get rid of bad vertex fit events
+        ])
+
+        selection_ignoreEverything = 'l1_pt > 0'
 
     # return selection_ignoreEverything
     return selection
 
-def SR_disp1(channel):
-    selection = '&'.join([
-            SR(channel),
-            'hnl_2d_disp < 0.5',
-        ])
-    return selection
-
-def SR_disp2(channel):
-    selection = '&'.join([
-            SR(channel),
-            '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
-        ])
-    return selection
-
-def SR_disp3(channel):
-    selection = '&'.join([
-            SR(channel),
-            'hnl_2d_disp > 10',
-        ])
-    return selection
 
 
 def DY():
@@ -407,177 +317,157 @@ def MR_SF2_closure(channel):
     return selection
 
 
+
 def getSelection(channel, selection_name):
-    capping_value = '0.8';
-    # capping_value = '100.0';
-    # capping_value = '2.0';
+    if channel == 'mmm':
+        #testing the old version
+        if selection_name == 'baseline':
+            selection = baseline(channel)
+            
+            # selection = selection + Z_veto() 
 
-    #testing the old version
-    if selection_name == 'baseline':
-        selection = baseline(channel)
-        
-        # selection = selection + Z_veto() 
-
-    if selection_name == 'ttbar':
-        selection = CR_ttbar()
-                    
-    if selection_name == 'DY':
-        selection = DY()
-
-    if selection_name == 'MR_DF':
-        selection = MR_DF(channel)
-                    
-    if selection_name == 'MR_DF_closure':
-        selection = MR_DF_closure(channel)
-                    
-    if selection_name == 'MR_SF1':
-        selection = MR_SF1(channel)
-    
-    if selection_name == 'MR_SF2':
-        selection = MR_SF2(channel)
-    
-    if selection_name == 'MR_SF2_closure':
-        selection = MR_SF2_closure(channel)
-    
-    if selection_name == 'SR':
-        selection = SR(channel)
-                    
-    if selection_name == 'SR_disp1':
-        selection = SR_disp1(channel)
-                    
-    if selection_name == 'SR_disp2':
-        selection = SR_disp2(channel)
-                    
-    if selection_name == 'SR_disp3':
-        selection = SR_disp3(channel)
-                    
-    if selection_name == 'SR_orth':
-        selection = SR_orth(channel)
-                    
-    if selection_name == 'MR_nonprompt':
-        # selection = MR_nonprompt(channel)
-        selection = SR(channel)
-
-    if selection_name == 'Conversions':
-        selection = Conversions(channel)
-                    
-    #new method
-    if selection_name == 'T_T':
-        selection = (
-                    '('
-                    'l1_reliso_rho_03 < 0.2 ' 
-                    '&& l2_reliso_rho_03 < 0.2 '
-                    ')'
-                    )
-
-                    
-    if selection_name == 'LNT_T':
-        selection = (
-                    '('
-                    '!((l1_reliso_rho_03 < 0.2)) '
-                    '&& ((l2_reliso_rho_03 < 0.2)) '
-                    # '&& ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
-                    '&& (l1_reliso_rho_03 < %s) '%capping_value+
-                    ')'
-                    )
-                    
-    if selection_name == 'T_LNT':
-        selection = (
-                    '('
-                    '!((l2_reliso_rho_03 < 0.2)) '
-                    '&& ((l1_reliso_rho_03 < 0.2)) '
-                    # '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
-                    '&& (l2_reliso_rho_03 < %s) '%capping_value+
-                    ')'
-                    )
-                    
-                    
-    if selection_name == 'LNT_LNT_uncorrelated':
-        selection = (
-                    '('
-                    # '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
-                    # '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
-                    '(l1_reliso_rho_03 < %s) '%capping_value+
-                    '&& (l2_reliso_rho_03 < %s) '%capping_value+
-                    '&& !((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
-                    '&& !((l1_reliso_rho_03 < 0.2)) '
-                    '&& !((l2_reliso_rho_03 < 0.2)) '
-                    ')'
-                    )
-                    
-    if selection_name == 'LNT_LNT_correlated':
-        selection = (
-                    '('
-                    '(hnl_iso04_rel_rhoArea < 2) ' 
-                    '&& ((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
-                    '&& !((l1_reliso_rho_03 < 0.2)) '
-                    '&& !((l2_reliso_rho_03 < 0.2)) '
-                    ')'
-                    )
-
-    if selection_name == 'L_T':
-        selection = ( 
-                    '('
-                    # '((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
-                    '(l1_reliso_rho_03 < %s) '%capping_value+
-                    '&& ((l2_reliso_rho_03 < 0.2)) '
-                    ')'
-                    )
-                    
-    if selection_name == 'T_L':
-        selection = ( 
-                    '('
-                    # '((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
-                    '(l2_reliso_rho_03 < %s) '%capping_value+
-                    '&& ((l1_reliso_rho_03 < 0.2)) '
-                    ')'
-                    )
-                    
-    if selection_name == 'L_L_uncorrelated':
-        selection = (
-                    '('
-                    # '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
-                    # '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
-                    '(l1_reliso_rho_03 < %s) '%capping_value +
-                    '&& (l2_reliso_rho_03 < %s) '%capping_value +
-                    '&& !((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
-                    ')'
-                    )
-                    
-    if selection_name == 'L_L_correlated':
-        selection = (
-                    '('
-                    '(hnl_iso04_rel_rhoArea < 2) ' 
-                    '&& ((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
-                    ')'
-                    )
-
-    if selection_name == 'LNT_LNT':
-        selection = (
-                    '('
-                    # '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
-                    # '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
-                    '(l1_reliso_rho_03 < %s) '%capping_value+
-                    '&& (l2_reliso_rho_03 < %s) '%capping_value+
-                    '&& !((l1_reliso_rho_03 < 0.2)) '
-                    '&& !((l2_reliso_rho_03 < 0.2)) '
-                    ')'
-                    )
-
-    if selection_name == '!T_T':
-        selection = (
-                    '('
-                    # '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
-                    # '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
-                    '(l1_reliso_rho_03 < %s) '%capping_value+
-                    '&& (l2_reliso_rho_03 < %s) '%capping_value+
-                    '&& !((l1_reliso_rho_03 < 0.2) && (l2_reliso_rho_03 < 0.2)) '
-                    ')'
-                    )
-
+        if selection_name == 'ttbar':
+            selection = CR_ttbar()
                         
-    if selection_name == 'datacut':
-        selection = defineDataCut('mu')
+        if selection_name == 'DY':
+            selection = DY()
+
+        if selection_name == 'MR_DF':
+            selection = MR_DF(channel)
+                        
+        if selection_name == 'MR_DF_closure':
+            selection = MR_DF_closure(channel)
+                        
+        if selection_name == 'MR_SF1':
+            selection = MR_SF1(channel)
+        
+        if selection_name == 'MR_SF2':
+            selection = MR_SF2(channel)
+        
+        if selection_name == 'MR_SF2_closure':
+            selection = MR_SF2_closure(channel)
+        
+        if selection_name == 'SR':
+            selection = SR(channel)
+                        
+        if selection_name == 'SR_orth':
+            selection = SR_orth(channel)
+                        
+        if selection_name == 'MR_nonprompt':
+            # selection = MR_nonprompt(channel)
+            selection = SR(channel)
+
+        if selection_name == 'Conversions':
+            selection = Conversions(channel)
+                        
+        if selection_name == 'T_T':
+            selection = (
+                        '('
+                        'l1_reliso_rho_03 < 0.2 ' 
+                        '&& l2_reliso_rho_03 < 0.2 '
+                        '&& l1_Medium == 1 '
+                        '&& l2_Medium == 1 '
+                        ')'
+                        )
+                        
+        if selection_name == 'LNT_T':
+            selection = (
+                        '('
+                        '!((l1_reliso_rho_03 < 0.2) '
+                        '&& (l1_Medium == 1)) ' 
+                        '&& ((l2_reliso_rho_03 < 0.2) '
+                        '&& (l2_Medium == 1)) '
+                        '&& ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
+                        ')'
+                        )
+                        
+        if selection_name == 'T_LNT':
+            selection = (
+                        '('
+                        '!((l2_reliso_rho_03 < 0.2) '
+                        '&& (l2_Medium == 1)) ' 
+                        '&& ((l1_reliso_rho_03 < 0.2) '
+                        '&& (l1_Medium == 1)) '
+                        '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
+                        ')'
+                        )
+                        
+        if selection_name == 'LNT_LNT_uncorrelated':
+            selection = (
+                        '('
+                        '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
+                        '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
+                        '&& !((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
+                        '&& !((l1_reliso_rho_03 < 0.2) && (l1_Medium == 1)) '
+                        '&& !((l2_reliso_rho_03 < 0.2) && (l2_Medium == 1)) '
+                        ')'
+                        )
+                        
+        if selection_name == 'LNT_LNT_correlated':
+            selection = (
+                        '('
+                        '(hnl_iso04_rel_rhoArea < 2) ' 
+                        '&& ((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
+                        '&& !((l1_reliso_rho_03 < 0.2) && (l1_Medium == 1)) '
+                        '&& !((l2_reliso_rho_03 < 0.2) && (l2_Medium == 1)) '
+                        ')'
+                        )
+
+        if selection_name == 'L_T':
+            selection = ( 
+                        '('
+                        '((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
+                        '&& ((l2_reliso_rho_03 < 0.2) && (l2_Medium == 1)) '
+                        ')'
+                        )
+                        
+        if selection_name == 'T_L':
+            selection = ( 
+                        '('
+                        '((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
+                        '&& ((l1_reliso_rho_03 < 0.2) && (l1_Medium == 1)) '
+                        ')'
+                        )
+                        
+        if selection_name == 'L_L_uncorrelated':
+            selection = (
+                        '('
+                        '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
+                        '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
+                        '&& !((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
+                        ')'
+                        )
+                        
+        if selection_name == 'L_L_correlated':
+            selection = (
+                        '('
+                        '(hnl_iso04_rel_rhoArea < 2) ' 
+                        '&& ((abs(l1_jet_pt - l2_jet_pt) < 1) && ((hnl_dr_12 < 0.3)))'
+                        ')'
+                        )
+
+        if selection_name == 'LNT_LNT':
+            selection = (
+                        '('
+                        '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
+                        '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
+                        '&& !((l1_reliso_rho_03 < 0.2) && (l1_Medium == 1)) '
+                        '&& !((l2_reliso_rho_03 < 0.2) && (l2_Medium == 1)) '
+                        ')'
+                        )
+
+        if selection_name == '!T_T':
+            selection = (
+                        '('
+                        '   ((l1_reliso_rho_03 < 0.38 && abs(l1_eta) < 1.2) || (l1_reliso_rho_03 < 0.29 && abs(l1_eta) > 1.2 && abs(l1_eta) < 2.1) || (l1_reliso_rho_03 < 0.20 && abs(l1_eta) > 2.1))'
+                        '&& ((l2_reliso_rho_03 < 0.38 && abs(l2_eta) < 1.2) || (l2_reliso_rho_03 < 0.29 && abs(l2_eta) > 1.2 && abs(l2_eta) < 2.1) || (l2_reliso_rho_03 < 0.20 && abs(l2_eta) > 2.1))'
+                        '&& !((l1_reliso_rho_03 < 0.2) && (l1_Medium == 1) && (l2_reliso_rho_03 < 0.2) && (l2_Medium == 1)) '
+                        ')'
+                        )
+                        
+    
+        if selection_name == 'datacut':
+            selection = defineDataCut('mu')
  
     return selection
 
@@ -634,5 +524,4 @@ class Region(object):
         self.MC_Conversions             = self.MC        + Prompt_extension
         self.MC_contamination_pass      = self.MC        + Prompt_extension
         self.MC_contamination_fail      = self.nonprompt + Prompt_extension
-
 

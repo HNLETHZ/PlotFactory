@@ -61,16 +61,30 @@ ttcol = TColor.GetColor(155,152,204)
 tcol = kMagenta+2
 zlcol = TColor.GetColor(100,182,232)
 dibosoncol = kBlue+2 #TColor.GetColor(222,90,106)
+# promptcol = kAzure+2 #TColor.GetColor(222,90,106)
 tribosoncol = kCyan #TColor.GetColor(222,90,106)
 ttvcol = kCyan+2 #TColor.GetColor(222,90,106)
 zzcol = kGreen+2 #TColor.GetColor(222,90,106)
 singleTcol = kMagenta-9 
 DDEcol_doublefake = kGreen-6 
 # DDEcol_singlefake = kRed-6 
-DDEcol_singlefake = dycol 
 ConversionCol = kMagenta-9
 ConversionsDoubleCol = kMagenta-9
 ConversionsSingleCol = kCyan-9
+
+DDEcol_singlefake = TColor.GetColor(248,187,70) #yellow
+# promptcol = TColor.GetColor(81,133,240) #blue
+# nonpromptcol = TColor.GetColor(81,133,240) #blue
+# promptcol = TColor.GetColor(84,168,88) #green
+
+# nonpromptcol = TColor.GetColor(0,191,255)
+# promptcol = TColor.GetColor(000,000,128)
+
+# nonpromptcol = TColor.GetColor('#8AA6BC')
+# promptcol = TColor.GetColor('#495F70')
+
+nonpromptcol = TColor.GetColor('#94B0C6')
+promptcol = TColor.GetColor('#5D7384')
 
 # Backgrounds
 sHNL_QCD = Style(lineColor=qcdcol, markerColor=qcdcol, fillColor=qcdcol)
@@ -81,6 +95,7 @@ sHNL_WJets = Style(lineColor=wcol, markerColor=wcol, fillColor=wcol)
 sHNL_TTJets = Style(lineColor=ttcol, markerColor=ttcol, fillColor=ttcol)
 sHNL_ZL = Style(lineColor=zlcol, markerColor=zlcol, fillColor=zlcol)
 sHNL_VV = Style(lineColor=dibosoncol, markerColor=dibosoncol, fillColor=dibosoncol)
+sHNL_prompt = Style(lineColor=promptcol, markerColor=promptcol, fillColor=promptcol)
 sHNL_TTV = Style(lineColor=ttvcol, markerColor=ttvcol, fillColor=ttvcol)
 sHNL_rare = Style(lineColor=tribosoncol, markerColor=tribosoncol, fillColor=tribosoncol)
 sHNL_ZZ = Style(lineColor=zzcol, markerColor=zzcol, fillColor=zzcol)
@@ -89,10 +104,17 @@ sHNL_ConversionsDouble = Style(lineColor = ConversionsDoubleCol, markerColor = C
 sHNL_SingleT = Style(lineColor = singleTcol, markerColor = singleTcol, fillColor=singleTcol)
 sHNL_DDE_doublefake = Style(lineColor = DDEcol_doublefake, markerColor = DDEcol_doublefake, fillColor=DDEcol_doublefake)
 sHNL_DDE_singlefake = Style(lineColor = DDEcol_singlefake, markerColor = DDEcol_singlefake, fillColor=DDEcol_singlefake)
+sHNL_nonprompt = Style(lineColor = nonpromptcol, markerColor = nonpromptcol, fillColor = nonpromptcol)
 
 # Signals
-sHNL_HN  = Style(lineColor=kBlue   , markerColor=0, lineStyle=2, fillColor=0, lineWidth=3)
-sHNL_HN2 = Style(lineColor=kAzure+8, markerColor=0, lineStyle=3, fillColor=0, lineWidth=3)
+sHNL_HN        = Style(lineColor=kBlue      , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_HN2       = Style(lineColor=kAzure+8   , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M2_Vp002  = Style(lineColor=kBlue      , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M2_Vp022  = Style(lineColor=kMagenta+2 , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M5_Vp002  = Style(lineColor=kRed       , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M5_Vp010  = Style(lineColor=kRed+2     , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M8_Vp002  = Style(lineColor=kGreen     , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
+sHNL_M8_Vp005  = Style(lineColor=kGreen+2   , markerColor=0, lineStyle=1, fillColor=0, lineWidth=4)
 
 
 sBlackSquares = Style(markerStyle=21)
@@ -114,7 +136,19 @@ def nextStyle():
     return style
 
 histPref = {}
-histPref['HN*'] = {'style':sHNL_HN, 'layer':2999, 'legend':'#splitline{M = 3GeV, #sigma = 90fb}{c#tau = 14.6cm}'}#times 300}{c#tau = 14.6cm}'}
+
+# histPref['M2_V.002'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = ?}'}
+# histPref['M2_V.022'] = {'style':sHNL_M2_Vp022, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.022}{c#tau = ?}'}
+# histPref['M5_V.002'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'#splitline{M = 5GeV, V=.002}{c#tau = ?}'}
+# histPref['M5_V.010'] = {'style':sHNL_M5_Vp010, 'layer':2999, 'legend':'#splitline{M = 5GeV, V=.010}{c#tau = ?}'}
+# histPref['M8_V.002'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.002}{c#tau = ?}'}
+# histPref['M8_V.005'] = {'style':sHNL_M8_Vp005, 'layer':2999, 'legend':'#splitline{M = 8GeV, V=.005}{c#tau = ?}'}
+
+histPref['HNL_M2_*'] = {'style':sHNL_M2_Vp002, 'layer':2999, 'legend':'M = 2 GeV'}
+histPref['HNL_M5_*'] = {'style':sHNL_M5_Vp002, 'layer':2999, 'legend':'M = 5 GeV'}
+histPref['HNL_M8_*'] = {'style':sHNL_M8_Vp002, 'layer':2999, 'legend':'M = 8 GeV'}
+
+# histPref['HNL*'] = {'style':sHNL_HN, 'layer':2999, 'legend':'#splitline{M = 2GeV, V=.002}{c#tau = 14.6cm}'}#times 300}{c#tau = 14.6cm}'}
 histPref['Data*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
 histPref['data_*'] = {'style':sData, 'layer':2999, 'legend':'Data'}
 histPref['ZTT*'] = {'style':sHNL_DYJets, 'layer':4, 'legend':'Z#rightarrow#tau#tau'}
@@ -124,6 +158,7 @@ histPref['DY*'] = {'style':sHNL_DYJets, 'layer':4, 'legend':'DY'}
 # histPref['DYJetsToLL_M10to50*'] = {'style':sHNL_DYJets_low, 'layer':4, 'legend':'DYM10'}
 # histPref['DYBB'] = {'style':sHNL_DYJets_bb, 'layer':4, 'legend':'DYBB'}
 # histPref['ConversionsSingle*'] = {'style':sHNL_ConversionsSingle, 'layer':3.5, 'legend':'Single Conversions'}
+histPref['Conversions*'] = {'style':sHNL_ConversionsSingle, 'layer':0.6, 'legend':'Conversions'}
 histPref['ConversionsSingle*'] = {'style':sHNL_ConversionsSingle, 'layer':0.6, 'legend':'Conversions'}
 histPref['ConversionsDouble*'] = {'style':sHNL_ConversionsDouble, 'layer':0.6, 'legend':'Double Conversions'}
 histPref['embed_*'] = {'style':sViolet, 'layer':4.1, 'legend':None}
@@ -185,3 +220,10 @@ histPref['SMS*'] = {'style':sHNL_HN, 'layer':1001, 'legend':None}
 histPref['*doublefake*'] = {'style':sHNL_DDE_doublefake, 'layer':900, 'legend':'DF'}
 histPref['*singlefake*'] = {'style':sHNL_DDE_singlefake, 'layer':901, 'legend':'SF'}
 histPref['doubleFake*'] = {'style':sData, 'layer':2999, 'legend':'doubleFakeRate'}
+histPref['*contamination'] = {'style':sHNL_DYJets, 'layer':10, 'legend':'contamination'}
+
+histPref['*nonprompt*'] = {'style':sHNL_nonprompt, 'layer':902, 'legend':'nonprompt'}
+histPref['prompt*'] = {'style':sHNL_prompt, 'layer':2, 'legend':'prompt'}
+
+# histPref['*nonprompt*'] = {'style':sHNL_DYJets, 'layer':902, 'legend':'nonprompt'}
+# histPref['prompt*'] = {'style':sHNL_VV, 'layer':2, 'legend':'prompt'}

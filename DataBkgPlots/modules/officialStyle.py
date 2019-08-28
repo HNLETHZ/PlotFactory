@@ -2,7 +2,7 @@ from ROOT import kBlack, TPaveText
 
 def officialStyle(style):
     style.SetCanvasColor     (0)
-    style.SetCanvasBorderSize(10)
+    style.SetCanvasBorderSize(20)
     style.SetCanvasBorderMode(0)
     style.SetCanvasDefH      (700)
     style.SetCanvasDefW      (700)
@@ -125,8 +125,7 @@ def fixOverlay(): gPad.RedrawAxis()
 
 def setTDRStyle():
   tdrStyle =  rt.TStyle("tdrStyle","Style for P-TDR")
-
-   #for the canvas:
+  #for the canvas:
   tdrStyle.SetCanvasBorderMode(0)
   tdrStyle.SetCanvasColor(rt.kWhite)
   tdrStyle.SetCanvasDefH(600) #Height of canvas
