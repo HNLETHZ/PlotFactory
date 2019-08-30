@@ -49,9 +49,17 @@ pickle(MethodType, _pickle_method, _unpickle_method)
 gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 
 # get the lumis from here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis
-int_lumi = 41530.0 # pb ### (all eras), Golden JSON Int.Lumi: from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable 
+# Golden JSON Int.Lumi: from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
+
+# 2016
+int_lumi = 35920.0 # pb
+
+# 2017
+int_lumi = 41530.0 # pb ### (all eras), 
 # int_lumi =  4792.0 # pb (era B)
 
+# 2018
+int_lumi = 59740.0 #pb
 
 
 def prepareRegions(channel):
