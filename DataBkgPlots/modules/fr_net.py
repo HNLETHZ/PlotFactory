@@ -48,7 +48,7 @@ import sys
 
 ROOT.EnableImplicitMT()
 # fix random seed for reproducibility (TODO! check the reproducibility)
-np.random.seed(1986)
+# np.random.seed(1986)
 
 def tree2array_process(queue, chain, branches, selection, key):
     print 'converting .root ntuples to numpy arrays... (%s events)'%key
@@ -550,11 +550,11 @@ def add_branches(data,features,branches):
 
     data['abs_l1_dz'] = abs(data.l1_dz)
     # features += ['abs_l1_dz']
-    branches += ['abs_l1_dz']
+    # branches += ['abs_l1_dz']
 
     data['abs_l2_dz'] = abs(data.l2_dz)
     # features += ['abs_l2_dz']
-    branches += ['abs_l2_dz']
+    # branches += ['abs_l2_dz']
 
     data['abs_l1_eta'] = abs(data.l1_eta)
     # features += ['abs_l1_eta']
@@ -735,10 +735,10 @@ def get_features_nonprompt():
 
         # 'l1_phi',
         # # 'l1_jet_pt',
-        # 'l1_dz',
+        'l1_dz',
         # 'l2_phi',
         # # 'l2_jet_pt',
-        # 'l2_dz',
+        'l2_dz',
 
 	# 'hnl_dphi_12',
         # 'hnl_dr_01',
@@ -771,8 +771,8 @@ def get_branches_nonprompt(features):
         'l2_jet_pt',
         # 'l1_pt',
         # 'l2_pt',
-        'l1_dz',
-        'l2_dz',
+        # 'l1_dz',
+        # 'l2_dz',
         'l1_phi',
         'l2_phi',
         # 'hnl_m_12',
@@ -832,11 +832,13 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
-            path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
             # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
+            # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
+            path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
         
         if channel == 'eee':
             path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
@@ -913,7 +915,7 @@ if __name__ == '__main__':
             newArrays = True,
             faketype = faketype,
             channel = channel,	
-            multiprocess = False,
+            multiprocess = True,
             )
 
     # make_all_friendtrees(

@@ -52,22 +52,22 @@ gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 # Golden JSON Int.Lumi: from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
 
 # 2016
-int_lumi = 35920.0 # pb
+# int_lumi = 35920.0 # pb
 
 # 2017
 int_lumi = 41530.0 # pb ### (all eras), 
 # int_lumi =  4792.0 # pb (era B)
 
 # 2018
-int_lumi = 59740.0 #pb
+# int_lumi = 59740.0 #pb
 
 
 def prepareRegions(channel):
     regions = []
-    # regions.append(Region('SR',channel,'SR'))
+    regions.append(Region('SR',channel,'SR'))
     # regions.append(Region('MR_nonprompt',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
-    regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
+    # regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
     # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
     # regions.append(Region('SR',channel,'SR'))
     # regions.append(Region('SR_disp1',channel,'SR_disp1'))
@@ -84,6 +84,7 @@ def prepareRegions(channel):
     # regions.append(Region('MR_SF2',channel,'MR_SF2'))
     # regions.append(Region('MR_SF2_closure',channel,'MR_SF2_closure'))
     # regions.append(Region('MR_nonprompt',channel,'MR_nonprompt'))
+    # regions.append(Region('MR_nonprompt_v41_CutDR0102_relaxRelIso4',channel,'SR'))
     # regions.append(Region('Z_reproducibility_v3',channel,'SR'))
     # regions.append(Region('Conversion',channel,'Conversion'))
     # regions.append(Region('TTbar',channel,'ttbar'))

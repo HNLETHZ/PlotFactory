@@ -186,7 +186,7 @@ class CreateHists(object):
                 #This is for debugging
                 set_trace()
 
-            # set_trace()
+
             if cfg.is_singlefake == True:
                 norm_cut  = self.hist_cfg.region.SF_LL
                 self.norm_cut_LL  = self.hist_cfg.region.SF_LL
@@ -232,8 +232,16 @@ class CreateHists(object):
             if cfg.weight_expr:
                 weight = '*'.join([weight, cfg.weight_expr])
 
-            # print '#### FULL CUT ####', norm_cut
+            if 'disp1_0p5' in self.vcfgs[0].name:
+                norm_cut += '&& (hnl_2d_disp < 0.5)'
+            if 'disp2_0p5_10' in self.vcfgs[0].name:
+                norm_cut += '&& ((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))'
+            if 'disp3_10' in self.vcfgs[0].name:
+                norm_cut += '&& hnl_2d_disp > 10'
 
+
+
+            # print '#### FULL CUT ####', norm_cut
             # Initialise all hists before the multidraw
             hists = {}
 
@@ -291,8 +299,8 @@ class CreateHists(object):
                                 .Define('abs_dphi_01','abs(l1_phi-l0_phi)')\
                                 .Define('abs_dphi_02','abs(l0_phi-l2_phi)')\
                                 .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
-				# .Define('abs_l1_dz','abs(l1_dz)')\
-				# .Define('abs_l2_dz','abs(l2_dz)')\
+                                .Define('abs_l1_Dz','abs(l1_dz)')\
+                                .Define('abs_l2_Dz','abs(l2_dz)')\
                                 # .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 # .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
                                 # .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')

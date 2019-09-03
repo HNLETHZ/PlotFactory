@@ -192,6 +192,10 @@ class HistDrawer:
         
         gErrorIgnoreLevel = kWarning
         h.GetYaxis().SetRangeUser(0, pad.GetUymax() * 1.)
+        plotname = plot_name if plot_name else plot.name
+        if 'dz' in plotname:
+            pad.SetLogx(True)
+            padr.SetLogx(True)
 
         if not os.path.exists(plot_dir + '/pdf/'):
             os.mkdir(plot_dir + '/pdf/')
@@ -205,7 +209,6 @@ class HistDrawer:
             os.mkdir(plot_dir + '/png/')
             os.mkdir(plot_dir + '/png/linear/')
             os.mkdir(plot_dir + '/png/log/')
-        plotname = plot_name if plot_name else plot.name
         can.SaveAs(plot_dir + '/pdf/linear/'  + plotname  + '.pdf')
         can.SaveAs(plot_dir + '/root/linear/' + plotname  + '.root')
         can.SaveAs(plot_dir + '/png/linear/'  + plotname  + '.png')
@@ -220,7 +223,6 @@ class HistDrawer:
         # Also save with log y
         h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 1000.)
         pad.SetLogy(True)
-        # pad.SetLogx(True)
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
@@ -229,6 +231,9 @@ class HistDrawer:
             can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
             can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
         pad.SetLogy(0)
+        if 'dz' in plotname:
+            pad.SetLogx(False)
+            padr.SetLogx(False)
 #        return ratio
 
 
