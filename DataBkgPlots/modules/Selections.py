@@ -67,28 +67,27 @@ def SR(channel):
     # 'hnl_2d_disp > 0.0005',
     # 'hnl_dr_02 > 0.2',
     # 'hnl_dr_01 > 0.2',
-    # 'abs(hnl_dphi_hnvis0) > 0.9 ',
-    # '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
+    'abs(hnl_dphi_hnvis0) > 0.9 ',
+    '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
 
     #displacement bins
     # 'hnl_2d_disp < 0.5',
     # '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
     # 'hnl_2d_disp > 10',
 
-    # '(nbj == 0)',# true SR
+    '(nbj == 0)',# true SR
     # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
     
     # '!(nbj == 0)', # activate for SR orthogonal
-    # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
+    '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
     # '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m > 110) ', # activate for right sideband (train)
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
     ## auxiliary selections
-    # 'hnl_dr_01 > 0.3',
-    # 'hnl_dr_02 > 0.3',
-    # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
-
+    'hnl_dr_01 > 0.3',
+    'hnl_dr_02 > 0.3',
+    'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
     # 'hnl_m_12 < 4',
     # 'hnl_2d_disp > 1.5',
     # 'abs(l1_dz) < .2 ',
