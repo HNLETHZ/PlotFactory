@@ -204,15 +204,12 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_SingleConversions == True:
-                # norm_cut  = self.hist_cfg.region.MC_SingleConversions
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DoubleConversions == True:
-                # norm_cut  = self.hist_cfg.region.MC_DoubleConversions
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_Conversions == True:
-                # norm_cut  = self.hist_cfg.region.MC_Conversions
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DY == True:

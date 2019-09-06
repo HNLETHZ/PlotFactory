@@ -22,72 +22,140 @@ def createSampleLists(analysis_dir='',
                       no_data=True,
                       tree_prod_name='HNLTreeProducer', 
                       add_data_cut=None,
-                      add_mc_cut=None):
+                      add_mc_cut=None,
+                      dataset = '2017'):
     
-    if channel == 'mmm':
-        if 'lxplus' in server:
-            data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
-            bkg_dir = 'bkg_mc_m/'
-            sig_dir = 'sig_mc_m/ntuples/'
-            DY_dir = analysis_dir + bkg_dir
-        if 't3' in server:
-            # data_dir = analysis_dir + 'data/'
-            # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
-            data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
-            bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
-            sig_dir = 'signal/ntuples'
-            DY_dir = analysis_dir + bkg_dir
-        if 'starseeker' in server:
-            data_dir = analysis_dir+'production_20190411_Data_mmm/ntuples'
-            bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
-            sig_dir = analysis_dir + 'production_20190411_Signal_mmm/ntuples'
-            DY_dir = analysis_dir + bkg_dir
-        dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
+    if dataset == '2017':
+        if channel == 'mmm':
+            if 'lxplus' in server:
+                data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
+                bkg_dir = 'bkg_mc_m/'
+                sig_dir = 'sig_mc_m/ntuples/'
+                DY_dir = analysis_dir + bkg_dir
+            if 't3' in server:
+                # data_dir = analysis_dir + 'data/'
+                # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
+                data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
+                bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
+                sig_dir = 'signal/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190411_Data_mmm/ntuples'
+                bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
+                sig_dir = analysis_dir + 'production_20190411_Signal_mmm/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
 
-    if 'mem' in channel:
-        if 'lxplus' in server:
-            data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
-            bkg_dir = 'bkg_mc_m/'
-            sig_dir = 'sig_mc_m/ntuples/'
-            DY_dir = analysis_dir + bkg_dir
-        if 't3' in server:
-            # data_dir = analysis_dir + 'data/'
-            # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
-            data_dir = '/work/dezhu/4_production/vinz'
-            bkg_dir = 'vinz/'
-            # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
-            sig_dir = 'signal/ntuples'
-            DY_dir = analysis_dir + bkg_dir
-        if 'starseeker' in server:
-            data_dir = analysis_dir+'production_20190429_Data_mem/ntuples'
-            bkg_dir = 'production_20190429_Bkg_mem/ntuples/'
-            sig_dir = analysis_dir + 'production_20190429_Signal_mem/ntuples'
-            DY_dir = analysis_dir + bkg_dir
-        dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
+        if 'mem' in channel:
+            if 'lxplus' in server:
+                data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
+                bkg_dir = 'bkg_mc_m/'
+                sig_dir = 'sig_mc_m/ntuples/'
+                DY_dir = analysis_dir + bkg_dir
+            if 't3' in server:
+                # data_dir = analysis_dir + 'data/'
+                # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
+                data_dir = '/work/dezhu/4_production/vinz'
+                bkg_dir = 'vinz/'
+                # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
+                sig_dir = 'signal/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190429_Data_mem/ntuples'
+                bkg_dir = 'production_20190429_Bkg_mem/ntuples/'
+                sig_dir = analysis_dir + 'production_20190429_Signal_mem/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
 
-    if channel == 'eee':
-        if 'lxplus' in server:
-            set_trace()
-        if 't3' in server:
-            set_trace()
-        if 'starseeker' in server:
-            data_dir = analysis_dir+'production_20190502_Data_eee/ntuples'
-            bkg_dir = 'production_20190502_Bkg_eee/ntuples/'
-            sig_dir = analysis_dir + 'production_20190502_Signal_eee/ntuples'
-            DY_dir = analysis_dir + bkg_dir
-        dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
+        if channel == 'eee':
+            if 'lxplus' in server:
+                set_trace()
+            if 't3' in server:
+                set_trace()
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190502_Data_eee/ntuples'
+                bkg_dir = 'production_20190502_Bkg_eee/ntuples/'
+                sig_dir = analysis_dir + 'production_20190502_Signal_eee/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
 
-    if 'eem' in channel:
-        if 'lxplus' in server:
-            set_trace()
-        if 't3' in server:
-            set_trace()
-        if 'starseeker' in server:
-            data_dir = analysis_dir+'production_20190511_Data_eem/ntuples'
-            bkg_dir = 'production_20190511_Bkg_eem/ntuples/'
-            sig_dir = analysis_dir + 'production_20190511_Signal_eem/ntuples'
-            DY_dir = analysis_dir + bkg_dir
-        dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
+        if 'eem' in channel:
+            if 'lxplus' in server:
+                set_trace()
+            if 't3' in server:
+                set_trace()
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190511_Data_eem/ntuples'
+                bkg_dir = 'production_20190511_Bkg_eem/ntuples/'
+                sig_dir = analysis_dir + 'production_20190511_Signal_eem/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
+
+    if dataset == '2018':
+        if channel == 'mmm':
+            if 'lxplus' in server:
+                data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
+                bkg_dir = 'bkg_mc_m/'
+                sig_dir = 'sig_mc_m/ntuples/'
+                DY_dir = analysis_dir + bkg_dir
+            if 't3' in server:
+                # data_dir = analysis_dir + 'data/'
+                # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
+                data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
+                bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
+                sig_dir = 'signal/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190828_Data_mmm/'
+                bkg_dir = 'production_20190828_Bkg_mmm/'
+                sig_dir = analysis_dir + 'production_20190828_Signal_mmm/'
+                DY_dir = analysis_dir + bkg_dir
+            dataA_name = 'Single_mu_2018A'; dataB_name = 'Single_mu_2018B'; dataC_name = 'Single_mu_2018C'; dataD_name = 'Single_mu_2018D';
+
+        if 'mem' in channel:
+            if 'lxplus' in server:
+                data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
+                bkg_dir = 'bkg_mc_m/'
+                sig_dir = 'sig_mc_m/ntuples/'
+                DY_dir = analysis_dir + bkg_dir
+            if 't3' in server:
+                # data_dir = analysis_dir + 'data/'
+                # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
+                data_dir = '/work/dezhu/4_production/vinz'
+                bkg_dir = 'vinz/'
+                # bkg_dir = 'production_20190306_BkgMC/mmm/ntuples/'
+                sig_dir = 'signal/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190429_Data_mem/ntuples'
+                bkg_dir = 'production_20190429_Bkg_mem/ntuples/'
+                sig_dir = analysis_dir + 'production_20190429_Signal_mem/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_mu_2017B'; dataC_name = 'Single_mu_2017C'; dataD_name = 'Single_mu_2017D'; dataE_name = 'Single_mu_2017E'; dataF_name = 'Single_mu_2017F'; 
+
+        if channel == 'eee':
+            if 'lxplus' in server:
+                set_trace()
+            if 't3' in server:
+                set_trace()
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190502_Data_eee/ntuples'
+                bkg_dir = 'production_20190502_Bkg_eee/ntuples/'
+                sig_dir = analysis_dir + 'production_20190502_Signal_eee/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
+
+        if 'eem' in channel:
+            if 'lxplus' in server:
+                set_trace()
+            if 't3' in server:
+                set_trace()
+            if 'starseeker' in server:
+                data_dir = analysis_dir+'production_20190511_Data_eem/ntuples'
+                bkg_dir = 'production_20190511_Bkg_eem/ntuples/'
+                sig_dir = analysis_dir + 'production_20190511_Signal_eem/ntuples'
+                DY_dir = analysis_dir + bkg_dir
+            dataB_name = 'Single_ele_2017B'; dataC_name = 'Single_ele_2017C'; dataD_name = 'Single_ele_2017D'; dataE_name = 'Single_ele_2017E'; dataF_name = 'Single_ele_2017F'; 
 
    
 
@@ -131,13 +199,6 @@ def createSampleLists(analysis_dir='',
             ]
 
     samples_DY = [
-            SampleCfg(name='DYJetsToLL_M10to50',
-                dir_name='DYJetsToLL_M10to50', 
-                ana_dir=analysis_dir+bkg_dir, 
-                tree_prod_name=tree_prod_name, 
-                xsec=18610.0, 
-                sumweights=None, 
-                is_DY=True),
             SampleCfg(name='DYJets_M50', 
                 dir_name='DYJetsToLL_M50', 
                 ana_dir=analysis_dir+bkg_dir, 
@@ -153,6 +214,27 @@ def createSampleLists(analysis_dir='',
                 sumweights=None, 
                 is_DY=True),
             ]
+    if dataset == '2017':
+        samples_DY += [
+            SampleCfg(name='DYJetsToLL_M10to50',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_DY=True),
+                ]
+    if dataset == '2018':
+        samples_DY += [
+            SampleCfg(name='DYJetsToLL_M5to50',
+                dir_name='DYJetsToLL_M5to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_DY=True),
+                ]
+
 
     samples_Diboson = [
             SampleCfg(name='ZZ', 
@@ -203,13 +285,6 @@ def createSampleLists(analysis_dir='',
             ]
 
     samples_SingleConversions = [
-            SampleCfg(name='ConversionsSingle_DYJetsToLL_M10to50',
-                dir_name='DYJetsToLL_M10to50', 
-                ana_dir=analysis_dir+bkg_dir, 
-                tree_prod_name=tree_prod_name, 
-                xsec=18610.0, 
-                sumweights=None, 
-                is_SingleConversions=True),
             SampleCfg(name='ConversionsSingle_DYJets_M50', 
                 dir_name='DYJetsToLL_M50', 
                 ana_dir=analysis_dir+bkg_dir, 
@@ -225,15 +300,29 @@ def createSampleLists(analysis_dir='',
                 sumweights=None, 
                 is_SingleConversions=True),
             ]
-
-    samples_DoubleConversions = [
-            SampleCfg(name='ConversionsDouble_DYJetsToLL_M10to50',
+    if dataset == '2017':
+        samples_SingleConversions += [
+            SampleCfg(name='ConversionsSingle_DYJetsToLL_M10to50',
                 dir_name='DYJetsToLL_M10to50', 
                 ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=18610.0, 
                 sumweights=None, 
-                is_DoubleConversions=True),
+                is_SingleConversions=True),
+                ]
+    if dataset == '2018':
+        samples_SingleConversions += [
+            SampleCfg(name='ConversionsSingle_DYJetsToLL_M5to50',
+                dir_name='DYJetsToLL_M5to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_SingleConversions=True),
+                ]
+
+
+    samples_DoubleConversions = [
             SampleCfg(name='ConversionsDouble_DYJets_M50', 
                 dir_name='DYJetsToLL_M50', 
                 ana_dir=analysis_dir+bkg_dir, 
@@ -249,15 +338,28 @@ def createSampleLists(analysis_dir='',
                 sumweights=None, 
                 is_DoubleConversions=True),
             ]
-
-    samples_Conversions = [
-            SampleCfg(name='Conversions_DYJetsToLL_M10to50',
+    if dataset == '2017':
+        samples_DoubleConversions += [
+            SampleCfg(name='ConversionsDouble_DYJetsToLL_M10to50',
                 dir_name='DYJetsToLL_M10to50', 
                 ana_dir=analysis_dir+bkg_dir, 
                 tree_prod_name=tree_prod_name, 
                 xsec=18610.0, 
                 sumweights=None, 
-                is_Conversions=True),
+                is_DoubleConversions=True),
+                ]
+    if dataset == '2018':
+        samples_DoubleConversions += [
+            SampleCfg(name='ConversionsDouble_DYJetsToLL_M5to50',
+                dir_name='DYJetsToLL_M5to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_DoubleConversions=True),
+                ]
+
+    samples_Conversions = [
             SampleCfg(name='Conversions_DYJets_M50', 
                 dir_name='DYJetsToLL_M50', 
                 ana_dir=analysis_dir+bkg_dir, 
@@ -273,6 +375,27 @@ def createSampleLists(analysis_dir='',
                 sumweights=None, 
                 is_Conversions=True),
             ]
+    if dataset == '2017':
+        samples_Conversions += [
+            SampleCfg(name='Conversions_DYJetsToLL_M10to50',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_Conversions=True),
+                ]
+    if dataset == '2018':
+        samples_Conversions += [
+            SampleCfg(name='Conversions_DYJetsToLL_M5to50',
+                dir_name='DYJetsToLL_M5to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_Conversions=True),
+                ]
+
 
 
     samples_Triboson = [
@@ -305,22 +428,38 @@ def createSampleLists(analysis_dir='',
                 sumweights=None, 
                 is_MC=True),
             ]
-    
-    samples_singlefake = [
-        SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
-        SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-        SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
-    ]
 
-    samples_doublefake = [
-        SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
-    ]
+    if dataset == '2017':    
+        samples_singlefake = [
+            SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
+            SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+            SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+            SampleCfg(name='singlefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+            SampleCfg(name='singlefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        ]
+
+        samples_doublefake = [
+            SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        ]
+
+    if dataset == '2018':    
+        samples_singlefake = [
+            SampleCfg(name='singlefake_A', dir_name=dataA_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                               
+            SampleCfg(name='singlefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+            SampleCfg(name='singlefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+            SampleCfg(name='singlefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_singlefake=True, norm_cut=add_data_cut),                             
+        ]
+
+        samples_doublefake = [
+            SampleCfg(name='doublefake_A', dir_name=dataA_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='doublefake_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_doublefake=True, norm_cut=add_data_cut),                                
+        ]
 
     samples_QCD = [
             SampleCfg(name='QCD_pt_15to20_mu', 
@@ -416,14 +555,6 @@ def createSampleLists(analysis_dir='',
             ]
 
     samples_Conversions_contamination = [
-            SampleCfg(name='Conversions_DYJetsToLL_M10to50_contamination',
-                dir_name='DYJetsToLL_M10to50', 
-                ana_dir=analysis_dir+bkg_dir, 
-                tree_prod_name=tree_prod_name, 
-                xsec=18610.0, 
-                sumweights=None, 
-                is_contamination=True,
-                ),
             SampleCfg(name='Conversions_DYJets_M50_contamination', 
                 dir_name='DYJetsToLL_M50', 
                 ana_dir=analysis_dir+bkg_dir, 
@@ -441,6 +572,27 @@ def createSampleLists(analysis_dir='',
                 is_contamination=True,
                 ),
             ]
+    if dataset == '2017':
+        samples_Conversions_contamination += [
+            SampleCfg(name='Conversions_DYJetsToLL_M10to50_contamination',
+                dir_name='DYJetsToLL_M10to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_contamination=True),
+                ]
+    if dataset == '2018':
+        samples_Conversions_contamination += [
+            SampleCfg(name='Conversions_DYJetsToLL_M5to50_contamination',
+                dir_name='DYJetsToLL_M5to50', 
+                ana_dir=analysis_dir+bkg_dir, 
+                tree_prod_name=tree_prod_name, 
+                xsec=18610.0, 
+                sumweights=None, 
+                is_contamination=True),
+                ]
+
 
     samples_Diboson_contamination = [
             SampleCfg(name='ZZ_contamination', 
@@ -471,21 +623,37 @@ def createSampleLists(analysis_dir='',
 
 
 
-    samples_data = [
-        SampleCfg(name='data_2017B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
-        SampleCfg(name='data_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
-        SampleCfg(name='data_2017D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                           #nevents =  3829353
-        SampleCfg(name='data_2017E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
-        SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
-    ]
+    if dataset == '2017':
+        samples_data = [
+            SampleCfg(name='data_2017B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents =  5265969 
+            SampleCfg(name='data_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10522062 
+            SampleCfg(name='data_2017D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                           #nevents =  3829353
+            SampleCfg(name='data_2017E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 10926946 
+            SampleCfg(name='data_2017F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut),                                         #nevents = 19122658 ; SUM of BCDEF = 49'666'988
+        ]
 
-    samples_nonprompt = [
-        SampleCfg(name='nonprompt_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-        SampleCfg(name='nonprompt_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
-    ]
+        samples_nonprompt = [
+            SampleCfg(name='nonprompt_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='nonprompt_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='nonprompt_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='nonprompt_E', dir_name=dataE_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            SampleCfg(name='nonprompt_F', dir_name=dataF_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+        ]
+
+    if dataset == '2018':
+        samples_data = [
+            SampleCfg(name='data_2017A', dir_name=dataA_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut), 
+            # SampleCfg(name='data_2017B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut), 
+            # SampleCfg(name='data_2017C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut), 
+            # SampleCfg(name='data_2017D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=True, norm_cut=add_data_cut), 
+        ]
+
+        samples_nonprompt = [
+            SampleCfg(name='nonprompt_A', dir_name=dataA_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            # SampleCfg(name='nonprompt_B', dir_name=dataB_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            # SampleCfg(name='nonprompt_C', dir_name=dataC_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+            # SampleCfg(name='nonprompt_D', dir_name=dataD_name, ana_dir=data_dir, tree_prod_name=tree_prod_name, is_data=False, is_nonprompt=True, norm_cut=add_data_cut),                                
+        ]
 
 
     # samples_mc =  samples_DY + samples_WJets + samples_TTJets + samples_Diboson + samples_SingleConversions + samples_SingleTop 
@@ -505,9 +673,9 @@ def createSampleLists(analysis_dir='',
     # samples_bkg = samples_mc
 
 
-    # samples_all = samples_bkg + samples_data #for the closureplots
+    samples_all = samples_bkg + samples_data #for the closureplots
     # samples_all = samples_bkg + samples_signal #for the datacards
-    samples_all = samples_bkg + samples_signal_essential #for signal acceptance plots
+    # samples_all = samples_bkg + samples_signal_essential #for signal acceptance plots
     # samples_all = samples_bkg + samples_data + samples_signal
     # samples_all = samples_singlefake + samples_doublefake +tttmples_data
     # samples_all = samples_singlefake + samples_data

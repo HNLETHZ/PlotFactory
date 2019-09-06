@@ -20,7 +20,7 @@ from modules.PlotConfigs import HistogramCfg, VariableCfg
 # from modules.HistCreator import CreateHists
 from modules.HistCreator import CreateHists
 from modules.HistDrawer import HistDrawer
-from modules.Variables import full_vars, test_vars, getVars,essential_vars
+from modules.Variables import getVars,essential_vars
 from modules.Selections import getSelection, Region
 from modules.Samples import createSampleLists, setSumWeights
 from pdb import set_trace
@@ -48,24 +48,11 @@ pickle(MethodType, _pickle_method, _unpickle_method)
 
 gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 
-# get the lumis from here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis
-# Golden JSON Int.Lumi: from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
-
-# 2016
-# int_lumi = 35920.0 # pb
-
-# 2017
-int_lumi = 41530.0 # pb ### (all eras), 
-# int_lumi =  4792.0 # pb (era B)
-
-# 2018
-# int_lumi = 59740.0 #pb
-
 
 def prepareRegions(channel):
     regions = []
-    regions.append(Region('SR',channel,'SR'))
-    # regions.append(Region('MR_nonprompt',channel,'SR'))
+    # regions.append(Region('SR',channel,'SR'))
+    regions.append(Region('MR_nonprompt',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
     # regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
     # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
@@ -101,10 +88,10 @@ def prepareRegions(channel):
 
     return regions
 
-def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None):
+def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None, dataset = '2017'):
     sample_dict = {}
     # print "creating samples from %s"%(analysis_dir)
-    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, add_data_cut=add_data_cut, dataset = dataset)
 
     #select here the samples you wish to use
     # working_samples = samples_data_dde
@@ -122,11 +109,8 @@ def createSamples(channel, analysis_dir, total_weight, server, add_data_cut=None
 
 def createVariables(rebin=None):
     # Taken from Variables.py; can get subset with e.g. getVars(['mt', 'mvis'])
-#    variables = CR_vars
     DoNotRebin = ['_norm_', 'n_vtx', 'nj', 'nbj',] 
-    variables = full_vars
     variables = essential_vars
-    # variables = test_vars
     if rebin>0:
         for ivar in hnl_vars:
             if ivar.name in DoNotRebin: continue
@@ -134,7 +118,29 @@ def createVariables(rebin=None):
 
     return variables
 
-def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, useNeuralNetwork=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm', analysis_dir='/home/dehuazhu/SESSD/4_production/'):
+def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict, make_plots=True, create_trees=False, multiprocess=False, useNeuralNetwork=False, dataframe=True, server = 'starseeker', channel_dir = 'mmm', analysis_dir='/home/dehuazhu/SESSD/4_production/', dataset = '2017'):
+
+    # get the lumis from here: https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmV2017Analysis
+    # Golden JSON Int.Lumi: from https://twiki.cern.ch/twiki/bin/viewauth/CMS/PdmVAnalysisSummaryTable
+
+    # 2016
+    if dataset == '2016':
+        int_lumi = 35920.0 # pb
+
+    # 2017
+    if dataset == '2017':
+        int_lumi = 41530.0 # pb ### (all eras), 
+        # int_lumi =  4792.0 # pb (era B)
+
+    # 2018
+    if dataset == '2018':
+        # int_lumi = 59740.0 #pb (all eras)
+        int_lumi = 14000.0 #pb (era A)
+        # int_lumi =  7100.0 #pb (era B)
+        # int_lumi =  6940.0 #pb (era C)
+        # int_lumi = 31930.0 #pb (era D)
+
+
     ams_dict = {}
     sample_names = set()
     for region in regions:
@@ -175,12 +181,13 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
             # plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
             # plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
-            plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F','Conversions_DYJetsToLL_M10to50_contamination','Conversions_DYJets_M50_contamination','Conversions_DYJets_M50_ext_contamination','WZTo3LNu_contamination','ZZTo4L_contamination','WW_contamination','WZ_contamination','ZZ_contamination','TTJets_contamination'])
-            plot.Group('prompt',['Conversions_DYJetsToLL_M10to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext','WZTo3LNu','ZZTo4L','WW','WZ','ZZ','TTJets'])
+            plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F','Conversions_DYJetsToLL_M10to50_contamination','Conversions_DYJetsToLL_M5to50_contamination','Conversions_DYJets_M50_contamination','Conversions_DYJets_M50_ext_contamination','WZTo3LNu_contamination','ZZTo4L_contamination','WW_contamination','WZ_contamination','ZZ_contamination','TTJets_contamination'])
+            plot.Group('prompt',['Conversions_DYJetsToLL_M10to50','Conversions_DYJetsToLL_M5to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext','WZTo3LNu','ZZTo4L','WW','WZ','ZZ','TTJets'])
             # plot.Group('contamination', ['conversionsSingle_DYJets_M50_contamination', 'conversionsSingle_DYJets_M50_ext_contamination', 'conversionsSingle_DYJetsToLL_M10to50_contamination','WW_contamination','WZ_contamination','ZZ_contamination'])
             # plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
             # plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
-            # plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50'])
+            # plot.Group('DY', ['DYJets_M50_ext','DYJets_M50','DYJetsToLL_M10to50','DYJetsToLL_M5to50'])
+            # plot.Group('DY', ['Conversions_DYJetsToLL_M10to50','Conversions_DYJetsToLL_M5to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext'])
             # plot.Group('QCD',['QCD_pt_15to20_mu', 'QCD_pt_20to30_mu', 'QCD_pt_30to50_mu', 'QCD_pt_50to80_mu', 'QCD_pt_80to120_mu'])
             # plot.Group('WJets', ['WJetsToLNu','WJetsToLNu_ext','W1JetsToLNu', 'W2JetsToLNu', 'W3JetsToLNu', 'W4JetsToLNu'])
             # plot.Group('Conversions', ['Conversions_DYJetsToLL_M10to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext'])
@@ -188,11 +195,11 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             # plot.Group('ConversionsDouble', ['ConversionsDouble_DYJetsToLL_M10to50','ConversionsDouble_DYJets_M50','ConversionsDouble_DYJets_M50_ext'])
             plot.Group('HNL', ['HN3L'])
             if make_plots:
-                HistDrawer.draw(plot, channel = channel_name, plot_dir = plotDir+region.name, server = server, region = region, channel_dir = channel_dir)
+                HistDrawer.draw(plot, channel = channel_name, plot_dir = plotDir+region.name, server = server, region = region, channel_dir = channel_dir, dataset = dataset)
             print'\tThis plot took %.1f s to compute.'%(time.time()-start_plot)
 
 
-def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess = False, dataframe = True):
+def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multiprocess = False, dataframe = True):
     start_time = time.time()
 
     usr = getuser()
@@ -207,7 +214,10 @@ def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess =
         if usr == 'vstampf': plotDirBase = '/eos/user/v/vstampf/plots/'
 
     if 'starseeker' in hostname:
-        if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/'
+        if dataset == '2017':
+            if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/'
+        if dataset == '2018':
+            if usr == 'dehuazhu': plotDirBase = '/mnt/StorageElement1/3_figures/1_DataMC/FinalStates/2018/'
 
 
     if promptLeptonType == "ele":
@@ -264,7 +274,10 @@ def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess =
         analysis_dir = '/work/dezhu/4_production/'
 
     if "starseeker" in hostname:
-        analysis_dir = '/home/dehuazhu/SESSD/4_production/'
+        if dataset == '2017':
+            analysis_dir = '/home/dehuazhu/SESSD/4_production/'
+        if dataset == '2018':
+            analysis_dir = '/mnt/StorageElement1/4_production/2018/'
 
     total_weight = 'weight * lhe_weight'
     # total_weight = '1'
@@ -275,7 +288,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess =
     # variables = createVariables(rebin = 2.5)
     variables = createVariables()
 
-    sample_dict = createSamples(channel,analysis_dir, total_weight, server=hostname)
+    sample_dict = createSamples(channel,analysis_dir, total_weight, server=hostname, dataset = dataset)
 
     handle = os.popen('echo $CMSSW_BASE')
     line = handle.read()
@@ -326,8 +339,12 @@ def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess =
             os.mkdir(regionDir + '/png/log/')
 
         if "starseeker" in hostname:
-            os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
-            print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(region.name,channel)
+            if dataset == '2017':
+                os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
+                print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(region.name,channel)
+            if dataset == '2018':
+                os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel+'/'))
+                print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/2018/%s!'%(region.name,channel)
     
     makePlots(
         plotDir,
@@ -342,7 +359,8 @@ def producePlots(promptLeptonType, L1L2LeptonType, option = None, multiprocess =
         dataframe=dataframe,
         server=hostname,
         channel_dir=channel,
-        analysis_dir=analysis_dir
+        analysis_dir=analysis_dir,
+        dataset = dataset,
     )
 
     end_time = time.time()

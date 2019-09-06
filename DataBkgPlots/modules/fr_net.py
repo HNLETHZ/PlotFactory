@@ -103,15 +103,14 @@ def root2array_PoolProcess(input_array):
     print 'nevents %s (%s): %d'%(sample_name,key,len(array))
     return [key,array,xsec,sumweights]
 
-def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True):
+def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True, dataset = '2017', analysis_dir = '/home/dehuazhu/SESSD/4_production/'):
     #define basic environmental parameters
     hostname        = gethostname()
-    analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
     channel         = channel
     sample_dict     = {}
 
     # call samples
-    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = hostname, channel=channel, dataset = dataset)
     working_samples = samples_data
     # working_samples = samples_nonprompt
     # working_samples = samples_mc
@@ -286,7 +285,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
 
     data.to_pickle(path_to_NeuralNet + 'training_data.pkl')
 
-def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True):
+def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True, dataset = '2017', analysis_dir = '/home/dehuazhu/SESSD/4_production/'):
     hostname = gethostname()
     if not os.path.exists(path_to_NeuralNet):
         os.mkdir(path_to_NeuralNet)
@@ -309,7 +308,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     print 'cfg files stored in ' + path_to_NeuralNet
 
     if newArrays == True:
-        createArrays(features, branches, path_to_NeuralNet, faketype, channel, multiprocess)
+        createArrays(features, branches, path_to_NeuralNet, faketype, channel, multiprocess, dataset = dataset, analysis_dir = analysis_dir)
 
     data = pd.read_pickle(path_to_NeuralNet + 'training_data.pkl')
 
@@ -424,11 +423,11 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # save ntuple
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
-def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_NeuralNet,overwrite):
+def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_NeuralNet,overwrite, dataset = '2017'):
     print 'making friendtrees for all datasamples'
     start = time.time()
     # call samples
-    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel)
+    samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, dataset = dataset)
     working_samples = samples_nonprompt
     for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
 
@@ -492,10 +491,12 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
             print 'making friendtree for %s'%sample_name
 
 
-    f = ur.open(tree_file_name)
-    t = f['tree']
+    data = pd.DataFrame(root2array(tree_file_name,'tree',branches,''))
+    
+    # f = ur.open(tree_file_name)
+    # t = f['tree']
 
-    data = t.pandas.df(branches)
+    # data = t.pandas.df(branches)
 
     # #define indirect training variables
     data, features, branches = add_branches(data,features,branches)
@@ -783,7 +784,7 @@ def get_branches_nonprompt(features):
     ]
     return branches
 
-def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
+def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
     if faketype == 'SingleFake1':
         # path_to_NeuralNet = 'NN/dump'
         # path_to_NeuralNet = 'NN/mmm_SF1_v1/'
@@ -805,40 +806,44 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
 
     if faketype == 'nonprompt':
 	if channel == 'mmm':
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v1/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v4_newNetParameteres/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v10_TrainWithM12/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v11_OnlyForTesting/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v12_CorrectSubtraction/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v13_OneVariable/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v14_TrainWithM12DispOnly/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithM12Only/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithSmallSetVariables/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v16_SingleDoubleFakes/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v17_IncludingDZ/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
-	    # path_to_NeuralNet = 'NN/mmm_nonprompt_v19_WithPhi/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
-            # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
-            path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
+            if dataset is '2017':
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v1/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v4_newNetParameteres/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v10_TrainWithM12/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v11_OnlyForTesting/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v12_CorrectSubtraction/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v13_OneVariable/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v14_TrainWithM12DispOnly/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithM12Only/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithSmallSetVariables/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v16_SingleDoubleFakes/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v17_IncludingDZ/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v19_WithPhi/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
+                path_to_NeuralNet = 'NN/mmm_nonprompt_v35_TestFWforVinz/'
+            if dataset is '2018':
+                path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
         
         if channel == 'eee':
             path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
@@ -863,8 +868,24 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm'):
 #################################################################################
 
 if __name__ == '__main__':
+
+    ## select here the channel you want to analyze
+    channel = 'mmm'    
+    # channel = 'eee'    
+    # channel = 'eem'
+    # channel = 'mem'
+
+
+    ## select the dataset 
+    dataset = '2017'
+    # dataset = '2018'
+    
     hostname        = gethostname()
-    analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
+
+    if dataset == '2017':
+        analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
+    if dataset == '2018':
+        analysis_dir    = '/mnt/StorageElement1/4_production/2018/'
 
     pf.setpfstyle()
 # define input parameters
@@ -886,12 +907,6 @@ if __name__ == '__main__':
     # faketype = 'DoubleFake'
     faketype = 'nonprompt'
     
-    ## select here the channel you want to analyze
-    channel = 'mmm'    
-    # channel = 'eee'    
-    # channel = 'eem'
-    # channel = 'mem'
-
 
     if faketype == 'SingleFake1':
         features = features_SF1
@@ -906,7 +921,7 @@ if __name__ == '__main__':
         features = features_nonprompt
         branches = branches_nonprompt
 
-    path_to_NeuralNet = path_to_NeuralNet(faketype, channel) 
+    path_to_NeuralNet = path_to_NeuralNet(faketype, channel, dataset) 
 
     train(
             features,
@@ -916,13 +931,6 @@ if __name__ == '__main__':
             faketype = faketype,
             channel = channel,	
             multiprocess = True,
-            )
-
-    # make_all_friendtrees(
-            # multiprocess = True,
-            # server = hostname,
-            # analysis_dir = analysis_dir,
-            # channel=channel,
-            # path_to_NeuralNet = path_to_NeuralNet,
-            # overwrite = False,
-            # )
+            dataset = dataset,
+            analysis_dir = analysis_dir,
+            ) 

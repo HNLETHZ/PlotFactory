@@ -85,9 +85,10 @@ def SR(channel):
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
     ## auxiliary selections
-    'hnl_dr_01 > 0.3',
-    'hnl_dr_02 > 0.3',
-    'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
+    # 'hnl_dr_01 > 0.3',
+    # 'hnl_dr_02 > 0.3',
+    # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
+
     # 'hnl_m_12 < 4',
     # 'hnl_2d_disp > 1.5',
     # 'abs(l1_dz) < .2 ',
@@ -590,6 +591,7 @@ def getSelection(channel, selection_name):
 class Region(object):
     def __init__(self,name,channel,CR):
         Prompt_extension                = ' && (l0_gen_match_isPromptFinalState == 1 && l1_gen_match_isPromptFinalState == 1 && l2_gen_match_isPromptFinalState == 1)'
+        nonPrompt_extension             = ' && !(l0_gen_match_isPromptFinalState == 1 && l1_gen_match_isPromptFinalState == 1 && l2_gen_match_isPromptFinalState == 1)'
         self.name                       = name
         self.channel                    = channel
         self.CR                         = CR
@@ -637,5 +639,12 @@ class Region(object):
         self.MC_Conversions             = self.MC        + Prompt_extension
         self.MC_contamination_pass      = self.MC        + Prompt_extension
         self.MC_contamination_fail      = self.nonprompt + Prompt_extension
+
+        # self.MC_Conversions             = self.MC        + nonPrompt_extension
+        # self.MC_contamination_pass      = self.MC        + nonPrompt_extension
+        # self.MC_contamination_fail      = self.nonprompt + nonPrompt_extension
+
+        # self.MC_contamination_pass      = self.MC        
+        # self.MC_contamination_fail      = self.nonprompt 
 
 

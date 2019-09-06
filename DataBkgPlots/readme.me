@@ -1,0 +1,44 @@
+A short introduction to making data/bkg plots:
+
+==> do everything from the directory of this document
+
+Standard Routine: ipython modules/fr_net.py && ipython modules/makeFriendtrees.py && ipython 0_cfg_mmm.py (or another final state)
+    1) Train the Neural Net: ipython modules/fr_net.py
+        - In the main code, specify channel, dataset, analysis_dir (l. 871 ff)
+        - The main routine is train()
+            - features: list of all ntuple variables used as training features
+            - branch: list of additional variables (in addition to features), which will be documented in the output.tree and in the friendtrees
+            - path_to_NeuralNet: Specify the location to store the neural net and the friendtrees in path_to_NeuralNet() 
+            - newArrays: 
+                True: Make new pandas dataframe arrays from the ntuples with custom cuts and store them as .pkl files in path_to_NeuralNet
+                False: Use existing .pkl files to save the I/O time (if you just want to retrain with different NN setting)
+            - faketype: use 'nonprompt'
+            - channel: 'mmm', 'mem', 'eee', 'eem'
+            - dataset: '2017', '2018'
+            - multiprocess: True or False. It True, it will generate the pandas dataframes simultaneously, False is better for debugging
+    
+    2) Make friendtrees: ipython modules/makeFriendtrees.py  
+        - check channel, dataset, analysis_dir (ntuple locations)
+        - multiprocess: if True, it will generate all Friendtrees at once. Note that in this mode you would need at least 40 GB RAM storage. 
+        - overwrite: if True, it will overwrite the existing friendtrees, if False, it will check if friendtrees already exists in the NN directory and would only make new ones if there are no freindtrees.
+
+    3) Make the plots: ipython 0_cfg_hn3l_*
+        WARNING: Only 0_cfg_hn3l_mmm.py (final state mmm) is configured for 2017 and 2018 datasets. The other channels still need to be adapted
+        - choose the corresponding config file 0_cfg_hn3l_* regarding your desired final state
+            - specify your final state and dataset 
+        - main settings in master/plot_cfg_hn3l.py
+            - main function: producePlots()
+                - adapt the plotDirBase, this is where the plots will go
+                - adapt analysis_dir, this is where the ntuples are
+                - in makePlots, choose multiprocess as True or False, True is faster, False is better for debugging
+            - prepareRegions(): initiates the class Region from modules/Selections.py. specify here the region name (directory name for the plots), channel, and the keyword for a specific selection
+            - makePlots(): 
+                - at the beginning of the function, specify the luminosity values of the dataset you're using   
+        - The variables you want to plot are specified in modules/Variables.py. (Un)comment them as you like. The more you include in the list, the longer the plotting takes. 
+        - The definition of the samples are in modules/Samples.py. For the first time making the plotting tool run, you'll probably need to adjust the paths of the samples here.
+        - The selection are defined in /modules/Selections.py. Here the most important cuts are in the selection called 'SR'. 
+
+
+
+
+
