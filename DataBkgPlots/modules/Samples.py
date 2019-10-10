@@ -97,19 +97,14 @@ def createSampleLists(analysis_dir='',
                 data_dir = '/eos/user/v/vstampf/ntuples/data_2017_m_noskim/'
                 bkg_dir = 'bkg_mc_m/'
                 sig_dir = 'sig_mc_m/ntuples/'
-                DY_dir = analysis_dir + bkg_dir
             if 't3' in server:
-                # data_dir = analysis_dir + 'data/'
-                # data_dir = 'root://t3dcachedb.psi.ch:1094///pnfs/psi.ch/cms/trivcat/store/user/dezhu/2_ntuples/HN3Lv2.0/mmm/data/'
                 data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
                 bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
                 sig_dir = 'signal/ntuples'
-                DY_dir = analysis_dir + bkg_dir
             if 'starseeker' in server:
-                data_dir = analysis_dir+'production_20190828_Data_mmm/'
-                bkg_dir = 'production_20190828_Bkg_mmm/'
-                sig_dir = analysis_dir + 'production_20190828_Signal_mmm/'
-                DY_dir = analysis_dir + bkg_dir
+                data_dir = analysis_dir+'production_20190924_Data_mmm/'
+                bkg_dir = 'production_20190924_Bkg_mmm/'
+                sig_dir = analysis_dir + 'production_20190924_Signal_mmm/'
             dataA_name = 'Single_mu_2018A'; dataB_name = 'Single_mu_2018B'; dataC_name = 'Single_mu_2018C'; dataD_name = 'Single_mu_2018D';
 
         if 'mem' in channel:
@@ -666,11 +661,15 @@ def createSampleLists(analysis_dir='',
     # samples_mc =  samples_Diboson + samples_SingleConversions 
     # samples_bkg =  samples_nonprompt + samples_mc
 
+    ## Plot with MC only
+    # samples_mc =  samples_DY + samples_TTJets + samples_Diboson 
+    # samples_bkg = samples_mc 
+    
+    ## Plot with NN
     samples_mc =  samples_Conversions + samples_TTJets + samples_Diboson 
     samples_mc_contamination = samples_Conversions_contamination + samples_TTJets_contamination + samples_Diboson_contamination
     samples_nonprompt = samples_nonprompt + samples_mc_contamination 
     samples_bkg = samples_nonprompt + samples_mc
-    # samples_bkg = samples_mc
 
 
     samples_all = samples_bkg + samples_data #for the closureplots

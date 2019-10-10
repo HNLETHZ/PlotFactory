@@ -841,7 +841,9 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
-                path_to_NeuralNet = 'NN/mmm_nonprompt_v35_TestFWforVinz/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v35_TestFWforVinz/'
+                # path_to_NeuralNet = 'NN/mmm_nonprompt_v36_MartinaRegion/'
+                path_to_NeuralNet = 'NN/mmm_nonprompt_v37_MartinaRegion_again/'
             if dataset is '2018':
                 path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
         

@@ -5,10 +5,10 @@ from modules.binning import binning_svfitMass_finer, binning_mttotal, binning_mt
 import numpy as np
 
 essential_vars = [
-            VCfg(name='_norm_'     , drawname='norm_count', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
-            # VCfg(name='hnl_m_12_money' , drawname='hnl_m_12', binning={'nbinsx':6, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
-            # VCfg(name='hnl_2d_disp_wide',drawname='hnl_2d_disp', binning={'nbinsx':20, 'xmin':0   , 'xmax':20 }, unit='cm' , xtitle='2D displacement (cm)'),
-            # VCfg(name='hnl_2d_disp', binning={'nbinsx':10, 'xmin':0   , 'xmax':2. }, unit='cm' , xtitle='2D displacement'),
+            # VCfg(name='_norm_'     , drawname='norm_count', binning={'nbinsx':5, 'xmin':-1.5, 'xmax':3.5}, unit='', xtitle='Normalisation'),
+	    # VCfg(name='hnl_m_12_money' , drawname='hnl_m_12', binning={'nbinsx':6, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
+	    # VCfg(name='hnl_2d_disp_wide',drawname='hnl_2d_disp', binning={'nbinsx':20, 'xmin':0   , 'xmax':20 }, unit='cm' , xtitle='2D displacement (cm)'),
+	    # VCfg(name='hnl_2d_disp', binning={'nbinsx':10, 'xmin':0   , 'xmax':2. }, unit='cm' , xtitle='2D displacement'),
 
             # VCfg(name='m_triL_wide', drawname='hnl_w_vis_m',       binning={'nbinsx':40, 'xmin':0., 'xmax':200}, unit='GeV', xtitle='Tri-Lepton Mass (GeV)'),
             # VCfg(name='hnl_2d_disp_low',drawname='hnl_2d_disp', binning={'nbinsx':20, 'xmin':0   , 'xmax':0.02 }, unit='cm' , xtitle='2D displacement (cm)'),
@@ -55,6 +55,14 @@ essential_vars = [
             # VCfg(name='hnl_m_12_money_disp2_0p5_10' , drawname='hnl_m_12', binning={'nbinsx':12, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
             # VCfg(name='hnl_m_12_money_disp3_10' , drawname='hnl_m_12', binning={'nbinsx':2, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
 
+	    VCfg(name='Martina_nl_m_12_money' , drawname='hnl_m_12', binning={'nbinsx':20, 'xmin':0   , 'xmax':20.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
+	    VCfg(name='Martina_nl_m_12_money_disp1_0p5' , drawname='hnl_m_12', binning={'nbinsx':20, 'xmin':0   , 'xmax':20.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
+	    VCfg(name='Martina_nl_m_12_money_disp2_0p5_10' , drawname='hnl_m_12', binning={'nbinsx':20, 'xmin':0   , 'xmax':20.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
+	    VCfg(name='Martina_nl_m_12_money_disp3_10' , drawname='hnl_m_12', binning={'nbinsx':2, 'xmin':0   , 'xmax':20.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
+	    VCfg(name='Martina_nl_2d_disp',drawname='hnl_2d_disp', binning={'nbinsx':40, 'xmin':0   , 'xmax':8 }, unit='cm' , xtitle='2D displacement (cm)'),
+	    VCfg(name='Martina_nl_dr_12', drawname='hnl_dr_12', binning={'nbinsx':40, 'xmin':0   , 'xmax':4. }, unit=None, xtitle='#DeltaR (#mu_{1}, #mu_{2})'),
+	    VCfg(name='Martina__triL_wide', drawname='hnl_w_vis_m',       binning={'nbinsx':40, 'xmin':0., 'xmax':200}, unit='GeV', xtitle='Tri-Lepton Mass (GeV)'),
+	    VCfg(name='Martina_2_dxy',drawname='l2_dxy'      , binning={'nbinsx':40, 'xmin':-0.02  , 'xmax':1.0}, unit='cm', xtitle='l2_dxy (GeV)'),
             # VCfg(name='hnl_m_12_money_2bins' , drawname='hnl_m_12', binning={'nbinsx':2, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
             # VCfg(name='hnl_m_12_money_6bins' , drawname='hnl_m_12', binning={'nbinsx':6, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),
             # VCfg(name='hnl_m_12_money_12bins' , drawname='hnl_m_12', binning={'nbinsx':12, 'xmin':0   , 'xmax':12.  }, unit='GeV', xtitle='dilepton mass (GeV)'),

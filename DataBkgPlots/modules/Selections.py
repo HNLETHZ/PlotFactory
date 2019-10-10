@@ -70,6 +70,12 @@ def SR(channel):
     'abs(hnl_dphi_hnvis0) > 0.9 ',
     '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
 
+    #switch between (sub) final states in eem and mem
+    # 'hnl_q_01 == 0',  
+    # 'hnl_q_01 != 0', 
+    # 'hnl_q_02 == 0',
+    # 'hnl_q_02 != 0',
+
     #displacement bins
     # 'hnl_2d_disp < 0.5',
     # '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
@@ -79,20 +85,17 @@ def SR(channel):
     # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
     
     # '!(nbj == 0)', # activate for SR orthogonal
-    '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
-    # '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
+    # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
+    '((!(nbj == 0)) || (!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.)))', #activate to train on all orthogonal regions
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m > 110) ', # activate for right sideband (train)
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
     ## auxiliary selections
-    # 'hnl_dr_01 > 0.3',
-    # 'hnl_dr_02 > 0.3',
-    # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
-
-    # 'hnl_m_12 < 4',
-    # 'hnl_2d_disp > 1.5',
+    # 'hnl_m_12 < 12',
+    # 'hnl_2d_disp > 0.5',
     # 'abs(l1_dz) < .2 ',
     # 'abs(l2_dz) < .2 ',
+    # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
     # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
     # 'hnl_dr_12 > 0.025', # the trick to make plots look nicer
     # '!(hnl_m_01 > 82.0 && hnl_m_01 < 95.) ', # get rid of Z peak
@@ -121,41 +124,9 @@ def SR(channel):
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
         ])
-    if channel is 'eem_OS':    
-        selection = '&'.join([
-            selection,
-            'hnl_q_01 == 0',  #OS eem
-            'l0_eid_mva_iso_wp90 == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'eem_SS':    
-        selection = '&'.join([
-            selection,
-            'hnl_q_01 != 0',  #SS eem 
-            'l0_eid_mva_iso_wp90 == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
     if channel is 'mem':
         selection = '&'.join([
             selection,
-            'l0_id_m == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'mem_OS':
-        selection = '&'.join([
-            selection,
-            'hnl_q_02 == 0',  #OS mem
-            'l0_id_m == 1',
-            'l1_MediumNoIso == 1 ', 
-            'l2_Medium == 1 ', 
-        ])
-    if channel is 'mem_SS':
-        selection = '&'.join([
-            selection,
-            'hnl_q_02 != 0',  #SS eem
             'l0_id_m == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
@@ -167,26 +138,102 @@ def SR(channel):
     # return selection_ignoreEverything
     return selection
 
-def SR_disp1(channel):
-    selection = '&'.join([
-            SR(channel),
-            'hnl_2d_disp < 0.5',
+def SR_Martina(channel):
+    selection = ' & '.join([
+    'l0_pt > 25 '              , 
+    'abs(l0_eta) < 2.4 '       ,
+    'abs(l0_dz) < 0.2 '        ,
+    'abs(l0_dxy) < 0.05 '      ,
+    'l0_reliso_rho_03 < 0.2 '  ,
+
+    'l1_pt > 5 '              ,
+    'abs(l1_eta) < 2.4 '       ,
+    # 'abs(l1_dxy) > 0.002 '      ,
+    'abs(l1_dxy) > 0.01 '      ,
+    # 'abs(l1_dz) < 5',
+
+    'l2_pt > 5 '               ,
+    'abs(l2_eta) < 2.4 '       ,
+    # 'abs(l2_dxy) > 0.002 '       ,
+    'abs(l2_dxy) > 0.01 '       ,
+    # 'abs(l2_dz) < 5',
+
+    'hnl_q_12 == 0 '           ,
+    # 'hnl_2d_disp > 0.0005',
+    # 'hnl_dr_02 > 0.2',
+    # 'hnl_dr_01 > 0.2',
+    'abs(hnl_dphi_hnvis0) > 1. ',
+    '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
+
+    #switch between (sub) final states in eem and mem
+    # 'hnl_q_01 == 0',  
+    # 'hnl_q_01 != 0', 
+    # 'hnl_q_02 == 0',
+    # 'hnl_q_02 != 0',
+
+    #displacement bins
+    # 'hnl_2d_disp < 0.5',
+    # '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
+    # 'hnl_2d_disp > 10',
+
+    '(nbj == 0)',# true SR
+    # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
+    
+    # '!(nbj == 0)', # activate for SR orthogonal
+    # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
+    '((!(nbj == 0)) || (!(hnl_w_vis_m > 40. && hnl_w_vis_m < 85.)))', #activate to train on all orthogonal regions
+    # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m > 110) ', # activate for right sideband (train)
+    # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
+    
+    ## auxiliary selections
+    'hnl_dr_12 < 1.',
+    # 'hnl_m_12 < 12',
+    # 'hnl_2d_disp > 0.5',
+    # 'abs(l1_dz) < .2 ',
+    # 'abs(l2_dz) < .2 ',
+    # 'hnl_m_12 < 80', # because this is the mass range our analysis is aiming for (and get rid of the Z peak)
+    # '(hnl_w_vis_m > 80. && hnl_w_vis_m < 90.) ', # isolate conversions
+    # 'hnl_dr_12 > 0.025', # the trick to make plots look nicer
+    # '!(hnl_m_01 > 82.0 && hnl_m_01 < 95.) ', # get rid of Z peak
+    # '!(hnl_w_vis_m > 80. && hnl_w_vis_m < 94.) ', # get rid of Z peak
+    # 'sv_prob > 0.01', #get rid of bad vertex fit events
+    ])
+    if channel is 'mmm':
+        selection = '&'.join([
+            selection,
+            'l0_id_m == 1',
+            'l1_Medium == 1 ', 
+            'l2_Medium == 1 ', 
         ])
+        
+    if channel is 'eee':
+        selection = '&'.join([
+            selection,
+            'l0_eid_mva_iso_wp90 == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_MediumNoIso == 1 ', 
+        ])
+    if channel is 'eem':    
+        selection = '&'.join([
+            selection,
+            'l0_eid_mva_iso_wp90 == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+        ])
+    if channel is 'mem':
+        selection = '&'.join([
+            selection,
+            'l0_id_m == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+        ])
+        
+
+    selection_ignoreEverything = 'l1_pt > 0'
+
+    # return selection_ignoreEverything
     return selection
 
-def SR_disp2(channel):
-    selection = '&'.join([
-            SR(channel),
-            '((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))',
-        ])
-    return selection
-
-def SR_disp3(channel):
-    selection = '&'.join([
-            SR(channel),
-            'hnl_2d_disp > 10',
-        ])
-    return selection
 
 
 def DY():
@@ -413,8 +460,7 @@ def MR_SF2_closure(channel):
 def getSelection(channel, selection_name):
     # capping_value = '0.8';
     # capping_value = '100.0';
-    # capping_value = '2.0';
-    capping_value = '4.0';
+    capping_value = '2.0';
 
     #testing the old version
     if selection_name == 'baseline':
@@ -444,16 +490,8 @@ def getSelection(channel, selection_name):
         selection = MR_SF2_closure(channel)
     
     if selection_name == 'SR':
-        selection = SR(channel)
-                    
-    if selection_name == 'SR_disp1':
-        selection = SR_disp1(channel)
-                    
-    if selection_name == 'SR_disp2':
-        selection = SR_disp2(channel)
-                    
-    if selection_name == 'SR_disp3':
-        selection = SR_disp3(channel)
+        # selection = SR(channel)
+        selection = SR_Martina(channel)
                     
     if selection_name == 'SR_orth':
         selection = SR_orth(channel)
@@ -591,7 +629,6 @@ def getSelection(channel, selection_name):
 class Region(object):
     def __init__(self,name,channel,CR):
         Prompt_extension                = ' && (l0_gen_match_isPromptFinalState == 1 && l1_gen_match_isPromptFinalState == 1 && l2_gen_match_isPromptFinalState == 1)'
-        nonPrompt_extension             = ' && !(l0_gen_match_isPromptFinalState == 1 && l1_gen_match_isPromptFinalState == 1 && l2_gen_match_isPromptFinalState == 1)'
         self.name                       = name
         self.channel                    = channel
         self.CR                         = CR
@@ -639,12 +676,4 @@ class Region(object):
         self.MC_Conversions             = self.MC        + Prompt_extension
         self.MC_contamination_pass      = self.MC        + Prompt_extension
         self.MC_contamination_fail      = self.nonprompt + Prompt_extension
-
-        # self.MC_Conversions             = self.MC        + nonPrompt_extension
-        # self.MC_contamination_pass      = self.MC        + nonPrompt_extension
-        # self.MC_contamination_fail      = self.nonprompt + nonPrompt_extension
-
-        # self.MC_contamination_pass      = self.MC        
-        # self.MC_contamination_fail      = self.nonprompt 
-
 
