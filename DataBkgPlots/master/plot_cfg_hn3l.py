@@ -52,7 +52,8 @@ gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('SR',channel,'SR'))
-    regions.append(Region('MR_nonprompt',channel,'SR'))
+    # regions.append(Region('MR_nonprompt',channel,'SR'))
+    regions.append(Region('MR_nonprompt_v1_MartinaRegion',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
     # regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
     # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
@@ -236,6 +237,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
                 channel_name += 'e#mu SS'
                 channel = 'eem_SS'
             else:
+	    	set_trace()
                 plotDir = plotDirBase + 'eem/'
                 channel_name += 'e#mu'
                 channel = 'eem'

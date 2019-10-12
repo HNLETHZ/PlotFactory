@@ -6,10 +6,12 @@ hostname        = gethostname()
 faketype = 'nonprompt'
 
 ## select here the channel you want to analyze
-channel = 'mmm'    
+# channel = 'mmm'    
 # channel = 'eee'    
-# channel = 'eem'
-# channel = 'mem'
+# channel = 'eem_OS'
+# channel = 'eem_SS'
+# channel = 'mem_OS'
+channel = 'mem_SS'
 
 dataset = '2017'
 # dataset = '2018'

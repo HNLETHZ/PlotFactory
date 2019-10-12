@@ -213,19 +213,40 @@ def SR_Martina(channel):
             'l1_MediumNoIso == 1 ', 
             'l2_MediumNoIso == 1 ', 
         ])
-    if channel is 'eem':    
+    if channel is 'eem_OS':    
         selection = '&'.join([
             selection,
             'l0_eid_mva_iso_wp90 == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
+            'l2_Medium == 1 ', 
+	    'hnl_q_01 == 0',  
         ])
-    if channel is 'mem':
+    if channel is 'eem_SS':    
+        selection = '&'.join([
+            selection,
+            'l0_eid_mva_iso_wp90 == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+            'l2_Medium == 1 ', 
+	    'hnl_q_01 != 0',  
+        ])
+    if channel is 'mem_OS':
         selection = '&'.join([
             selection,
             'l0_id_m == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
+	    'hnl_q_02 == 0',  
+        ])
+        
+    if channel is 'mem_SS':
+        selection = '&'.join([
+            selection,
+            'l0_id_m == 1',
+            'l1_MediumNoIso == 1 ', 
+            'l2_Medium == 1 ', 
+	    'hnl_q_02 != 0',  
         ])
         
 

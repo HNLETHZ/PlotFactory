@@ -364,14 +364,14 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # train, give the classifier a head start
     # early stopping
-    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50, restore_best_weights=True)
+    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=10, restore_best_weights=True)
 
     # train only the classifier. beta is set at 0 and the discriminator is not trained
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
     # history
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
-    history = model.fit(xx, Y, batch_size = 512, epochs=2000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
+    history = model.fit(xx, Y, batch_size = 512, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
     # history = model.fit(xx, Y, batch_size = 1000, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es])
     # history = model.fit(xx, Y, batch_size = 1000, epochs=100, validation_split=0.5, callbacks=[es])  
 
@@ -848,22 +848,27 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
                 path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
         
         if channel == 'eee':
-            path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
             # path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
             # path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
             # path_to_NeuralNet = 'NN/eee_nonprompt_v4_relasRelIso2/'
+	    path_to_NeuralNet = 'NN/eee_nonprompt_v5_MartinaRegion/'
 
         if channel == 'eem_OS':
-            path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/eem_OS_nonprompt_v2_MartinaRegion/'
 
         if channel == 'eem_SS':
-            path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/eem_SS_nonprompt_v2_MartinaRegion/'
 
         if channel == 'mem_OS':
-            path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/mem_OS_nonprompt_v2_MartinaRegion/'
     
         if channel == 'mem_SS':
-            path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
+            # path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
+            path_to_NeuralNet = 'NN/mem_SS_nonprompt_v2_MartinaRegion/'
     
 
     return path_to_NeuralNet 
@@ -872,10 +877,12 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
 if __name__ == '__main__':
 
     ## select here the channel you want to analyze
-    channel = 'mmm'    
+    # channel = 'mmm'    
     # channel = 'eee'    
-    # channel = 'eem'
-    # channel = 'mem'
+    # channel = 'eem_OS'
+    # channel = 'eem_SS'
+    # channel = 'mem_OS'
+    channel = 'mem_SS'
 
 
     ## select the dataset 
