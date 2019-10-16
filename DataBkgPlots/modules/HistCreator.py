@@ -200,8 +200,8 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.nonprompt
 
             if cfg.is_MC == True:
-                # norm_cut  = self.hist_cfg.region.MC
-                norm_cut  = self.hist_cfg.region.MC_contamination_pass
+                norm_cut  = self.hist_cfg.region.MC
+                # norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_SingleConversions == True:
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
@@ -213,8 +213,8 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DY == True:
-                # norm_cut  = self.hist_cfg.region.MC_DY
-                norm_cut  = self.hist_cfg.region.MC_contamination_pass
+                norm_cut  = self.hist_cfg.region.MC
+                # norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_data == True:
                 norm_cut  = self.hist_cfg.region.data
@@ -231,8 +231,12 @@ class CreateHists(object):
 
             if 'disp1_0p5' in self.vcfgs[0].name:
                 norm_cut += '&& (hnl_2d_disp < 0.5)'
+            if 'disp1_2p0' in self.vcfgs[0].name:
+                norm_cut += '&& (hnl_2d_disp < 2.0)'
             if 'disp2_0p5_10' in self.vcfgs[0].name:
                 norm_cut += '&& ((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))'
+            if 'disp2_2p0_10' in self.vcfgs[0].name:
+                norm_cut += '&& ((hnl_2d_disp > 2.0) && (hnl_2d_disp < 10))'
             if 'disp3_10' in self.vcfgs[0].name:
                 norm_cut += '&& hnl_2d_disp > 10'
 
@@ -279,8 +283,8 @@ class CreateHists(object):
     def makeDataFrameHistograms(self,vcfg,cfg,weight,dataframe,norm_cut,hists,stack,useNeuralNetwork):
         plot = self.plots[vcfg.name]
 
-        if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake) and (not cfg.is_nonprompt):
-            weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
+	if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake) and (not cfg.is_nonprompt):
+	    weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
 
         gSystem.Load("modules/DDE_doublefake_h.so")
         gSystem.Load("modules/DDE_singlefake_h.so")
@@ -474,6 +478,9 @@ class CreateHists(object):
 
         
         if not cfg.is_singlefake:
+            # set_trace()
+            # if 'A' in cfg.name: set_trace()
+	    # if cfg.name == 'DYJets_M50_ext': set_trace()
             if 'nbinsx' in vcfg.binning.keys():
                 hists[vcfg.name] =   dataframe\
                                         .Define('w',weight)\

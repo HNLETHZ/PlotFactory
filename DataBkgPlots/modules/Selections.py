@@ -186,7 +186,7 @@ def SR_Martina(channel):
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
     ## auxiliary selections
-    'hnl_dr_12 < 1.',
+    'hnl_dr_12 < 1',
     # 'hnl_m_12 < 12',
     # 'hnl_2d_disp > 0.5',
     # 'abs(l1_dz) < .2 ',
@@ -219,7 +219,6 @@ def SR_Martina(channel):
             'l0_eid_mva_iso_wp90 == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
-            'l2_Medium == 1 ', 
 	    'hnl_q_01 == 0',  
         ])
     if channel is 'eem_SS':    
@@ -228,8 +227,7 @@ def SR_Martina(channel):
             'l0_eid_mva_iso_wp90 == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
-            'l2_Medium == 1 ', 
-	    'hnl_q_01 != 0',  
+	    'hnl_q_01 != 0', 
         ])
     if channel is 'mem_OS':
         selection = '&'.join([
@@ -237,16 +235,15 @@ def SR_Martina(channel):
             'l0_id_m == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
-	    'hnl_q_02 == 0',  
+	    'hnl_q_02 == 0',
         ])
-        
     if channel is 'mem_SS':
         selection = '&'.join([
             selection,
             'l0_id_m == 1',
             'l1_MediumNoIso == 1 ', 
             'l2_Medium == 1 ', 
-	    'hnl_q_02 != 0',  
+	    'hnl_q_02 != 0',
         ])
         
 
@@ -514,6 +511,9 @@ def getSelection(channel, selection_name):
         # selection = SR(channel)
         selection = SR_Martina(channel)
                     
+    if selection_name == 'SR_Martina':
+        selection = SR_Martina(channel)
+                    
     if selection_name == 'SR_orth':
         selection = SR_orth(channel)
                     
@@ -697,4 +697,5 @@ class Region(object):
         self.MC_Conversions             = self.MC        + Prompt_extension
         self.MC_contamination_pass      = self.MC        + Prompt_extension
         self.MC_contamination_fail      = self.nonprompt + Prompt_extension
+
 
