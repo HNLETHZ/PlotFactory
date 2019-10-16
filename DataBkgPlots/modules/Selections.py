@@ -163,7 +163,6 @@ def SR_Martina(channel):
     # 'hnl_dr_02 > 0.2',
     # 'hnl_dr_01 > 0.2',
     'abs(hnl_dphi_hnvis0) > 1. ',
-    '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
 
     #switch between (sub) final states in eem and mem
     # 'hnl_q_01 == 0',  
@@ -180,8 +179,8 @@ def SR_Martina(channel):
     # '(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # true SR
     
     # '!(nbj == 0)', # activate for SR orthogonal
-    # '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
-    '((!(nbj == 0)) || (!(hnl_w_vis_m > 40. && hnl_w_vis_m < 85.)))', #activate to train on all orthogonal regions
+    '!(hnl_w_vis_m > 50. && hnl_w_vis_m < 80.) ', # activate for SR orthogonal (sideband)
+    # '((!(nbj == 0)) || (!(hnl_w_vis_m > 40. && hnl_w_vis_m < 85.)))', #activate to train on all orthogonal regions
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m > 110) ', # activate for right sideband (train)
     # '((!(hnl_w_vis_m > 50. && hnl_w_vis_m < 81.)) && hnl_w_vis_m < 110) ', # activate for left sideband (test)
     
@@ -198,6 +197,12 @@ def SR_Martina(channel):
     # '!(hnl_w_vis_m > 80. && hnl_w_vis_m < 94.) ', # get rid of Z peak
     # 'sv_prob > 0.01', #get rid of bad vertex fit events
     ])
+
+    if (channel is 'mmm') or (channel is 'eee'):
+        selection = '&'.join([
+            selection,
+	    '(abs(hnl_m_12 - 3.1) > 0.1)', # avoid JPsi but only for l1/2 == 'mm' or 'ee'
+        ])
     if channel is 'mmm':
         selection = '&'.join([
             selection,
