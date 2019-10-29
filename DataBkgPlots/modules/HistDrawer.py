@@ -213,14 +213,14 @@ class HistDrawer:
         can.SaveAs(plot_dir + '/root/linear/' + plotname  + '.root')
         can.SaveAs(plot_dir + '/png/linear/'  + plotname  + '.png')
 
-        # if server == "starseeker":
-            # if dataset == '2017':
-                # t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
-            # if dataset == '2018':
-                # t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel_dir+'/'+region.name 
-            # can.SaveAs(t3_dir + '/pdf/linear/'  + plotname  + '.pdf')
-            # can.SaveAs(t3_dir + '/root/linear/' + plotname  + '.root')
-            # can.SaveAs(t3_dir + '/png/linear/'  + plotname  + '.png')
+        if server == "starseeker":
+            if dataset == '2017':
+                t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
+            if dataset == '2018':
+                t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel_dir+'/'+region.name 
+            can.SaveAs(t3_dir + '/pdf/linear/'  + plotname  + '.pdf')
+            can.SaveAs(t3_dir + '/root/linear/' + plotname  + '.root')
+            can.SaveAs(t3_dir + '/png/linear/'  + plotname  + '.png')
 
 
         # Also save with log y
@@ -229,10 +229,10 @@ class HistDrawer:
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
-        # if server == "starseeker":
-            # can.SaveAs(t3_dir + '/pdf/log/'  + plotname  + '_log.pdf')
-            # can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
-            # can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
+        if server == "starseeker":
+            can.SaveAs(t3_dir + '/pdf/log/'  + plotname  + '_log.pdf')
+            can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
+            can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
         pad.SetLogy(0)
         if 'dz' in plotname:
             pad.SetLogx(False)

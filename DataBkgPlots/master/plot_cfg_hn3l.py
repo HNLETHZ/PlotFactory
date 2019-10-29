@@ -51,9 +51,10 @@ gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 
 def prepareRegions(channel):
     regions = []
-    # regions.append(Region('SR',channel,'SR'))
+    # regions.append(Region('datacard',channel,'SR'))
+    regions.append(Region('SR',channel,'SR'))
     # regions.append(Region('MR_nonprompt',channel,'SR'))
-    regions.append(Region('MR_nonprompt_MartinaRegion',channel,'SR'))
+    # regions.append(Region('MR_nonprompt_MartinaRegion',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
     # regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
     # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
@@ -135,8 +136,8 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
 
     # 2018
     if dataset == '2018':
-        # int_lumi = 59740.0 #pb (all eras)
-        int_lumi = 14000.0 #pb (era A)
+        int_lumi = 59740.0 #pb (all eras)
+        # int_lumi = 14000.0 #pb (era A)
         # int_lumi =  7100.0 #pb (era B)
         # int_lumi =  6940.0 #pb (era C)
         # int_lumi = 31930.0 #pb (era D)
@@ -163,10 +164,10 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
         print('# using %d CPUs'%(cpu_count())), 'with multiprocess %s'%(multiprocess_status) 
         print('# Method used to estimate Lepton Fake Rate: %s'%(fr_method))
         if useNeuralNetwork:
-            # print '# Path to Neural Network for SingleFakes1:\t' + fr_net.path_to_NeuralNet('SingleFake1',channel_dir)
-            # print '# Path to Neural Network for SingleFakes2:\t' + fr_net.path_to_NeuralNet('SingleFake2',channel_dir)
-            # print '# Path to Neural Network for DoubleFakes:\t' + fr_net.path_to_NeuralNet('DoubleFake',channel_dir)
-            print '# Path to Neural Network for nonprompt:\t\t' + fr_net.path_to_NeuralNet('nonprompt',channel_dir)
+            # print '# Path to Neural Network for SingleFakes1:\t' + fr_net.path_to_NeuralNet('SingleFake1',channel_dir,dataset)
+            # print '# Path to Neural Network for SingleFakes2:\t' + fr_net.path_to_NeuralNet('SingleFake2',channel_dir,dataset)
+            # print '# Path to Neural Network for DoubleFakes:\t' + fr_net.path_to_NeuralNet('DoubleFake',channel_dir,dataset)
+            print '# Path to Neural Network for nonprompt:\t\t' + fr_net.path_to_NeuralNet('nonprompt',channel_dir,dataset)
         print('#############################################################################')
 
         i_var = 0
@@ -176,14 +177,14 @@ def makePlots(plotDir,channel_name,variables, regions, total_weight, sample_dict
             print '\nPlotting variable \'%s\' (%d of %d; total time passed: %.1f s)...'%(var.name,i_var,len(variables),time.time()-start_plots)
             start_plot = time.time()
             cfg_main.vars = [var]
-            HISTS = CreateHists(cfg_main, analysis_dir,channel_dir,server,useNeuralNetwork)
+            HISTS = CreateHists(cfg_main, analysis_dir,channel_dir,server,useNeuralNetwork,dataset)
             plots = HISTS.createHistograms(cfg_main, verbose=False, multiprocess = multiprocess)
             plot = plots[var.name]
-            plot.Group('data_obs', ['data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
+            plot.Group('data_obs', ['data_2017A','data_2017B', 'data_2017C', 'data_2017D', 'data_2017E', 'data_2017F'])
             # plot.Group('doublefake', ['doublefake_B', 'doublefake_C', 'doublefake_D', 'doublefake_E', 'doublefake_F'])
             # plot.Group('singlefake', ['singlefake_B', 'singlefake_C', 'singlefake_D', 'singlefake_E', 'singlefake_F'])
-            plot.Group('nonprompt', ['nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F','Conversions_DYJetsToLL_M10to50_contamination','Conversions_DYJetsToLL_M5to50_contamination','Conversions_DYJets_M50_contamination','Conversions_DYJets_M50_ext_contamination','WZTo3LNu_contamination','ZZTo4L_contamination','WW_contamination','WZ_contamination','ZZ_contamination','TTJets_contamination'])
-            plot.Group('prompt',['Conversions_DYJetsToLL_M10to50','Conversions_DYJetsToLL_M5to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext','WZTo3LNu','ZZTo4L','WW','WZ','ZZ','TTJets'])
+            plot.Group('nonprompt', ['nonprompt_A','nonprompt_B', 'nonprompt_C', 'nonprompt_D', 'nonprompt_E', 'nonprompt_F','Conversions_DYJetsToLL_M10to50_contamination','Conversions_DYJetsToLL_M5to50_contamination','Conversions_DYJets_M50_contamination','Conversions_DYJets_M50_ext_contamination','WZTo3LNu_contamination','ZZTo4L_contamination','WW_contamination','WZ_contamination','ZZ_contamination','TTJets_contamination','TTJets_ext_contamination'])
+            plot.Group('prompt',['Conversions_DYJetsToLL_M10to50','Conversions_DYJetsToLL_M5to50','Conversions_DYJets_M50','Conversions_DYJets_M50_ext','WZTo3LNu','ZZTo4L','WW','WZ','ZZ','TTJets','TTJets_ext'])
             # plot.Group('contamination', ['conversionsSingle_DYJets_M50_contamination', 'conversionsSingle_DYJets_M50_ext_contamination', 'conversionsSingle_DYJetsToLL_M10to50_contamination','WW_contamination','WZ_contamination','ZZ_contamination'])
             # plot.Group('Diboson', ['WZTo3LNu','ZZTo4L','WW','WZ','ZZ'])
             # plot.Group('Single t', ['STbar_tch_inc','ST_tch_inc','ST_sch_lep'])
@@ -279,9 +280,11 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
         if dataset == '2017':
             analysis_dir = '/home/dehuazhu/SESSD/4_production/'
         if dataset == '2018':
-            analysis_dir = '/mnt/StorageElement1/4_production/2018/'
+            # analysis_dir = '/mnt/StorageElement1/4_production/2018/'
+            analysis_dir = '/home/dehuazhu/SESSD/4_production/2018/'
 
-    total_weight = 'weight * lhe_weight'
+    # total_weight = 'weight * lhe_weight'
+    total_weight = 'puweight * lhe_weight'
     # total_weight = '1'
 
     regions = prepareRegions(channel)
@@ -340,13 +343,13 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
             os.mkdir(regionDir + '/png/linear/')
             os.mkdir(regionDir + '/png/log/')
 
-        # if "starseeker" in hostname:
-            # if dataset == '2017':
-                # os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
-                # print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(region.name,channel)
-            # if dataset == '2018':
-                # os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel+'/'))
-                # print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/2018/%s!'%(region.name,channel)
+        if "starseeker" in hostname:
+            if dataset == '2017':
+                os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel+'/'))
+                print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/%s!'%(region.name,channel)
+            if dataset == '2018':
+                os.system("cp -rf %s %s"%(regionDir,'/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel+'/'))
+                print 'directory %s copied to /t3home/dezhu/eos/t3/figures/1_DataMC/FinalStates/2018/%s!'%(region.name,channel)
     
     makePlots(
         plotDir,

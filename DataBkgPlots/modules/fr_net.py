@@ -16,6 +16,7 @@ import uproot as ur
 from modules.DataMCPlot import DataMCPlot 
 import plotfactory as pf
 import pickle
+import math
 
 import root_pandas
 
@@ -26,12 +27,16 @@ import matplotlib.pyplot as plt
 from itertools import product
 
 from root_numpy import root2array, tree2array
+
 from keras.models import Sequential, Model, load_model
-from keras.layers import Dense, Input, Dropout
+from keras.layers import Dense, Input, Dropout, BatchNormalization
 from keras.utils import plot_model
-from keras.callbacks import EarlyStopping, Callback
+from keras.callbacks import EarlyStopping, Callback, ReduceLROnPlateau, ModelCheckpoint
 from keras import backend as K
 from keras.activations import softmax
+from keras.constraints import unit_norm
+from keras.utils import to_categorical
+from keras.optimizers import SGD, Adam
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, roc_auc_score
@@ -134,7 +139,8 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         # sample = working_samples[0] #super stupid mistake, I'm keeping it here as a painful reminder
         sample = working_samples[i]
         file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
-        chain.Add(file_name)
+	if sample.name == 'data_2017A':
+	    chain.Add(file_name)
 
     
     # define the selections
@@ -154,7 +160,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         selection_failing = region.DF
 
     if faketype == 'nonprompt':
-        region = Selections.Region('MR_nonprompt',channel,'MR_nonprompt')
+        region = Selections.Region('MR_nonprompt',channel,'SR')
         selection_passing    = region.data
         selection_failing    = region.nonprompt
         selection_passing_MC = region.MC_contamination_pass
@@ -314,30 +320,59 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # #define indirect training variables
     data, features, branches =  add_branches(data,features,branches)
+    print 'training features: '
+    for f in features: print f
    
     # define X and Y
     X = pd.DataFrame(data, columns=branches)
     Y = pd.DataFrame(data, columns=['target'])
 
+    # define the activation functions
+    activation = 'tanh'
+    # activation = 'selu'
+    # activation = 'sigmoid'
+    # activation = 'relu'
+    # activation = 'LeakyReLU' #??????
+
     # define the net
     input  = Input((len(features),))
 
+    # old version
     dense1 = Dense(64, activation='relu'   , name='dense1')(input )
     dropout1 = Dropout(0.5, seed = 123456)(dense1)
     output = Dense( 1, activation='sigmoid', name='output')(dense1)
 
-    # dense1 = Dense(128, activation='relu'   , name='dense1')(input )
-    # dropout1 = Dropout(0.5, seed = 123456)(dense1)
-    # dense2 = Dense(64, activation='relu'   , name='dense2')(dropout1)
-    # dropout2 = Dropout(0.5, seed = 123456)(dense2)
-    # output = Dense( 1, activation='sigmoid', name='output')(dropout2)
 
+    # new version
+    input  = Input((len(features),))
+    layer  = Dense(4096, activation=activation   , name='dense1', kernel_constraint=unit_norm())(input)
+    layer  = Dropout(0.4, name='dropout1')(layer)
+    layer  = BatchNormalization()(layer)
+    layer  = Dense(128, activation=activation   , name='dense2', kernel_constraint=unit_norm())(layer)
+    layer  = Dropout(0.4, name='dropout2')(layer)
+    layer  = BatchNormalization()(layer)
+    # layer  = Dense(16, activation=activation   , name='dense3', kernel_constraint=unit_norm())(layer)
+    # layer  = Dropout(0.4, name='dropout3')(layer)
+    # layer  = BatchNormalization()(layer)
+    # layer  = Dense(16, activation=activation   , name='dense4', kernel_constraint=unit_norm())(layer)
+    # layer  = Dropout(0.4, name='dropout4')(layer)
+    # layer  = BatchNormalization()(layer)
+    layer  = Dense(16, activation=activation   , name='dense5', kernel_constraint=unit_norm())(layer)
+    layer  = Dropout(0.2, name='dropout5')(layer)
+    layer  = BatchNormalization()(layer)
+    output = Dense(  1, activation='sigmoid', name='output', )(layer)
 
     # Define outputs of your model
     model = Model(input, output)
 
+    # choose your optimizer
+    # opt = SGD(lr=0.0001, momentum=0.8)
+    # opt = Adam(lr=0.001, decay=0.1, beta_1=0.9, beta_2=0.999, amsgrad=False)
+    # opt = Adam(decay=0.1, beta_1=0.9, beta_2=0.999, amsgrad=False)
+    opt = 'Adam'
+
     # compile and choose your loss function (binary cross entropy for a 1-0 classification problem)
-    model.compile('Adam', loss='binary_crossentropy')
+    model.compile(optimizer=opt, loss='binary_crossentropy', metrics=['mae','acc'])
 
     # print net summary
     print model.summary()
@@ -348,49 +383,87 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # normalize inputs FIXME! do it, but do it wisely # try also standard scaler!
     # https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html#sphx-glr-auto-examples-preprocessing-plot-all-scaling-py
-    from sklearn.preprocessing import QuantileTransformer
 
-    # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
+    #Import two different preprocessor
+    from sklearn.preprocessing import QuantileTransformer, RobustScaler
 
-    #improved version of the quantile transformer, saving the parameters later for the evaluation
-    qt = QuantileTransformer(output_distribution='normal', random_state=1986)
+    #Choose the preprocessor
+    # qt = QuantileTransformer(output_distribution='normal', random_state=1986)
+    qt = RobustScaler()
+
     qt.fit(X[features])
     xx = qt.transform(X[features])
-    pickle.dump( qt, open( path_to_NeuralNet + 'quantile_transformation.pck', 'w' ) )
-    
-    # xx = X[features] # use this to bypass the quantile transformer
-    # alternative way to scale the inputs
-    # https://datascienceplus.com/keras-regression-based-neural-networks/
+    pickle.dump( qt, open( path_to_NeuralNet + 'input_transformation.pck', 'w' ) )
 
+    
     # train, give the classifier a head start
     # early stopping
-    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=10, restore_best_weights=True)
+    # monitor = 'val_acc'
+    monitor = 'val_loss'
+    # monitor = 'val_mae'
+
+    # early stopping
+    es = EarlyStopping(monitor=monitor, mode='auto', verbose=1, patience=30, restore_best_weights=True)
+
+    # reduce learning rate when at plateau, fine search the minimum
+    reduce_lr = ReduceLROnPlateau(monitor=monitor, mode='auto', factor=0.2, patience=10, min_lr=0.00001, cooldown=10, verbose=True)
+
+    # save the model every now and then
+    filepath = path_to_NeuralNet + 'saved-model-{epoch:04d}_val_loss_{val_loss:.4f}_val_acc_{val_acc:.4f}.h5'
+    save_model = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, save_weights_only=False, mode='auto', period=1)
+
+    # weight the events according to their displacement (favour high displacement)
+    weight = np.array(np.power(X['hnl_2d_disp'], 0.2))
 
     # train only the classifier. beta is set at 0 and the discriminator is not trained
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
-    # history
-    data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
-    history = model.fit(xx, Y, batch_size = 512, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
-    # history = model.fit(xx, Y, batch_size = 1000, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es])
-    # history = model.fit(xx, Y, batch_size = 1000, epochs=100, validation_split=0.5, callbacks=[es])  
+    # history = model.fit(xx, Y, batch_size = 512, epochs=1000, verbose = 1,  validation_split=0.5, callbacks=[es],sample_weight = np.array(data.contamination_weight))
+    history = model.fit(xx, Y, epochs=2000, validation_split=0.5, callbacks=[es, reduce_lr, save_model], batch_size=32, verbose=True, sample_weight=weight)  
 
     # plot loss function trends for train and validation sample
+    plt.clf()
+    plt.title('loss')
     plt.plot(history.history['loss'], label='train')
     plt.plot(history.history['val_loss'], label='test')
     plt.legend()
-    plt.savefig(path_to_NeuralNet + 'loss_function_history.pdf')
+    # plt.yscale('log')
+    center = min(history.history['val_loss'] + history.history['loss'])
+    plt.ylim((center*0.98, center*1.5))
+    plt.grid(True)
+    plt.savefig(path_to_NeuralNet + 'loss_function_history_weighted.pdf')
+    plt.clf()
+
+    # plot accuracy trends for train and validation sample
+    plt.title('accuracy')
+    plt.plot(history.history['acc'], label='train')
+    plt.plot(history.history['val_acc'], label='test')
+    plt.legend()
+    center = max(history.history['val_acc'] +  history.history['acc'])
+    plt.ylim((center*0.85, center*1.02))
+    # plt.yscale('log')
+    plt.grid(True)
+    plt.savefig(path_to_NeuralNet + 'accuracy_history_weighted.pdf')
+    plt.clf()
+
+    # plot mean absolute error
+    plt.title('mean absolute error')
+    plt.plot(history.history['mean_absolute_error'], label='train')
+    plt.plot(history.history['val_mean_absolute_error'], label='test')
+    plt.legend()
+    center = min(history.history['val_mean_absolute_error'] + history.history['mean_absolute_error'])
+    plt.ylim((center*0.98, center*1.5))
+    # plt.yscale('log')
+    plt.grid(True)
+    plt.savefig(path_to_NeuralNet + 'mean_absolute_error_history_weighted.pdf')
     plt.clf()
 
     # calculate predictions on the data sample
     print 'predicting on ', data.shape[0], 'events'
     x = pd.DataFrame(data, columns=features)
-    # y = model.predict(x)
-    # xx = QuantileTransformer(output_distribution='normal').fit_transform(x[features])
-    # xx = x[features]# use this to bypass the quantile transformer
 
-    # apply the Quantile Transformer also for the evaluation process
-    qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'r' ))
+    # apply the Transformer also for the evaluation process
+    qt = pickle.load(open( path_to_NeuralNet + 'input_transformation.pck', 'r' ))
     xx = qt.transform(x[features])
 
     y = model.predict(xx)
@@ -404,12 +477,14 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     data.insert(len(data.columns), 'ml_fr', scale * y)
 
     # let sklearn do the heavy lifting and compute the ROC curves for you
-    fpr, tpr, wps = roc_curve(data.target, data.ml_fr) 
+    fpr, tpr, wps = roc_curve(data.target, data.weight) 
     plt.plot(fpr, tpr)
+    xy = [i*j for i,j in product([10.**i for i in range(-8, 0)], [1,2,4,8])]+[1]
+    plt.plot(xy, xy, color='grey', linestyle='--')
+    plt.yscale('linear')
     plt.savefig(path_to_NeuralNet + 'roc.pdf')
 
     # save model and weights
-    # model.save('modules/net_model_DF.h5')
     model.save(path_to_NeuralNet + 'net.h5')
     print 'Neural Net saved as ' + path_to_NeuralNet + 'net.h5'
     # model.save_weights('net_model_weights.h5')
@@ -443,8 +518,8 @@ def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_Neural
                         sample.name,
                         path_to_NeuralNet + 'net.h5',
                         path_to_NeuralNet,
-                        get_branches_nonprompt(get_features_nonprompt()),
-                        get_features_nonprompt(),
+                        get_branches_nonprompt2(get_features_nonprompt2()),
+                        get_features_nonprompt2(),
                         overwrite,
                         ])
         result = pool.map(makeFriendtree_Process,input_array)
@@ -458,8 +533,8 @@ def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_Neural
                                 sample_name = sample.name,
                                 net_name = path_to_NeuralNet + 'net.h5',
                                 path_to_NeuralNet = path_to_NeuralNet,
-                                branches = get_branches_nonprompt(get_features_nonprompt()),
-                                features = get_features_nonprompt(),
+                                branches = get_branches_nonprompt2(get_features_nonprompt2()),
+                                features = get_features_nonprompt2(),
                                 overwrite = overwrite,
                                 )
     duration = time.time() - start
@@ -507,9 +582,11 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
 
     from sklearn.preprocessing import QuantileTransformer
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
-    qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'r' ))
+    try:
+        qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'r' ))
+    except:
+        qt = pickle.load(open( path_to_NeuralNet + 'input_transformation.pck', 'r' ))
     xx = qt.transform(x[features])
-    # xx = X[features] # use this to bypass the quantile transformer
 
     classifier = load_model(net_name)
     print 'predicting on ' + tree_file_name
@@ -523,51 +600,64 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
 
 def add_branches(data,features,branches):
     # #define indirect training variables
+
     # data['ptcone'] = (( data.hnl_hn_vis_pt * (data.hnl_iso03_rel_rhoArea < 0.2) ) + ( (data.hnl_iso03_rel_rhoArea >= 0.2) * ( data.hnl_hn_vis_pt * (1. + data.hnl_iso03_rel_rhoArea - 0.2))))
     # features += ['ptcone']
     # branches += ['ptcone']
 
-    data['abs_eta'] = abs(data.hnl_hn_vis_eta)
+    # data['abs_eta'] = abs(data.hnl_hn_vis_eta)
     # features += ['abs_eta']
-    branches += ['abs_eta']
+    # branches += ['abs_eta']
 
-    data['ptcone_l1'] = (( data.l1_pt * (data.l1_reliso_rho_03 < 0.2) ) + ( (data.l1_reliso_rho_03 >= 0.2) * ( data.l1_pt * (1. + data.l1_reliso_rho_03 - 0.2))))
+    # data['ptcone_l1'] = (( data.l1_pt * (data.l1_reliso_rho_03 < 0.2) ) + ( (data.l1_reliso_rho_03 >= 0.2) * ( data.l1_pt * (1. + data.l1_reliso_rho_03 - 0.2))))
     # data['ptcone_l1'] =  (  ( data.l1_pt * (1. + data.l1_reliso_rho_03)))
     # features += ['ptcone_l1']
-    branches += ['ptcone_l1']
+    # branches += ['ptcone_l1']
     
-    data['ptcone_l2'] = (( data.l2_pt * (data.l2_reliso_rho_03 < 0.2) ) + ( (data.l2_reliso_rho_03 >= 0.2) * ( data.l2_pt * (1. + data.l2_reliso_rho_03 - 0.2))))
+    # data['ptcone_l2'] = (( data.l2_pt * (data.l2_reliso_rho_03 < 0.2) ) + ( (data.l2_reliso_rho_03 >= 0.2) * ( data.l2_pt * (1. + data.l2_reliso_rho_03 - 0.2))))
     # data['ptcone_l2'] =  (  ( data.l2_pt * (1. + data.l2_reliso_rho_03)))
     # features += ['ptcone_l2']
-    branches += ['ptcone_l2']
+    # branches += ['ptcone_l2']
 
-    data['abs_l1_dxy'] = abs(data.l1_dxy)
-    # features += ['abs_l1_dxy']
-    branches += ['abs_l1_dxy']
+    data['log_abs_l0_dxy'] = np.log(abs(data.l0_dxy))
+    features += ['log_abs_l0_dxy']
+    branches += ['log_abs_l0_dxy']
 
-    data['abs_l2_dxy'] = abs(data.l2_dxy)
-    # features += ['abs_l2_dxy']
-    branches += ['abs_l2_dxy']
+    data['log_abs_l1_dxy'] = np.log(abs(data.l1_dxy))
+    features += ['log_abs_l1_dxy']
+    branches += ['log_abs_l1_dxy']
 
-    data['abs_l1_dz'] = abs(data.l1_dz)
-    # features += ['abs_l1_dz']
-    # branches += ['abs_l1_dz']
+    data['log_abs_l2_dxy'] = np.log(abs(data.l2_dxy))
+    features += ['log_abs_l2_dxy']
+    branches += ['log_abs_l2_dxy']
 
-    data['abs_l2_dz'] = abs(data.l2_dz)
-    # features += ['abs_l2_dz']
-    # branches += ['abs_l2_dz']
+    data['log_abs_l0_dz'] = np.log(abs(data.l0_dz))
+    features += ['log_abs_l0_dz']
+    branches += ['log_abs_l0_dz']
 
-    data['abs_l1_eta'] = abs(data.l1_eta)
-    # features += ['abs_l1_eta']
-    branches += ['abs_l1_eta']
+    data['log_abs_l1_dz'] = np.log(abs(data.l1_dz))
+    features += ['log_abs_l1_dz']
+    branches += ['log_abs_l1_dz']
 
-    data['abs_l2_eta'] = abs(data.l2_eta)
-    # features += ['abs_l2_eta']
-    branches += ['abs_l2_eta']
+    data['log_abs_l2_dz'] = np.log(abs(data.l2_dz))
+    features += ['log_abs_l2_dz']
+    branches += ['log_abs_l2_dz']
+
+    data['log_abs_l0_eta'] = np.log(abs(data.l0_eta))
+    features += ['log_abs_l0_eta']
+    branches += ['log_abs_l0_eta']
+
+    data['log_abs_l1_eta'] = np.log(abs(data.l1_eta))
+    features += ['log_abs_l1_eta']
+    branches += ['log_abs_l1_eta']
+
+    data['log_abs_l2_eta'] = np.log(abs(data.l2_eta))
+    features += ['log_abs_l2_eta']
+    branches += ['log_abs_l2_eta']
 
     data['abs_dzDiff_12'] = abs(data.l1_dz - data.l2_dz)
     # features += ['abs_dzDiff_12']
-    branches += ['abs_dzDiff_12']
+    # branches += ['abs_dzDiff_12']
 
     data['abs_dphi_12'] = abs(data.l1_phi - data.l2_phi)
     # features += ['abs_dphi_12']
@@ -784,6 +874,78 @@ def get_branches_nonprompt(features):
     ]
     return branches
 
+def get_features_nonprompt2():
+    features = [
+        'l0_pt',
+        # 'l0_eta',
+        # 'l0_dxy',
+        # 'l0_dz',
+
+        'l1_pt',
+        # 'l1_eta',
+        # 'l1_dxy',
+        # 'l1_dz',
+
+        'l2_pt',
+        # 'l2_eta',
+        # 'l2_dxy',
+        # 'l2_dz',
+
+        'hnl_2d_disp',
+        'hnl_dr_12',
+	'hnl_m_12',
+        'sv_prob',
+
+        # 'l1_phi',
+        # # 'l1_jet_pt',
+        # 'l2_phi',
+        # # 'l2_jet_pt',
+
+	# 'hnl_dphi_12',
+        # 'hnl_dr_01',
+        # 'hnl_dr_02',
+        # 'hnl_m_01',
+        # 'hnl_m_02',
+        # 'hnl_w_vis_m',
+        # 'hnl_dphi_hnvis0',
+        # 'hnl_2d_disp_sig',
+
+        # 'n_vtx',
+        # 'pfmet_pt',
+    ]
+    return features
+
+def get_branches_nonprompt2(features):
+    branches = features + [
+        'run',
+        'lumi',
+        'event',
+        'weight',
+        'lhe_weight',
+        'l1_reliso_rho_03',
+        'l2_reliso_rho_03',
+        # 'hnl_iso03_rel_rhoArea',
+        'hnl_hn_vis_eta',
+        'hnl_hn_vis_pt',
+        'l1_jet_pt',
+        'l2_jet_pt',
+        # 'l1_pt',
+        # 'l2_pt',
+        'l0_dz',
+        'l1_dz',
+        'l2_dz',
+        'l1_phi',
+        'l2_phi',
+        # 'hnl_m_12',
+        'l0_dxy',
+        'l1_dxy',
+        'l2_dxy',
+        'l0_eta',
+        'l1_eta',
+        'l2_eta',
+    ]
+    return branches
+
 def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
     if faketype == 'SingleFake1':
         # path_to_NeuralNet = 'NN/dump'
@@ -806,7 +968,7 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
 
     if faketype == 'nonprompt':
 	if channel == 'mmm':
-            if dataset is '2017':
+            if dataset == '2017':
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v1/'
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
@@ -845,8 +1007,15 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
 		path_to_NeuralNet = 'NN/mmm_nonprompt_v36_MartinaRegion/'
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v37_MartinaRegion_again/'
                 # path_to_NeuralNet = 'NN/mmm_nonprompt_v38_MartinaRegion_loose/'
-            if dataset is '2018':
-                path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
+            if dataset == '2018':
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_playground/'
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v2_RiccardoNtuple/'
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v3_RiccardoMethod/'
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v4_BigNetBigFeatures/'
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v5_LogAbsVariables/'
+                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v6_2018Oct27Ntuples/'
+                path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v7_GhentSelection/'
         
         if channel == 'eee':
             # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
@@ -887,29 +1056,31 @@ if __name__ == '__main__':
 
 
     ## select the dataset 
-    dataset = '2017'
-    # dataset = '2018'
+    # dataset = '2017'
+    dataset = '2018'
     
     hostname        = gethostname()
 
     if dataset == '2017':
         analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
     if dataset == '2018':
-        analysis_dir    = '/mnt/StorageElement1/4_production/2018/'
+        # analysis_dir    = '/mnt/StorageElement1/4_production/2018/'
+        analysis_dir = '/home/dehuazhu/SESSD/4_production/2018/'
 
     pf.setpfstyle()
-# define input parameters
-    #The features are the variable the out should depend on
+
+    # define input parameters
+    #The features are the variables your model should depend on
     features_DF  = get_features_DF()
     features_SF1 = get_features_SF1()
     features_SF2 = get_features_SF2()
-    features_nonprompt = get_features_nonprompt()
+    features_nonprompt = get_features_nonprompt2()
 
-#The branches are the variables you want to write in your trees
+    #The branches are the variables you want to write in your trees
     branches_DF  = get_branches_DF(get_features_DF())
     branches_SF1 = get_branches_SF1(get_features_SF1())
     branches_SF2 = get_branches_SF2(get_features_SF2())
-    branches_nonprompt = get_branches_nonprompt(get_features_nonprompt())
+    branches_nonprompt = get_branches_nonprompt2(get_features_nonprompt2())
 
     # run train() if you want to train the NeuralNet
     # faketype = 'SingleFake1'
