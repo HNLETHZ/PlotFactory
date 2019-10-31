@@ -52,12 +52,13 @@ gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('datacard',channel,'SR'))
-    regions.append(Region('SR',channel,'SR'))
+    regions.append(Region('SR_v2_EXOAachen',channel,'SR'))
     # regions.append(Region('MR_nonprompt',channel,'SR'))
     # regions.append(Region('MR_nonprompt_MartinaRegion',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
     # regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))
     # regions.append(Region('MR_nonprompt_disp3',channel,'SR_disp3'))
+    # regions.append(Region('MR_nonprompt_v10_GhentSelection',channel,'SR'))
     # regions.append(Region('SR',channel,'SR'))
     # regions.append(Region('SR_disp1',channel,'SR_disp1'))
     # regions.append(Region('SR_disp2',channel,'SR_disp2'))
@@ -342,6 +343,8 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
             os.mkdir(regionDir + '/png/')
             os.mkdir(regionDir + '/png/linear/')
             os.mkdir(regionDir + '/png/log/')
+        if not os.path.exists(regionDir + '/datacards/'):
+            os.mkdir(regionDir + '/datacards/')
 
         if "starseeker" in hostname:
             if dataset == '2017':

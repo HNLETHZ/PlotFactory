@@ -112,7 +112,9 @@ class Histogram( object ):
     def Draw(self, opt='', weighted=True):
         '''Draw the weighted (or original) histogram.'''
         if weighted is True:
-            self.weighted.Draw(opt)
+            try:
+                self.weighted.Draw(opt)
+            except: set_trace()
         else:
             self.obj.Draw(opt)
 

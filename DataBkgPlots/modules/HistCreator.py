@@ -237,12 +237,12 @@ class CreateHists(object):
                 norm_cut += '&& ((hnl_2d_disp > 2.0) && (hnl_2d_disp < 10))'
             if 'disp3_10' in self.vcfgs[0].name:
                 norm_cut += '&& hnl_2d_disp > 10'
-            if 'disp4_0p5_5' in self.vcfgs[0].name:
+            if 'disp2_0p5_5' in self.vcfgs[0].name:
                 norm_cut += '&& ((hnl_2d_disp > 0.5) && (hnl_2d_disp < 5))'
-            if 'disp5_5' in self.vcfgs[0].name:
+            if 'disp3_5' in self.vcfgs[0].name:
                 norm_cut += '&& hnl_2d_disp > 5'
 
-            # print '#### FULL CUT ####', norm_cut
+
             # Initialise all hists before the multidraw
             hists = {}
 
