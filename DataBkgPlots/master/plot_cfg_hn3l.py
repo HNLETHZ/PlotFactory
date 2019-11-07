@@ -52,8 +52,8 @@ gr.SetBatch(True) # NEEDS TO BE SET FOR MULTIPROCESSING OF plot.Draw()
 def prepareRegions(channel):
     regions = []
     # regions.append(Region('datacard',channel,'SR'))
-    regions.append(Region('SR_v2_EXOAachen',channel,'SR'))
-    # regions.append(Region('MR_nonprompt',channel,'SR'))
+    # regions.append(Region('SR_v2_EXOAachen',channel,'SR'))
+    regions.append(Region('MR_nonprompt',channel,'SR'))
     # regions.append(Region('MR_nonprompt_MartinaRegion',channel,'SR'))
     # regions.append(Region('MR_nonprompt_disp1',channel,'SR_disp1'))
     # regions.append(Region('MR_nonprompt_disp2',channel,'SR_disp2'))

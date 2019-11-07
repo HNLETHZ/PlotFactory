@@ -276,11 +276,12 @@ class HistDrawer:
                 s_h.SetName('data_obs')
                 s_h.Write()
             elif 'stack' in s_h_name:
-                try:
-                    s_h.SetName('stack')
-                    s_h.Write()
-                except: set_trace()
-            else: s_h.Write() # for the stack
+                s_h.SetName('stack')
+                s_h.Write()
+            elif 'TFrame' in s_h_name:
+                continue
+            else: 
+                continue #ToDo
         datacard.ls()
         datacard.Close()
 
