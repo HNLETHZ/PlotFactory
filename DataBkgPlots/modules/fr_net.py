@@ -47,6 +47,8 @@ import multiprocessing
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2' #used to deactivate Tensorflow minor warnings
 
+from modules.path_to_NeuralNet import path_to_NeuralNet
+
 import sys
 
        
@@ -946,99 +948,86 @@ def get_branches_nonprompt2(features):
     ]
     return branches
 
-def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017'):
-    if faketype == 'SingleFake1':
-        # path_to_NeuralNet = 'NN/dump'
-        # path_to_NeuralNet = 'NN/mmm_SF1_v1/'
-        path_to_NeuralNet = 'NN/mmm_SF1_v3_newSelection/'
+def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017', hostname = 'starseeker'):
+    if 'starseeker' in hostname:
+        if faketype == 'SingleFake1':
+            # path_to_NeuralNet = 'NN/dump'
+            # path_to_NeuralNet = 'NN/mmm_SF1_v1/'
+            path_to_NeuralNet = 'NN/mmm_SF1_v3_newSelection/'
 
-    if faketype == 'SingleFake2':
-        # path_to_NeuralNet = 'NN/dump'
-        # path_to_NeuralNet = 'NN/mmm_SF2_v1/'
-        # path_to_NeuralNet = 'NN/mmm_SF2_v2_SingleVariable/'
-        # path_to_NeuralNet = 'NN/mmm_SF2_v3_AllVariable/'
-        # path_to_NeuralNet = 'NN/mmm_SF2_v4_newSelection/'
-        path_to_NeuralNet = 'NN/mmm_SF2_v5_noDxy/'
+        if faketype == 'SingleFake2':
+            # path_to_NeuralNet = 'NN/dump'
+            # path_to_NeuralNet = 'NN/mmm_SF2_v1/'
+            # path_to_NeuralNet = 'NN/mmm_SF2_v2_SingleVariable/'
+            # path_to_NeuralNet = 'NN/mmm_SF2_v3_AllVariable/'
+            # path_to_NeuralNet = 'NN/mmm_SF2_v4_newSelection/'
+            path_to_NeuralNet = 'NN/mmm_SF2_v5_noDxy/'
 
-    if faketype == 'DoubleFake':
-        # path_to_NeuralNet = 'NN/dump'
-        # path_to_NeuralNet = 'NN/mmm_DF_v4/'
-        # path_to_NeuralNet = 'NN/mmm_DF_v5_etaTraining/'
-        path_to_NeuralNet = 'NN/mmm_DF_v6_CheckNormalization/'
+        if faketype == 'DoubleFake':
+            # path_to_NeuralNet = 'NN/dump'
+            # path_to_NeuralNet = 'NN/mmm_DF_v4/'
+            # path_to_NeuralNet = 'NN/mmm_DF_v5_etaTraining/'
+            path_to_NeuralNet = 'NN/mmm_DF_v6_CheckNormalization/'
 
-    if faketype == 'nonprompt':
-	if channel == 'mmm':
-            if dataset == '2017':
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v1/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v2_noSelection/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v3_noSelection/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v4_newNetParameteres/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v5_debugNorm/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v6_DoubleOrthogonal/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v7_SubtractPrompt/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v8_SubtractConversion/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v10_TrainWithM12/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v11_OnlyForTesting/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v12_CorrectSubtraction/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v13_OneVariable/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v14_TrainWithM12DispOnly/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithM12Only/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v15_TrainWithSmallSetVariables/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v16_SingleDoubleFakes/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v17_IncludingDZ/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v18_WithSVprob_FREEZE/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v19_WithPhi/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v35_TestFWforVinz/'
-		path_to_NeuralNet = 'NN/mmm_nonprompt_v36_MartinaRegion/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v37_MartinaRegion_again/'
-                # path_to_NeuralNet = 'NN/mmm_nonprompt_v38_MartinaRegion_loose/'
-            if dataset == '2018':
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_playground/'
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v2_RiccardoNtuple/'
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v3_RiccardoMethod/'
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v4_BigNetBigFeatures/'
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v5_LogAbsVariables/'
-                # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v6_2018Oct27Ntuples/'
-                path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v7_GhentSelection/'
+        if faketype == 'nonprompt':
+            if channel == 'mmm':
+                    if dataset == '2017':
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v35_TestFWforVinz/'
+                        path_to_NeuralNet = 'NN/mmm_nonprompt_v36_MartinaRegion/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v37_MartinaRegion_again/'
+                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v38_MartinaRegion_loose/'
+                    if dataset == '2018':
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_playground/'
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v2_RiccardoNtuple/'
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v3_RiccardoMethod/'
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v4_BigNetBigFeatures/'
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v5_LogAbsVariables/'
+                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v6_2018Oct27Ntuples/'
+                        path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v7_GhentSelection/'
+                
+            if channel == 'eee':
+                # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
+                # path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
+                # path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
+                # path_to_NeuralNet = 'NN/eee_nonprompt_v4_relasRelIso2/'
+                path_to_NeuralNet = 'NN/eee_nonprompt_v5_MartinaRegion/'
+
+            if channel == 'eem_OS':
+                # path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
+                path_to_NeuralNet = 'NN/eem_OS_nonprompt_v2_MartinaRegion/'
+
+            if channel == 'eem_SS':
+                # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
+                path_to_NeuralNet = 'NN/eem_SS_nonprompt_v2_MartinaRegion/'
+
+            if channel == 'mem_OS':
+                # path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
+                path_to_NeuralNet = 'NN/mem_OS_nonprompt_v2_MartinaRegion/'
         
-        if channel == 'eee':
-            # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
-            # path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
-            # path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
-            # path_to_NeuralNet = 'NN/eee_nonprompt_v4_relasRelIso2/'
-	    path_to_NeuralNet = 'NN/eee_nonprompt_v5_MartinaRegion/'
+            if channel == 'mem_SS':
+                # path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
+                path_to_NeuralNet = 'NN/mem_SS_nonprompt_v2_MartinaRegion/'
 
-        if channel == 'eem_OS':
-            # path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
-            path_to_NeuralNet = 'NN/eem_OS_nonprompt_v2_MartinaRegion/'
-
-        if channel == 'eem_SS':
-            # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
-            path_to_NeuralNet = 'NN/eem_SS_nonprompt_v2_MartinaRegion/'
-
-        if channel == 'mem_OS':
-            # path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
-            path_to_NeuralNet = 'NN/mem_OS_nonprompt_v2_MartinaRegion/'
-    
-        if channel == 'mem_SS':
-            # path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
-            path_to_NeuralNet = 'NN/mem_SS_nonprompt_v2_MartinaRegion/'
+    if 'lxplus' in hostname:
+        if channel == 'mmm':
+                if dataset == '2018':
+                    path_to_NeuralNet = '/eos/user/d/dezhu/HNL/7_NN/NN/2018/mmm_nonprompt_v7_GhentSelection'
     
 
     return path_to_NeuralNet 
@@ -1102,7 +1091,7 @@ if __name__ == '__main__':
         features = features_nonprompt
         branches = branches_nonprompt
 
-    path_to_NeuralNet = path_to_NeuralNet(faketype, channel, dataset) 
+    path_to_NeuralNet = path_to_NeuralNet(faketype, channel, dataset, hostname) 
 
     train(
             features,
