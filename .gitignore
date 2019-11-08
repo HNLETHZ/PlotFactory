@@ -164,6 +164,7 @@ DataBkgPlots/NN/mmm_nonprompt_v6_DoubleOrthogonal/
 DataBkgPlots/NN/mmm_nonprompt_v7_SubtractPrompt/
 DataBkgPlots/NN/mmm_nonprompt_v8_SubtractConversion/
 DataBkgPlots/NN/mmm_nonprompt_v9_128Nodes/
+DataBkgPlots/NN/*
 DataBkgPlots/copytree3.C
 DataBkgPlots/ele_pt_stack.pdf
 DataBkgPlots/ele_pt_stack.png

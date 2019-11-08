@@ -9,8 +9,9 @@ from modules.PlotConfigs import HistogramCfg
 from modules.DataMCPlot import DataMCPlot
 from modules.DDE import DDE
 from modules.binning import binning_dimuonmass
-from modules.nn import run_nn 
-import modules.fr_net as fr_net
+from modules.path_to_NeuralNet import path_to_NeuralNet
+# from modules.nn import run_nn 
+# import modules.fr_net as fr_net
 # from CMGTools.RootTools.DataMC.Histogram import Histogram
 from pdb import set_trace
 
@@ -28,12 +29,14 @@ def initHist(hist, vcfg):
     hist.SetStats(False)
 
 class CreateHists(object):
-    def __init__(self, hist_cfg, analysis_dir = '/home/dehuazhu/SESSD/4_production/', channel = 'mmm', server = 'starseeker', useNeuralNetwork=False):
+    def __init__(self, hist_cfg, analysis_dir = '/home/dehuazhu/SESSD/4_production/', channel = 'mmm', server = 'starseeker', useNeuralNetwork=False, dataset='2017',hostname='starseeker'):
         self.analysis_dir = analysis_dir
         self.channel = channel
+        self.dataset = dataset
         self.server = server
         self.hist_cfg = hist_cfg
         self.useNeuralNetwork = useNeuralNetwork
+        self.hostname = hostname
         if self.hist_cfg.vars:
             self.vcfgs = hist_cfg.vars
 
@@ -64,7 +67,6 @@ class CreateHists(object):
                             ,stack=result[vcfg.name].histos[0].stack)
 
        
-        # DO NOT USE IT FOR PRODUCTION, ONLY FOR DEBUGGING: if we don't use multiprocess, we compute the histos one by one - good for debugging.
         if multiprocess == False:
             for i, cfg in enumerate(self.hist_cfg.cfgs):
                 # result = self.makealltheplots(self.hist_cfg.cfgs[i]) 
@@ -90,9 +92,6 @@ class CreateHists(object):
     def makealltheplots(self, cfg):
         verbose=False
         all_stack=False
-    #    for cfg in [hist_cfg.cfgs[0]]:
-    #    for cfg in hist_cfg.cfgs:
-            # First check whether it's a sub-histo or not
         if isinstance(cfg, HistogramCfg):
             hists = createHistograms(cfg, all_stack=True, vcfgs=self.vcfgs)
             for h in hists: print(h)
@@ -113,7 +112,6 @@ class CreateHists(object):
                     # print 'Scaling total', hist_cfg.name, 'by', cfg.total_scale
         else:
             # print('building histgrams for %s'%cfg.name)
-            # It's a sample cfg
 
             # Now read the tree
             tree_file_name = '/'.join([cfg.ana_dir, cfg.dir_name, cfg.tree_prod_name, 'tree.root'])
@@ -123,59 +121,17 @@ class CreateHists(object):
             try:
                 if self.useNeuralNetwork:
                     if cfg.is_singlefake:
-                        # friend_file_name = fr_net.makeFriendtree(
-                                            # tree_file_name = tree_file_name,
-                                            # sample_name = cfg.name,
-                                            # net_name = fr_net.path_to_NeuralNet('SingleFake1') + 'net.h5',
-                                            # path_to_NeuralNet = fr_net.path_to_NeuralNet('SingleFake1'),
-                                            # branches = fr_net.branches_SF1(fr_net.features_SF1()),
-                                            # features = fr_net.features_SF1(),
-                                            # overwrite = False,
-                                            # )
-                        # dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF1', friend_file_name=friend_file_name)
-                        friend_file_name = fr_net.makeFriendtree(
-                                            tree_file_name = tree_file_name,
-                                            sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('SingleFake2',self.channel) + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('SingleFake2',self.channel),
-                                            branches = fr_net.get_branches_SF2(fr_net.get_features_SF2()),
-                                            features = fr_net.get_features_SF2(),
-                                            overwrite = False,
-                                            )
+                        friend_file_name = path_to_NeuralNet('nonprompt',self.channel,self.dataset,self.hostname) + 'friendtree_fr_%s.root'%cfg.name
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF2', friend_file_name=friend_file_name)
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='SF1', friend_file_name=friend_file_name)
                     if cfg.is_doublefake:
-                        friend_file_name = fr_net.makeFriendtree(
-                                            tree_file_name = tree_file_name,
-                                            sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('DoubleFake',self.channel) + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('DoubleFake',self.channel),
-                                            branches = fr_net.get_branches_DF(fr_net.get_features_DF()),
-                                            features = fr_net.get_features_DF(),
-                                            overwrite = False,
-                                            )
+                        friend_file_name = path_to_NeuralNet('nonprompt',self.channel,self.dataset,self.hostname) + 'friendtree_fr_%s.root'%cfg.name
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='DF', friend_file_name=friend_file_name)
                     if cfg.is_nonprompt:
-                        friend_file_name = fr_net.makeFriendtree(
-                                            tree_file_name = tree_file_name,
-                                            sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('nonprompt',self.channel) + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt',self.channel),
-                                            branches = fr_net.get_branches_nonprompt(fr_net.get_features_nonprompt()),
-                                            features = fr_net.get_features_nonprompt(),
-                                            overwrite = False,
-                                            )
+                        friend_file_name = path_to_NeuralNet('nonprompt',self.channel,self.dataset,self.hostname) + 'friendtree_fr_%s.root'%cfg.name
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='nonprompt', friend_file_name=friend_file_name)
                     if cfg.is_contamination:
-                        friend_file_name = fr_net.makeFriendtree(
-                                            tree_file_name = tree_file_name,
-                                            sample_name = cfg.name,
-                                            net_name = fr_net.path_to_NeuralNet('nonprompt',self.channel) + 'net.h5',
-                                            path_to_NeuralNet = fr_net.path_to_NeuralNet('nonprompt',self.channel),
-                                            branches = fr_net.get_branches_nonprompt(fr_net.get_features_nonprompt()),
-                                            features = fr_net.get_features_nonprompt(),
-                                            overwrite = False,
-                                            )
+                        friend_file_name = path_to_NeuralNet('nonprompt',self.channel,self.dataset,self.hostname) + 'friendtree_fr_%s.root'%cfg.name
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose, friend_name='nonprompt', friend_file_name=friend_file_name)
                     else:
                         dataframe = plot.makeRootDataFrameFromTree(tree_file_name, cfg.tree_name, verbose=verbose)
@@ -184,9 +140,10 @@ class CreateHists(object):
 
             except:
                 #This is for debugging
+                print 'problem with %s; dataset = %s'%(cfg.name,self.dataset)
                 set_trace()
 
-            # set_trace()
+
             if cfg.is_singlefake == True:
                 norm_cut  = self.hist_cfg.region.SF_LL
                 self.norm_cut_LL  = self.hist_cfg.region.SF_LL
@@ -204,19 +161,16 @@ class CreateHists(object):
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_SingleConversions == True:
-                # norm_cut  = self.hist_cfg.region.MC_SingleConversions
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DoubleConversions == True:
-                # norm_cut  = self.hist_cfg.region.MC_DoubleConversions
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_Conversions == True:
-                # norm_cut  = self.hist_cfg.region.MC_Conversions
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_DY == True:
-                # norm_cut  = self.hist_cfg.region.MC_DY
+                # norm_cut  = self.hist_cfg.region.MC
                 norm_cut  = self.hist_cfg.region.MC_contamination_pass
 
             if cfg.is_data == True:
@@ -232,7 +186,21 @@ class CreateHists(object):
             if cfg.weight_expr:
                 weight = '*'.join([weight, cfg.weight_expr])
 
-            # print '#### FULL CUT ####', norm_cut
+            if 'disp1_0p5' in self.vcfgs[0].name:
+                norm_cut += '&& (hnl_2d_disp < 0.5)'
+            if 'disp1_2p0' in self.vcfgs[0].name:
+                norm_cut += '&& (hnl_2d_disp < 2.0)'
+            if 'disp2_0p5_10' in self.vcfgs[0].name:
+                norm_cut += '&& ((hnl_2d_disp > 0.5) && (hnl_2d_disp < 10))'
+            if 'disp2_2p0_10' in self.vcfgs[0].name:
+                norm_cut += '&& ((hnl_2d_disp > 2.0) && (hnl_2d_disp < 10))'
+            if 'disp3_10' in self.vcfgs[0].name:
+                norm_cut += '&& hnl_2d_disp > 10'
+            if 'disp2_0p5_5' in self.vcfgs[0].name:
+                norm_cut += '&& ((hnl_2d_disp > 0.5) && (hnl_2d_disp < 5))'
+            if 'disp3_5' in self.vcfgs[0].name:
+                norm_cut += '&& hnl_2d_disp > 5'
+
 
             # Initialise all hists before the multidraw
             hists = {}
@@ -274,16 +242,15 @@ class CreateHists(object):
     def makeDataFrameHistograms(self,vcfg,cfg,weight,dataframe,norm_cut,hists,stack,useNeuralNetwork):
         plot = self.plots[vcfg.name]
 
-        if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake) and (not cfg.is_nonprompt):
-            weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
+	if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake) and (not cfg.is_nonprompt):
+	    weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
 
-        gSystem.Load("modules/DDE_doublefake_h.so")
-        gSystem.Load("modules/DDE_singlefake_h.so")
+        # gSystem.Load("modules/DDE_doublefake_h.so")
+        # gSystem.Load("modules/DDE_singlefake_h.so")
 
         dataframe =   dataframe\
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
-                                .Define('pt_cone','(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )')\
 				.Define('l1_ptcone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
 				.Define('l2_ptcone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
 				.Define('l1_ptcone_alt','(l1_pt * (1+l1_reliso_rho_03))')\
@@ -291,8 +258,9 @@ class CreateHists(object):
                                 .Define('abs_dphi_01','abs(l1_phi-l0_phi)')\
                                 .Define('abs_dphi_02','abs(l0_phi-l2_phi)')\
                                 .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
-				# .Define('abs_l1_dz','abs(l1_dz)')\
-				# .Define('abs_l2_dz','abs(l2_dz)')\
+                                .Define('abs_l1_Dz','abs(l1_dz)')\
+                                .Define('abs_l2_Dz','abs(l2_dz)')\
+                                # .Define('pt_cone','(  ( hnl_hn_vis_pt * (hnl_iso03_rel_rhoArea<0.2) ) + ( (hnl_iso03_rel_rhoArea>=0.2) * ( hnl_hn_vis_pt * (1. + hnl_iso03_rel_rhoArea - 0.2) ) )  )')\
                                 # .Define('eta_hnl_l0','hnl_hn_eta - l0_eta')\
                                 # .Define('abs_hnl_hn_eta','abs(hnl_hn_eta)')\
                                 # .Define('abs_hnl_hn_vis_eta','abs(hnl_hn_vis_eta)')
@@ -329,45 +297,10 @@ class CreateHists(object):
                                     .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
                                     .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
 
-        # define additional columns for the ptcone correction
-        gSystem.Load("modules/pt_ConeCorrection_h.so")
-        dataframe =   dataframe\
-                                .Define('l0_px_ConeCorrected','pt_ConeCorrection::pCone(l0_px, l0_reliso_rho_03)')\
-                                .Define('l0_py_ConeCorrected','pt_ConeCorrection::pCone(l0_py, l0_reliso_rho_03)')\
-                                .Define('l0_pz_ConeCorrected','pt_ConeCorrection::pCone(l0_pz, l0_reliso_rho_03)')\
-                                .Define('l0_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l0_e , l0_reliso_rho_03)')\
-                                .Define('l1_px_ConeCorrected','pt_ConeCorrection::pCone(l1_px, l1_reliso_rho_03)')\
-                                .Define('l1_py_ConeCorrected','pt_ConeCorrection::pCone(l1_py, l1_reliso_rho_03)')\
-                                .Define('l1_pz_ConeCorrected','pt_ConeCorrection::pCone(l1_pz, l1_reliso_rho_03)')\
-                                .Define('l1_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l1_e , l1_reliso_rho_03)')\
-                                .Define('l2_px_ConeCorrected','pt_ConeCorrection::pCone(l2_px, l2_reliso_rho_03)')\
-                                .Define('l2_py_ConeCorrected','pt_ConeCorrection::pCone(l2_py, l2_reliso_rho_03)')\
-                                .Define('l2_pz_ConeCorrected','pt_ConeCorrection::pCone(l2_pz, l2_reliso_rho_03)')\
-                                .Define('l2_e_ConeCorrected' ,'pt_ConeCorrection::pCone(l2_e , l2_reliso_rho_03)')\
-                                .Define('hnl_m_12_ConeCorrected1','pt_ConeCorrection::dimass(\
-                                        l1_px_ConeCorrected,\
-                                        l1_py_ConeCorrected,\
-                                        l1_pz_ConeCorrected,\
-                                        l1_e_ConeCorrected,\
-                                        l2_px_ConeCorrected,\
-                                        l2_py_ConeCorrected,\
-                                        l2_pz_ConeCorrected,\
-                                        l2_e_ConeCorrected\
-                                        )')\
-                                .Define('hnl_m_12_ConeCorrected2','pt_ConeCorrection::dimass_conecorrected(\
-                                        l1_ptcone,\
-                                        l1_eta,\
-                                        l1_phi,\
-                                        l1_mass,\
-                                        l2_ptcone,\
-                                        l2_eta,\
-                                        l2_phi,\
-                                        l2_mass\
-                                        )')
 	dataframe = dataframe\
 			.Define('l1_ptcone_vs_pt','(l1_ptcone)/l1_pt')\
 			.Define('l2_ptcone_vs_pt','(l2_ptcone)/l2_pt')\
-			.Define('m12Cone_vs_m12','(hnl_m_12_ConeCorrected2)/(hnl_m_12)')
+			# .Define('m12Cone_vs_m12','(hnl_m_12_ConeCorrected2)/(hnl_m_12)')
 
 
         if cfg.is_singlefake:
@@ -467,8 +400,13 @@ class CreateHists(object):
             weight += '* (-1)'
             weight += '* nonprompt_FakeWeight'
 
+        if ("TTJ" in cfg.name) or ("DY" in cfg.name):
+            weight += '* l0_weight'
+
         
         if not cfg.is_singlefake:
+            # if 'A' in cfg.name: set_trace()
+	    # if 'Single' in cfg.name: set_trace()
             if 'nbinsx' in vcfg.binning.keys():
                 hists[vcfg.name] =   dataframe\
                                         .Define('w',weight)\

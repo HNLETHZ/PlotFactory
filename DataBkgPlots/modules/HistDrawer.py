@@ -3,7 +3,7 @@ import os
 import copy
 
 from math import log10, floor
-from ROOT import TCanvas, TPaveText, TBox, gStyle, gROOT, kTRUE, kFALSE, gErrorIgnoreLevel, kWarning
+from ROOT import TCanvas, TPaveText, TBox, gStyle, gROOT, kTRUE, kFALSE, gErrorIgnoreLevel, kWarning, TFile
 from modules.Stack import Stack
 
 from modules.CMS_lumi import CMS_lumi
@@ -106,7 +106,7 @@ class HistDrawer:
     @staticmethod
     def draw(plot, do_ratio=True, channel='e#mu#mu', plot_dir='/plots/', 
              plot_name=None, SetLogy=0, 
-             blindxmin=None, blindxmax=None, unit=None, server='starseeker', region = 'DY', channel_dir = 'mmm'):
+             blindxmin=None, blindxmax=None, unit=None, server='starseeker', region = 'DY', channel_dir = 'mmm', dataset = '2017'):
         print plot
         Stack.STAT_ERRORS = True
 
@@ -192,6 +192,13 @@ class HistDrawer:
         
         gErrorIgnoreLevel = kWarning
         h.GetYaxis().SetRangeUser(0, pad.GetUymax() * 1.)
+        plotname = plot_name if plot_name else plot.name
+
+
+
+        if 'dz' in plotname:
+            pad.SetLogx(True)
+            padr.SetLogx(True)
 
         if not os.path.exists(plot_dir + '/pdf/'):
             os.mkdir(plot_dir + '/pdf/')
@@ -205,13 +212,17 @@ class HistDrawer:
             os.mkdir(plot_dir + '/png/')
             os.mkdir(plot_dir + '/png/linear/')
             os.mkdir(plot_dir + '/png/log/')
-        plotname = plot_name if plot_name else plot.name
+	if not os.path.exists(plot_dir + '/datacards/'):
+            os.mkdir(plot_dir + '/datacards/')	
         can.SaveAs(plot_dir + '/pdf/linear/'  + plotname  + '.pdf')
         can.SaveAs(plot_dir + '/root/linear/' + plotname  + '.root')
         can.SaveAs(plot_dir + '/png/linear/'  + plotname  + '.png')
 
         if server == "starseeker":
-            t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
+            if dataset == '2017':
+                t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
+            if dataset == '2018':
+                t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel_dir+'/'+region.name 
             can.SaveAs(t3_dir + '/pdf/linear/'  + plotname  + '.pdf')
             can.SaveAs(t3_dir + '/root/linear/' + plotname  + '.root')
             can.SaveAs(t3_dir + '/png/linear/'  + plotname  + '.png')
@@ -220,7 +231,6 @@ class HistDrawer:
         # Also save with log y
         h.GetYaxis().SetRangeUser(pad.GetUymax() * 5./1000000., pad.GetUymax() * 1000.)
         pad.SetLogy(True)
-        # pad.SetLogx(True)
         can.SaveAs(plot_dir + '/png/log/'  + plotname + '_log.png')
         can.SaveAs(plot_dir + '/root/log/' + plotname + '_log.root')
         can.SaveAs(plot_dir + '/pdf/log/'  + plotname + '_log.pdf')
@@ -229,8 +239,51 @@ class HistDrawer:
             can.SaveAs(t3_dir + '/root/log/' + plotname  + '_log.root')
             can.SaveAs(t3_dir + '/png/log/'  + plotname  + '_log.png')
         pad.SetLogy(0)
+        if 'dz' in plotname:
+            pad.SetLogx(False)
+            padr.SetLogx(False)
 #        return ratio
 
+        #VS 10/30/19: dump all histo's in a root file (=datacard)
+        s_pad  = can.GetPrimitive('can_1')
+        s_list = pad.GetListOfPrimitives()
+
+        if server == "starseeker":
+            if dataset == '2017':
+                t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/'+channel_dir+'/'+region.name 
+            if dataset == '2018':
+                t3_dir='/home/dehuazhu/t3work/3_figures/1_DataMC/FinalStates/2018/'+channel_dir+'/'+region.name 
+            datacard = TFile.Open(t3_dir + '/datacards/' + plotname  + '.datacard.root', 'recreate')
+        else:
+            datacard = TFile.Open(plot_dir + '/datacards/' + plotname  + '.datacard.root', 'recreate')
+
+        datacard.cd()
+
+        for s_h in s_list:
+            s_h_name = s_h.GetName()
+            if 'HN3L' in s_h_name:
+                s_h_name = re.sub('.*HN3L_M_', 'M', s_h_name)
+                s_h_name = re.sub('_V_0', '_V', s_h_name)
+                s_h_name = re.sub('_mu_massiveAndCKM_LO', '_maj', s_h_name)
+                s_h_name = re.sub('_mu_Dirac_massiveAndCKM_LO', '_dir', s_h_name)
+                s_h_name = re.sub('_mu_Dirac_cc_massiveAndCKM_LO', '_dir_cc', s_h_name)
+                s_h_name = re.sub('_e_massiveAndCKM_LO', '_maj', s_h_name)
+                s_h_name = re.sub('_e_Dirac_massiveAndCKM_LO', '_dir', s_h_name)
+                s_h_name = re.sub('_e_Dirac_cc_massiveAndCKM_LO', '_dir_cc', s_h_name)
+                s_h.SetName(s_h_name)
+                s_h.Write()
+            elif 'data' in s_h_name:
+                s_h.SetName('data_obs')
+                s_h.Write()
+            elif 'stack' in s_h_name:
+                s_h.SetName('stack')
+                s_h.Write()
+            elif 'TFrame' in s_h_name:
+                continue
+            else: 
+                continue #ToDo
+        datacard.ls()
+        datacard.Close()
 
     drawRatio = draw
 
