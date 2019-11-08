@@ -13,8 +13,6 @@ from modules.PlotConfigs import SampleCfg, HistogramCfg
 
 # from modules.samples_data_2017_noskim import Single_ele_2017B, Single_ele_2017C, Single_ele_2017D, Single_ele_2017E, Single_ele_2017F, Single_mu_2017B,  Single_mu_2017C,  Single_mu_2017D,  Single_mu_2017E,  Single_mu_2017F
 
-
-
 def createSampleLists(analysis_dir='', 
                       server='t3',
                       channel='mmm',

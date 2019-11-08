@@ -204,13 +204,16 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
     usr = getuser()
     hostname = gethostname()
 
+
     if 'starseeker' in hostname:
         import modules.fr_net as fr_net
 
 
     if 't3ui02' in hostname:
+
         if usr == 'dezhu':   plotDirBase = '/work/dezhu/3_figures/1_DataMC/FinalStates/'
         if usr == 'vstampf': plotDirBase = '/t3home/vstampf/eos/plots/'
+        if usr == 'manzoni': plotDirBase = '/t3home/manzoni/eos/'
 
     if 'lxplus' in hostname:
         if dataset == '2018':
@@ -281,7 +284,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
         if dataset == '2017':
             analysis_dir = '/eos/user/d/dezhu/HNL/4_production/2017/'
    
-    if "t3ui02" in hostname:
+    if "t3ui0" in hostname:
         analysis_dir = '/work/dezhu/4_production/'
 
     if "starseeker" in hostname:
@@ -307,6 +310,8 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
     line = handle.read()
     handle.close()
     cmsBaseDir = line.strip('\n')
+    if len(cmsBaseDir) < 2: cmsBaseDir = '/t3home/vstampf/CMSSW_9_4_6_patch1/'
+    if usr == 'manzoni': cmsBaseDir = '/t3home/manzoni/'
 
     for region in regions:
         regionDir = plotDir+region.name
@@ -336,6 +341,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
             copyfile('0_cfg_hn3l_'+channel+'.py', regionDir+'/plot_cfg.py')
             copyfile('master/plot_cfg_hn3l.py', regionDir+'/plot_cfg_base.py')
             copyfile('modules/Selections.py', regionDir+'/Selections.py')
+
 
         print 'cfg files stored in "',plotDir + region.name + '/"'
 

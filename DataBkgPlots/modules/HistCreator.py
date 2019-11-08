@@ -18,7 +18,7 @@ from pdb import set_trace
 from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, gInterpreter, gROOT, gSystem
 
 # Enable ROOT's implicit multi-threading for all objects that provide an internal parallelisation mechanism
-ROOT.EnableImplicitMT()
+ROOT.EnableImplicitMT(8)
 
 def initHist(hist, vcfg):
     hist.Sumw2()
