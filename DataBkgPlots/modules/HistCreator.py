@@ -7,7 +7,7 @@ import numpy as np
 import time
 from modules.PlotConfigs import HistogramCfg
 from modules.DataMCPlot import DataMCPlot
-from modules.DDE import DDE
+# from modules.DDE import DDE
 from modules.binning import binning_dimuonmass
 from modules.path_to_NeuralNet import path_to_NeuralNet
 # from modules.nn import run_nn 
@@ -18,7 +18,7 @@ from pdb import set_trace
 from ROOT import ROOT, RDataFrame, TH1F, TFile, TTree, TTreeFormula, gInterpreter, gROOT, gSystem
 
 # Enable ROOT's implicit multi-threading for all objects that provide an internal parallelisation mechanism
-ROOT.EnableImplicitMT(8)
+ROOT.EnableImplicitMT(40)
 
 def initHist(hist, vcfg):
     hist.Sumw2()
@@ -41,7 +41,7 @@ class CreateHists(object):
             self.vcfgs = hist_cfg.vars
 
         if not self.vcfgs:
-            print 'ERROR in createHistograms: No variable configs passed', self.hist_cfg.name
+            print ('ERROR in createHistograms: No variable configs passed', self.hist_cfg.name)
 
         self.plots = {}
 
@@ -49,7 +49,7 @@ class CreateHists(object):
             plot = DataMCPlot(vcfg.name,vcfg.xtitle)
             plot.lumi = hist_cfg.lumi
             if vcfg.name in self.plots:
-                print 'Adding variable with same name twice', vcfg.name, 'not yet foreseen; taking the last'
+                print ('Adding variable with same name twice', vcfg.name, 'not yet foreseen; taking the last')
             self.plots[vcfg.name] = plot
 
     def createHistograms(self, hist_cfg, all_stack=False, verbose=False,  vcfgs=None, multiprocess = True, useNeuralNetwork = False):
@@ -76,8 +76,8 @@ class CreateHists(object):
                     set_trace()
 
         procs = []
-        for i, plot in enumerate(self.plots.itervalues()):
-            proc = Process(target=plot.Draw, args=())
+        for plot_key in self.plots:
+            proc = Process(target=self.plots[plot_key].Draw, args=())
             procs.append(proc)
             proc.start()
      
@@ -140,7 +140,7 @@ class CreateHists(object):
 
             except:
                 #This is for debugging
-                print 'problem with %s; dataset = %s'%(cfg.name,self.dataset)
+                print ('problem with %s; dataset = %s'%(cfg.name,self.dataset))
                 set_trace()
 
 
@@ -202,12 +202,13 @@ class CreateHists(object):
                 norm_cut += '&& hnl_2d_disp > 5'
 
 
+
             # Initialise all hists before the multidraw
             hists = {}
 
             for vcfg in self.vcfgs:
                 # hname = '_'.join([self.hist_cfg.name, hashlib.md5(self.hist_cfg.cut).hexdigest(), cfg.name, vcfg.name, cfg.dir_name])
-                hname = '_'.join([self.hist_cfg.name, hashlib.md5(norm_cut).hexdigest(), cfg.name, vcfg.name, cfg.dir_name])
+                hname = '_'.join([self.hist_cfg.name, hashlib.md5(norm_cut.encode('utf-8')).hexdigest(), cfg.name, vcfg.name, cfg.dir_name])
                 if any(str(b) == 'xmin' for b in vcfg.binning):
                     hist = TH1F(hname, '', vcfg.binning['nbinsx'],
                                 vcfg.binning['xmin'], vcfg.binning['xmax'])
@@ -242,8 +243,8 @@ class CreateHists(object):
     def makeDataFrameHistograms(self,vcfg,cfg,weight,dataframe,norm_cut,hists,stack,useNeuralNetwork):
         plot = self.plots[vcfg.name]
 
-	if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake) and (not cfg.is_nonprompt):
-	    weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
+        if (not cfg.is_data) and (not cfg.is_doublefake) and (not cfg.is_singlefake) and (not cfg.is_nonprompt):
+            weight = weight + ' * ' + str(self.hist_cfg.lumi*cfg.xsec/cfg.sumweights)
 
         # gSystem.Load("modules/DDE_doublefake_h.so")
         # gSystem.Load("modules/DDE_singlefake_h.so")
@@ -251,10 +252,10 @@ class CreateHists(object):
         dataframe =   dataframe\
                                 .Define('norm_count','1.')\
                                 .Define('l0_pt_cone','l0_pt * (1 + l0_reliso_rho_03)')\
-				.Define('l1_ptcone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
-				.Define('l2_ptcone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
-				.Define('l1_ptcone_alt','(l1_pt * (1+l1_reliso_rho_03))')\
-				.Define('l2_ptcone_alt','(l2_pt * (1+l2_reliso_rho_03))')\
+                                .Define('l1_ptcone','((l1_pt * (l1_reliso_rho_03<0.2)) + ((l1_reliso_rho_03>=0.2) * (l1_pt * (1. + l1_reliso_rho_03 - 0.2))))')\
+                                .Define('l2_ptcone','((l2_pt * (l2_reliso_rho_03<0.2)) + ((l2_reliso_rho_03>=0.2) * (l2_pt * (1. + l2_reliso_rho_03 - 0.2))))')\
+                                .Define('l1_ptcone_alt','(l1_pt * (1+l1_reliso_rho_03))')\
+                                .Define('l2_ptcone_alt','(l2_pt * (1+l2_reliso_rho_03))')\
                                 .Define('abs_dphi_01','abs(l1_phi-l0_phi)')\
                                 .Define('abs_dphi_02','abs(l0_phi-l2_phi)')\
                                 .Define('abs_dphi_hnvis0','abs(hnl_dphi_hnvis0)')\
@@ -297,10 +298,10 @@ class CreateHists(object):
                                     .Define('doubleFakeRate','dfr_namespace::getDoubleFakeRate(pt_cone, abs_hnl_hn_eta, hnl_dr_12, hnl_2d_disp)')\
                                     .Define('doubleFakeWeight','doubleFakeRate/(1.0-doubleFakeRate)')
 
-	dataframe = dataframe\
-			.Define('l1_ptcone_vs_pt','(l1_ptcone)/l1_pt')\
-			.Define('l2_ptcone_vs_pt','(l2_ptcone)/l2_pt')\
-			# .Define('m12Cone_vs_m12','(hnl_m_12_ConeCorrected2)/(hnl_m_12)')
+        dataframe = dataframe\
+                .Define('l1_ptcone_vs_pt','(l1_ptcone)/l1_pt')\
+                .Define('l2_ptcone_vs_pt','(l2_ptcone)/l2_pt')\
+                # .Define('m12Cone_vs_m12','(hnl_m_12_ConeCorrected2)/(hnl_m_12)')
 
 
         if cfg.is_singlefake:
@@ -367,7 +368,7 @@ class CreateHists(object):
 
             is_corrupt = dataframe.Define('is_same','DF.hnl_hn_vis_pt - hnl_hn_vis_pt').Filter('is_same != 0').Count().GetValue()
             if is_corrupt > 0:
-                print '%s: main tree and friend tree do not match'%(cfg.name)
+                print ('%s: main tree and friend tree do not match'%(cfg.name))
                 set_trace()
 
         if cfg.is_nonprompt:

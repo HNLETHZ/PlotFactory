@@ -79,5 +79,10 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017', h
                 if dataset == '2018':
                     path_to_NeuralNet = '/eos/user/d/dezhu/HNL/7_NN/NN/2018/mmm_nonprompt_v7_GhentSelection/'
     
+    if 't3ui' in hostname:
+        if channel == 'mmm':
+                if dataset == '2018':
+                    path_to_NeuralNet = '/work/dezhu/7_NN/2018/mmm_nonprompt_v7_GhentSelection/'
+    
 
     return path_to_NeuralNet 

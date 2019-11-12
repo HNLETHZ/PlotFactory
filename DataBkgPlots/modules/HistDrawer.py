@@ -107,7 +107,7 @@ class HistDrawer:
     def draw(plot, do_ratio=True, channel='e#mu#mu', plot_dir='/plots/', 
              plot_name=None, SetLogy=0, 
              blindxmin=None, blindxmax=None, unit=None, server='starseeker', region = 'DY', channel_dir = 'mmm', dataset = '2017'):
-        print plot
+        print (plot)
         Stack.STAT_ERRORS = True
 
         can = pad = padr = None
@@ -212,7 +212,7 @@ class HistDrawer:
             os.mkdir(plot_dir + '/png/')
             os.mkdir(plot_dir + '/png/linear/')
             os.mkdir(plot_dir + '/png/log/')
-	if not os.path.exists(plot_dir + '/datacards/'):
+        if not os.path.exists(plot_dir + '/datacards/'):
             os.mkdir(plot_dir + '/datacards/')	
         can.SaveAs(plot_dir + '/pdf/linear/'  + plotname  + '.pdf')
         can.SaveAs(plot_dir + '/root/linear/' + plotname  + '.root')

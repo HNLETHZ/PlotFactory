@@ -33,8 +33,8 @@ class DDE(object):
         working_samples = samples_doublefake
         working_samples = setSumWeights(working_samples)
         print('###########################################################')
-        print'# measuring doublefakerake...'
-        print'# %d samples to be used:'%(len(working_samples))
+        print('# measuring doublefakerake...')
+        print('# %d samples to be used:'%(len(working_samples)))
         print('###########################################################')
         for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
         chain = TChain('tree') #TChain'ing all data samples together
@@ -63,8 +63,8 @@ class DDE(object):
         working_samples = samples_singlefake
         working_samples = setSumWeights(working_samples)
         print('###########################################################')
-        print'# measuring singlefakerake...'
-        print'# %d samples to be used:'%(len(working_samples))
+        print('# measuring singlefakerake...')
+        print('# %d samples to be used:'%(len(working_samples)))
         print('###########################################################')
         for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
         chain = TChain('tree') #TChain'ing all data samples together
@@ -140,8 +140,8 @@ class DDE(object):
         working_samples = samples_doublefake
         working_samples = setSumWeights(working_samples)
         print('###########################################################')
-        print'# measuring doublefakerake...'
-        print'# %d samples to be used:'%(len(working_samples))
+        print('# measuring doublefakerake...')
+        print('# %d samples to be used:'%(len(working_samples)))
         print('###########################################################')
         for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
         chain = TChain('tree') #TChain'ing all data samples together
@@ -222,8 +222,8 @@ class DDE(object):
         working_samples = samples_doublefake
         working_samples = setSumWeights(working_samples)
         print('###########################################################')
-        print'# measuring doublefakerake...'
-        print'# %d samples to be used:'%(len(working_samples))
+        print('# measuring doublefakerake...')
+        print('# %d samples to be used:'%(len(working_samples)))
         print('###########################################################')
         for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
         chain = TChain('tree') #TChain'ing all data samples together
@@ -289,7 +289,7 @@ class DDE(object):
         # hist = h_baseline.Clone()
         dfr_hist.Divide(h_LL_correlated.Clone())
         dfr_hist.SaveAs(dfr_TH2_dir) #uncomment this to save the TH2
-        print '.root file saved to %s'%(dfr_TH2_dir)
+        print ('.root file saved to %s'%(dfr_TH2_dir))
 
         can = TCanvas('can', '')
         # hist.Draw('colzTextE')
@@ -322,7 +322,7 @@ class DDE(object):
                     dfr_namespace.write("\t\treturn 0.;\n")
                     dfr_namespace.write("\t}\n")
                     dfr_namespace.write("}\n")
-            print 'FakeRateNamespace saved in "%s"'%(dfr_namespace_dir)
+            print ('FakeRateNamespace saved in "%s"'%(dfr_namespace_dir))
             gROOT.ProcessLine(".L modules/DDE_doublefake.h+")
 
     def makeNameSpaceDoubleFakes_4D(self):
@@ -373,7 +373,7 @@ class DDE(object):
                     dfr_namespace.write("\t\treturn 0.;\n")
                     dfr_namespace.write("\t}\n")
                     dfr_namespace.write("}\n")
-            print 'FakeRateNamespace saved in %s'%(dfr_namespace_dir)
+            print ('FakeRateNamespace saved in %s'%(dfr_namespace_dir))
             gROOT.ProcessLine(".L modules/DDE_doublefake.h+")
 
     def makeNameSpaceSingleFakes(self):
@@ -398,7 +398,7 @@ class DDE(object):
                     sfr_namespace.write("\t\treturn 0.;\n")
                     sfr_namespace.write("\t}\n")
                     sfr_namespace.write("}\n")
-            print 'FakeRateNamespace saved in "%s"'%(sfr_namespace_dir)
+            print ('FakeRateNamespace saved in "%s"'%(sfr_namespace_dir))
             gROOT.ProcessLine(".L modules/DDE_singlefake.h+")
 
 def main():
