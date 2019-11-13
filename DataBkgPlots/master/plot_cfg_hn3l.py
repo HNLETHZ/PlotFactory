@@ -382,7 +382,7 @@ def producePlots(promptLeptonType, L1L2LeptonType, dataset, option = None, multi
         total_weight, 
         sample_dict, 
         make_plots=True,
-        multiprocess=True,
+        multiprocess=False,
         useNeuralNetwork=True,
         dataframe=dataframe,
         server=hostname,

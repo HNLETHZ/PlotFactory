@@ -1,4 +1,9 @@
+from pdb import set_trace
+from socket import gethostname
+
 def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017', hostname = 'starseeker'):
+    hostname        = gethostname()
+
     if 'starseeker' in hostname:
         if faketype == 'SingleFake1':
             # path_to_NeuralNet = 'NN/dump'
@@ -82,7 +87,8 @@ def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017', h
     if 't3ui' in hostname:
         if channel == 'mmm':
                 if dataset == '2018':
-                    path_to_NeuralNet = '/work/dezhu/7_NN/2018/mmm_nonprompt_v7_GhentSelection/'
+                    # path_to_NeuralNet = '/work/dezhu/7_NN/2018/mmm_nonprompt_v7_GhentSelection/'
+                    path_to_NeuralNet = '/work/dezhu/7_NN/2018/mmm_nonprompt_v8_ProductionT3/'
     
 
     return path_to_NeuralNet 
