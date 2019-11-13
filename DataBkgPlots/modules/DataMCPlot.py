@@ -64,12 +64,12 @@ class DataMCPlot(object):
         if file_name in self.__class__._t_keeper:
             ttree = self.__class__._t_keeper[file_name]
             if verbose:
-                print 'got cached tree', ttree
+                print ('got cached tree', ttree)
         else:
             tfile = self.__class__._f_keeper[file_name] = TFile.Open(file_name)
             ttree = self.__class__._t_keeper[file_name] = tfile.Get(tree_name)
             if verbose:
-                print 'read tree', ttree, 'from file', file_name
+                print ('read tree', ttree, 'from file', file_name)
 
         if friend_func:
             file_name = friend_func(file_name)
@@ -86,15 +86,15 @@ class DataMCPlot(object):
         ttree = self.readTree(tree_file_name, tree_name, verbose)
 
         if verbose:
-            print 'read dataframe', dataframe, 'from file', tree_file_name
+            print ('read dataframe', dataframe, 'from file', tree_file_name)
 
         if friend_file_name:
             ttree.AddFriend(friend_name + '=tree',friend_file_name)
             #VALIDATE#
-            n = ttree.GetEntries('l2_pt - ML.l2_pt')
-            m = ttree.GetEntries('event - ML.event')
+            validate1 = ttree.GetEntries('l2_pt - %s.l2_pt'%friend_name)
+            validate2 = ttree.GetEntries('event - %s.event'%friend_name)
 
-            if not n+m == 0: print '\n\tERROR: FRIEND TREE NOT ALIGNED, FAKERATE USELESS', m, n
+            if not validate1+validate2 == 0: print ('\n\tERROR: FRIEND TREE NOT ALIGNED, FAKERATE USELESS', m, n)
 
         gROOT.cd()
         # dataframe = RDataFrame(tree_name,tree_file_name)
@@ -155,7 +155,7 @@ class DataMCPlot(object):
         '''Ungroup groupName, recover the histograms in the group'''
         group = self.groups.get(groupName, None)
         if group is None:
-            print groupName, 'is not a group in this plot.'
+            print (groupName, 'is not a group in this plot.')
             return
         for name in group:
             self.histosDict[name].on = True
@@ -165,7 +165,7 @@ class DataMCPlot(object):
         '''Not very elegant... should have a clone function in Histogram...'''
         oldh = self.histosDict.get(name, None)
         if oldh is None:
-            print 'histogram', name, 'does not exist, cannot replace it.'
+            print ('histogram', name, 'does not exist, cannot replace it.')
             return
 
         pythist = copy.deepcopy(pyhist)
@@ -539,9 +539,9 @@ class DataMCPlot(object):
 
         outf = TFile(filename, mode)
         if dir and outf.Get(dir):
-            print 'Directory', dir, 'already present in output file'
+            print ('Directory', dir, 'already present in output file')
             if any(outf.Get(dir+'/'+hist.name+postfix) for hist in self._SortedHistograms()):
-                print 'Recreating file because histograms already present'
+                print ('Recreating file because histograms already present')
                 outf = TFile(filename, 'RECREATE')
         if dir:
             outf_dir = outf.Get(dir)
@@ -570,14 +570,13 @@ class DataMCPlot(object):
     def _GetHistPref(self, name):
         '''Return the preference dictionary for a given component'''
         thePref = None
-        for prefpat, pref in self.histPref.iteritems():
-            if fnmatch.fnmatch(name, prefpat):
+        for prefpat in self.histPref:
+            if fnmatch.fnmatch(name,prefpat):
                 if thePref is not None:
-                    print 'several matching preferences for', name
-                thePref = pref
-                # print 'preferences set for', name
+                    print ('several matching preferences for', name)
+                thePref = self.histPref[prefpat]
         if thePref is None:
-            print 'cannot find preference for hist', name
+            print ('cannot find preference for hist', name)
         return thePref
 
     def _ApplyPrefs(self):

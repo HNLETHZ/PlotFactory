@@ -96,13 +96,14 @@ def createSampleLists(analysis_dir='',
                 bkg_dir = 'production_20191027_Bkg_mmm/'
                 sig_dir = analysis_dir + 'production_20191027_Signal_mmm/'
             if 't3' in server:
-                data_dir = analysis_dir + 'production_20190411_Data_mmm/ntuples'
-                bkg_dir = 'production_20190411_Bkg_mmm/ntuples/'
-                sig_dir = 'signal/ntuples'
+                data_dir = analysis_dir+'production_20191027_Data_mmm/'
+                bkg_dir = 'production_20191027_Bkg_mmm/'
+                sig_dir = analysis_dir + 'production_20191027_Signal_mmm/'
             if 'starseeker' in server:
                 data_dir = analysis_dir+'production_20191027_Data_mmm/'
                 bkg_dir = 'production_20191027_Bkg_mmm/'
                 sig_dir = analysis_dir + 'production_20191027_Signal_mmm/'
+
             dataA_name = 'Single_mu_2018A'; dataB_name = 'Single_mu_2018B'; dataC_name = 'Single_mu_2018C'; dataD_name = 'Single_mu_2018D';
 
         if 'mem' in channel:
@@ -781,14 +782,14 @@ def getSumWeight(sample, weight_dir='SkimAnalyzerCount', norm=True):
                 if f1[i].find('Sum Norm Weights') != -1: 
                     return float(f1[i].split()[3])
     except:
-        print 'Warning: could not find sum weights information or the following file does not even exist: %s'%(sumNormWeights_file_dir)
+        print ('Warning: could not find sum weights information or the following file does not even exist: %s'%(sumNormWeights_file_dir))
         set_trace()
 
 def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
-    print '###########################################################'
-    print '# setting sum weights for the samples...'
-    print '###########################################################'
-    print ''
+    print('###########################################################')
+    print('# setting sum weights for the samples...')
+    print('###########################################################')
+    print('')
 
     
     for sample in samples:
@@ -840,6 +841,6 @@ def setSumWeights(samples, weight_dir='SkimAnalyzerCount', norm=True):
         else:
             sample.sumweights = getSumWeight(sample, weight_dir, norm)
 
-        print 'Sum weights from sample',sample.name, 'taken from SkimReport.txt file. Setting it to', sample.sumweights
+        print ('Sum weights from sample',sample.name, 'taken from SkimReport.txt file. Setting it to', sample.sumweights)
 
     return samples

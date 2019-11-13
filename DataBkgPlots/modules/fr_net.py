@@ -28,15 +28,15 @@ from itertools import product
 
 from root_numpy import root2array, tree2array
 
-from keras.models import Sequential, Model, load_model
-from keras.layers import Dense, Input, Dropout, BatchNormalization
-from keras.utils import plot_model
-from keras.callbacks import EarlyStopping, Callback, ReduceLROnPlateau, ModelCheckpoint
-from keras import backend as K
-from keras.activations import softmax
-from keras.constraints import unit_norm
-from keras.utils import to_categorical
-from keras.optimizers import SGD, Adam
+from tensorflow.keras.models import Sequential, Model, load_model
+from tensorflow.keras.layers import Dense, Input, Dropout, BatchNormalization
+from tensorflow.keras.utils import plot_model
+from tensorflow.keras.callbacks import EarlyStopping, Callback, ReduceLROnPlateau, ModelCheckpoint
+from tensorflow.keras import backend as K
+from tensorflow.keras.activations import softmax
+from tensorflow.keras.constraints import unit_norm
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.optimizers import SGD, Adam
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, roc_auc_score
@@ -58,13 +58,13 @@ ROOT.EnableImplicitMT()
 # np.random.seed(1986)
 
 def tree2array_process(queue, chain, branches, selection, key):
-    print 'converting .root ntuples to numpy arrays... (%s events)'%key
+    print ('converting .root ntuples to numpy arrays... (%s events)'%key)
     array = tree2array(
                     chain,
                     branches = branches,
                     selection = selection
                     )
-    print 'nevents from array (%s): '%key+ str(len(array))
+    print ('nevents from array (%s): '%key+ str(len(array)))
     queue.put([key,array])
 
 def ex():
@@ -77,7 +77,7 @@ def ex():
     p.join()
 
 def root2array_process(queue, file_in, branches, selection, sample_name, key):
-    # print 'computing %s events for %s'%(key,sample_name)
+    # print ('computing %s events for %s'%(key,sample_name))
     array = pd.DataFrame(
                 root2array(
                     file_in,
@@ -86,7 +86,7 @@ def root2array_process(queue, file_in, branches, selection, sample_name, key):
                     selection
                 )
             )
-    # print 'nevents %s (%s): %d'%(sample_name,key,len(array))
+    # print ('nevents %s (%s): %d'%(sample_name,key,len(array)))
     queue.put([key,sample_name,array])
 
 def root2array_PoolProcess(input_array):
@@ -98,7 +98,7 @@ def root2array_PoolProcess(input_array):
     xsec        = input_array[5]
     sumweights  = input_array[6]
 
-    # print 'computing %s events for %s'%(key,sample_name)
+    # print ('computing %s events for %s'%(key,sample_name))
     array = pd.DataFrame(
                 root2array(
                     file_in,
@@ -107,7 +107,7 @@ def root2array_PoolProcess(input_array):
                     selection
                 )
             )
-    print 'nevents %s (%s): %d'%(sample_name,key,len(array))
+    print ('nevents %s (%s): %d'%(sample_name,key,len(array)))
     return [key,array,xsec,sumweights]
 
 def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake', channel = 'mmm', multiprocess = True, dataset = '2017', analysis_dir = '/home/dehuazhu/SESSD/4_production/'):
@@ -128,10 +128,10 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
 
     # make a TChain object by combining all necessary data samples
     print('###########################################################')
-    if faketype == 'DoubleFake': print'# measuring doublefakerate...'
-    if faketype == 'SingleFake1': print'# measuring singlefakerate for lepton 1...'
-    if faketype == 'SingleFake2': print'# measuring singlefakerate for lepton 2...'
-    print'# %d samples to be used:'%(len(working_samples))
+    if faketype == 'DoubleFake': print('# measuring doublefakerate...')
+    if faketype == 'SingleFake1': print('# measuring singlefakerate for lepton 1...')
+    if faketype == 'SingleFake2': print ('# measuring singlefakerate for lepton 2...')
+    print('# %d samples to be used:'%(len(working_samples)))
     print('###########################################################')
     for w in working_samples: print('{:<20}{:<20}'.format(*[w.name,('path: '+w.ana_dir)]))
 
@@ -141,8 +141,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         # sample = working_samples[0] #super stupid mistake, I'm keeping it here as a painful reminder
         sample = working_samples[i]
         file_name = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
-	if sample.name == 'data_2017A':
-	    chain.Add(file_name)
+        chain.Add(file_name)
 
     
     # define the selections
@@ -195,16 +194,16 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
                 array_fail = r[1]
 
     if multiprocess == False:
-        print 'converting .root ntuples to numpy arrays... (passed events)'
+        print ('converting .root ntuples to numpy arrays... (passed events)')
         array_pass = tree2array(chain, branches = branches, selection = selection_passing)
-        print 'nevents from array_pass: '+ str(array_pass.size)
+        print ('nevents from array_pass: '+ str(array_pass.size))
 
-        print 'converting .root ntuples to numpy arrays... (failed events)'
+        print ('converting .root ntuples to numpy arrays... (failed events)')
         array_fail = tree2array(chain, branches = branches, selection = selection_failing)
-        print 'nevents from array_fail: '+ str(array_fail.size)
+        print ('nevents from array_fail: '+ str(array_fail.size))
     
     delta = time.time() - start
-    print 'It took %.2f seconds to create the arrays'%delta
+    print ('It took %.2f seconds to create the arrays'%delta)
 
     df_pass    = pd.DataFrame(array_pass)
     df_fail    = pd.DataFrame(array_fail)
@@ -215,7 +214,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
         # array['contamination_weight'] = array.weight * array.lhe_weight * lumi *  xsec / sumweights
 
     # adding MC prompt contamination
-    print 'now adding MC prompt contamination to the training'
+    print ('now adding MC prompt contamination to the training')
     lumi = 41530 # all eras
     # lumi = 4792 # only era B
 
@@ -249,12 +248,12 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
             if sample[0] == 'pass':
                 df_pass = pd.concat([df_pass,array]) 
                 # df_fail = pd.concat([df_fail,array])
-                # print 'added pass events to df_pass: %d'%len(array)
+                # print ('added pass events to df_pass: %d'%len(array))
 
             if sample[0] == 'fail':
                 # df_pass = pd.concat([df_pass,array]) 
                 df_fail = pd.concat([df_fail,array])
-                # print 'added fail events to df_pass: %d'%len(array)
+                # print ('added fail events to df_pass: %d'%len(array))
 
 
 
@@ -262,7 +261,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
     if multiprocess == False:
         for i,s in enumerate(samples_mc):
             sample = samples_mc[i]
-            print 'computing %s'%sample.name
+            print ('computing %s'%sample.name)
             file_in = '/'.join([sample.ana_dir, sample.dir_name, sample.tree_prod_name, 'tree.root'])
 
             selection_pass = selection_passing_MC
@@ -279,7 +278,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
             # df_fail = pd.concat([df_fail,passing])
             df_fail = pd.concat([df_fail,failing])
 
-    print 'array size after including MC: %d(pass); %d(fail)'%(len(df_pass),len(df_fail))  
+    print ('array size after including MC: %d(pass); %d(fail)'%(len(df_pass),len(df_fail)))
 
 
     # add the target column
@@ -289,7 +288,7 @@ def createArrays(features, branches, path_to_NeuralNet, faketype = 'DoubleFake',
     # concatenate the events and shuffle
     data = pd.concat([df_pass, df_fail])
     data = data.sample(frac=1, replace=False, random_state=1986) # shuffle (and DON'T replace the sample)
-    data.index = np.array(xrange(len(data)))
+    data.index = np.array(range(len(data)))
 
     data.to_pickle(path_to_NeuralNet + 'training_data.pkl')
 
@@ -297,23 +296,23 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     hostname = gethostname()
     if not os.path.exists(path_to_NeuralNet):
         os.mkdir(path_to_NeuralNet)
-        print "Output directory created. "
-        print "Output directory: %s"%(path_to_NeuralNet)
+        print ("Output directory created. ")
+        print ("Output directory: %s"%(path_to_NeuralNet))
     else:
-        # print "Output directory: ", path_to_NeuralNet, "already exists, overwriting it!"
+        # print ("Output directory: ", path_to_NeuralNet, "already exists, overwriting it!")
         if newArrays == True:
-            print "Output directory already exists, overwriting it! "
-            print "Output directory: %s"%(path_to_NeuralNet)
+            print ("Output directory already exists, overwriting it! ")
+            print ("Output directory: %s"%(path_to_NeuralNet))
             os.system("rm -rf %s"%(path_to_NeuralNet))
             os.system("mkdir %s"%(path_to_NeuralNet))
         if newArrays == False:
-            print "Output directory already exists, using existing .pkl files"
+            print ("Output directory already exists, using existing .pkl files")
     
     copyfile('modules/fr_net.py', path_to_NeuralNet+'/fr_net.py')
     copyfile('modules/Selections.py', path_to_NeuralNet+'/Selections.py')
     copyfile('modules/Samples.py', path_to_NeuralNet+'/Samples.py')
 
-    print 'cfg files stored in ' + path_to_NeuralNet
+    print ('cfg files stored in ' + path_to_NeuralNet)
 
     if newArrays == True:
         createArrays(features, branches, path_to_NeuralNet, faketype, channel, multiprocess, dataset = dataset, analysis_dir = analysis_dir)
@@ -322,8 +321,8 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # #define indirect training variables
     data, features, branches =  add_branches(data,features,branches)
-    print 'training features: '
-    for f in features: print f
+    print ('training features: ')
+    for f in features: print (f)
    
     # define X and Y
     X = pd.DataFrame(data, columns=branches)
@@ -376,8 +375,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     # compile and choose your loss function (binary cross entropy for a 1-0 classification problem)
     model.compile(optimizer=opt, loss='binary_crossentropy', metrics=['mae','acc'])
 
-    # print net summary
-    print model.summary()
+    print (model.summary())
 
     # plot the models
     # https://keras.io/visualization/
@@ -395,7 +393,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     qt.fit(X[features])
     xx = qt.transform(X[features])
-    pickle.dump( qt, open( path_to_NeuralNet + 'input_transformation.pck', 'w' ) )
+    pickle.dump( qt, open( path_to_NeuralNet + 'input_transformation.pck', 'wb' ) )
 
     
     # train, give the classifier a head start
@@ -416,6 +414,9 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # weight the events according to their displacement (favour high displacement)
     weight = np.array(np.power(X['hnl_2d_disp'], 0.2))
+
+    xx = np.asarray(xx)
+    Y  = np.asarray(Y)
 
     # train only the classifier. beta is set at 0 and the discriminator is not trained
     # history = model.fit(X[features], Y, epochs=500, validation_split=0.5, callbacks=[es])  
@@ -448,12 +449,12 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     plt.savefig(path_to_NeuralNet + 'accuracy_history_weighted.pdf')
     plt.clf()
 
-    # plot mean absolute error
+    # plot mean absolute error 
     plt.title('mean absolute error')
-    plt.plot(history.history['mean_absolute_error'], label='train')
-    plt.plot(history.history['val_mean_absolute_error'], label='test')
+    plt.plot(history.history['mae'], label='train')
+    plt.plot(history.history['val_mae'], label='test')
     plt.legend()
-    center = min(history.history['val_mean_absolute_error'] + history.history['mean_absolute_error'])
+    center = min(history.history['val_mae'] + history.history['mae'])
     plt.ylim((center*0.98, center*1.5))
     # plt.yscale('log')
     plt.grid(True)
@@ -461,11 +462,11 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     plt.clf()
 
     # calculate predictions on the data sample
-    print 'predicting on ', data.shape[0], 'events'
+    print ('predicting on ', data.shape[0], 'events')
     x = pd.DataFrame(data, columns=features)
 
     # apply the Transformer also for the evaluation process
-    qt = pickle.load(open( path_to_NeuralNet + 'input_transformation.pck', 'r' ))
+    qt = pickle.load(open( path_to_NeuralNet + 'input_transformation.pck', 'rb' ))
     xx = qt.transform(x[features])
 
     y = model.predict(xx)
@@ -488,7 +489,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
 
     # save model and weights
     model.save(path_to_NeuralNet + 'net.h5')
-    print 'Neural Net saved as ' + path_to_NeuralNet + 'net.h5'
+    print ('Neural Net saved as ' + path_to_NeuralNet + 'net.h5')
     # model.save_weights('net_model_weights.h5')
 
     # rename branches, if you want
@@ -501,7 +502,7 @@ def train(features,branches,path_to_NeuralNet,newArrays = False, faketype = 'Dou
     data.to_root(path_to_NeuralNet + 'output_ntuple.root', key='tree', store_index=False)
 
 def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_NeuralNet,overwrite, dataset = '2017'):
-    print 'making friendtrees for all datasamples'
+    print ('making friendtrees for all datasamples')
     start = time.time()
     # call samples
     samples_all, samples_singlefake, samples_doublefake, samples_nonprompt, samples_mc, samples_data = createSampleLists(analysis_dir=analysis_dir, server = server, channel=channel, dataset = dataset)
@@ -540,7 +541,7 @@ def make_all_friendtrees(multiprocess,server,analysis_dir,channel,path_to_Neural
                                 overwrite = overwrite,
                                 )
     duration = time.time() - start
-    print 'It took %.2f seconds to make all friendtrees.'%duration
+    print ('It took %.2f seconds to make all friendtrees.'%duration)
         
 def makeFriendtree_Process(input_array):
     tree_file_name      = input_array[0]
@@ -556,16 +557,16 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
     path_to_tree = path_to_NeuralNet + 'friendtree_fr_%s.root'%sample_name
     if not overwrite:
         if os.path.isfile(path_to_tree): 
-            print 'Using existing friendtree at %s'%path_to_tree
+            print ('Using existing friendtree at %s'%path_to_tree)
             return path_to_tree
         else:
-            print 'making friendtree for %s'%sample_name
+            print ('making friendtree for %s'%sample_name)
     else:
         if os.path.isfile(path_to_tree):
             os.system("rm %s"%(path_to_tree))
-            print 'remaking friendtree for %s'%sample_name
+            print ('remaking friendtree for %s'%sample_name)
         else:
-            print 'making friendtree for %s'%sample_name
+            print ('making friendtree for %s'%sample_name)
 
 
     data = pd.DataFrame(root2array(tree_file_name,'tree',branches,''))
@@ -585,19 +586,19 @@ def makeFriendtree(tree_file_name,sample_name,net_name,path_to_NeuralNet,branche
     from sklearn.preprocessing import QuantileTransformer
     # xx = QuantileTransformer(output_distribution='normal').fit_transform(X[features])
     try:
-        qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'r' ))
+        qt = pickle.load(open( path_to_NeuralNet + 'quantile_transformation.pck', 'rb' ))
     except:
-        qt = pickle.load(open( path_to_NeuralNet + 'input_transformation.pck', 'r' ))
+        qt = pickle.load(open( path_to_NeuralNet + 'input_transformation.pck', 'rb' ))
     xx = qt.transform(x[features])
 
     classifier = load_model(net_name)
-    print 'predicting on ' + tree_file_name
+    print ('predicting on ' + tree_file_name)
     Y = classifier.predict(xx)
     scale = 1.0
     # add the score to the data_train_l sample
     data.insert(len(data.columns), 'ml_fr', scale * Y)
     data.to_root(path_to_tree, key = 'tree')
-    print 'friend tree stored in %s'%path_to_tree
+    print ('friend tree stored in %s'%path_to_tree)
     return path_to_tree
 
 def add_branches(data,features,branches):
@@ -948,89 +949,6 @@ def get_branches_nonprompt2(features):
     ]
     return branches
 
-def path_to_NeuralNet(faketype ='nonprompt',channel = 'mmm', dataset = '2017', hostname = 'starseeker'):
-    if 'starseeker' in hostname:
-        if faketype == 'SingleFake1':
-            # path_to_NeuralNet = 'NN/dump'
-            # path_to_NeuralNet = 'NN/mmm_SF1_v1/'
-            path_to_NeuralNet = 'NN/mmm_SF1_v3_newSelection/'
-
-        if faketype == 'SingleFake2':
-            # path_to_NeuralNet = 'NN/dump'
-            # path_to_NeuralNet = 'NN/mmm_SF2_v1/'
-            # path_to_NeuralNet = 'NN/mmm_SF2_v2_SingleVariable/'
-            # path_to_NeuralNet = 'NN/mmm_SF2_v3_AllVariable/'
-            # path_to_NeuralNet = 'NN/mmm_SF2_v4_newSelection/'
-            path_to_NeuralNet = 'NN/mmm_SF2_v5_noDxy/'
-
-        if faketype == 'DoubleFake':
-            # path_to_NeuralNet = 'NN/dump'
-            # path_to_NeuralNet = 'NN/mmm_DF_v4/'
-            # path_to_NeuralNet = 'NN/mmm_DF_v5_etaTraining/'
-            path_to_NeuralNet = 'NN/mmm_DF_v6_CheckNormalization/'
-
-        if faketype == 'nonprompt':
-            if channel == 'mmm':
-                    if dataset == '2017':
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v20_NewFREEZE/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v21_includeDZandFriends/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v22_NewFWwFinalStates/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v23_WithDPhi12/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v24_TrainWithRightSideband/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v25_TrainWithMC/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v26_relaxRelIso2/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v27_2Layers/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v28_ReproducibilityTest/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v29_LowM12Disp23/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v30_WithDropout2Layers/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v31_DropoutWholeRange/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v32_DropoutM12_80/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v33_CutDR0102_relaxRelIso4/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v34_IncludeDZ/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v35_TestFWforVinz/'
-                        path_to_NeuralNet = 'NN/mmm_nonprompt_v36_MartinaRegion/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v37_MartinaRegion_again/'
-                        # path_to_NeuralNet = 'NN/mmm_nonprompt_v38_MartinaRegion_loose/'
-                    if dataset == '2018':
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_playground/'
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v1/'
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v2_RiccardoNtuple/'
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v3_RiccardoMethod/'
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v4_BigNetBigFeatures/'
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v5_LogAbsVariables/'
-                        # path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v6_2018Oct27Ntuples/'
-                        path_to_NeuralNet = 'NN/2018/mmm_nonprompt_v7_GhentSelection/'
-                
-            if channel == 'eee':
-                # path_to_NeuralNet = 'NN/eee_nonprompt_v1/'
-                # path_to_NeuralNet = 'NN/eee_nonprompt_v2_TrainwithRightSideband'
-                # path_to_NeuralNet = 'NN/eee_nonprompt_v3_TrainWithMC'
-                # path_to_NeuralNet = 'NN/eee_nonprompt_v4_relasRelIso2/'
-                path_to_NeuralNet = 'NN/eee_nonprompt_v5_MartinaRegion/'
-
-            if channel == 'eem_OS':
-                # path_to_NeuralNet = 'NN/eem_OS_nonprompt_v1/'
-                path_to_NeuralNet = 'NN/eem_OS_nonprompt_v2_MartinaRegion/'
-
-            if channel == 'eem_SS':
-                # path_to_NeuralNet = 'NN/eem_SS_nonprompt_v1/'
-                path_to_NeuralNet = 'NN/eem_SS_nonprompt_v2_MartinaRegion/'
-
-            if channel == 'mem_OS':
-                # path_to_NeuralNet = 'NN/mem_OS_nonprompt_v1/'
-                path_to_NeuralNet = 'NN/mem_OS_nonprompt_v2_MartinaRegion/'
-        
-            if channel == 'mem_SS':
-                # path_to_NeuralNet = 'NN/mem_SS_nonprompt_v1/'
-                path_to_NeuralNet = 'NN/mem_SS_nonprompt_v2_MartinaRegion/'
-
-    if 'lxplus' in hostname:
-        if channel == 'mmm':
-                if dataset == '2018':
-                    path_to_NeuralNet = '/eos/user/d/dezhu/HNL/7_NN/NN/2018/mmm_nonprompt_v7_GhentSelection'
-    
-
-    return path_to_NeuralNet 
 #################################################################################
 
 if __name__ == '__main__':
@@ -1054,7 +972,8 @@ if __name__ == '__main__':
         analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
     if dataset == '2018':
         # analysis_dir    = '/mnt/StorageElement1/4_production/2018/'
-        analysis_dir = '/home/dehuazhu/SESSD/4_production/2018/'
+        # analysis_dir = '/home/dehuazhu/SESSD/4_production/2018/'
+        analysis_dir = '/work/dezhu/4_production/2018/'
 
     pf.setpfstyle()
 

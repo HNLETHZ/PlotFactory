@@ -139,7 +139,7 @@ class Stack:
     
     def _updateTitles( self,hist ):
         '''Update the axis titles of the stack to the titles of the first histogram in the stack.'''
-        print 'update', hist.GetYaxis().GetTitle()
+        print ('update', hist.GetYaxis().GetTitle())
         self.obj.GetXaxis().SetTitle( hist.GetXaxis().GetTitle() )
         self.obj.GetYaxis().SetTitle( hist.GetYaxis().GetTitle() )
         

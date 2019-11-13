@@ -20,12 +20,14 @@ if dataset == '2017':
     analysis_dir    = '/home/dehuazhu/SESSD/4_production/'
 if dataset == '2018':
     # analysis_dir    = '/mnt/StorageElement1/4_production/2018/'
-    analysis_dir = '/home/dehuazhu/SESSD/4_production/2018/'
+    # analysis_dir = '/home/dehuazhu/SESSD/4_production/2018/'
+    analysis_dir = '/work/dezhu/4_production/2018/'
+
 
 path_to_NeuralNet = path_to_NeuralNet(faketype, channel, dataset) 
 
 make_all_friendtrees(
-        multiprocess = True,
+        multiprocess = False,
         server = hostname,
         analysis_dir = analysis_dir,
         channel=channel,
